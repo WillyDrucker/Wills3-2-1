@@ -1,7 +1,6 @@
 .input-labels-container {
   display: flex;
   gap: 16px;
-  /* CORRECTED: Removed generic margin-top. This is now handled by _active-card.css for context-specific layout. */
 }
 .input-label {
   flex: 1;
@@ -10,10 +9,10 @@
   color: var(--on-surface-medium);
   text-align: center;
 }
+/* REFACTORED: The margin is now handled by the parent .input-group.stack */
 .input-controls-grid {
   display: flex;
   gap: 16px;
-  margin-top: 3px;
 }
 
 .number-input-container {

@@ -12,9 +12,6 @@ function getCardHeaderHTML() {
   const durationText = `${remaining} ${durationUnit} Remaining`;
   const completionTime = calculateCompletionTime(remaining);
 
-  // CEMENTED FIX (v5.1.10): The header text is now wrapped in a span with .truncate-text.
-  // The parent h2 handles layout, and this inner span handles the text content,
-  // resolving the conflict between truncation, clipping, and spacing.
   return `
     <div id="active-card-header" class="card-header-container" data-action="scrollToActiveCard">
         <div class="card-header-line">
@@ -59,10 +56,10 @@ export function getWorkoutCardHTML(logEntry) {
 
   /*
     REFACTORED (Definitive Grouped Stack System):
-    - The new .card-content-container wrapper manages the 16px visual padding.
-    - The .stack class on the container now governs the vertical rhythm (16px gap)
-      between all major elements (header, selector, inputs, etc.), replacing
-      numerous brittle, one-off margin rules in the CSS.
+    - A new ".input-group" now wraps the labels and controls. This group is a
+      stack with a 7px gap, creating the precise spacing you requested.
+    - The main container stack now correctly enforces a 16px gap between all
+      major elements.
   */
   return `
       <div class="card ${cardGlowClass}" id="active-card-container">
@@ -73,18 +70,20 @@ export function getWorkoutCardHTML(logEntry) {
             ${getYouTubeOverlayButtonHTML(logEntry)}
           </div>
 
-          <div class="input-labels-container">
-            <div class="input-label truncate-text">${weightLabel}</div>
-            <div class="input-label truncate-text">${repsLabel}</div>
+          <div class="input-group stack" style="--stack-space: var(--space-s);">
+            <div class="input-labels-container">
+              <div class="input-label truncate-text">${weightLabel}</div>
+              <div class="input-label truncate-text">${repsLabel}</div>
+            </div>
+            <div class="input-controls-grid">
+              ${createNumberInputHTML("weight", logEntry.weight)}
+              ${createNumberInputHTML("reps", logEntry.reps)}
+            </div>
           </div>
-          <div class="input-controls-grid">
-            ${createNumberInputHTML("weight", logEntry.weight)}
-            ${createNumberInputHTML("reps", logEntry.reps)}
-          </div>
-
+          
           <div id="card-anchor-area" data-action="scrollToActiveCard">${getAnchorAreaHTML()}</div>
           
-          <div id="card-action-area">${getActionAreaHTML()}</div>
+          <div id="card-action-area" class="stack">${getActionAreaHTML()}</div>
         </div>
       </div>`;
 }
