@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark light" />
+    <title>Will's 3-2-1</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="/src/styles/index.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+    />
+
+    <!--
+      DEFINITIVE ARCHITECTURAL UPGRADE: IMPORT MAP
+      As you correctly diagnosed, this is the definitive solution to the module
+      loading failures. It maps all "bare specifiers" used in the project to
+      their absolute file paths, making the native ES Module system robust and
+      reliable. This fixes the MIME type errors and allows the application to
+      bootstrap correctly.
+    -->
+    <script type="importmap">
+      {
+        "imports": {
+          "state": "/src/state.js",
+          "config": "/src/config.js",
+          "ui": "/src/shared/ui.js",
+          "utils": "/src/shared/utils.js",
+          "services/": "/src/services/",
+          "features/": "/src/features/",
+          "lib/": "/src/lib/",
+          "api/": "/src/api/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="app-container">
+      <header id="app-header" class="app-header"></header>
+      <section id="config-section" class="config-section"></section>
+      <main id="main-content" class="workout-main"></main>
+      <footer id="workout-footer-section" class="workout-footer"></footer>
+    </div>
+    <div id="video-player-modal-container"></div>
+    <div
+      id="superset-selection-modal-container"
+      class="superset-modal-container is-hidden"
+      data-modal-name="superset"
+    ></div>
+    <div
+      id="partner-modal-container"
+      class="superset-modal-container is-hidden"
+      data-modal-name="partner"
+    ></div>
+    <div id="side-nav-container"></div>
+    <div
+      id="reset-confirmation-modal-container"
+      class="superset-modal-container is-hidden"
+      data-modal-name="reset"
+    ></div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

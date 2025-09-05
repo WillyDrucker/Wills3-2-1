@@ -1,0 +1,32 @@
+/* Contains SHARED styles for selection modals (Superset & Partner) */
+/* Migrated from _superset-modal.css */
+
+/* Universal rule to center headers in all selection modals */
+.superset-modal-content .card-header {
+  text-align: center;
+}
+.superset-modal-content .card-header.with-header {
+  margin-top: 16px;
+}
+.superset-modal-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.modal-divider {
+  position: relative;
+  border: none;
+  height: 3px;
+  background-color: #000000;
+  margin: 16px 0;
+  box-shadow: 0 -3px 0 0 var(--surface-dark-accent),
+    0 3px 0 0 var(--surface-dark-accent);
+}
+
+.is-animating-selection-green {
+  animation: selection-feedback-green 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+.is-animating-selection-yellow {
+  animation: selection-feedback-yellow 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}

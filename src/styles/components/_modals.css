@@ -1,0 +1,49 @@
+/* Contains generic, shared styles for all modal containers and backdrops */
+
+/* --- Generic Modal Container (Superset, Partner, Reset) --- */
+.superset-modal-container,
+#partner-modal-container,
+#reset-confirmation-modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 16px;
+  transition: opacity 0.3s ease, visibility 0.3s;
+}
+.superset-modal-container.is-hidden,
+#partner-modal-container.is-hidden,
+#reset-confirmation-modal-container.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.superset-modal-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  cursor: pointer;
+  z-index: 1;
+}
+
+.superset-modal-content {
+  position: relative;
+  z-index: 2;
+  width: calc(390px - (var(--app-side-margin) * 2));
+  max-width: 100%;
+}
+
+/* --- Accessibility: Make background content inert when modal is open --- */
+html.is-modal-open .app-container {
+  pointer-events: none;
+  filter: blur(2px);
+}

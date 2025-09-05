@@ -1,0 +1,17 @@
+body {
+  font-family: "Roboto", sans-serif;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: 700;
+  line-height: 1; /* Collapse the line-box to remove extra vertical space */
+}
+
+h2 {
+  color: var(--on-surface-light);
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  /* margin: 0; is now handled globally by _reset.css */
+  text-align: left;
+}

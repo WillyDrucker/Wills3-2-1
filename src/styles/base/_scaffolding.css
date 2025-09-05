@@ -1,0 +1,25 @@
+/*
+  Contains the foundational, structural CSS for the entire application.
+  This includes the main container and the base styling for all cards.
+*/
+
+.app-container {
+  max-width: 390px;
+  margin: 0 auto;
+  padding: 0 var(--app-side-margin);
+}
+
+/* Base card styling, shared by all card-like components */
+/* CEMENTED FIX: The card is now an unpadded container. All internal spacing is handled by the .card-content-container. */
+.card {
+  background-color: var(--surface-dark);
+  border-radius: var(--border-radius);
+  margin-bottom: var(--space-m); /* REFACTORED: Using space token. */
+  border: 2px solid transparent;
+  scroll-margin-top: var(--space-m); /* Add scroll offset */
+}
+
+/* CEMENTED FIX: This wrapper class now controls all internal spacing for card content. */
+.card-content-container {
+  padding: 0 var(--card-padding) var(--card-padding);
+}

@@ -1,0 +1,203 @@
+/* Contains styles migrated from _my-data.css */
+
+.no-history-text {
+  color: var(--on-surface-medium);
+  text-align: center;
+  padding: 20px 0;
+}
+
+/* CEMENTED FIX: Standardize card/header spacing to match the new architectural pattern. */
+#main-content .card-content-container > h2:first-child {
+  margin-top: 0;
+  line-height: 0.9;
+}
+
+/* Spacing for selectors within the my-data page is now explicitly defined here. */
+#history-selector-card .app-selector {
+  margin-bottom: 16px;
+}
+
+#history-selector-card h2,
+#workout-history-card h2 {
+  margin-bottom: 3px;
+}
+
+/* --- Week Navigator --- */
+#workout-history-card {
+  min-height: 50px;
+}
+
+.history-week-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.week-navigator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.week-nav-button {
+  background: none;
+  border: none;
+  color: var(--on-surface-light);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.week-nav-button:disabled {
+  color: var(--on-surface-disabled);
+  pointer-events: none;
+}
+
+.week-nav-button svg {
+  width: 28px;
+  height: 28px;
+}
+
+.week-range-text {
+  font-weight: 600;
+  font-size: var(--font-size-h2); /* REFACTORED: Using new token. */
+  color: var(--text-green-plan);
+  white-space: nowrap;
+}
+
+/* --- Calendar View --- */
+.calendar-view-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.day-section {
+  padding: 10px 0;
+}
+.day-section.is-placeholder {
+  height: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0;
+}
+.day-section.is-placeholder .day-card-header {
+  margin-bottom: 4px;
+}
+
+.day-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.day-card-header .day-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--on-surface-light);
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.day-card-header .text-on-surface-medium {
+  color: var(--on-surface-medium);
+  font-weight: 600;
+}
+.day-card-header .data-highlight {
+  font-weight: 600;
+}
+
+.day-card-placeholder-text {
+  color: var(--on-surface-medium);
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+/*
+  CEMENTED
+  This nested CSS Grid structure is the definitive, final solution for aligning
+  the historical workout log items.
+*/
+.history-log-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto; /* Name (flexible) | Right Block (auto) */
+  align-items: center;
+  gap: 16px;
+  min-height: 24px;
+  padding: 4px 0;
+}
+
+.history-log-item-right {
+  display: grid;
+  grid-template-columns: auto auto; /* Sets (auto) | Results (auto) */
+  align-items: center;
+  justify-items: end; /* Right-aligns content within each cell */
+  justify-self: end; /* CEMENTED FIX: Aligns the entire block to the far right. */
+}
+
+/* DYNAMIC SPACING LOGIC */
+.calendar-view-container:not(.has-wide-results) .history-log-item-right {
+  gap: 16px;
+}
+.calendar-view-container:not(.has-wide-results) .log-item-results {
+  min-width: 125px;
+}
+.calendar-view-container.has-wide-results .history-log-item-right {
+  gap: 24px;
+}
+.calendar-view-container.has-wide-results .log-item-results {
+  min-width: 145px;
+}
+
+.log-item-set-info-container {
+  display: flex;
+  align-items: baseline;
+  white-space: nowrap;
+}
+
+.log-item-results {
+  white-space: nowrap;
+  text-align: right;
+}
+
+.log-item-results-container {
+  display: flex;
+  align-items: baseline;
+  white-space: nowrap;
+}
+
+/*
+  CEMENTED
+  This unified typography rule mirrors the active log's styling, creating
+  a perfect 1-to-1 visual match and ensuring consistency. This is the new
+  definitive standard for all historical log text.
+*/
+.history-log-item .log-item-exercise-name,
+.history-log-item .log-item-results-value,
+.history-log-item .log-item-set-info-value,
+.history-log-item .log-item-results-unit,
+.history-log-item .log-item-set-info-label {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.history-log-item .log-item-results-value,
+.history-log-item .log-item-set-info-value {
+  color: var(--on-surface-light);
+}
+.history-log-item .log-item-results-unit,
+.history-log-item .log-item-set-info-label {
+  color: var(--on-surface-medium);
+}
+
+.history-session-divider {
+  border: none;
+  border-top: 1px solid var(--surface-dark-accent);
+  margin: 16px 0;
+}
+
+.card-footer-action-single {
+  padding: 16px;
+}

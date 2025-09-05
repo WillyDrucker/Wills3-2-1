@@ -1,0 +1,76 @@
+.input-labels-container {
+  display: flex;
+  gap: 16px;
+  /* CORRECTED: Removed generic margin-top. This is now handled by _active-card.css for context-specific layout. */
+}
+.input-label {
+  flex: 1;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--on-surface-medium);
+  text-align: center;
+}
+.input-controls-grid {
+  display: flex;
+  gap: 16px;
+  margin-top: 3px;
+}
+
+.number-input-container {
+  display: flex;
+  align-items: center;
+  height: var(--control-height);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  flex-grow: 1;
+  border: 1px solid var(--on-surface-disabled);
+}
+.number-input-container button {
+  background-color: var(--background-dark);
+  color: var(--on-surface-light);
+  border: none;
+  width: 50px;
+  flex-shrink: 0;
+  height: 100%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.decrement-button-symbol {
+  position: relative;
+  top: -2px;
+}
+
+.button-is-flashing {
+  animation: button-red-pulse 0.56s linear 3;
+}
+
+.number-input-container button:hover {
+  background-color: #333;
+}
+.number-input-container input {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  background-color: var(--background-dark);
+  color: var(--on-surface-light);
+  border: none;
+  border-left: 1px solid var(--on-surface-disabled);
+  border-right: 1px solid var(--on-surface-disabled);
+  font-size: 1.25rem;
+  -moz-appearance: textfield;
+}
+
+/* CORRECTED: Disable browser's default focus outline on the readonly input */
+.number-input-container input:focus {
+  outline: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

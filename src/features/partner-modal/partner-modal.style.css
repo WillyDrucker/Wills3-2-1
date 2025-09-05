@@ -1,0 +1,7 @@
+/* Contains styles migrated from _partner-modal.css */
+
+/* Style for two-toned text in the partner profile selectors */
+.item-main-line .text-on-surface-medium {
+  color: var(--on-surface-medium);
+  margin-right: 4px;
+}

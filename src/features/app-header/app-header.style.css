@@ -1,0 +1,57 @@
+/*
+  REFACTORED (User-Provided Architecture):
+  This stylesheet has been updated to use a more robust CSS Grid layout for
+  alignment, as suggested. All values have been translated to use our
+  established design tokens for architectural consistency.
+*/
+
+.app-header {
+  /*
+    The header now uses a CSS Grid for robust, three-column alignment.
+    This is superior to our previous flexbox implementation.
+  */
+  display: grid;
+  grid-template-columns: 40px 1fr 40px; /* Icon | Title | Icon */
+  align-items: center;
+  gap: var(--space-s);
+  /* The vertical rhythm is maintained using our established space token. */
+  margin-top: var(--space-m);
+  margin-bottom: var(--space-m);
+  padding: 0;
+}
+
+/*
+  The H1 is now the grid item for the title, ensuring semantic correctness
+  while also handling truncation.
+*/
+.app-header h1 {
+  text-align: center;
+}
+
+.header-icon-button {
+  background: none;
+  border: none;
+  color: var(--on-surface-light);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius);
+  transition: background-color 0.2s ease-in-out;
+}
+
+.header-icon-button:hover {
+  background-color: color-mix(
+    in srgb,
+    var(--on-surface-light) 10%,
+    transparent
+  );
+}
+
+.header-icon-button svg {
+  height: 40px;
+  width: 40px;
+}

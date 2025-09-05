@@ -1,0 +1,25 @@
+/*
+  REFACTORED (Definitive Grouped Stack System - FINAL):
+  This is the final, correct implementation for the Config Card layout. The
+  layout is controlled by the nested stack architecture in the HTML, and this
+  stylesheet provides the crucial line-height tuning and padding adjustments.
+*/
+
+/*
+  1. The container padding is now definitively tuned:
+     - padding-top: 14px: Creates the correct 16px VISUAL gap to the H2 text.
+*/
+#config-card .card-content-container {
+  padding: 14px 14px 14px;
+}
+
+/*
+  2. The H2 header is styled with the definitive 0.7 line-height, which
+     is the key to the entire layout working correctly.
+*/
+#config-card .card-header {
+  color: var(--on-surface-light);
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 0.7;
+}

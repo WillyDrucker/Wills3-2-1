@@ -1,0 +1,37 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  /*
+    Stabilization Rule:
+    1. `overflow-y: scroll` forces the browser to always reserve space for a
+       scrollbar, eliminating layout shifts when navigating between pages of
+       different content heights.
+    2. `scrollbar-width: none` and the `::-webkit-scrollbar` rule then make
+       that now-reserved space invisible, preserving our app-like aesthetic.
+  */
+  overflow-y: scroll;
+  scrollbar-width: none; /* For Firefox */
+}
+
+/* For Chrome, Safari, and Opera */
+html::-webkit-scrollbar,
+.is-scrollable::-webkit-scrollbar {
+  display: none;
+}
+
+/* Apply invisible scrollbar to any element that needs it */
+.is-scrollable {
+  scrollbar-width: none; /* For Firefox */
+}
+
+html,
+body {
+  background-color: var(--background-dark);
+  color: var(--on-surface-light);
+  overscroll-behavior: none;
+  scroll-behavior: smooth;
+}

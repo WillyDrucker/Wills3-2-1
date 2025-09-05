@@ -1,0 +1,12 @@
+# Netlify Headers Configuration
+# This rule is necessary to allow cross-origin requests (CORS) from environments
+# like CodeSandbox to fetch the exercise data from the live beta site.
+
+[[headers]]
+  # The path for which these headers should be applied.
+  for = "/data/exercises.json"
+
+  [headers.values]
+    # The '*' wildcard allows any origin to access this file.
+    # This is safe for public, non-sensitive data like our exercise list.
+    Access-Control-Allow-Origin = "*"

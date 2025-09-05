@@ -1,0 +1,84 @@
+/* --- Completion Card Styles --- */
+.workout-results-container .card-header {
+  text-align: left;
+}
+.completion-animation-container {
+  position: relative;
+  height: 50px;
+  margin: 24px 0;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.workout-results-text {
+  text-align: center;
+  font-size: var(--font-size-h2); /* REFACTORED: Using new token. */
+  font-weight: 600;
+  color: var(--text-green-plan);
+  flex-shrink: 0;
+  padding: 0 16px;
+  position: relative;
+  z-index: 2;
+}
+.workout-results-subtext {
+  text-align: center;
+  line-height: 1.5;
+  color: var(--on-surface-medium);
+  margin-bottom: 16px;
+}
+.plate {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50px;
+  height: 50px;
+  transform: translate(-50%, -50%);
+  background-color: var(--background-dark);
+  border-radius: 50%;
+  border: 2px solid var(--primary-blue);
+  color: var(--text-green-plan);
+  font-weight: 600;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 4px;
+  opacity: 0;
+  animation-duration: 0.5s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+  z-index: 1;
+}
+.plate-hole {
+  width: 8px;
+  height: 8px;
+  background-color: transparent;
+  border-radius: 50%;
+  border: 2px solid var(--primary-blue);
+  flex-shrink: 0;
+}
+.is-animating .plate-left.plate-num-3 {
+  animation-name: plate-move-left-3;
+  animation-delay: 0.5s;
+}
+.is-animating .plate-right.plate-num-3 {
+  animation-name: plate-move-right-3;
+  animation-delay: 0.5s;
+}
+.is-animating .plate-left.plate-num-2 {
+  animation-name: plate-move-left-2;
+  animation-delay: 1.5s; /* 0.5s initial + 0.5s travel + 0.5s pause */
+}
+.is-animating .plate-right.plate-num-2 {
+  animation-name: plate-move-right-2;
+  animation-delay: 1.5s;
+}
+.is-animating .plate-left.plate-num-1 {
+  animation-name: plate-move-left-1;
+  animation-delay: 2.5s; /* 1.5s + 0.5s travel + 0.5s pause */
+}
+.is-animating .plate-right.plate-num-1 {
+  animation-name: plate-move-right-1;
+  animation-delay: 2.5s;
+}
