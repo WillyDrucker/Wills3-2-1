@@ -5,11 +5,13 @@
   --font-size-body-l: 1.1rem;
   --font-size-body-m: 1rem;
   --font-size-body-s: 0.9rem;
+  --lh-normal: 1.2;
+  --cap-offset-h2: 4px; /* The nudge for Roboto @ 1.25rem to achieve perfect visual alignment */
 
   /* --- SPACING TOKENS (The Rhythm) --- */
   --space-xs: 2px;
   --space-s: 7px;
-  --space-header-offset: 7px; /* NEW: A dedicated token for the header-to-selector visual gap. */
+  --space-header-offset: 7px;
   --space-m: 16px;
   --space-l: 24px;
 

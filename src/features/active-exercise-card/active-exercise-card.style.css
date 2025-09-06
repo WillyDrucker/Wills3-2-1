@@ -1,12 +1,12 @@
 /*
-  REFACTORED (v5.1.2 - Rhythm & Flow)
-  This file has been significantly simplified to align with the new, definitive
-  layout system. The `.stack` primitive now controls the primary vertical rhythm,
-  allowing for the removal of numerous one-off `margin-top` rules. The spacing
-  is now systemic, predictable, and token-driven.
+  REFACTORED (v5.1.15 - The Definitive "Cap Offset" Pattern)
+  This version implements the final, correct CSS architecture based on your
+  expert guidance. It uses a cap-offset token to achieve pixel-perfect
+  visual alignment without clipping text, making the layout robust and
+  predictable. All previous line-height hacks have been removed.
 */
 
-/* This rule applies our perfected padding pattern to achieve a 16px visual inset. */
+/* 16px visual inset from card edge */
 #active-card-container .card-content-container {
   padding: 14px;
 }
@@ -15,43 +15,71 @@ body.start-glow-animations .card.is-glowing-border {
   animation: glow-border 4s ease-in-out infinite;
 }
 
-/* The parent .stack now handles the primary margin. This is for fine-tuning. */
-.card-header-container {
+/* 7px gap between header rows */
+#active-card-container .card-header-container {
   display: flex;
   flex-direction: column;
-  gap: 7px;
-  margin-top: -4px;
-  margin-bottom: 0;
+  gap: var(--space-s);
 }
-.card-header-line {
+
+#active-card-container .card-header-line {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 16px;
+  justify-content: space-between;
+  gap: var(--space-m);
+  min-width: 0;
 }
-.card-header-container .card-header-line:first-child {
-  line-height: 0.7;
-}
-.card-header-dynamic-text,
-.card-header-clock {
+
+/*
+  CEMENTED (Step 1: The Outer Boxes):
+  - These are the layout containers.
+  - They use a normal line-height and have no overflow to prevent clipping.
+*/
+#active-card-container .card-header,
+#active-card-container .card-header-dynamic-text,
+#active-card-container .card-header-clock {
   font-size: var(--font-size-h2);
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  line-height: normal;
+  overflow: visible;
+  flex-grow: 1;
+}
+
+#active-card-container .card-header-clock,
+#active-card-container .card-header-dynamic-text:last-child {
+  flex-grow: 0;
   white-space: nowrap;
 }
 .card-header-clock {
   color: var(--on-surface-light);
-  flex-shrink: 0;
 }
-.card-header-container .card-header {
-  margin-bottom: 0;
+
+/*
+  CEMENTED (Step 2: The Inner Text):
+  - This is the content inside the boxes.
+  - It has a safe line-height and handles its own truncation.
+*/
+#active-card-container .truncate-text {
+  line-height: var(--lh-normal);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   min-width: 0;
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
+  display: inline-block;
 }
-.card-header-container .card-header > .truncate-text {
-  line-height: 1.2;
+
+/*
+  CEMENTED (Step 3: The Cap Offset):
+  - This is the final nudge that creates the perfect 16px visual top inset.
+  - It pushes the first line down to compensate for the font's ascender height.
+*/
+#active-card-header .card-header-line:first-child {
+  padding-top: var(--cap-offset-h2);
 }
+
 .card-header-line > *:last-child {
   margin-right: -1px;
 }
@@ -60,7 +88,6 @@ body.start-glow-animations .card.is-glowing-border {
   position: relative;
 }
 
-/* Spacing is now handled by the parent .stack's gap property. */
 #exercise-selector {
   margin: 0;
 }
@@ -68,10 +95,7 @@ body.start-glow-animations .card.is-glowing-border {
   min-height: 110px;
 }
 
-/*
-  Component Override: Resetting font styles for the exercise selector's
-  unique, more compact design.
-*/
+/* Component Override: Resetting font styles for this selector's unique design. */
 #exercise-selector.app-selector {
   font-size: initial;
   font-weight: initial;
@@ -79,7 +103,6 @@ body.start-glow-animations .card.is-glowing-border {
 #exercise-selector .selector-content {
   font-weight: 500;
 }
-/* TYPOGRAPHY REFACTOR: Font size increased from 1.15rem to 1.25rem per your request. */
 #exercise-selector .item-main-line {
   font-size: 1.25rem;
   font-weight: 600;
@@ -94,60 +117,37 @@ body.start-glow-animations .card.is-glowing-border {
   line-height: 1.1;
 }
 
-/* Spacing is now handled by the parent .stack's gap property. */
-#active-card-container .input-labels-container {
-  margin-top: -12px; /* Fine-tuning within the stack */
+.input-group {
+  margin: 0;
 }
+
 #card-anchor-area {
-  height: var(--control-height);
-  /* The parent .stack now handles the margin-top via its gap property. */
   position: relative;
   z-index: 1;
 }
 
 #card-action-area {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-.action-area-top {
-  flex-shrink: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.action-area-middle {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  margin-top: 22px;
-}
-.action-area-bottom {
-  flex-shrink: 0;
+  margin: 0;
 }
 
-/*
-  REFACTORED (Definitive Spacing):
-  The symmetrical 18px margins are the final, perfected values for positioning this prompt,
-  guaranteeing a 16px visual gap and PREVENTING LAYOUT SHIFT when switching to the resting state.
-*/
-.action-prompt-text {
+/* FLATTENED: All internal margins and heights have been removed. */
+.action-prompt-text,
+.resting-label {
   font-size: var(--font-size-h2);
   font-weight: 600;
   color: var(--primary-blue-dark);
   cursor: pointer;
-  line-height: 0.5;
-  margin-top: 18px;
-  margin-bottom: 18px;
   min-width: 0;
-  flex-grow: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  text-align: center;
 }
-.action-prompt-text > .truncate-text {
+.resting-label {
+  color: var(--on-surface-medium);
+}
+.action-prompt-text > .truncate-text,
+.resting-label > .truncate-text {
   line-height: 1.2;
 }
+
 body.start-glow-animations .action-prompt-text.is-glowing span {
   animation: text-glow 4s ease-in-out infinite;
 }
@@ -157,36 +157,18 @@ body.start-glow-animations .action-prompt-text.is-glowing span {
   flex-direction: column;
   gap: 16px;
 }
-/*
-  REFACTORED (Definitive Spacing):
-  The margins here are now symmetrical and MATCH the .action-prompt-text rule perfectly.
-  This is the key to the definitive, shift-free layout.
-*/
-.resting-label {
-  font-size: var(--font-size-h2);
-  font-weight: 600;
-  color: var(--on-surface-medium);
-  text-align: center;
-  margin-top: 18px;
-  margin-bottom: 18px;
-  line-height: 0.5;
-  min-width: 0;
-}
 
 .timer-container {
   display: flex;
   flex-direction: column;
-  margin-top: auto;
-  margin-bottom: 25px;
 }
 .timer-container .timer-display {
   font-size: 5.5rem;
   font-weight: 700;
-  line-height: 0.5;
+  line-height: 0.7;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 0;
 }
 .dual-fuel-gauge-container {
   display: flex;
@@ -199,7 +181,6 @@ body.start-glow-animations .action-prompt-text.is-glowing span {
   flex-grow: 1;
 }
 
-/* --- Waiting Card Style --- */
 .waiting-card-message {
   color: var(--on-surface-medium);
   text-align: center;

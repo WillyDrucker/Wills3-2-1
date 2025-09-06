@@ -1,37 +1,15 @@
 /*
   REFACTORED (v5.1.2 - Definitive Spacing):
-  The following rules have been updated to match the new symmetrical margin system
-  established in the main active-card stylesheet. This change is critical to
-  guaranteeing that the card's dimensions are static regardless of which timer
-  is active, permanently eliminating any layout shift in dual-mode.
+  The layout is now governed by the fixed-gap system in the main stylesheet.
+  All complex margin rules have been removed to align with the new, simpler,
+  and more explicit layout architecture.
 */
-
-/* --- Inactive Prompt Text --- */
-#active-card-container .action-prompt-text {
-  line-height: 0.5;
-  margin-top: 18px;
-  margin-bottom: 18px;
-}
-
-/* --- Resting State Label --- */
-#active-card-container .resting-label {
-  line-height: 0.5;
-  margin-top: 18px; /* MATCHES inactive state for static height */
-  margin-bottom: 18px; /* MATCHES inactive state for static height */
-}
 
 /* --- Timer Display --- */
 #active-card-container .timer-display {
   font-size: 5rem;
   font-weight: 700;
-  line-height: 0.5; /* Critical for precise margin calculations */
-  /*
-    CEMENTED (v5.0.5 - Pixel-Perfect Tuning):
-    This 24px margin is the final, tuned value that creates a precise 16px visual
-    gap between the bottom of the timer numbers and the top of the button below,
-    perfectly compensating for the collapsed line-height.
-  */
-  margin-bottom: 24px;
+  line-height: 0.7;
 }
 
 /*
@@ -56,11 +34,4 @@
 .timer-and-skip-container {
   display: flex;
   flex-direction: column;
-  /*
-    CEMENTED (v5.0.5 - Timer Position Fix):
-    This targeted margin is the key to positioning the timer correctly.
-    It adds the necessary space to counteract the larger bottom margin on the
-    resting label, creating the required 16px visual gap without a layout shift.
-  */
-  margin-top: 2px;
 }

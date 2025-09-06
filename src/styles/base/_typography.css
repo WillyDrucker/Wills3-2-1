@@ -12,6 +12,6 @@ h2 {
   color: var(--on-surface-light);
   font-size: var(--font-size-h2);
   font-weight: 600;
-  /* margin: 0; is now handled globally by _reset.css */
+  margin: 0; /* CEMENTED: Explicitly neutralize default margin for robust layout control. */
   text-align: left;
 }
