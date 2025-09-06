@@ -12,15 +12,21 @@ function getCardHeaderHTML() {
   const durationText = `${remaining} ${durationUnit} Remaining`;
   const completionTime = calculateCompletionTime(remaining);
 
+  /*
+    ARCHITECTURAL FIX (v5.1.15):
+    To enable the definitive "Cap Offset" CSS pattern, all four header text
+    elements now share an identical structure: an outer layout box containing
+    an inner, truncatable text span.
+  */
   return `
     <div id="active-card-header" class="card-header-container" data-action="scrollToActiveCard">
         <div class="card-header-line">
             <h2 class="card-header"><span class="truncate-text">${appState.session.activeCardHeaderMessage}</span></h2>
-            <span class="card-header-clock">${appState.ui.currentTime}</span>
+            <span class="card-header-clock"><span class="truncate-text">${appState.ui.currentTime}</span></span>
         </div>
         <div class="card-header-line">
-            <span class="card-header-dynamic-text truncate-text ${appState.session.currentSessionColorClass}">${durationText}</span>
-            <span class="card-header-dynamic-text ${appState.session.currentSessionColorClass}">${completionTime}</span>
+            <span class="card-header-dynamic-text"><span class="truncate-text ${appState.session.currentSessionColorClass}">${durationText}</span></span>
+            <span class="card-header-dynamic-text"><span class="truncate-text ${appState.session.currentSessionColorClass}">${completionTime}</span></span>
         </div>
     </div>
   `;
@@ -54,12 +60,6 @@ export function getWorkoutCardHTML(logEntry) {
     ? "Reps (Per Hand)"
     : 'Reps (Target: <span class="text-plan">10</span>)';
 
-  /*
-    REFACTORED (Definitive Grouped Stack System):
-    - A new ".header-and-selector-group" now wraps the header and selector. This
-      group is a stack with a 7px gap, creating the precise spacing you requested
-      and perfectly mirroring the architecture of the config-card.
-  */
   return `
       <div class="card ${cardGlowClass}" id="active-card-container">
         <div class="card-content-container stack">
