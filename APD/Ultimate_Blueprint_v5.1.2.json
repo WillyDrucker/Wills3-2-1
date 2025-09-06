@@ -1,6 +1,6 @@
 {
   "appName": "Will's 3-2-1",
-  "version": "5.1.1",
+  "version": "5.1.2",
   "files": {
     "description": "A hyper-explicit, component-centric architecture using native browser ES Modules with a central Import Map in index.html to ensure robust module resolution. Every file within a feature component is named '[component-name].[file-role].ext' for maximum clarity and resides in a flattened directory structure. All CSS is co-located with its corresponding component.",
     "deliveryProtocol": "Deliver only modified files in raw, labeled code blocks.",

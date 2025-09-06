@@ -1,25 +1,26 @@
 /*
-  REFACTORED (v5.1.16 - THE DEFINITIVE FIX)
-  This version implements the final, correct CSS architecture by perfectly
-  mirroring the proven "Shrink the Box, Protect the Text" pattern from the
-  config-card. This guarantees pixel-perfect, token-driven spacing. All
-  previous flawed patterns have been removed.
+  REFACTORED (v5.1.21 - THE DEFINITIVE FIX)
+  This version implements the final, correct CSS architecture by making the
+  HTML structure identical to the working config-card and applying the same
+  proven CSS pattern to guarantee pixel-perfect spacing.
 */
 
-/* 16px visual inset from card edge */
+/* TRUE 16px inset via token + vertical stacking with token gap */
 #active-card-container .card-content-container {
-  padding: 14px;
+  padding: var(--space-m); /* 16px via token */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s); /* 7px between all major sections */
 }
 
 body.start-glow-animations .card.is-glowing-border {
   animation: glow-border 4s ease-in-out infinite;
 }
 
-/* 7px gap between header rows */
-#active-card-container .card-header-container {
+#active-card-header:not(:empty) {
   display: flex;
   flex-direction: column;
-  gap: var(--space-s);
+  gap: var(--space-s); /* 7px between header rows */
 }
 
 #active-card-container .card-header-line {
@@ -31,14 +32,12 @@ body.start-glow-animations .card.is-glowing-border {
 }
 
 /*
-  CEMENTED (Step 1: "Shrink the Box"):
-  This rule targets ALL FOUR outer layout boxes. It collapses their box model
-  for spacing calculations with `line-height: 0.7`. This is the key to removing
-  the invisible "ghost" margins from the font itself.
+  CEMENTED (The Working Pattern):
+  This rule targets the H2 element directly, just like in the config-card.
+  This collapses its box model and removes the invisible "ghost" margins.
 */
-#active-card-container .card-header,
-#active-card-container .card-header-dynamic-text,
-#active-card-container .card-header-clock {
+#active-card-container .card-header {
+  margin: 0;
   font-size: var(--font-size-h2);
   font-weight: 600;
   line-height: 0.7;
@@ -48,20 +47,26 @@ body.start-glow-animations .card.is-glowing-border {
   flex-grow: 1;
 }
 
+#active-card-container .card-header-dynamic-text,
+#active-card-container .card-header-clock {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 0.7;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  white-space: nowrap;
+}
+
 #active-card-container .card-header-clock,
 #active-card-container .card-header-dynamic-text:last-child {
   flex-grow: 0;
-  white-space: nowrap;
 }
 .card-header-clock {
   color: var(--on-surface-light);
 }
 
-/*
-  CEMENTED (Step 2: "Protect the Text"):
-  This rule targets ALL FOUR inner text spans. It restores their line-height
-  to normal, ensuring no characters are ever clipped by their shrunken parent.
-*/
+/* Protect the Text (inner spans) */
 #active-card-container .card-header > span,
 #active-card-container .card-header-dynamic-text > span,
 #active-card-container .card-header-clock > span {
@@ -83,7 +88,7 @@ body.start-glow-animations .card.is-glowing-border {
   min-height: 110px;
 }
 
-/* Component Override: Resetting font styles for this selector's unique design. */
+/* Component Override */
 #exercise-selector.app-selector {
   font-size: initial;
   font-weight: initial;
@@ -118,7 +123,7 @@ body.start-glow-animations .card.is-glowing-border {
   margin: 0;
 }
 
-/* FLATTENED: All internal margins and heights have been removed. */
+/* FLATTENED */
 .action-prompt-text,
 .resting-label {
   font-size: var(--font-size-h2);
@@ -140,10 +145,11 @@ body.start-glow-animations .action-prompt-text.is-glowing span {
   animation: text-glow 4s ease-in-out infinite;
 }
 
+/* Tokenized Gaps */
 .action-button-group {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-m);
 }
 
 .timer-container {
@@ -160,12 +166,12 @@ body.start-glow-animations .action-prompt-text.is-glowing span {
 }
 .dual-fuel-gauge-container {
   display: flex;
-  gap: 16px;
+  gap: var(--space-m);
   height: var(--control-height);
 }
 .dual-action-area-container {
   display: flex;
-  gap: 16px;
+  gap: var(--space-m);
   flex-grow: 1;
 }
 
