@@ -13,20 +13,20 @@ function getCardHeaderHTML() {
   const completionTime = calculateCompletionTime(remaining);
 
   /*
-    ARCHITECTURAL FIX (v5.1.15):
-    To enable the definitive "Cap Offset" CSS pattern, all four header text
-    elements now share an identical structure: an outer layout box containing
-    an inner, truncatable text span.
+    ARCHITECTURAL FIX (v5.1.21):
+    The redundant container divs have been removed. The header elements are now
+    direct children of the main .stack, making them architecturally identical
+    to the working config-card for predictable spacing.
   */
   return `
-    <div id="active-card-header" class="card-header-container" data-action="scrollToActiveCard">
+    <div id="active-card-header" data-action="scrollToActiveCard">
         <div class="card-header-line">
-            <h2 class="card-header"><span class="truncate-text">${appState.session.activeCardHeaderMessage}</span></h2>
-            <span class="card-header-clock"><span class="truncate-text">${appState.ui.currentTime}</span></span>
+            <h2 class="card-header"><span>${appState.session.activeCardHeaderMessage}</span></h2>
+            <span class="card-header-clock"><span>${appState.ui.currentTime}</span></span>
         </div>
         <div class="card-header-line">
-            <span class="card-header-dynamic-text"><span class="truncate-text ${appState.session.currentSessionColorClass}">${durationText}</span></span>
-            <span class="card-header-dynamic-text"><span class="truncate-text ${appState.session.currentSessionColorClass}">${completionTime}</span></span>
+            <span class="card-header-dynamic-text"><span class="${appState.session.currentSessionColorClass}">${durationText}</span></span>
+            <span class="card-header-dynamic-text"><span class="${appState.session.currentSessionColorClass}">${completionTime}</span></span>
         </div>
     </div>
   `;
@@ -63,12 +63,10 @@ export function getWorkoutCardHTML(logEntry) {
   return `
       <div class="card ${cardGlowClass}" id="active-card-container">
         <div class="card-content-container stack">
-          <div class="header-and-selector-group stack" style="--stack-space: var(--space-s);">
-            ${getCardHeaderHTML()}
-            <div class="youtube-overlay-wrapper">
-              ${getExerciseSelectorHTML(logEntry, setsForThisExercise)}
-              ${getYouTubeOverlayButtonHTML(logEntry)}
-            </div>
+          ${getCardHeaderHTML()}
+          <div class="youtube-overlay-wrapper">
+            ${getExerciseSelectorHTML(logEntry, setsForThisExercise)}
+            ${getYouTubeOverlayButtonHTML(logEntry)}
           </div>
 
           <div class="input-group stack" style="--stack-space: var(--space-s);">

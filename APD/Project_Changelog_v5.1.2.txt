@@ -1,0 +1,14 @@
+v5.1.1 -> v5.1.2 (Rhythm & Flow Refactor: Active Card)
+
+- ARCHITECTURAL REFACTOR (Active Exercise Card): Successfully refactored the entire Active Exercise Card to conform to the definitive "Rhythm & Flow" layout system. This brings our most complex component in line with the established architectural standard, ensuring a predictable, token-driven, and pixel-perfect layout.
+
+- DEFINITIVE LAYOUT PATTERN CEMENTED ("Shrink the Box, Protect the Text"): This session's iterative process proved that the "Shrink the Box, Protect the Text" pattern is the gold-standard solution for achieving precise vertical rhythm with large fonts.
+  - The pattern involves applying `line-height: 0.7` to the outer layout box (e.g., `.card-header`) to collapse its vertical space for layout calculations.
+  - A corresponding rule then restores `line-height: 1.2` to the inner text span to prevent any visual clipping of characters.
+  - This pattern is now the definitive standard for all card headers.
+
+- BUG FIX (HTML Structure): Corrected the HTML of the Active Exercise Card's header to ensure all four text elements (`h2`, `span`s) share an identical `outer-box > inner-span` structure. This architectural consistency was the key to enabling a universal, simple CSS solution.
+
+- BUG FIX (Layout - "Ghost" Spacing): Eliminated a large, ~87px vertical gap in the inactive state of the Active Exercise Card by removing the fixed height from the `#card-anchor-area`. The container now correctly collapses to zero height when its content is not rendered.
+
+- CODE SIMPLIFICATION (CSS): Removed numerous brittle, one-off CSS rules, negative margins, and flawed layout hacks from `active-exercise-card.style.css`. The component's layout is now governed exclusively by the robust, predictable, and token-based `.stack` and `gap` system.
