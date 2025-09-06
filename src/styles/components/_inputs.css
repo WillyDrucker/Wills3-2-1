@@ -9,7 +9,6 @@
   color: var(--on-surface-medium);
   text-align: center;
 }
-/* REFACTORED: The margin is now handled by the parent .input-group.stack */
 .input-controls-grid {
   display: flex;
   gap: 16px;
@@ -60,10 +59,11 @@
   border-left: 1px solid var(--on-surface-disabled);
   border-right: 1px solid var(--on-surface-disabled);
   font-size: 1.25rem;
+  /* CEMENTED FIX: Added the standard `appearance` property for full browser compatibility. */
   -moz-appearance: textfield;
+  appearance: none;
 }
 
-/* CORRECTED: Disable browser's default focus outline on the readonly input */
 .number-input-container input:focus {
   outline: none;
 }

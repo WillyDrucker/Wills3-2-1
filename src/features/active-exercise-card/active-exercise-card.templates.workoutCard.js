@@ -56,18 +56,19 @@ export function getWorkoutCardHTML(logEntry) {
 
   /*
     REFACTORED (Definitive Grouped Stack System):
-    - A new ".input-group" now wraps the labels and controls. This group is a
-      stack with a 7px gap, creating the precise spacing you requested.
-    - The main container stack now correctly enforces a 16px gap between all
-      major elements.
+    - A new ".header-and-selector-group" now wraps the header and selector. This
+      group is a stack with a 7px gap, creating the precise spacing you requested
+      and perfectly mirroring the architecture of the config-card.
   */
   return `
       <div class="card ${cardGlowClass}" id="active-card-container">
         <div class="card-content-container stack">
-          ${getCardHeaderHTML()}
-          <div class="youtube-overlay-wrapper">
-            ${getExerciseSelectorHTML(logEntry, setsForThisExercise)}
-            ${getYouTubeOverlayButtonHTML(logEntry)}
+          <div class="header-and-selector-group stack" style="--stack-space: var(--space-s);">
+            ${getCardHeaderHTML()}
+            <div class="youtube-overlay-wrapper">
+              ${getExerciseSelectorHTML(logEntry, setsForThisExercise)}
+              ${getYouTubeOverlayButtonHTML(logEntry)}
+            </div>
           </div>
 
           <div class="input-group stack" style="--stack-space: var(--space-s);">
