@@ -1,17 +1,9 @@
 /*
-<<<<<<< HEAD
-  REFACTORED (v5.1.9 - THE DEFINITIVE FIX)
+  REFACTORED (v5.1.16 - THE DEFINITIVE FIX)
   This version implements the final, correct CSS architecture by perfectly
-  mirroring the proven pattern from the config-card. It collapses the bounding
-  boxes of ALL header elements, allowing the token-based gap system to achieve
-  pixel-perfect spacing.
-=======
-  REFACTORED (v5.1.15 - The Definitive "Cap Offset" Pattern)
-  This version implements the final, correct CSS architecture based on your
-  expert guidance. It uses a cap-offset token to achieve pixel-perfect
-  visual alignment without clipping text, making the layout robust and
-  predictable. All previous line-height hacks have been removed.
->>>>>>> 3e108186ef02a040fc522c5a869adb0ecccdd658
+  mirroring the proven "Shrink the Box, Protect the Text" pattern from the
+  config-card. This guarantees pixel-perfect, token-driven spacing. All
+  previous flawed patterns have been removed.
 */
 
 /* 16px visual inset from card edge */
@@ -23,18 +15,11 @@ body.start-glow-animations .card.is-glowing-border {
   animation: glow-border 4s ease-in-out infinite;
 }
 
-<<<<<<< HEAD
-#active-card-container .card-header-container {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-=======
 /* 7px gap between header rows */
 #active-card-container .card-header-container {
   display: flex;
   flex-direction: column;
   gap: var(--space-s);
->>>>>>> 3e108186ef02a040fc522c5a869adb0ecccdd658
 }
 
 #active-card-container .card-header-line {
@@ -46,35 +31,20 @@ body.start-glow-animations .card.is-glowing-border {
 }
 
 /*
-<<<<<<< HEAD
-  CEMENTED (Definitive Spacing - THE FINAL FIX):
-  This rule collapses the box model of ALL FOUR layout elements in the header.
-  This removes their unwanted default vertical space, allowing the parent's
-  `padding` and `gap` properties to control the layout with 100% precision.
-=======
-  CEMENTED (Step 1: The Outer Boxes):
-  - These are the layout containers.
-  - They use a normal line-height and have no overflow to prevent clipping.
->>>>>>> 3e108186ef02a040fc522c5a869adb0ecccdd658
+  CEMENTED (Step 1: "Shrink the Box"):
+  This rule targets ALL FOUR outer layout boxes. It collapses their box model
+  for spacing calculations with `line-height: 0.7`. This is the key to removing
+  the invisible "ghost" margins from the font itself.
 */
 #active-card-container .card-header,
 #active-card-container .card-header-dynamic-text,
 #active-card-container .card-header-clock {
-<<<<<<< HEAD
-  line-height: 0.7;
-}
-
-#active-card-container .card-header-dynamic-text,
-#active-card-container .card-header-clock {
-=======
->>>>>>> 3e108186ef02a040fc522c5a869adb0ecccdd658
   font-size: var(--font-size-h2);
   font-weight: 600;
+  line-height: 0.7;
   display: flex;
   align-items: center;
   min-width: 0;
-  line-height: normal;
-  overflow: visible;
   flex-grow: 1;
 }
 
@@ -86,43 +56,16 @@ body.start-glow-animations .card.is-glowing-border {
 .card-header-clock {
   color: var(--on-surface-light);
 }
-<<<<<<< HEAD
-#active-card-container .card-header {
-=======
 
 /*
-  CEMENTED (Step 2: The Inner Text):
-  - This is the content inside the boxes.
-  - It has a safe line-height and handles its own truncation.
+  CEMENTED (Step 2: "Protect the Text"):
+  This rule targets ALL FOUR inner text spans. It restores their line-height
+  to normal, ensuring no characters are ever clipped by their shrunken parent.
 */
-#active-card-container .truncate-text {
-  line-height: var(--lh-normal);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
->>>>>>> 3e108186ef02a040fc522c5a869adb0ecccdd658
-  min-width: 0;
-  display: inline-block;
-}
-
-/*
-<<<<<<< HEAD
-  CEMENTED: After collapsing the parent containers, we MUST restore the line-height
-  on the actual text elements to prevent them from being visually clipped. This
-  rule now correctly targets all four elements for perfect balance.
-*/
-#active-card-container .card-header > .truncate-text,
-#active-card-container .card-header-dynamic-text,
-#active-card-container .card-header-clock {
+#active-card-container .card-header > span,
+#active-card-container .card-header-dynamic-text > span,
+#active-card-container .card-header-clock > span {
   line-height: 1.2;
-=======
-  CEMENTED (Step 3: The Cap Offset):
-  - This is the final nudge that creates the perfect 16px visual top inset.
-  - It pushes the first line down to compensate for the font's ascender height.
-*/
-#active-card-header .card-header-line:first-child {
-  padding-top: var(--cap-offset-h2);
->>>>>>> 3e108186ef02a040fc522c5a869adb0ecccdd658
 }
 
 .card-header-line > *:last-child {
@@ -166,13 +109,6 @@ body.start-glow-animations .card.is-glowing-border {
   margin: 0;
 }
 
-<<<<<<< HEAD
-/*
-  FIXED: The fixed height is removed. This container will now have zero height
-  when its content (the fuel gauge) is not rendered, fixing the 87px gap.
-*/
-=======
->>>>>>> 3e108186ef02a040fc522c5a869adb0ecccdd658
 #card-anchor-area {
   position: relative;
   z-index: 1;
@@ -183,20 +119,14 @@ body.start-glow-animations .card.is-glowing-border {
 }
 
 /* FLATTENED: All internal margins and heights have been removed. */
-<<<<<<< HEAD
-.action-prompt-text {
-=======
 .action-prompt-text,
 .resting-label {
->>>>>>> 3e108186ef02a040fc522c5a869adb0ecccdd658
   font-size: var(--font-size-h2);
   font-weight: 600;
   color: var(--primary-blue-dark);
   cursor: pointer;
   min-width: 0;
   text-align: center;
-<<<<<<< HEAD
-=======
 }
 .resting-label {
   color: var(--on-surface-medium);
@@ -204,7 +134,6 @@ body.start-glow-animations .card.is-glowing-border {
 .action-prompt-text > .truncate-text,
 .resting-label > .truncate-text {
   line-height: 1.2;
->>>>>>> 3e108186ef02a040fc522c5a869adb0ecccdd658
 }
 
 body.start-glow-animations .action-prompt-text.is-glowing span {
@@ -216,18 +145,6 @@ body.start-glow-animations .action-prompt-text.is-glowing span {
   flex-direction: column;
   gap: 16px;
 }
-<<<<<<< HEAD
-
-/* FLATTENED: All self-generated vertical space is removed. */
-.resting-label {
-  font-size: var(--font-size-h2);
-  font-weight: 600;
-  color: var(--on-surface-medium);
-  text-align: center;
-  min-width: 0;
-}
-=======
->>>>>>> 3e108186ef02a040fc522c5a869adb0ecccdd658
 
 .timer-container {
   display: flex;
