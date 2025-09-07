@@ -79,7 +79,10 @@ body.start-glow-animations .card.is-glowing-border {
 #exercise-selector {
   margin: 0;
 }
-#exercise-selector summary {
+
+/* SCOPE FIX: previously this was too broad elsewhere.
+   Limit the min-height to the active card's selector summaries only. */
+#active-card-container .app-selector > summary {
   min-height: 110px;
 }
 

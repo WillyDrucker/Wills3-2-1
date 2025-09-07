@@ -6,7 +6,7 @@
 .app-container {
   max-width: 390px;
   margin: 0 auto;
-  padding: 0 var(--app-side-margin);
+  padding: 0 var(--app-side-margin, 10px); /* fallback keeps layout stable */
 }
 
 /* Base card styling, shared by all card-like components */
@@ -14,12 +14,27 @@
 .card {
   background-color: var(--surface-dark);
   border-radius: var(--border-radius);
-  margin-bottom: var(--space-m); /* REFACTORED: Using space token. */
-  border: 2px solid transparent;
+  margin-bottom: var(--space-m); /* Tokenized vertical rhythm between cards */
+  border: 2px solid transparent; /* Visual border width = 2px */
   scroll-margin-top: var(--space-m); /* Add scroll offset */
 }
 
-/* CEMENTED FIX: This wrapper class now controls all internal spacing for card content. */
+/*
+  CEMENTED FIX:
+  This wrapper class controls internal spacing for card content.
+
+  IMPORTANT:
+  - We use CSS var fallbacks so this works whether or not your _variables.css
+    defines custom layout tokens.
+  - The generic base uses 0 top padding, because feature-level styles (e.g.
+    config card) can take precise control of the top inset and cap-height nudges
+    without double-counting here.
+*/
 .card-content-container {
-  padding: 0 var(--card-padding) var(--card-padding);
+  /* Left/Right/Bottom: token with border-aware fallback
+     If --card-padding isn’t defined, use --space-m (16px).
+     If --card-border-width isn’t defined, assume 2px (matches .card). */
+  padding: 0
+           calc(var(--card-padding, var(--space-m)) - var(--card-border-width, 2px))
+           calc(var(--card-padding, var(--space-m)) - var(--card-border-width, 2px));
 }

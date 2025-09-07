@@ -1,25 +1,64 @@
 /*
-  REFACTORED (Definitive Grouped Stack System - FINAL):
-  This is the final, correct implementation for the Config Card layout. The
-  layout is controlled by the nested stack architecture in the HTML, and this
-  stylesheet provides the crucial line-height tuning and padding adjustments.
+  CONFIG CARD — Rhythm & Flow (v6.10, token-unified)
+  Visual targets:
+  • First header top → card edge = 16px
+  • Header → selector inside each group = 7px
+  • Between groups (selector → next header) = 16px
+
+  Approach (no JS, no line-height hacks):
+  • Use small, flow-aware negative margins to cancel the font’s visual leading.
+  • Unified on global token name: --cap-offset-h2 (fallback 5px).
+  • Truncation remains disabled for stability.
 */
 
-/*
-  1. The container padding is now definitively tuned:
-     - padding-top: 14px: Creates the correct 16px VISUAL gap to the H2 text.
-*/
+/* Visual inset from OUTER card edge = 16px (border-aware) */
 #config-card .card-content-container {
-  padding: 14px 14px 14px;
+  padding: calc(var(--space-m) - var(--card-border-width, 2px));
 }
 
-/*
-  2. The H2 header is styled with the definitive 0.7 line-height, which
-     is the key to the entire layout working correctly.
-*/
+/* Base header typography */
 #config-card .card-header {
   color: var(--on-surface-light);
   font-size: var(--font-size-h2);
   font-weight: 600;
-  line-height: 0.7;
+  line-height: var(--lh-normal);
+  margin: 0; /* remove UA margins; rhythm is explicit */
+}
+
+/* Keep truncation off in headers while spacing is validated */
+#config-card .card-header > .truncate-text,
+#config-card .card-header .subtext,
+#config-card .card-header .label,
+#config-card .card-header .meta {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  min-width: 0;
+}
+
+/* Each config-group is a `.stack` with 7px inner rhythm via
+   style="--stack-space: var(--space-header-offset);" */
+#config-card .config-group {
+  --stack-space: var(--space-header-offset); /* 7px */
+  min-width: 0;
+}
+#config-card .config-group * {
+  min-width: 0;
+}
+
+/* FLOW-AWARE VISUAL FIX (uses unified token name)
+   - Apply cap/leading compensation to ALL headers so:
+     • Selector above → header ≈ 16px
+     • Header → selector ≈ 7px
+   - Uses global --cap-offset-h2 with fallback to 5px.
+*/
+#config-card .config-group .card-header {
+  margin-top: calc(var(--cap-offset-h2, 5px) * -1);
+  margin-bottom: calc(var(--cap-offset-h2, 5px) * -1);
+}
+
+/* Normalize selector summary so it doesn’t inject stray margins */
+#config-card .app-selector,
+#config-card .app-selector > summary {
+  margin: 0;
 }
