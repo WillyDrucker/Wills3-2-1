@@ -30,16 +30,18 @@ export function renderActiveCardHeader() {
   const durationText = `${remaining} ${durationUnit} Remaining`;
   const completionTime = calculateCompletionTime(remaining);
 
-  // CEMENTED FIX (v5.1.10): This renderer now uses the same "wrapper" pattern
-  // as the full render, ensuring the DOM structure is identical and the fix is stable.
+  // CEMENTED: carry the session color class on the entire second header line
+  // so minute-tick re-renders cannot drop color even if a child span class is missed.
+  const toneClass = appState.session.currentSessionColorClass || "";
+
   headerContainer.innerHTML = `
     <div class="card-header-line">
         <h2 class="card-header"><span class="truncate-text">${appState.session.activeCardHeaderMessage}</span></h2>
         <span class="card-header-clock">${appState.ui.currentTime}</span>
     </div>
-    <div class="card-header-line">
-        <span class="card-header-dynamic-text truncate-text ${appState.session.currentSessionColorClass}">${durationText}</span>
-        <span class="card-header-dynamic-text ${appState.session.currentSessionColorClass}">${completionTime}</span>
+    <div class="card-header-line ${toneClass}">
+        <span class="card-header-dynamic-text truncate-text ${toneClass}">${durationText}</span>
+        <span class="card-header-dynamic-text ${toneClass}">${completionTime}</span>
     </div>
   `;
 }
@@ -67,6 +69,7 @@ export function handleNumberInputChange(inputId, value) {
   if (inputId === "weight") logEntry.weight = cleanValue;
   else if (inputId === "reps") logEntry.reps = cleanValue;
 }
+
 export function handleLogSet(side = null) {
   selectorService.closeAll();
   const sourceLogEntry =
@@ -189,7 +192,7 @@ export function handleSkipSet(side = null) {
         (log) => log.status === "pending" && log.supersetSide === side
       );
       if (hasMoreSetsOnThisSide) {
-        // CEMENTED FIX (v5.1.18): Corrected typo from startSupersetRestimer to startSupersetRestTimer.
+        // CEMENTED FIX: Corrected typo from startSupersetRestimer to startSupersetRestTimer.
         startSupersetRestTimer(side, "skip");
       } else {
         workoutService.recalculateCurrentStateAfterLogChange();
