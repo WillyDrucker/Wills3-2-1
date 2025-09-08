@@ -1,3 +1,9 @@
+
+/* CEMENTED — Active Exercise Card Architecture
+   • Global rhythm: inset 16px; 7px header↔selector; 16px between groups.
+   • Exercise selector OUTER SHELL = 100px exact. Inner text may rebalance; shell height stays constant.
+   • Spacing via .stack + tokens only. Default <p> margins are reset; optical fixes via cap‑fix tokens.
+   • No !important, no negative padding, no sub‑1 line-height. */
 /*
   ACTIVE EXERCISE CARD — rhythm (16/7/7), selector=100px, adherence color
 
@@ -8,6 +14,7 @@
 */
 
 /* ===== Card inset (border-aware 16px) ===== */
+/* CEMENTED: Card inset stays token-driven; do not adjust per-component. */
 #active-card-container .card-content-container {
   padding: calc(var(--space-m) - var(--card-border-width, 2px));
 }
@@ -127,6 +134,13 @@ body.start-glow-animations .action-prompt-text.is-glowing span {
   line-height: var(--lh-normal);
   display: flex; align-items: center; justify-content: center;
 }
+#active-card-container #card-action-area .timer-display {
+  margin: 0;
+  line-height: var(--lh-normal);
+  margin-top: var(--cap-fix-timer-top, 0px);
+  margin-bottom: var(--cap-fix-timer-bottom, 0px);
+}
+
 .dual-fuel-gauge-container { display: flex; gap: 16px; height: var(--control-height); }
 .dual-action-area-container { display: flex; gap: 16px; flex-grow: 1; }
 
@@ -169,7 +183,7 @@ body.is-selector-open
 /* ---------------------------------------------------------------------------------
    CEMENTED — RHYTHM LOCK (specificity + order; adjust ONLY here if tokens change)
    Targets:
-     • Top → “Current Exercise” line = 16px (visual)
+     • Top → “Current Exercise” line = 16px
      • “Current Exercise” → “# Minutes Remaining” = 7px (visual)
      • “# Minutes Remaining” → selector = 7px (visual)
 
@@ -225,3 +239,112 @@ body.is-selector-open
 #active-card-container .card-header-line .card-header-clock.text-warning {
   color: var(--adherence-yellow);
 }
+
+
+/* CEMENTED: Local wrapper to keep 7px between selector and input labels, while preserving 16px between major groups. */
+#active-card-container .selector-and-inputs { margin: 0; }
+
+
+/* CEMENTED: Action prompt block uses tokenized spacers to prevent layout shift.
+   Default spacers are 0px; outer stack provides 16/16 rhythm. */
+#active-card-container #card-action-area { margin: 0; }
+/* CEMENTED: Action area uses 16px stack gap. Adjust only via --space-m. */
+#active-card-container #card-action-area.stack { --stack-space: var(--space-m); } /* 16px between prompt block and buttons */
+
+/* CEMENTED: Wrapper cap-fix to achieve true 16/16 visual spacing.
+   The stack provides 16px structural gap; these tokenized margins compensate
+   for font cap/descender so the measured distance to neighboring borders is 16/16. */
+
+
+/* Spacers default to 0 but can be tuned later to balance active timers without shifting the card */
+#active-card-container .action-prompt-spacer-top { height: var(--action-prompt-spacer-top); }
+#active-card-container .action-prompt-spacer-bottom { height: var(--action-prompt-spacer-bottom); }
+
+/* Reset default <p> margins so the stack gap controls spacing precisely */
+#active-card-container .action-prompt-text,
+#active-card-container .resting-label { margin: 0; }
+
+/* Keep text readable & centered (no sub-1 line-height) */
+#active-card-container .action-prompt-text > .truncate-text,
+#active-card-container .resting-label > .truncate-text { line-height: var(--lh-normal); }
+
+
+
+/* CEMENTED: Direct cap-fix on the prompt paragraph so measured top/bottom = 16/16,
+   independent of flex gap mechanics. */
+/* CEMENTED: Direct cap-fix on the prompt paragraph so measured top/bottom = 16/16. */
+/* CEMENTED: Action prompt visual 16/16 is achieved via cap-fix tokens below. */
+#active-card-container #card-action-area .action-prompt-text {
+  margin-top: var(--cap-fix-action-prompt-top, -3px);
+  margin-bottom: var(--cap-fix-action-prompt-bottom, -5px);
+  padding: 0;
+  line-height: var(--lh-normal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
+/* CEMENTED: Active/rest timer block uses tokenized spacers (defaults 0).
+   These can be tuned later to eliminate card shift when timers appear. */
+#active-card-container .action-timer-spacer-top { height: var(--action-timer-spacer-top); }
+#active-card-container .action-timer-spacer-bottom { height: var(--action-timer-spacer-bottom); }
+
+/* Reset margins for timer pieces so stack gap rules apply cleanly */
+#active-card-container .timer-container,
+#active-card-container 
+
+/* Apply the same cap-fix to the resting label as the prompt, for 16/16 visual rhythm */
+#active-card-container #card-action-area 
+
+
+
+/* CEMENTED: Resting prompt cap-fix using dedicated tokens to achieve true 16px to the timer below. */
+#active-card-container #card-action-area 
+
+
+
+/* CEMENTED: Resting-state wrapper cap-fix to achieve true 16px above and 16px below to the timer */
+#active-card-container #card-action-area .action-prompt-block.is-resting {
+  margin-top: var(--cap-fix-resting-wrapper-top, -3px);
+  margin-bottom: var(--cap-fix-resting-wrapper-bottom, -4px);
+}
+
+
+
+/* CEMENTED: Resting prompt cap-fix using dedicated tokens for true 16px around the label. */
+#active-card-container #card-action-area .resting-label {
+  margin-top: var(--cap-fix-resting-label-top, -3px);
+  margin-bottom: var(--cap-fix-resting-label-bottom, -4px);
+  padding: 0;
+  line-height: var(--lh-normal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
+/* CEMENTED: Timer display paragraph has no default margins; spacing controlled by the action area's stack gap. */
+/* CEMENTED: Timer display paragraph has no default margins; spacing controlled by the action area's stack gap. */
+#active-card-container #card-action-area 
+
+
+
+
+/* CEMENTED: Button group takes spacing only from the stack gap. */
+#active-card-container #card-action-area .action-button-group { margin: 0; }
+
+
+#active-card-container #card-action-area .timer-container { margin: 0; }
+
+
+/* When gauge is present above, neutralize top cap-fix so visual gap stays 16px */
+#active-card-container #card-anchor-area + #card-action-area .action-prompt-text {
+  margin-top: var(--cap-fix-action-prompt-top-with-anchor, 0px);
+}
+#active-card-container #card-anchor-area + #card-action-area .resting-label {
+  margin-top: var(--cap-fix-resting-label-top-with-anchor, 0px);
+}
+

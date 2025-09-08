@@ -1,18 +1,13 @@
-.input-labels-container {
-  display: flex;
-  gap: 16px;
+/* CEMENTED — Inputs Layout Contract
+   • Two‑column grid aligns labels directly over inputs.
+   • 7px row gap and 16px column gap via tokens only.
+   • Label optical 7/7 achieved via cap‑fix tokens; do not change margins elsewhere. */
+.input-labels-container { display: flex; gap: var(--space-m); margin: 0; }
+.input-label { flex: 1; font-size: var(--font-size-body-m); font-weight: 500; color: var(--on-surface-medium); text-align: center; margin: 0; line-height: var(--lh-normal);
+  line-height: var(--lh-normal);
+  padding: 0;
 }
-.input-label {
-  flex: 1;
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--on-surface-medium);
-  text-align: center;
-}
-.input-controls-grid {
-  display: flex;
-  gap: 16px;
-}
+.input-controls-grid { display: flex; gap: var(--space-m); margin: 0; }
 
 .number-input-container {
   display: flex;
@@ -73,3 +68,48 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+
+/* CEMENTED: Two-column input grid ensures labels align directly above their respective inputs,
+   maintaining token rhythm: 7px between rows, 16px between columns, with centered label text. */
+/* CEMENTED: Grid is the structural alignment mechanism for labels/inputs. */
+.input-2col-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: var(--col-gap, var(--space-m));
+  grid-row-gap: var(--row-gap, var(--space-s));
+  align-items: start;
+}
+
+/* Ensure number-input containers align within the grid columns without extra margins. */
+/* CEMENTED: No extra margins inside grid; controls center within their column. */
+.input-2col-grid .number-input-container {
+  margin: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center; /* visually center the control within its column */
+}
+
+
+
+/* CEMENTED: Cap-fix margins for body labels (Roboto @ var(--font-size-body-m)).
+   Using margins (not padding) is permitted by the Project Bible to correct the optical gap.
+   This yields ~7px above (selector border → label text) and ~7px below (label text → input border). */
+/* CEMENTED: Tokenized cap-fix for body labels (Roboto @ var(--font-size-body-m)).
+   Uses tokens so adjustments remain centralized and consistent app-wide. */
+/* CEMENTED: Cap-fix margins for labels, tokenized with safe fallbacks and higher specificity.
+   Guarantees 7px/7px visual rhythm even if variables load later or other rules match .input-label. */
+.selector-and-inputs .input-2col-grid .input-label.input-label {
+  line-height: var(--lh-normal);
+  padding: 0;
+  margin-top: var(--cap-fix-label-top, -3px);
+  margin-bottom: var(--cap-fix-label-bottom, -4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
+/* Ensure inline spans in labels don't change line metrics */
+.selector-and-inputs .input-2col-grid .input-label * { line-height: inherit; }

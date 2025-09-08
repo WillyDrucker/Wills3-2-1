@@ -62,8 +62,9 @@ export function getWorkoutCardHTML(logEntry) {
 
   return `
       <div class="card ${cardGlowClass}" id="active-card-container">
-        <div class="card-content-container stack">
-          <div class="header-and-selector-group stack" style="--stack-space: var(--space-s);">
+        <div class="card-content-container stack stack">
+          <div class="selector-and-inputs stack" style="--stack-space: var(--space-s);">
+<div class="header-and-selector-group stack" style="--stack-space: var(--space-s);">
             ${getCardHeaderHTML()}
             <div class="youtube-overlay-wrapper">
               ${getExerciseSelectorHTML(logEntry, setsForThisExercise)}
@@ -71,16 +72,14 @@ export function getWorkoutCardHTML(logEntry) {
             </div>
           </div>
 
-          <div class="input-group stack" style="--stack-space: var(--space-s);">
-            <div class="input-labels-container">
-              <div class="input-label truncate-text">${weightLabel}</div>
-              <div class="input-label truncate-text">${repsLabel}</div>
-            </div>
-            <div class="input-controls-grid">
-              ${createNumberInputHTML("weight", logEntry.weight)}
-              ${createNumberInputHTML("reps", logEntry.reps)}
-            </div>
-          </div>
+<div class="input-group">
+  <div class="input-2col-grid" style="--row-gap: var(--space-s); --col-gap: var(--space-m);">
+    <div class="input-label truncate-text">${weightLabel}</div>
+    <div class="input-label truncate-text">${repsLabel}</div>
+    ${createNumberInputHTML("weight", logEntry.weight)}
+    ${createNumberInputHTML("reps", logEntry.reps)}
+  </div>
+</div>
           
           <div id="card-anchor-area" data-action="scrollToActiveCard">${getAnchorAreaHTML()}</div>
           

@@ -1,7 +1,7 @@
 .fuel-gauge-container {
   display: flex;
   justify-content: space-between;
-  height: var(--universal-height);
+  height: var(--fuel-gauge-height);
   flex-grow: 1;
 }
 .fuel-segment {

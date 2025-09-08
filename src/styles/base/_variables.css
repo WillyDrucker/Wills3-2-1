@@ -1,4 +1,16 @@
+
+/* CEMENTED — Architectural Tokens
+   - Rhythm tokens are the source of truth (NO ad‑hoc px): --space-m=16px, --space-s=7px.
+   - Cap-fix tokens control optical alignment ONLY (no sub‑1 line-height anywhere).
+   - Selector shell heights are tokenized and must be modified via tokens (not per‑component tweaks).
+   - Avoid !important, negative padding, transform hacks. */
 :root {
+  --anchor-gap-top: 9px; /* adjusts 7px → 16px above gauge */
+  --cap-fix-action-prompt-top-with-anchor: 0px; /* neutralize prompt top nudge when gauge present */
+  --cap-fix-resting-label-top-with-anchor: 0px; /* neutralize resting top nudge when gauge present */
+
+  /* Fuel Gauge */
+  --fuel-gauge-height: 50px;
   /* --- TYPOGRAPHY TOKENS --- */
   --font-size-h1: 2.5rem;
   --font-size-h2: 1.25rem;
@@ -6,7 +18,17 @@
   --font-size-body-m: 1rem;
   --font-size-body-s: 0.9rem;
   --lh-normal: 1.2;
-  --cap-offset-h2: 4px; /* The nudge for Roboto @ 1.25rem to achieve perfect visual alignment */
+  --cap-offset-h2: 4px;
+  /* --- CAP / BASELINE OFFSETS (tokenized cap-fix values) ---
+     These normalize visual gaps created by font metrics without using hacks.
+     Positive numbers here represent the visual cap/descender "extra".
+     Components should apply `margin-top: calc(var(--cap-fix-*-top) * -1)`
+     and `margin-bottom: calc(var(--cap-fix-*-bottom) * -1)` where needed. */
+  --cap-fix-h2-top: 0px;
+  --cap-fix-h2-bottom: 0px;
+  --cap-fix-body-top: 3px;    /* previously ~10px visual gap -> 7px needs -3px */
+  --cap-fix-body-bottom: 4px; /* previously ~11px visual gap -> 7px needs -4px */
+ /* The nudge for Roboto @ 1.25rem to achieve perfect visual alignment */
 
   /* --- SPACING TOKENS (The Rhythm) --- */
   --space-xs: 2px;
@@ -46,4 +68,6 @@
   --text-olive-deviation: #bfff00;
   --text-orange-deviation: #ffb74d;
   --text-red-skip: #b30000;
+  --cap-fix-timer-top: -20px;
+  --cap-fix-timer-bottom: -20px;
 }

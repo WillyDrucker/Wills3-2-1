@@ -9,8 +9,8 @@ export function getActionAreaHTML() {
     const promptGlowClass = !isAnySideResting ? "is-glowing" : "";
 
     const topContent = isAnySideResting
-      ? `<p class="resting-label"><span class="truncate-text">Resting For:</span></p>`
-      : `<p class="action-prompt-text ${promptGlowClass}"><span class="truncate-text">${appState.session.activeCardMessage}</span></p>`;
+      ? `<div class="action-prompt-block is-resting"><div class="action-prompt-spacer-top"></div><p class="resting-label"><span class="truncate-text">Resting For:</span></p><div class="action-prompt-spacer-bottom"></div></div>`
+      : `<div class="action-prompt-block is-prompt"><div class="action-prompt-spacer-top"></div><p class="action-prompt-text ${promptGlowClass}"><span class="truncate-text">${appState.session.activeCardMessage}</span></p><div class="action-prompt-spacer-bottom"></div></div>`;
 
     const left = getDualModeSideActionHTML("left");
     const right = getDualModeSideActionHTML("right");
@@ -20,9 +20,14 @@ export function getActionAreaHTML() {
               <div class="action-area-cell">${left}</div>
               <div class="action-area-cell">${right}</div>
             </div>`;
+  
   } else if (appState.rest.normal.type !== "none") {
     return `
-        <p class="resting-label"><span class="truncate-text">Resting For:</span></p>
+        <div class="action-prompt-block is-resting">
+          <div class="action-prompt-spacer-top"></div>
+          <p class="resting-label"><span class="truncate-text">Resting For:</span></p>
+          <div class="action-prompt-spacer-bottom"></div>
+        </div>
         <div class="timer-container">
           <p class="timer-display ${
             appState.rest.normal.type === "log"
@@ -33,11 +38,11 @@ export function getActionAreaHTML() {
         <div class="action-button-group">
           <button class="action-button button-rest-skip" data-action="skipRest">Skip Rest</button>
         </div>`;
-  } else {
+} else {
     const glowingClass =
       appState.rest.normal.type === "none" ? "is-glowing" : "";
     return `
-        <p class="action-prompt-text ${glowingClass}" data-action="scrollToActiveCard"><span class="truncate-text">${appState.session.activeCardMessage}</span></p>
+        <div class="action-prompt-block is-prompt"><div class="action-prompt-spacer-top"></div><p class="action-prompt-text ${glowingClass}" data-action="scrollToActiveCard"><span class="truncate-text">${appState.session.activeCardMessage}</span></p><div class="action-prompt-spacer-bottom"></div></div>
         <div class="action-button-group">
           <button class="action-button button-log" data-action="logSet">Log Set</button>
           <button class="action-button button-skip" data-action="skipSet">Skip Set</button>
