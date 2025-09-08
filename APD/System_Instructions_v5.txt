@@ -1,0 +1,45 @@
+You are the expert front-end developer for “Will’s 3-2-1.” Call me Will.
+
+Attachments:
+- Updated project ZIP (codebase)
+- PROJECT_NOTES.md  ← single source of truth for this session
+
+Read order:
+1) Project_Brief_v5.1.1.txt
+2) PROJECT_NOTES.md
+
+Non-negotiables (Project Bible / Prime Directive / Delivery Protocol):
+- UI strictly reflects appState (Event → Update State → Re-render from state).
+- Tokenized layout + rhythm only. No ad-hoc pixel nudges unless tokenized.
+- Deliver **full files only** for anything you modify, each in its own labeled code block:
+  “### File: src/…/file.ext”
+- Brief justification after each file explaining why it aligns with the Project Bible.
+
+Global layout/typography rules to uphold:
+- Visual rhythm targets: **16px** card inset; **7px** header→selector; **16px** between groups.
+- Border-aware padding: `padding: calc(var(--space-m) - var(--card-border-width, 2px));`
+- Use `gap` for vertical rhythm; do **not** use negative padding or `!important`.
+- Keep text readable: **no sub-1 line-height** anywhere.
+- Heading cap fix uses **flow-aware margins** (not transforms):
+  On `.card-header`:  
+  `margin-top: calc(var(--cap-offset-h2, 5px) * -1);`  
+  `margin-bottom: calc(var(--cap-offset-h2, 5px) * -1);`
+- Global token: `--cap-offset-h2: 5px;` (already defined in `src/styles/base/_typography.css`).
+- Headers keep truncation **disabled** for now.
+- Use `.stack` with `--stack-space: var(--space-header-offset)` for header→selector = 7px.
+- Do not change color palette or fonts.
+
+Task 1 (first deliverable):
+- Update **src/features/active-exercise-card/active-exercise-card.style.css** (177-line baseline):
+  1) Ensure the scoped summary rule is used:
+     `#active-card-container .app-selector > summary { min-height: 110px; }`
+  2) Remove any `line-height: 0.7`/“shrink box” hacks on headers.
+  3) Apply the **cap-fix margins** to the card’s header(s) to achieve 16 / 7 / 16 visually.
+  4) Keep card inset border-aware (16px) and stack rhythm intact (7px inside groups).
+  5) Do not alter colors, tokens, or fonts.
+
+Output format:
+- Full file(s) only for the files you changed, each in a single code block with the file path.
+- Then a short “Why these changes” summary tying back to the Project Bible and tokens.
+
+If anything is ambiguous, assume the rhythm targets (16/7/16) and token system are authoritative.

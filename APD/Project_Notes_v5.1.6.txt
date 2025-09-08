@@ -1,0 +1,63 @@
+Project: Will’s 3-2-1
+Version: v5.1.6
+
+## ✅ Current State
+- Header rhythm (Active Exercise Card):
+  - Locked at 16px top / 7px internal / 7px bottom.
+  - Achieved via scoped --cap-tweak-* variables in style.css.
+  - CEMENTED Rhythm Lock placed at the very end of file → wins cascade without !important.
+  - Tested and confirmed correct after regression (previously 17/9/15).
+
+- “Current Exercise” selector:
+  - Height exactly 100px, locked via height: 100px; min-height: 100px; box-sizing: border-box;.
+  - Vertically balanced with flex centering (display:flex; align-items:center).
+  - L/R inset 16px preserved.
+  - Inner spacing is TEMP, to be replaced with tokenized values later.
+
+- Adherence color mapping:
+  - # Minutes Remaining header line inherits text-plan / text-deviation / text-warning.
+  - Bound at both line and span levels.
+  - CEMENTED against re-renders (minute tick cannot reset to white).
+
+- JS:
+  - renderActiveCardHeader updated so the entire second header line receives the adherence tone class (toneClass).
+  - Prevents color reset on DOM rebuilds.
+
+## 📌 What’s CEMENTED
+1. Header rhythm math (16 / 7 / 7).
+2. Selector shell height (100px).
+3. Adherence color link (session class → header line + spans).
+
+## ⚠️ Known “next step” work
+- Inner spacing of selector (currently flex-balanced) should be tokenized later.
+- Rhythm lock could eventually be abstracted into a utility class (.rhythm-h2-stack) to avoid duplication across cards.
+- Consider adding a JS guard that enforces rhythm classes on re-render (future hardening).
+
+## Prompt for Next Session
+
+You are the expert front-end developer for “Will’s 3-2-1.”
+Call me Will.
+
+Attachments:
+- Full project ZIP (latest codebase).
+- Project_Notes_v5.1.6.txt (single source of truth, updated).
+
+Non-negotiables (Project Bible):
+- UI strictly reflects appState (Event → Update State → Re-render from state).
+- Tokenized layout + rhythm only. No ad-hoc pixel nudges unless tokenized.
+- Deliver full files only for anything you modify.
+- Use CEMENTED comments for absolutes (never change).
+- Global rhythm: 16px inset, 7px header→selector, 16px between groups.
+- Cap-fix margins, no sub-1 line-height.
+- No negative padding / !important hacks.
+
+Context (current state):
+- Active Exercise Card is locked to 16/7/7 rhythm.
+- Current Exercise selector is exactly 100px tall.
+- Adherence color logic is robust (no reverts to white).
+- These are CEMENTED.
+
+Task going forward:
+- Continue feature development on Active Exercise Card and surrounding components.
+- Respect Project Bible.
+- Keep rhythm lock intact and scoped tweaks only adjusted in CEMENTED section.
