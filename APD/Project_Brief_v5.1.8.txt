@@ -1,0 +1,36 @@
+Project_Brief_v5.1.8.txt
+==================================================
+The Project Bible (Single Source of Truth for context)
+Vision
+A streamlined, state-driven web app for Will’s 3‑2‑1: fast set logging, zero jitter, production‑ready, accessible, and token‑based.
+
+Guiding Principles
+- SSS (Super Stupid Simple): remove friction, reduce choices.
+- Remove, don’t add: simplify first.
+- State → UI: Event → Update → Re‑render from appState only.
+
+Core UX + Features (concise)
+- Active Exercise Card: real-time timer, “Workout Completion Time”, jitter‑free transitions between inactive/active, precise 16px rhythm.
+- Navigation: Home / Workout / My Data; controlled by appState.ui.currentPage.
+- History: live logging; persisted with localStorage; weekly calendar grid.
+- Daily reset: session state clears after midnight; history preserved.
+- Header + Side Nav: accessible modals; fullscreen toggle; “Nuke Everything”.
+- Partner / Superset modes: independent, mirrored layouts; no cross‑bleed.
+- Lazy video modal (YouTube) with focus trap.
+- Accessibility: focus management & inert background; wake lock; portrait lock.
+
+Architecture (what’s cemented)
+- ES Modules + import map; co‑located component CSS/JS/templates.
+- File naming: `[component].[role].ext` in feature folders.
+- Services isolate fragile logic (navigation, history, timers, selectors, clock).
+- Layout system = tokens + `.stack` gaps. No ad‑hoc hacks, no sub‑1 line‑height.
+
+Layout & Rhythm (authoritative)
+- Card inset: 16px safe zone inside `.card-content-container`.
+- Rhythm: 16px between groups; 7px header→selector.
+- Use `gap` for spacing; margins driven by tokens only.
+- Headers use cap‑fix margins (no “shrink box” tricks).
+
+Current Focus (v5.1.8)
+- Inactive card: locked at 16/16 around “Begin Exercise – Log Results”.
+- Active card (normal workout): hit 16/16/16 for Fuel Gauge→“Resting For:”, label→Timer, Timer→Buttons using active‑scoped tokens/selectors. Superset/Partner must be unaffected.

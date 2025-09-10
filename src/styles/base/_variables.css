@@ -1,8 +1,11 @@
 :root {
+  --action-prompt-spacer-bottom: 0px;
+  --action-prompt-spacer-top: 0px;
+  --cap-fix-action-prompt-top: 0px;
   --cap-fix-timer-bottom: 0px;
   --cap-fix-timer-top: 0px;
   --cap-fix-resting-label-bottom: 0px;
-  --cap-fix-action-prompt-bottom: 0px;
+  --cap-fix-action-prompt-bottom: 4px;
   --anchor-gap-bottom: 4px;
   --anchor-gap-top: 9px;
   --fuel-gauge-height: 50px;

@@ -1,1 +1,0 @@
-Please update all of the internal project files, project brief, project changelog which should only be the changelog from this session, and ultimate blueprint with any updates to the file tree and print those files in a nice separate code windows so I can copy them, updating the versions to 5.1.2 for the next session.

@@ -264,3 +264,36 @@ body.is-selector-open
 #active-card-container #card-action-area .action-button-group {
   margin: 0;
 }
+
+
+
+/* CEMENTED (inactive only): tokens define spacing, no structure changes */
+#active-card-container #card-anchor-area {
+  margin-top: var(--anchor-gap-top);
+  margin-bottom: var(--anchor-gap-bottom);
+}
+#active-card-container #card-action-area .action-prompt-block.is-prompt .action-prompt-text {
+  margin-top: var(--cap-fix-action-prompt-top);
+  margin-bottom: var(--cap-fix-action-prompt-bottom);
+}
+#active-card-container #card-action-area .action-button-group { margin: 0; padding-top: 0; padding-bottom: 0; }
+
+
+
+/* ===============================================================
+   CEMENTED (active — normal workout): rely solely on .stack 16px gap
+   =============================================================== */
+/* Prompt block and its internals don't add extra vertical space */
+#active-card-container #card-action-area.stack > .action-prompt-block.is-resting,
+#active-card-container #card-action-area.stack > .action-prompt-block.is-resting * {
+  margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0;
+}
+#active-card-container #card-action-area.stack > .action-prompt-block.is-resting .action-prompt-spacer-top,
+#active-card-container #card-action-area.stack > .action-prompt-block.is-resting .action-prompt-spacer-bottom {
+  height: 0; line-height: 0;
+}
+
+/* Timer and buttons: no extra spacing beyond stack gap */
+#active-card-container #card-action-area.stack > .timer-container { margin: 0; padding: 0; }
+#active-card-container #card-action-area.stack > .timer-container .timer-display { margin: 0; line-height: var(--lh-normal); }
+#active-card-container #card-action-area.stack > .action-button-group { margin: 0; padding-top: 0; padding-bottom: 0; }
