@@ -51,7 +51,7 @@ export function getActionAreaHTML() {
 }
 
 /**
- * CEMENTED (v5.0.5 - Architectural Pattern):
+ * CEMENTED ():
  * This function's sole purpose is to generate a complete, self-contained, and
  * architecturally independent block of HTML for a single side of the dual-mode card.
  * This separation is critical for the perfected CSS Grid layout to function correctly.
@@ -69,7 +69,7 @@ function getDualModeSideActionHTML(side) {
           ? "text-primary"
           : "text-warning";
     }
-    return `<div class="timer-and-skip-container stack" style="--stack-space: var(--space-m);">
+    return `<div class="timer-and-skip-container stack" style="--stack-space: 0;">
               <p class="timer-display ${colorClass}" data-side="${side}">${formatTime(
       restState.timeRemaining
     )}</p>

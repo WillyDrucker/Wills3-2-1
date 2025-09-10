@@ -1,4 +1,23 @@
 :root {
+  /* CEMENTED: Active/Inactive CAP tokens — do not rename; referenced by card rules */
+/* CEMENTED: core spacing tokens (global rhythm) */
+  /* These should remain stable and are referenced across Active/Inactive cards. */
+
+  --cap-inactive-prompt-bottom-adjust: 0px;
+  --cap-inactive-prompt-top-adjust: 0px;
+  --space-xl: 40px;
+  --space-xxs: 4px;
+  --cap-active-timer-line-height: 0.82;
+  --cap-active-button-container-mt: 0px;
+  --cap-active-timer-container-mb: 0px;
+  --cap-active-timer-container-mt: 0px;
+  --cap-active-button-shift: 0px;
+  --cap-active-timer-shift: 0px;
+  --cap-active-timer-bottom-adjust: 0px;
+  --cap-active-timer-top-adjust: 0px;
+    --cap-fix-resting-wrapper-bottom: 0px;
+    --cap-fix-resting-wrapper-top: 0px;
+    --cap-fix-resting-label-top: 0px;
   --action-prompt-spacer-bottom: 0px;
   --action-prompt-spacer-top: 0px;
   --cap-fix-action-prompt-top: 0px;
