@@ -355,3 +355,6 @@ body.is-selector-open
 .dual-fuel-gauge-container { gap: var(--space-m); }
 .dual-action-area-container { gap: var(--space-m); }
 #exercise-selector .flex-separator { margin: 0 var(--space-xxs, 4px); }
+/* CEMENTED: Dual-mode (superset/partner) active-state spacing rules are defined in
+   features/superset-modal/superset-modal.superset-partner.css to avoid collisions.
+   This file governs normal workout cards and shared visuals only. */

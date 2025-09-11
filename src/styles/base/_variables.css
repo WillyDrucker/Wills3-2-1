@@ -76,3 +76,6 @@
   --text-orange-deviation: #ffb74d;
   --text-red-skip: #b30000;
 }
+
+/* CEMENTED: Dual-mode timers use 0.7 line-height via --sp-timer-line-height */
+:root { --sp-timer-line-height: 0.7; }

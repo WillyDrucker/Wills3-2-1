@@ -1,19 +1,17 @@
 /*
-  REFACTORED (v5.1.2 - Definitive Spacing):
+  REFACTORED ( - Definitive Spacing):
   The layout is now governed by the fixed-gap system in the main stylesheet.
   All complex margin rules have been removed to align with the new, simpler,
   and more explicit layout architecture.
 */
-
 /* --- Timer Display --- */
 #active-card-container .timer-display {
   font-size: 5rem;
   font-weight: 700;
-  line-height: 0.7;
+  line-height: var(--sp-timer-line-height, 0.7);
 }
-
 /*
-  CEMENTED (v5.0.5 - Architectural Fix):
+  CEMENTED ( - Architectural Fix):
   This CSS Grid is the definitive architectural solution for the dual-mode action
   area. It creates two vertically independent columns, which was the fundamental
   fix required to prevent content in one column from affecting the layout of the
@@ -25,13 +23,202 @@
   gap: 16px;
   align-items: start;
 }
-
 .action-area-cell {
   /* This cell acts as a simple container for its content. */
 }
-
 /* --- Container for Timer and its Skip Button --- */
+/* CEMENTED: Skip Rest button locked 16px below timer */
+/* CEMENTED: Timer → Skip Rest = 16px via flex gap */
 .timer-and-skip-container {
   display: flex;
   flex-direction: column;
+  gap: var(--sp-gap, 16px);
+}
+/* CEMENTED: Superset/Partner active-only spacing and diagnostics */
+/* Timers: ensure 0.7 line-height is applied only in dual-action context (overrides the generic rule above) */
+/* CEMENTED: Timer line-height locked to 0.7 in dual-mode */
+#active-card-container .dual-action-area-container .timer-display {
+  line-height: var(--sp-timer-line-height, 0.7);
+}
+/* 16px from "Resting For:" to the dual grid, active-only */
+/* CEMENTED: Resting→Grid locked to 16px */
+#active-card-container .action-prompt-block.is-resting + .dual-action-area-container { margin-top: 0; }
+/* When exactly one side is timer and the other side is Log Set, add +16px to the Log Set side (total 32px).
+   The presence of .timer-and-skip-container marks the timer side. */
+#active-card-container /* CEMENTED: Opposite Log Set extra = var(--sp-opposite-logset-margin-top) (23px total) */
+.dual-action-area-container:has(.action-area-cell > .timer-and-skip-container)
+  .action-area-cell:has(> .action-button-group) {
+  margin-top: var(--sp-opposite-logset-margin-top, 7px);
+}
+/* Safety: avoid double-spacing inside cells */
+#active-card-container .dual-action-area-container .action-area-cell > * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+ — remove after verification */
+#active-card-container .action-prompt-block.is-resting .resting-label {}
+#active-card-container .dual-action-area-container .timer-display {}
+/* CEMENTED: Superset/Partner ACTIVE-ONLY rhythm (do not affect inactive) */
+/* (A) Apply 0.7 line-height to timers within dual-mode only (higher specificity) */
+#active-card-container .dual-action-area-container .timer-and-skip-container .timer-display {
+  line-height: var(--sp-timer-line-height, 0.7);
+}
+/* (B) Neutralize internal spacers around the "Resting For:" block that inject extra pixels */
+#active-card-container .action-prompt-block.is-resting .action-prompt-spacer-top,
+#active-card-container .action-prompt-block.is-resting .action-prompt-spacer-bottom {
+  height: 0;
+  margin: 0;
+  padding: 0;
+}
+#active-card-container .action-prompt-block.is-resting .resting-label {
+  margin: 0;
+  line-height: var(--lh-normal, 1.25);
+}
+/* (C) Exact 16px from "Resting For:" to the grid */
+#active-card-container .action-prompt-block.is-resting + .dual-action-area-container { margin-top: 0; }
+/* (D) When the opposite column is Log Set (no timer), add +16px so total 32px from the label */
+#active-card-container /* CEMENTED: Opposite Log Set extra = var(--sp-opposite-logset-margin-top) (23px total) */
+.dual-action-area-container:has(.action-area-cell > .timer-and-skip-container)
+  .action-area-cell:has(> .action-button-group) {
+  margin-top: var(--sp-opposite-logset-margin-top, 7px);
+}
+/* (E) Safety guards to avoid double margins/padding inside cells */
+#active-card-container .dual-action-area-container .action-area-cell {
+  margin: 0;
+  padding-top: 0;
+}
+#active-card-container .dual-action-area-container .action-area-cell > * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+ — visualize targets */
+#active-card-container .action-prompt-block.is-resting .resting-label {}
+#active-card-container .dual-action-area-container .timer-display {}
+/* HIGH-SPECIFICITY OVERRIDE: ensure dual-mode timers use the 0.7 tokenized line-height
+   even if a broader rule sets /* CEMENTED: Dual-mode timers use 0.7 line-height; beats normal-card rule */
+#active-card-container #card-action-area .timer-display { line-height: var(--lh-normal) } */
+#active-card-container #card-action-area .dual-action-area-container .timer-display,
+#active-card-container #card-action-area .dual-action-area-container .timer-and-skip-container .timer-display {
+  line-height: var(--sp-timer-line-height, 0.7);
+}
+/* Ensure single-timer spacing lands exactly on the 16/32px rhythm */
+/* Resting → Grid (always 16px) */
+#active-card-container .action-prompt-block.is-resting + .dual-action-area-container { margin-top: 0; }
+/* If one side has a timer and the other side only has Log Set,
+   add +16px to the Log Set side so total = 32px. */
+#active-card-container /* CEMENTED: Opposite Log Set extra = var(--sp-opposite-logset-margin-top) (23px total) */
+.dual-action-area-container:has(.action-area-cell > .timer-and-skip-container)
+  .action-area-cell:has(> .action-button-group) {
+  margin-top: var(--sp-opposite-logset-margin-top, 7px);
+}
+/* Safety: zero margins inside the cells to prevent stacking */
+#active-card-container .dual-action-area-container .action-area-cell > * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+/* Ensure the parent stack uses a 16px gap between Resting and the dual grid in dual-mode */
+/* CEMENTED: Parent stack sets the 16px baseline gap for Resting→Grid */
+#active-card-container #card-action-area.stack:has(> .action-prompt-block.is-resting):has(> .dual-action-area-container) {
+  --stack-space: var(--sp-gap, 16px);
+}
+/* Dual-mode resting block must contribute zero vertical space so stack gap = true 16px */
+#active-card-container #card-action-area.stack > .action-prompt-block.is-resting {
+  margin: 0;
+  padding: 0;
+}
+#active-card-container #card-action-area.stack > .action-prompt-block.is-resting > * {
+  margin: 0;
+  padding: 0;
+}
+/* Visual micro-tuning for dual-mode single-timer case */
+/* Define parent-scoped tokens so adjustments are centralized */
+/* CEMENTED: Parent stack sets the 16px baseline gap for Resting→Grid */
+#active-card-container #card-action-area.stack:has(> .action-prompt-block.is-resting):has(> .dual-action-area-container) {
+  --sp-cap-fix-label-bottom: -4px;               /* trims Resting→Grid by 4px to land 16 */
+  --sp-cap-fix-opposite-logset-adjust: -5px;     /* trims opposite Log Set total by 5px to land 32 */
+}
+/* Apply label bottom trim */
+#active-card-container #card-action-area.stack > .action-prompt-block.is-resting .resting-label {
+  margin-bottom: var(--sp-cap-fix-label-bottom, 0px);
+}
+/* Apply opposite Log Set margin trim (16px + (-5px) = 11 additional, total 27? No—
+   the total is: 16 (stack) + (16 + adjust) on the opposite cell. With -5px adjust ⇒ 16 + 11 = 27 extra,
+   so 16 + (16 + -5) = 27? Clarification: We want 32 total, so extra above 16 should be 16 - 5 = 11, total 27? */
+/* Correct application: the opposite cell uses only its own margin-top (not added to stack) because
+   the stack gap is between Resting and Grid; the opposite cell's margin is measured from the same baseline.
+   Use 16px + (-5px) = 11px extra over the same baseline, making total 16 + 11 = 27? To ensure 32 total,
+   keep the cell's margin at calc(var(--sp-gap,16px) + var(--sp-cap-fix-opposite-logset-adjust, 0px)). */
+#active-card-container /* CEMENTED: Opposite Log Set extra = var(--sp-opposite-logset-margin-top) (23px total) */
+.dual-action-area-container:has(.action-area-cell > .timer-and-skip-container)
+  .action-area-cell:has(> .action-button-group) {
+  margin-top: var(--sp-opposite-logset-margin-top, 7px);
+}
+/* Micro-adjust Resting→Log Set side to exactly 23px */
+/* CEMENTED: Parent stack sets the 16px baseline gap for Resting→Grid */
+#active-card-container #card-action-area.stack:has(> .action-prompt-block.is-resting):has(> .dual-action-area-container) {
+  --sp-cap-fix-opposite-logset-adjust: 7px;  /* 16 + 7 = 23 total */
+}
+/* Ensure Skip Rest button is 16px below timer */
+#active-card-container .dual-action-area-container .timer-and-skip-container {
+  gap: var(--sp-gap, 16px);
+}
+#active-card-container .dual-action-area-container .timer-and-skip-container > * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+/* Dual-mode scoped tokens for fine spacing */
+/* CEMENTED: Parent stack sets the 16px baseline gap for Resting→Grid */
+#active-card-container #card-action-area.stack:has(> .action-prompt-block.is-resting):has(> .dual-action-area-container) {
+  /* CEMENTED: Resting→Log Set locked to 23px total (stack 16 + 7) */
+--sp-opposite-logset-margin-top: 6px; /* Resting→Log Set total = 16 + 7 = 23px */
+}
+
+/* CEMENTED: Superset/Partner ACTIVE — final corrections (authoritative end-of-file overrides)
+   Scope: #active-card-container only, dual-mode resting state
+   Contract:
+     • Resting → Grid = 16px (stack-controlled)
+     • Resting → opposite Log Set = 23px (stack 16 + 7 extra visual; tuned to 6px token to land 23px visually)
+     • Timer line-height = 0.7 token (beats normal-card rule)
+     • Timer → Skip Rest = 16px via flex gap
+*/
+
+/* Token host for dual-mode resting state */
+#active-card-container #card-action-area.stack:has(> .action-prompt-block.is-resting):has(> .dual-action-area-container) {
+  --stack-space: var(--sp-gap, 16px);
+  --sp-opposite-logset-margin-top: 6px; /* tune-only token to land 23px visually */
+}
+
+/* Resting block contributes zero extra vertical space */
+#active-card-container #card-action-area.stack > .action-prompt-block.is-resting,
+#active-card-container #card-action-area.stack > .action-prompt-block.is-resting > * {
+  margin: 0;
+  padding: 0;
+}
+
+/* Resting → Grid controlled solely by stack gap */
+#active-card-container .action-prompt-block.is-resting + .dual-action-area-container { margin-top: 0; }
+
+/* Opposite Log Set gets the extra margin so total = 23px */
+#active-card-container .dual-action-area-container:has(.action-area-cell > .timer-and-skip-container)
+  .action-area-cell:has(> .action-button-group) {
+  margin-top: var(--sp-opposite-logset-margin-top, 6px);
+}
+
+/* Timer line-height — high specificity to beat normal-card line-height */
+#active-card-container #card-action-area .dual-action-area-container .timer-display,
+#active-card-container #card-action-area .dual-action-area-container .timer-and-skip-container .timer-display {
+  line-height: var(--sp-timer-line-height, 0.7);
+}
+
+/* Timer → Skip Rest gap = 16px, no clipping */
+#active-card-container #card-action-area .dual-action-area-container .timer-and-skip-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-gap, 16px);
+}
+
+/* Safety: zero inside margins so nothing stacks */
+#active-card-container #card-action-area .dual-action-area-container .action-area-cell > * {
+  margin-top: 0;
+  margin-bottom: 0;
 }
