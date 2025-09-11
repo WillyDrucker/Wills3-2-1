@@ -1,3 +1,7 @@
+/* CEMENTED: spacing system
+ - No !important, no structure edits, no sub-1 line-height (except tokenized timer line-height in active).
+ - Prefer parent-scoped tokens for sibling spacing.
+ - Keep stack rhythm (16px) as the primary separator; remove inner gaps. */
 /*
   ACTIVE EXERCISE CARD — rhythm (16/7/7), selector=100px, adherence color
 
@@ -66,7 +70,6 @@
 }
 
 /* ===== Selector under header =====
-   CEMENTED: Lock outer shell to exactly 100px total height.
    TEMP: Vertical balance via flex centering; replace with tokenized padding later. */
 #exercise-selector { margin: 0; }
 
@@ -90,7 +93,7 @@
   font-weight: 600;
   margin-bottom: 2px; /* TEMP for the 100px shell */
 }
-#exercise-selector .flex-separator { font-weight: 600; margin: 0 4px; }
+#exercise-selector .flex-separator { font-weight: 600; margin: 0 var(--space-xxs, 4px); }
 #exercise-selector .options-list li .item-main-line { margin-bottom: 0; line-height: 1.1; }
 
 /* ===== Other preserved layout ===== */
@@ -119,7 +122,7 @@ body.start-glow-animations .action-prompt-text.is-glowing span {
 }
 
 /* Buttons & dual areas */
-.action-button-group { display: flex; flex-direction: column; gap: 16px; }
+.action-button-group { display: flex; flex-direction: column; gap: var(--space-m); }
 .timer-container { display: flex; flex-direction: column; }
 .timer-container .timer-display {
   font-size: 5.5rem;
@@ -127,15 +130,15 @@ body.start-glow-animations .action-prompt-text.is-glowing span {
   line-height: var(--lh-normal);
   display: flex; align-items: center; justify-content: center;
 }
-.dual-fuel-gauge-container { display: flex; gap: 16px; height: var(--control-height); }
-.dual-action-area-container { display: flex; gap: 16px; flex-grow: 1; }
+.dual-fuel-gauge-container { display: flex; gap: var(--space-m); height: var(--control-height); }
+.dual-action-area-container { display: flex; gap: var(--space-m); flex-grow: 1; }
 
 /* Waiting state */
 .waiting-card-message {
   color: var(--on-surface-medium);
   text-align: center;
   font-style: italic;
-  padding: 40px 0;
+  padding-block: var(--space-xl, 40px) 0;
 }
 
 /* Muting logic (preserved) */
@@ -167,7 +170,6 @@ body.is-selector-open
 .text-info    { color: var(--on-surface-medium); }
 
 /* ---------------------------------------------------------------------------------
-   CEMENTED — RHYTHM LOCK (specificity + order; adjust ONLY here if tokens change)
    Targets:
      • Top → “Current Exercise” line = 16px (visual)
      • “Current Exercise” → “# Minutes Remaining” = 7px (visual)
@@ -272,7 +274,11 @@ body.is-selector-open
   margin-top: var(--anchor-gap-top);
   margin-bottom: var(--anchor-gap-bottom);
 }
-#active-card-container #card-action-area .action-prompt-block.is-prompt .action-prompt-text {
+#active-card-container #card-action-area 
+/* CEMENTED: Inactive prompt spacing — redistribute 7px to match active height */
+
+
+.action-prompt-block.is-prompt .action-prompt-text {
   margin-top: var(--cap-fix-action-prompt-top);
   margin-bottom: var(--cap-fix-action-prompt-bottom);
 }
@@ -280,78 +286,72 @@ body.is-selector-open
 
 
 
-/* ===============================================================
-   CEMENTED (active — normal workout): rely solely on .stack 16px gap
-   =============================================================== */
-/* Prompt block and its internals don't add extra vertical space */
-#active-card-container #card-action-area.stack > .action-prompt-block.is-resting,
-#active-card-container #card-action-area.stack > .action-prompt-block.is-resting * {
-  margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0;
-}
-#active-card-container #card-action-area.stack > .action-prompt-block.is-resting .action-prompt-spacer-top,
-#active-card-container #card-action-area.stack > .action-prompt-block.is-resting .action-prompt-spacer-bottom {
-  height: 0; line-height: 0;
+
+
+
+/* Inactive state: buttons keep 16px tokenized spacing */
+#active-card-container #card-action-area .action-button-group {
+  gap: var(--space-m);
 }
 
-/* Timer and buttons: no extra spacing beyond stack gap */
-#active-card-container #card-action-area.stack > .timer-container { margin: 0; padding: 0; }
+
+/* Active (resting) only: collapse internal gaps so outer .stack sets 16px rhythm */
+#active-card-container #card-action-area.stack .action-prompt-blockimer container */
+#active-card-container #card-action-area.stack .action-prompt-block
+
+
+/* Active (resting) only: visually trim leading with transform-based shifts */
+#active-card-container #card-action-area.stack .action-prompt-blockk
+
+
+
+
+
+/* Active (resting) only: adjust container flow to achieve 16/16/16 */
+#active-card-container #card-action-area.stack .action-prompt-block
+#active-card-container #card-action-area.stack .action-prompt-block
+
+#active-card-container #card-action-area.stack > .action-prompt-block
+
+/* Prompt block and its internals don't add extra vertical space */
+#active-card-container #card-action-area.stack > .action-prompt-block > .timer-container { margin: 0; padding: 0; }
 #active-card-container #card-action-area.stack > .timer-container .timer-display { margin: 0; line-height: var(--lh-normal); }
 #active-card-container #card-action-area.stack > .action-button-group { margin: 0; padding-top: 0; padding-bottom: 0; }
 
-/* CEMENTED: Active tokens host (parent) — siblings inherit custom properties */
-#active-card-container #card-action-area.stack:has(> .action-prompt-block.is-resting) {
-  --cap-active-timer-line-height: 0.7;
-  --cap-active-timer-top-adjust: 5px;  /* Resting → Timer final nudge */
-  --cap-active-timer-bottom-adjust: 9px;/* Timer → Skip final nudge */
-  --cap-active-timer-container-mt: 0px;
-  --cap-active-timer-container-mb: 0px;
-  --cap-active-button-container-mt: 0px;
-}
+#active-card-container #card-action-area.stack > .action-prompt-block
 
-/* Active (resting) — neutralize inner gaps; rely on outer .stack 16px */
-#active-card-container #card-action-area.stack .action-prompt-block.is-resting ~ .timer-container,
-#active-card-container #card-action-area.stack .action-prompt-block.is-resting ~ .action-button-group {
-  gap: 0;
-  margin: 0;
-  padding: 0;
-}
 
-/* Active (resting) — flow adjustments via tokens (container-level) */
-#active-card-container #card-action-area.stack .action-prompt-block.is-resting ~ .timer-container {
-  margin-top: var(--cap-active-timer-container-mt);
-  margin-bottom: var(--cap-active-timer-container-mb);
-}
-#active-card-container #card-action-area.stack .action-prompt-block.is-resting ~ .action-button-group {
-  margin-top: var(--cap-active-button-container-mt);
-}
+/* Active workout only: collapse inner gaps so stack controls rhythm */
+#active-card-container #card-action-area.stack > .timer-container,
 
-/* Active (resting) — fine-tune timer vertical offset */
-#active-card-container #card-action-area.stack .action-prompt-block.is-resting ~ .timer-container .timer-display {
+
+
+/* Active (resting) only: fine-tune timer vertical alignment */
+#active-card-container #card-action-area.stack .action-prompt-block
+
+/* FINAL: Active (resting) — force timer line-height using adjacent sibling to trim leading */
+/* CEMENTED: Final override — timer line-height & centering wins cascade in active */
+#active-card-container #card-action-area.stack > .action-prompt-block.is-resting + .timer-container .timer-display {
+  text-align: center;
+  display: block;
+  line-height: var(--cap-active-timer-line-height);
   margin-top: var(--cap-active-timer-top-adjust);
   margin-bottom: var(--cap-active-timer-bottom-adjust);
 }
 
-/* CEMENTED: Final override — timer line-height & centering (wins cascade) */
-#active-card-container #card-action-area.stack > .action-prompt-block.is-resting + .timer-container .timer-display {
-  display: block;
-  text-align: center;
-  line-height: var(--cap-active-timer-line-height);
-}
 
+
+/* Active (resting) — define spacing tokens on the parent so they cascade to siblings */
+/* CEMENTED: Active tokens host (parent)
+   Siblings inherit custom properties from the parent */
+
+
+
+
+/* Inactive (prompt) — tokens live on the parent so they reach siblings */
+
+/* Inactive (prompt) — tokens on parent for sibling/descendant spacing */
+
+
+/* FINAL: Inactive (prompt) — redistribute 7px inside the text group */
 /* CEMENTED: Inactive prompt spacing — redistribute 7px to match active height */
-#active-card-container #card-action-area.stack > .action-prompt-block.is-prompt {
-  --cap-inactive-prompt-top-adjust: 3px;   /* 16 + 3 = 19 */
-  --cap-inactive-prompt-bottom-adjust: 4px;/* 16 + 4 = 20 */
-}
-#active-card-container #card-action-area.stack > .action-prompt-block.is-prompt .action-prompt-spacer-top {
-  height: var(--cap-inactive-prompt-top-adjust);
-}
-#active-card-container #card-action-area.stack > .action-prompt-block.is-prompt .action-prompt-spacer-bottom {
-  height: var(--cap-inactive-prompt-bottom-adjust);
-}
-
-/* Shared within component — ensure gaps are tokenized */
-#active-card-container #card-action-area .action-button-group { gap: var(--space-m); }
-.dual-fuel-gauge-container { gap: var(--space-m); }
-.dual-action-area-container { gap: var(--space-m); }
-#exercise-selector .flex-separator { margin: 0 var(--space-xxs, 4px); }
