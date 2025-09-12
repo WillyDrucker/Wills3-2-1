@@ -7,15 +7,22 @@
   collapsed line-height. This is the definitive value.
 */
 #workout-log-card .card-content-container {
-  padding: 17px 14px 14px;
+  padding: var(--space-m);
 }
 
+
 /* CEMENTED PATTERN: Forcing the header to align perfectly within the container's padding. */
-#workout-log-card .card-content-container > h2:first-of-type {
-  margin-top: 0;
-  line-height: 0.5;
-  margin-bottom: 8px; /* Standard 16px visual gap */
-  padding: 0; /* Neutralize any internal padding */
+#workout-log-card .card-header {
+  color: var(--on-surface-light);
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 0.7;
+  margin: 0;
+  padding: 0;
+}
+
+#workout-log-card .card-header + #workout-content {
+  margin-top: var(--space-header-offset, 7px);
 }
 
 #workout-content {
@@ -58,7 +65,7 @@
     - Asymmetric padding (12px left, 11px right) creates a visually uniform 12px horizontal gap.
   */
   min-height: 63px;
-  padding: 0 11px 0 12px;
+  padding: 0 var(--space-m);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -70,6 +77,8 @@
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   border-color: var(--primary-blue);
+
+  padding: 0 var(--space-m);
 }
 
 .log-item-line-1,
@@ -181,6 +190,8 @@ body.is-selector-open
   > summary
   > .workout-log-item {
   border-color: var(--primary-blue-dark) !important;
+
+  padding: 0 var(--space-m);
 }
 
 /* --- Edit Log Controls --- */
