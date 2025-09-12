@@ -1,0 +1,51 @@
+Project_Notes_v5.2.0.txt
+==================================================
+
+## Vision
+A streamlined, state-driven web app for **Will’s 3-2-1**: fast set logging, zero jitter, production-ready, accessible, and token-based.
+
+## Guiding Principles
+- **SSS (Super Stupid Simple):** remove friction, reduce choices.
+- **Remove, don’t add:** simplify before expanding.
+- **State → UI:** app renders strictly from `appState` (Event → Update → Re-render).
+- **Consistency:** all layout and rhythm controlled by tokens; no ad-hoc hacks.
+
+## Core UX + Features
+- **Active Exercise Card:**
+  - Real-time timer and “Workout Completion Time.”
+  - Jitter-free transitions between inactive/active.
+  - Precise spacing rhythm (16px global, 7px header→selector).
+- **Navigation:** Home / Workout / My Data, driven by `appState.ui.currentPage`.
+- **History & Logging:** live logging persisted to localStorage; weekly calendar grid.
+- **Daily Reset:** session state clears at midnight, history preserved.
+- **Partner & Superset Modes:** independent mirrored layouts; no cross-bleed.
+- **UI Framework:** accessible header + side nav, fullscreen toggle, reset (“Nuke Everything”).
+- **Media & Accessibility:**
+  - Lazy YouTube modal with focus trap.
+  - Portrait lock, wake lock, focus management, inert background.
+
+## Architecture
+- **Modules:** Explicit ES Modules with import map.
+- **File System:** Co-located component CSS/JS/templates under feature folders.
+- **Naming:** `[component].[role].ext`.
+- **Services:** Navigation, history, timers, selectors, clock, persistence, etc.
+- **Layout System:**
+  - Token-driven.
+  - `.stack` gap for rhythm.
+  - No `!important`, negative line-heights, or structural hacks.
+
+## Layout & Rhythm
+- **Global Inset:** 16px safe zone inside `.card-content-container`.
+- **Rhythm:** 16px between groups, 7px header→selector.
+- **Headers:** use cap-fix margins (no shrink-box tricks).
+- **Spacing control:** only tokens + stack gaps; no additive margins.
+
+## Cemented Non-Negotiables
+- Render strictly from state; no hidden dependencies.
+- Global rhythm: 16/7/16 pattern must be preserved everywhere.
+- Adherence color logic cannot regress.
+
+- **Typical root causes of drift:**
+- Spacer wrappers adding extra height.
+- Residual margins/padding on labels, timers, or button groups.
+- **No regressions:** adherence colors, selector height, or global rhythm.
