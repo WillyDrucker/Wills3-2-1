@@ -1,3 +1,14 @@
+/*
+  CEMENTED (Card Rhythm & Header Pattern):
+  - Card inset uses border-compensated padding so visual edge = 16px.
+  - H2 header uses line-height: 0.7 (allowed exception) to collapse ascent/descenders.
+  - Header→content gap is tokenized at 7px via --space-header-offset.
+  - Log rows have no extra horizontal padding; edges align to card inset.
+*/
+#workout-log-card {
+  --card-padding: var(--card-inset-visual);
+}
+
 /* Contains styles migrated from _log-item.css */
 
 /*
@@ -6,14 +17,16 @@
   above the header, compensating for the h2 font's internal metrics and
   collapsed line-height. This is the definitive value.
 */
-#workout-log-card .card-content-container {
-  padding: var(--space-m);
+#workout-log-card > .card-content-container {
+    /* CEMENTED: border-compensated inset → 16px visual */
+padding: calc(var(--space-m) - var(--card-border-width, 2px));
 }
 
 
 /* CEMENTED PATTERN: Forcing the header to align perfectly within the container's padding. */
 #workout-log-card .card-header {
-  color: var(--on-surface-light);
+    /* CEMENTED: H2 collapse for exact 16/7 rhythm */
+color: var(--on-surface-light);
   font-size: var(--font-size-h2);
   font-weight: 600;
   line-height: 0.7;
@@ -21,8 +34,10 @@
   padding: 0;
 }
 
+
 #workout-log-card .card-header + #workout-content {
-  margin-top: var(--space-header-offset, 7px);
+    /* CEMENTED: 7px header→selector gap (token) */
+margin-top: var(--space-header-offset);
 }
 
 #workout-content {
@@ -56,7 +71,8 @@
   visually perfect 12px horizontal gap on both sides.
 */
 .workout-log-item {
-  background-color: var(--background-dark);
+    /* CEMENTED: no extra horizontal padding; align to card inset */
+background-color: var(--background-dark);
   border: 2px solid transparent;
   border-radius: var(--border-radius);
   /*
@@ -65,7 +81,7 @@
     - Asymmetric padding (12px left, 11px right) creates a visually uniform 12px horizontal gap.
   */
   min-height: 63px;
-  padding: 0 var(--space-m);
+  padding: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -74,11 +90,13 @@
 
 /* When the container is open, the bottom corners of the top item are squared off. */
 .workout-log-item-container[open] > summary > .workout-log-item {
-  border-bottom-left-radius: 0;
+      /* CEMENTED: keep open state aligned; no extra padding */
+/* CEMENTED: no extra horizontal padding; align to card inset */
+border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   border-color: var(--primary-blue);
 
-  padding: 0 var(--space-m);
+  padding: 0;
 }
 
 .log-item-line-1,
@@ -189,9 +207,10 @@ body.is-selector-open
   .workout-log-item-container:not([open])
   > summary
   > .workout-log-item {
-  border-color: var(--primary-blue-dark) !important;
+    /* CEMENTED: no extra horizontal padding; align to card inset */
+border-color: var(--primary-blue-dark) !important;
 
-  padding: 0 var(--space-m);
+  padding: 0;
 }
 
 /* --- Edit Log Controls --- */

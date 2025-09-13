@@ -41,12 +41,22 @@
   --space-xs: 2px;
   --space-s: 7px;
   --space-header-offset: 7px;
+  /* CEMENTED: header→selector gap (7px) */
   --space-m: 16px;
+  /* CEMENTED: global rhythm unit (16px) for insets & gaps */
   --space-l: 24px;
+  /* Global header visual adjust tokens (match config-card baseline behavior) */
+  --cap-header-top-adjust: 1px;   /* positive = nudge up visually by translateY(-value) */
+  /* CEMENTED: reserved tiny visual nudge when needed; avoid unless required */
+  --cap-header-left-adjust: 2px;
+  --cap-container-inset-adjust: -2px; /* nudges visual inset to 16px when fonts/borders add ~2px */
+  /* positive = nudge left visually by translateX(-value) */
 
   /* --- LAYOUT TOKENS --- */
   --app-side-margin: 10px;
   --card-padding: var(--space-m);
+  /* CEMENTED: per-card inset; may use border-comp calc in component CSS */
+  --card-inset-visual: 14px; /* 2px border + 14px inset = 16px visual */
   --border-radius: 8px;
   --control-height: 50px;
 
