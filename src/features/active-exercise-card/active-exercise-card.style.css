@@ -1,4 +1,10 @@
 /*
+  CEMENTED (Card Rhythm & Header Pattern — Active Exercise Card):
+  - Card inset uses border-compensated padding so visual edge = 16px.
+  - H2 header uses line-height: 0.7 (allowed exception) to collapse ascent/descenders.
+  - Header→content gap is tokenized at 7px via --space-header-offset.
+*/
+/*
   ACTIVE EXERCISE CARD — rhythm (16/7/7), selector=100px, adherence color
 
   Rules of engagement:
@@ -9,6 +15,7 @@
 
 /* ===== Card inset (border-aware 16px) ===== */
 #active-card-container .card-content-container {
+  /* CEMENTED: border-compensated inset → 16px visual */
   padding: calc(var(--space-m) - var(--card-border-width, 2px));
 }
 
@@ -358,3 +365,18 @@ body.is-selector-open
 /* CEMENTED: Dual-mode (superset/partner) active-state spacing rules are defined in
    features/superset-modal/superset-modal.superset-partner.css to avoid collisions.
    This file governs normal workout cards and shared visuals only. */
+
+#active-card-container .card-header {
+  /* CEMENTED: H2 collapse for exact 16/7 rhythm */
+  color: var(--on-surface-light);
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 0.7;
+  margin: 0;
+  padding: 0;
+}
+
+#active-card-container .card-header + .card-content-container ~ * {
+  /* CEMENTED: 7px header→selector gap (token) */
+  margin-top: var(--space-header-offset);
+}

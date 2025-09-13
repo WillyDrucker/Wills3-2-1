@@ -46,7 +46,7 @@
   /* CEMENTED: global rhythm unit (16px) for insets & gaps */
   --space-l: 24px;
   /* Global header visual adjust tokens (match config-card baseline behavior) */
-  --cap-header-top-adjust: 1px;   /* positive = nudge up visually by translateY(-value) */
+  --cap-header-top-adjust: 2px;   /* positive = nudge up visually by translateY(-value) */
   /* CEMENTED: reserved tiny visual nudge when needed; avoid unless required */
   --cap-header-left-adjust: 2px;
   --cap-container-inset-adjust: -2px; /* nudges visual inset to 16px when fonts/borders add ~2px */

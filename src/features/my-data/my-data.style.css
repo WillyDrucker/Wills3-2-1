@@ -1,3 +1,9 @@
+/*
+  CEMENTED (Card Rhythm & Header Pattern — My Data Card):
+  - Card inset uses border-compensated padding so visual edge = 16px.
+  - H2 header uses line-height: 0.7 (allowed exception) to collapse ascent/descenders.
+  - Header→content gap is tokenized at 7px via --space-header-offset.
+*/
 /* Contains styles migrated from _my-data.css */
 
 .no-history-text {
@@ -200,4 +206,24 @@
 
 .card-footer-action-single {
   padding: 16px;
+}
+
+#my-data-card .card-content-container {
+  /* CEMENTED: border-compensated inset → 16px visual */
+  padding: calc(var(--space-m) - var(--card-border-width, 2px));
+}
+
+#my-data-card .card-header {
+  /* CEMENTED: H2 collapse for exact 16/7 rhythm */
+  color: var(--on-surface-light);
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 0.7;
+  margin: 0;
+  padding: 0;
+}
+
+#my-data-card .card-header + .card-content-container ~ * {
+  /* CEMENTED: 7px header→selector gap (token) */
+  margin-top: var(--space-header-offset);
 }

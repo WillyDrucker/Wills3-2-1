@@ -1,3 +1,23 @@
+/*
+  CEMENTED (Workout Results — Card Rhythm & Behavior):
+  - Border‑compensated inset: .card-content-container uses calc(var(--space-m) - var(--card-border-width, 2px)) so the visual edge = 16px.
+  - Header (H2) uses line-height: 0.7 with a tiny top nudge via --cap-header-top-adjust to lock the top gap at 16px.
+  - Header → animation gap is 16px (completion state), tokenized with var(--space-m).
+  - Animation: plays on render and replays on click via index.js (see CEMENTED comments there).
+*/
+/*
+  CEMENTED (Card Rhythm & Header Pattern — Workout Results):
+  - Card inset uses border-compensated padding so visual edge = 16px.
+  - H2 header uses line-height: 0.7 + 2px nudge to collapse ascent/descenders and lock top at 16px.
+  - Header→animation gap tuned to 16px (margin-top calc).
+  - Left/right/bottom insets = 16px visual.
+*/
+/*
+  CEMENTED (Card Rhythm & Header Pattern — Workout Results Card):
+  - Card inset uses border-compensated padding so visual edge = 16px.
+  - H2 header uses line-height: 0.7 (allowed exception) to collapse ascent/descenders.
+  - Header→content gap is tokenized at 7px via --space-header-offset.
+*/
 /* --- Completion Card Styles --- */
 .workout-results-container .card-header {
   text-align: left;
@@ -82,3 +102,36 @@
   animation-name: plate-move-right-1;
   animation-delay: 2.5s;
 }
+
+#active-card-container > .card-content-container {
+  /* CEMENTED: border-compensated inset → 16px visual */
+  padding: calc(var(--space-m) - var(--card-border-width, 2px));
+}
+
+#active-card-container .card-header {
+  /* CEMENTED: H2 collapse + nudge to lock visual top at 16px */
+  color: var(--on-surface-light);
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 0.7;
+  margin: 0;
+  padding: 0;
+  transform: translateY(calc(var(--cap-header-top-adjust, 2px) * -1));
+}
+
+
+#active-card-container .card-header + .card-content-container ~ * {
+  /* CEMENTED: 7px header→selector gap (token) */
+  margin-top: var(--space-header-offset);
+}
+
+#active-card-container .card-header + .completion-animation-container {
+  /* CEMENTED: header→animation gap tuned to visual 16px */
+  /* CEMENTED: header→animation gap is 16px for completion state */
+  margin-top: calc(var(--space-m) - 4px);
+}
+
+
+
+
+#active-card-container .completion-animation-container { padding-top: 0; }

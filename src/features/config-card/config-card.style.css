@@ -1,4 +1,10 @@
 /*
+  CEMENTED (Card Rhythm & Header Pattern — Config Card):
+  - Card inset uses border-compensated padding so visual edge = 16px.
+  - H2 header uses line-height: 0.7 (allowed exception) to collapse ascent/descenders.
+  - Header→content gap is tokenized at 7px via --space-header-offset.
+*/
+/*
   REFACTORED (Definitive Grouped Stack System - FINAL):
   This is the final, correct implementation for the Config Card layout. The
   layout is controlled by the nested stack architecture in the HTML, and this
@@ -10,7 +16,8 @@
      - padding-top: 14px: Creates the correct 16px VISUAL gap to the H2 text.
 */
 #config-card .card-content-container {
-  padding: 14px 14px 14px;
+  /* CEMENTED: border-compensated inset → 16px visual */
+  padding: calc(var(--space-m) - var(--card-border-width, 2px));
 }
 
 /*
@@ -18,8 +25,15 @@
      is the key to the entire layout working correctly.
 */
 #config-card .card-header {
+  /* CEMENTED: H2 collapse for exact 16/7 rhythm */
   color: var(--on-surface-light);
   font-size: var(--font-size-h2);
   font-weight: 600;
   line-height: 0.7;
+  margin: 0;
+  padding: 0;
+}
+#config-card .card-header + .card-content-container ~ * {
+  /* CEMENTED: 7px header→selector gap (token) */
+  margin-top: var(--space-header-offset);
 }
