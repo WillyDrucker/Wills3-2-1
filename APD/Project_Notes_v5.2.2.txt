@@ -1,0 +1,31 @@
+Project Notes v5.2.1
+====================
+
+Focus this session: unifying header rhythm on the Home page (and now My Data) to 16px top / 7px header→control spacing, consistent with Config and Results cards.
+
+Key Issues Faced:
+-----------------
+- Live Server caching/refresh inconsistencies caused old CSS to linger, misleading our measurements.
+- Header descenders (g, y, p) were clipping when we collapsed line-height for compact spacing.
+- Double-counted spacing (stack gap + adjacency margin + line box) inflated the gap to 11–13px instead of 7px.
+
+Resolutions:
+------------
+- Confirmed empirical mapping: padding-top: 14px = visual 16px on Home and My Data.
+- Introduced tokens to handle top pad, descender pad, and gap compensation:
+  --cap-home-pad-top, --cap-home-descender-pad, --cap-home-gap-extra
+  --cap-mydata-pad-top, --cap-mydata-descender-pad, --cap-mydata-gap-extra
+- Formula: margin-top = 7px (token) - descender pad + gap extra.
+- Cemented comments adopted: large top-of-file block describes intent and rules, inline comments remain concise.
+- Locked Home and My Data pages to 16/7 visual spacing, descender-safe.
+
+Outcome:
+--------
+- Home and My Data pages now match Config and Results for header rhythm.
+- 16px inset, 7px header→controls, and no clipped text across all major cards.
+- Future adjustments only require tweaking tokens, not structure.
+
+Next Focus:
+-----------
+- Extend cemented rhythm rules to any new cards (Navigation, Workout History already inherit from Home).
+- Maintain discipline: tokens only, no ad-hoc pixels, no !important, no structure hacks.
