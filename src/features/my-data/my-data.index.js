@@ -30,4 +30,12 @@ export function renderMyDataPage() {
   ui.configSection.innerHTML = "";
   ui.mainContent.innerHTML = getMyDataPageTemplate();
   ui.workoutFooter.innerHTML = "";
+
+  // CEMENTED: wire up calendar week navigation (no reliance on external delegates)
+  const container = ui.mainContent;
+  container.querySelectorAll('.week-nav-button[data-action="previousWeek"]')
+    .forEach(btn => btn.addEventListener('click', handlePreviousWeek));
+  container.querySelectorAll('.week-nav-button[data-action="nextWeek"]')
+    .forEach(btn => btn.addEventListener('click', handleNextWeek));
+
 }

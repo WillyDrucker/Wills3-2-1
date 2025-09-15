@@ -45,3 +45,54 @@
   flex-direction: column;
   gap: var(--space-m);
 }
+
+
+/* Day/Date header — restore size/weight and 7px to first exercise block */
+#workout-history-card .day-card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-s);
+  margin-top: 0;
+  margin-bottom: var(--space-s);
+}
+#workout-history-card .day-card-header .day-name,
+#workout-history-card .day-card-header .date-text {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+#workout-history-card .day-card-header + .history-log-block,
+#workout-history-card .day-card-header + .history-exercise-block {
+  margin-top: var(--space-s); /* 7px */
+}
+
+/* Exercise block rhythm */
+#workout-history-card .history-exercise-block + .history-exercise-block { margin-top: var(--space-m); }
+#workout-history-card .history-exercise-name { font-size: 1rem; font-weight: 600; margin: 0; padding: 0; }
+#workout-history-card .history-exercise-set-row { display: flex; align-items: baseline; gap: var(--space-s); margin-top: 2px; }
+#workout-history-card .history-exercise-set-row .history-set-left { margin-left: 50px; white-space: nowrap; }
+#workout-history-card .history-exercise-set-row .history-set-right { margin-left: auto; white-space: nowrap; text-align: right; }
+
+
+/* Restore day/date fonts and spacing; single header per day */
+#workout-history-card .day-card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-s);
+  margin-top: 0;
+  margin-bottom: var(--space-s); /* 7px down to first exercise */
+}
+#workout-history-card .day-card-header .day-name,
+#workout-history-card .day-card-header .date-text {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+#workout-history-card .history-exercise-name {
+  font-size: 1rem;
+  font-weight: 600;
+}

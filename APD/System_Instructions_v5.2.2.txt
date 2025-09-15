@@ -33,6 +33,7 @@ Delivery Protocol:
 - Do not provide ZIPs, only full files.
 - Do not provide extra files if no code was changed.
 - For minor changes, assume you should deliver the updated file unless explicitly diagnostic/debugging.
+- Do not change the original filename when providing an update or merge to the file.
 - Always default to tokenized solutions; cement rules only once confirmed working.
 
 Code Comments:

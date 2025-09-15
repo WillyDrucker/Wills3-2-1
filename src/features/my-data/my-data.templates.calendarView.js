@@ -127,12 +127,7 @@ export function getWorkoutCalendarHTML() {
                 ? '<hr class="history-session-divider">'
                 : "";
 
-            return `<div class="day-card-header">
-                ${sessionHeaderHtml}
-                <span class="data-highlight text-plan">${day.dateString}</span>
-            </div>
-            ${sessionLogHtml}
-            ${sessionSeparator}`;
+            return `${sessionLogHtml}${sessionSeparator}`;
           })
           .join("");
       } else {
@@ -151,13 +146,9 @@ export function getWorkoutCalendarHTML() {
       const placeholderClass = isPlaceholder ? "is-placeholder" : "";
 
       return `<div class="day-section ${placeholderClass}">
-        ${
-          isPlaceholder
-            ? `<div class="day-card-header">${dayHeaderHtml}<span class="data-highlight text-plan">${day.dateString}</span></div>`
-            : ""
-        }
-        ${dayContentHtml}
-      </div>${separator}`;
+  <div class="day-card-header">${dayHeaderHtml}<span class="data-highlight text-plan">${day.dateString}</span></div>
+  ${dayContentHtml}
+</div>${separator}`;
     })
     .join("");
 
