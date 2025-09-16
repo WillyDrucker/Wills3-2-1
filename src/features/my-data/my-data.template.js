@@ -51,7 +51,7 @@ export function getMyDataPageTemplate() {
     <div class="card my-data-card">
       <div class="card-content-container">
         <h2 class="card-header"><span class="truncate-text">Performance</span></h2>
-        <div class="action-button-container" style="margin-top: 3px;">
+        <div class="action-button-container">
           <button class="action-button button-primary" disabled>Show Chart</button>
         </div>
       </div>
