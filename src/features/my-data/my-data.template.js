@@ -48,20 +48,22 @@ export function getMyDataPageTemplate() {
   }
 
   return `
-    <div class="card">
+    <div id="my-data-page">
+    <div class="card my-data-card" id="performance-card">
       <div class="card-content-container">
         <h2 class="card-header"><span class="truncate-text">Performance</span></h2>
-        <div class="action-button-container">
+        <div class="action-button-group">
           <button class="action-button button-primary" disabled>Show Chart</button>
         </div>
       </div>
     </div>
-    <div class="card" id="history-selector-card">
+    <div class="card my-data-card" id="history-selector-card">
       <div class="card-content-container">
         <h2 class="card-header"><span class="truncate-text">Training History</span></h2>
         ${getHistorySelectorHTML()}
       </div>
     </div>
     ${logContentHtml}
+    </div>
   `;
 }
