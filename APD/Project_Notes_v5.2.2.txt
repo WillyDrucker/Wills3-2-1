@@ -1,4 +1,4 @@
-Project Notes v5.2.1
+Project Notes v5.2.2
 ====================
 
 Focus this session: unifying header rhythm on the Home page (and now My Data) to 16px top / 7px header→control spacing, consistent with Config and Results cards.

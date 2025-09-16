@@ -47,21 +47,116 @@
 }
 
 
-/* === My Data page: lock card header rhythm to 16/7 and rail alignment === */
-#my-data-page .my-data-card .card-content-container {
-  padding-top: 14px; /* visual 16px top with 2px card border */
+/* Workout Logs — exercise block layout */
+/* 7px from day header to first exercise name */
+#workout-history-card .day-card-header + .history-log-block { margin-top: var(--space-s); }
+/* 16px between exercises */
+#workout-history-card .history-exercise-block + .history-exercise-block { margin-top: var(--space-m); }
+/* Exercise name */
+#workout-history-card .history-exercise-name { font-size: 1rem; font-weight: 600; margin: 0; padding: 0; }
+/* Set rows */
+#workout-history-card .history-exercise-set-row { display: flex; align-items: baseline; gap: var(--space-s); margin-top: 2px; }
+#workout-history-card .history-exercise-set-row .history-set-left { margin-left: 50px; white-space: nowrap; }
+#workout-history-card .history-exercise-set-row .history-set-right { margin-left: auto; white-space: nowrap; text-align: right; }
+
+
+/* Workout Logs header row — 16 top, 16 to divider; centered with chevron buttons */
+#workout-history-card .history-week-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: calc(var(--space-m) - var(--card-border-width, 2px));
+  padding-left: calc(var(--space-m) - var(--card-border-width, 2px));
+  padding-right: calc(var(--space-m) - var(--card-border-width, 2px));
+  padding-bottom: 0;
+  margin-bottom: var(--space-m);
+  box-sizing: border-box;
 }
-#my-data-page .my-data-card h2.card-header {
+#workout-history-card .history-week-header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 0.7;
   margin: 0;
-  line-height: 0.7; /* allowed exception for header compactness */
-  font-size: var(--font-size-h2);
+  padding: 0 0 2px 0;
+}
+#workout-history-card .history-week-header .week-range-text {
+  font-size: 1.25rem;
   font-weight: 600;
 }
-#my-data-page .my-data-card .card-header + * {
-  margin-top: var(--space-header-offset); /* 7px to next element (selector/buttons) */
+#workout-history-card .week-navigator { display:inline-flex; align-items:center; gap: var(--space-s); }
+#workout-history-card .week-nav-button {
+  width: 32px; height: 32px; border-radius: var(--border-radius);
+  display:inline-flex; align-items:center; justify-content:center;
+  background:#ffffff; border:1px solid rgba(0,0,0,0.2); color:#000; cursor:pointer;
 }
-#my-data-page .my-data-card .action-button-group {
-  display: flex;
-  gap: var(--space-m);
-  flex-direction: column;
+#workout-history-card .week-nav-button:disabled {
+  background:#2a2a2a; border-color:#333; color:#666; cursor:default;
 }
+#workout-history-card .week-nav-button svg { width:20px; height:20px; display:block; }
+#workout-history-card .week-nav-button svg path,
+#workout-history-card .week-nav-button svg polyline,
+#workout-history-card .week-nav-button svg polygon {
+  fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;
+}
+
+
+/* Rails and dividers */
+#workout-history-card > .modal-divider {
+  margin-left: calc(var(--space-m) - var(--card-border-width, 2px));
+  margin-right: calc(var(--space-m) - var(--card-border-width, 2px));
+  margin-top: 0; margin-bottom: 0;
+}
+#workout-history-card .calendar-view-container {
+  padding: calc(var(--space-m) - var(--card-border-width, 2px));
+  box-sizing: border-box;
+}
+#workout-history-card .calendar-view-container .modal-divider {
+  margin-left: 0; margin-right: 0;
+  margin-top: var(--space-m); margin-bottom: var(--space-m);
+}
+
+
+/* Day/Date line */
+#workout-history-card .day-card-header {
+  display:flex; align-items:baseline; justify-content:space-between; gap: var(--space-s);
+  margin-top: 0; margin-bottom: var(--space-s);
+}
+#workout-history-card .day-card-header .day-name,
+#workout-history-card .day-card-header .date-text { font-size:1rem; font-weight:600; line-height:1; white-space:nowrap; }
+#workout-history-card .day-card-header .day-name { order:1; }
+#workout-history-card .day-card-header .date-text { order:2; }
+#workout-history-card .day-card-header + .history-log-block { margin-top: var(--space-s); } /* 7px to first exercise */
+
+
+/* Exercise blocks & set rows */
+#workout-history-card .history-exercise-block + .history-exercise-block { margin-top: var(--space-m); } /* 16px between exercises */
+#workout-history-card .history-exercise-name { font-size:1rem; font-weight:600; margin:0; padding:0; }
+#workout-history-card .history-exercise-set-row { display:flex; align-items:baseline; gap: var(--space-s); margin-top:2px; }
+#workout-history-card .history-exercise-set-row .history-set-left { margin-left:50px; white-space:nowrap; }
+#workout-history-card .history-exercise-set-row .history-set-right { margin-left:auto; white-space:nowrap; text-align:right; }
+
+/* --- Compatibility for current calendarView markup (history-log-item structure) --- */
+#workout-history-card .day-card-header + .history-log-item { margin-top: var(--space-s); } /* 7px to first set row */
+#workout-history-card .history-log-item { display:flex; align-items:baseline; gap: var(--space-s); }
+#workout-history-card .history-log-item .log-item-exercise-name { font-size:1rem; font-weight:600; margin:0; padding:0; }
+#workout-history-card .history-log-item-right { margin-left:auto; display:flex; align-items:baseline; gap: var(--space-s); }
+#workout-history-card .log-item-set-info-container { margin-left:50px; white-space:nowrap; }
+#workout-history-card .log-item-results { white-space:nowrap; text-align:right; }
+
+/* Day/Date header: enforce left Day, right Date */
+#workout-history-card .day-card-header { display:flex; align-items:baseline; justify-content:space-between; gap: var(--space-s); }
+#workout-history-card .day-card-header .day-name { order:0; }
+#workout-history-card .day-card-header .date-text { order:1; }
+
+/* Placeholder line under Day when no workouts */
+#workout-history-card .day-card-placeholder-text { font-style: italic; color: var(--text-on-surface-medium); }
+#workout-history-card .day-card-placeholder-text + .modal-divider { margin-top: var(--space-m); }
+
+/* Header -> control gap: lock to 7px and avoid double margins */
+.card .card-header + .action-button-container,
+.card .card-header + .action-button-group,
+.card .card-header + .selector {
+  margin-top: var(--space-header-offset);
+}
+.card .action-button-container,
+.card .action-button-group { margin-top: 0; } /* prevent double-counting */

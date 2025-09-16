@@ -42,17 +42,16 @@ export function getMyDataPageTemplate() {
   if (selectedTab === "Workouts") {
     logContentHtml = getWorkoutCalendarHTML();
   } else if (selectedTab === "Conditioning") {
-    logContentHtml = `<div class="card"><div class="card-content-container"><h2 class="card-header"><span class="truncate-text">Conditioning Logs</span></h2><p class="no-history-text">Your conditioning logs will appear here.</p></div></div>`;
+    logContentHtml = `<div class="card my-data-card"><div class="card-content-container"><h2 class="card-header"><span class="truncate-text">Conditioning Logs</span></h2><p class="no-history-text">Your conditioning logs will appear here.</p></div></div>`;
   } else if (selectedTab === "Stretching") {
-    logContentHtml = `<div class="card"><div class="card-content-container"><h2 class="card-header"><span class="truncate-text">Stretching Logs</span></h2><p class="no-history-text">Your stretching logs will appear here.</p></div></div>`;
+    logContentHtml = `<div class="card my-data-card"><div class="card-content-container"><h2 class="card-header"><span class="truncate-text">Stretching Logs</span></h2><p class="no-history-text">Your stretching logs will appear here.</p></div></div>`;
   }
 
   return `
-    <div id="my-data-page">
-    <div class="card my-data-card" id="performance-card">
+    <div class="card my-data-card">
       <div class="card-content-container">
         <h2 class="card-header"><span class="truncate-text">Performance</span></h2>
-        <div class="action-button-group">
+        <div class="action-button-container" style="margin-top: 3px;">
           <button class="action-button button-primary" disabled>Show Chart</button>
         </div>
       </div>
@@ -64,6 +63,5 @@ export function getMyDataPageTemplate() {
       </div>
     </div>
     ${logContentHtml}
-    </div>
   `;
 }

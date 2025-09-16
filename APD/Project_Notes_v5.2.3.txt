@@ -1,0 +1,38 @@
+Project_Notes_v5.2.3 (updated)
+
+Scope this session
+- Restore tokenized spacing/typography across My Data: Performance, Training History, Workout Logs.
+- Fix regressions from CSS drift and selector mismatch; re-align to 16/16 gutters and 16→7 header rhythm.
+
+Root causes found
+1) CSS truncation: lower half of my-data.style.css (headers/rails/exercise blocks) was missing, so page fell back to defaults.
+2) Selector drift: calendar view now emits classes (history-log-item, log-item-exercise-name, etc.) that old CSS didn’t target.
+3) Hook missing: cards in My Data lacked .my-data-card, so header rhythm rules didn’t apply.
+
+Fixes applied (ready in repo artifacts provided during session)
+- Restored the missing CSS and added a small compatibility block for new class names.
+- Reasserted token rhythm:
+  • Content top to H2: visual 16px (14px internal + 2px border). 
+  • H2 to next control (buttons/selector): 7px via sibling rule, preventing double-counted margins.
+  • Left/right rails inside cards: 16px.
+- Workout Logs presentation:
+  • Day on left (1rem/600), Date on right (1rem/600) using .date-text + flex ordering.
+  • Exercise name on its own line (1rem/600, colored like “Today’s Workout”).
+  • Each set row beneath: 50px left indent for count; results right-aligned; keep nowrap.
+  • Placeholder: “Remaining Workout Day” italic, informational gray.
+- Calendar chevrons restored as buttons; 32×32 spec retained; disabled is muted gray.
+
+Debugging utilities (optional; remove before shipping)
+- debug.css + my-data probe variable to confirm CSS load/parse.
+- style-audit.css + style-audit.js to overlay 16px rails and print per‑card top/gap/left measurements.
+
+Outstanding to confirm next session
+- Visual audit with the style-audit kit on: Performance, Training History, Workout Logs.
+- Verify all 1.15rem text upgraded to 1.25rem across app (home, config, active exercise, results, superset states).
+- Ensure no separators are offset (all 16px rails, no 30px stray margins).
+- Chevron buttons: confirm 32×32, black chevrons, muted gray when disabled.
+- Remove debug assets after confirmation; then CEMENT comments in touched files.
+
+Cement plan (after confirmation)
+- Add a brief cement block at top of my-data.style.css and my-data.templates.calendarView.js documenting tokens used:
+  • Rails: 16px; Header rhythm: 16 top / 7 next; Set-row indent: 50px; No !important; No ad-hoc spacing.
