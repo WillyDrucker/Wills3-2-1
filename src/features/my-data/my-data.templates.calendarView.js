@@ -2,7 +2,6 @@ import { appState } from "state";
 import { colorCodeMap, programConfig } from "config";
 import {
   isDumbbellExercise,
-  getWeekRange,
   getDaysInWeek,
   isDateInFuture,
   pluralize,
@@ -10,7 +9,6 @@ import {
 
 export function getWorkoutCalendarHTML() {
   const { weekOffset } = appState.ui.myDataPage;
-  const weekRange = getWeekRange(weekOffset);
   const daysOfWeek = getDaysInWeek(weekOffset);
   let hasWideResults = false; // Flag for dynamic layout
 
@@ -27,7 +25,6 @@ export function getWorkoutCalendarHTML() {
       );
 
       let dayContentHtml = "";
-      let dayHeaderHtml = `<div class="day-name">${day.dayName}</div>`;
       let isPlaceholder = true;
 
       if (workoutsForDay.length > 0) {
@@ -52,73 +49,84 @@ export function getWorkoutCalendarHTML() {
             const currentPlan =
               programConfig[session.planName] || programConfig["Will's 3-2-1:"];
 
-            const logsToRender = [...session.logs];
-            logsToRender.sort((a, b) => {
-              const sideA = a.supersetSide || "";
-              const sideB = b.supersetSide || "";
-              if (sideA < sideB) return -1;
-              if (sideA > sideB) return 1;
+            const exercisesGrouped = session.logs.reduce((acc, log) => {
+              const key = log.exercise.exercise_name;
+              if (!acc[key]) {
+                acc[key] = [];
+              }
+              acc[key].push(log);
+              return acc;
+            }, {});
 
-              return session.logs.indexOf(a) - session.logs.indexOf(b);
-            });
+            for (const exerciseName in exercisesGrouped) {
+              exercisesGrouped[exerciseName].sort(
+                (a, b) => a.setNumber - b.setNumber
+              );
+            }
 
-            const sessionLogHtml = logsToRender
-              .map((log) => {
+            const exerciseBlocksHtml = Object.keys(exercisesGrouped)
+              .map((exerciseName) => {
+                const logsForExercise = exercisesGrouped[exerciseName];
+                const firstLog = logsForExercise[0];
                 let exerciseColorClass;
-                if (log.supersetSide) {
+
+                if (firstLog.supersetSide) {
                   exerciseColorClass =
-                    log.supersetSide === "left" ? "text-plan" : "text-warning";
+                    firstLog.supersetSide === "left"
+                      ? "text-plan"
+                      : "text-warning";
                 } else {
                   exerciseColorClass =
-                    colorCodeMap[log.exercise[currentPlan.colorKey]] ||
+                    colorCodeMap[firstLog.exercise[currentPlan.colorKey]] ||
                     "text-plan";
                 }
 
-                const isDumbbell = isDumbbellExercise(log.exercise);
-                if (isDumbbell) hasWideResults = true;
-                const repsUnit = isDumbbell ? " (ea.)" : "";
-                const resultText =
-                  log.status === "skipped"
-                    ? `<span class="text-orange">Skipped</span>`
-                    : `<div class="log-item-results-container">
-                        <span class="log-item-results-value">${
-                          log.weight
-                        }</span>
-                        <span class="log-item-results-unit">&nbsp;${pluralize(
-                          log.weight,
-                          "lb",
-                          "lbs"
-                        )}</span>
-                        <span class="log-item-results-unit">&nbsp;x&nbsp;</span>
-                        <span class="log-item-results-value">${log.reps}</span>
-                        <span class="log-item-results-unit">&nbsp;${pluralize(
-                          log.reps,
-                          "rep",
-                          "reps"
-                        )}${repsUnit}</span>
-                      </div>`;
-                const totalSets = log.exercise.sets;
+                const setRowsHtml = logsForExercise
+                  .map((log) => {
+                    const isDumbbell = isDumbbellExercise(log.exercise);
+                    if (isDumbbell) hasWideResults = true;
+                    const repsUnit = isDumbbell ? " (ea.)" : "";
+                    const resultText =
+                      log.status === "skipped"
+                        ? `<span class="text-orange">Skipped</span>`
+                        : `<div class="log-item-results-container">
+                            <span class="log-item-results-value">${
+                              log.weight
+                            }</span>
+                            <span class="log-item-results-unit">&nbsp;${pluralize(
+                              log.weight,
+                              "lb",
+                              "lbs"
+                            )}</span>
+                            <span class="log-item-results-unit">&nbsp;x&nbsp;</span>
+                            <span class="log-item-results-value">${
+                              log.reps
+                            }</span>
+                            <span class="log-item-results-unit">&nbsp;${pluralize(
+                              log.reps,
+                              "rep",
+                              "reps"
+                            )}${repsUnit}</span>
+                          </div>`;
+                    const totalSets = firstLog.exercise.sets;
 
-                /*
-                  CEMENTED (Visual Consistency & Color Authority):
-                  The layout and class structure of this historical log item MUST mirror the
-                  cemented pattern defined in the active workout-log feature. The set
-                  count color is correctly sourced from the persisted session data,
-                  upholding the single source of truth principle.
-                */
-                const setInfoHtml = `<div class="log-item-set-info-container">
-                    <span class="log-item-set-info-value data-highlight ${session.sessionColorClass}">${log.setNumber}</span>
-                    <span class="log-item-set-info-label">&nbsp;of&nbsp;</span>
-                    <span class="log-item-set-info-value data-highlight ${session.sessionColorClass}">${totalSets}</span>
-                </div>`;
+                    const setInfoHtml = `<span class="log-item-set-info-value data-highlight ${session.sessionColorClass}">${log.setNumber}</span>
+                        <span class="log-item-set-info-label">&nbsp;of&nbsp;</span>
+                        <span class="log-item-set-info-value data-highlight ${session.sessionColorClass}">${totalSets}</span>`;
 
-                return `<div class="history-log-item">
-                      <span class="log-item-exercise-name ${exerciseColorClass} truncate-text">${log.exercise.exercise_name}</span>
-                      <div class="history-log-item-right">
-                        ${setInfoHtml}
-                        <div class="log-item-results">${resultText}</div>
-                      </div>
-                    </div>`;
+                    return `<div class="history-exercise-set-row">
+                              <div class="history-set-left">${setInfoHtml}</div>
+                              <div class="history-set-right">${resultText}</div>
+                           </div>`;
+                  })
+                  .join("");
+
+                return `<div class="history-exercise-block stack" style="--stack-space: var(--space-s);">
+                          <div class="history-exercise-name ${exerciseColorClass}">${exerciseName}</div>
+                          <div class="history-set-rows-group stack" style="--stack-space: var(--space-s);">
+                            ${setRowsHtml}
+                          </div>
+                        </div>`;
               })
               .join("");
 
@@ -128,19 +136,24 @@ export function getWorkoutCalendarHTML() {
                 : "";
 
             return `<div class="day-card-header">
-                ${sessionHeaderHtml}
-                <span class="date-text data-highlight text-plan">${day.dateString}</span>
-            </div>
-            ${sessionLogHtml}
-            ${sessionSeparator}`;
+                        ${sessionHeaderHtml}
+                        <span class="date-text data-highlight text-plan">${day.dateString}</span>
+                    </div>
+                    <div class="exercise-list-group stack" style="--stack-space: var(--space-m);">
+                        ${exerciseBlocksHtml}
+                    </div>
+                    ${sessionSeparator}`;
           })
           .join("");
       } else {
-        if (isDateInFuture(day.date)) {
-          dayContentHtml = `<p class="day-card-placeholder-text">Remaining Workout Day</p>`;
-        } else {
-          dayContentHtml = `<p class="day-card-placeholder-text">No Workouts Logged</p>`;
-        }
+        const dayHeaderHtml = `<div class="day-card-header"><div class="day-name">${day.dayName}</div><span class="date-text data-highlight text-plan">${day.dateString}</span></div>`;
+        const placeholderText = isDateInFuture(day.date)
+          ? "Remaining Workout Day"
+          : "No Workouts Logged";
+        dayContentHtml = `
+            ${dayHeaderHtml}
+            <p class="day-card-placeholder-text">${placeholderText}</p>
+        `;
       }
 
       const separator =
@@ -148,43 +161,20 @@ export function getWorkoutCalendarHTML() {
           ? '<div class="modal-divider"></div>'
           : "";
 
-      const placeholderClass = isPlaceholder ? "is-placeholder" : "";
-
-      return `<div class="day-section ${placeholderClass}">
-        ${
-          isPlaceholder
-            ? `<div class="day-card-header">${dayHeaderHtml}<span class="date-text data-highlight text-plan">${day.dateString}</span></div>`
-            : ""
-        }
-        ${dayContentHtml}
-      </div>${separator}`;
+      return `<div class="day-section stack" style="--stack-space: var(--space-m);">${dayContentHtml}</div>${separator}`;
     })
     .join("");
 
-  const nextButtonDisabled = weekOffset === 0 ? "disabled" : "";
   const containerClass = hasWideResults ? "has-wide-results" : "";
 
   return `
-    <div class="card" id="workout-history-card">
-      <div class="card-header history-week-header">
-        <h2>Workout Logs</h2>
-        <div class="week-navigator">
-          <button class="week-nav-button" data-action="previousWeek">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-          </button>
-          <span class="week-range-text text-plan">${weekRange}</span>
-          <button class="week-nav-button" data-action="nextWeek" ${nextButtonDisabled}>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
-          </button>
+    <div class="workout-log-content-area stack">
+        <div class="calendar-view-container ${containerClass}">
+            ${daySectionsHtml}
         </div>
-      </div>
-      <div class="modal-divider"></div>
-      <div class="calendar-view-container ${containerClass}">
-        ${daySectionsHtml}
-      </div>
-      <div class="card-footer-action-single">
-          <button class="action-button button-rest-skip" data-action="clearHistory">Test Clear History</button>
-      </div>
+        <div class="card-footer-action-single">
+            <button class="action-button button-rest-skip" data-action="clearHistory">Test Clear History</button>
+        </div>
     </div>
     `;
 }

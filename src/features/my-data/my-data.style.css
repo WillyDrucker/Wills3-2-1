@@ -1,133 +1,129 @@
 /* ==========================================================================
-   MY-DATA CARD STYLES — aligned to Config card (16/7 headers; 16 rails)
+   MY-DATA PAGE — CEMENTED ALIGNMENT (16/7/16 rhythm)
+   Pattern mirrors Config card for architectural consistency.
+   Layout is controlled by nested .stack primitives in the HTML template.
+   This ensures predictable, token-driven spacing without hacks.
    ========================================================================== */
 
-/* Headers: 16px top inset; 7px gap to control/selector (mirror Config card) */
-#my-data-card .card-header,
-#history-selector-card .card-header {
-  padding: 0;
-  margin: 0;
-  padding-top: calc(var(--space-m) - var(--card-border-width, 2px));                /* 16 above */
-  margin-bottom: var(--space-header-offset);  /* 7 below */
-  box-sizing: border-box;
+/* Universal Card Rhythm for My Data Page */
+.my-data-card .card-content-container {
+  padding: calc(var(--space-m) - var(--card-border-width, 2px));
 }
-#my-data-card .card-header .card-title,
-#history-selector-card .card-header .card-title {
-  color: var(--on-surface-light);
+.my-data-card .card-header,
+#workout-history-card .card-title {
   font-size: var(--font-size-h2);
   font-weight: 600;
   line-height: 0.7;
   margin: 0;
   padding: 0;
+  color: var(--on-surface-light);
 }
 
-/* Ensure Training History selector sits exactly 7px below header */
-#history-selector-card .card-header + .selector-content { margin-top: 0; }
-/* Safety: container-managed gap only */
-#history-selector-card .selector-content,
-#my-data-card .action-button-container { margin-top: 0; }
-
-/* Workout Logs — keep header row 16/16 and same-row alignment */
+/* --- Specific Styles for the Unified History Card Header --- */
 #workout-history-card .history-week-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: calc(var(--space-m) - var(--card-border-width, 2px));
-  padding-left: calc(var(--space-m) - var(--card-border-width, 2px));
-  padding-right: calc(var(--space-m) - var(--card-border-width, 2px));
-  padding-bottom: 0;
-  margin-bottom: var(--space-m);
-  box-sizing: border-box;
 }
-#workout-history-card .history-week-header h2 {
+#workout-history-card .history-week-header .week-range-text {
   font-size: var(--font-size-h2);
   font-weight: 600;
   line-height: 0.7;
   margin: 0;
   padding: 0;
 }
-#workout-history-card .week-navigator { display: inline-flex; align-items: center; gap: var(--space-s); }
+#workout-history-card .week-navigator {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-s);
+}
 #workout-history-card .week-nav-button {
-  width: 32px; height: 32px; border-radius: var(--border-radius);
-  display: inline-flex; align-items: center; justify-content: center;
-  background: #ffffff; border: 1px solid rgba(0,0,0,0.2); color: #000; cursor: pointer;
+  width: 32px;
+  height: 14px;
+  border-radius: var(--border-radius);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  color: #000;
+  cursor: pointer;
 }
 #workout-history-card .week-nav-button:disabled {
-  background:#2a2a2a; border-color:#333; color:#666; cursor: default;
+  background: #2a2a2a;
+  border-color: #333;
+  color: #666;
+  cursor: default;
 }
-#workout-history-card .week-nav-button svg { width: 20px; height: 20px; display: block; }
-#workout-history-card .week-nav-button svg path,
-#workout-history-card .week-nav-button svg polyline,
-#workout-history-card .week-nav-button svg polygon {
-  fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-}
-
-/* Rails & insets */
-#workout-history-card > .modal-divider {
-  margin-left: calc(var(--space-m) - var(--card-border-width, 2px));
-  margin-right: calc(var(--space-m) - var(--card-border-width, 2px));
-  margin-top: 0; margin-bottom: 0;
-}
-#workout-history-card .calendar-view-container .modal-divider {
-  margin-left: calc(var(--space-m) - var(--card-border-width, 2px));
-  margin-right: calc(var(--space-m) - var(--card-border-width, 2px));
-  margin-top: var(--space-m); margin-bottom: var(--space-m);
-}
-#workout-history-card .calendar-view-container {
-  padding: calc(var(--space-m) - var(--card-border-width, 2px));
-  padding-top: 0;
-  box-sizing: border-box;
+#workout-history-card .week-nav-button svg {
+  width: 20px;
+  height: 20px;
 }
 
-/* Day line */
-#workout-history-card .day-card-header {
-  display:flex; align-items: baseline; justify-content: space-between; gap: var(--space-s);
-  margin-top: var(--space-m);           /* 16 from rail */
-  margin-bottom: var(--space-s);        /* 7 to first set/exercise */
+/*
+  ARCHITECTURAL FIX (Scoped Reset):
+  This is the definitive fix for all spacing issues. By using the universal
+  selector (*) scoped with the component ID, we create a highly specific rule
+  that overrides ALL competing browser-default margins on EVERY child element.
+  This "flattens" the layout, allowing the .stack primitive's `gap` property
+  to be the single, reliable source of truth for all vertical rhythm.
+*/
+#workout-history-card * {
+  margin: 0;
 }
 
-/* Exercise blocks & set rows */
-#workout-history-card .history-exercise-block + .history-exercise-block { margin-top: var(--space-s); } /* 7px between exercises */
-#workout-history-card .history-exercise-name { font-size: 1rem; font-weight: 600; margin: 0; padding: 0; }
-#workout-history-card .history-exercise-set-row { display:flex; align-items: baseline; gap: var(--space-s); margin-top: 2px; }
-#workout-history-card .history-exercise-set-row .history-set-left { margin-left: 50px; white-space: nowrap; }
-#workout-history-card .history-exercise-set-row .history-set-right { margin-left: auto; white-space: nowrap; text-align: right; }
-#workout-history-card .history-session-divider { margin: var(--space-m) 0; }
-
-/* Footer button inset */
-#workout-history-card .card-footer-action-single {
-  padding: 0 calc(var(--space-m) - var(--card-border-width, 2px)) calc(var(--space-m) - var(--card-border-width, 2px));
-  box-sizing: border-box;
-}
-
-/* Placeholder: informational gray */
-#workout-history-card .calendar-view-container p.day-card-placeholder-text { color: var(--text-on-surface-medium); font-style: italic; }
-
-/* Kill any sneaky left-padding/margins to avoid 17px drift */
+/* 16px Inset Fix: Neutralize unwanted horizontal space on log items. */
 #workout-history-card .calendar-view-container .day-card-header,
 #workout-history-card .calendar-view-container .history-exercise-block,
-#workout-history-card .calendar-view-container .history-log-item { padding-left: 0; margin-left: 0; }
+#workout-history-card .calendar-view-container .history-log-item,
 #workout-history-card .calendar-view-container ul,
-#workout-history-card .calendar-view-container ol { margin-left: 0; padding-left: 0; }
-
-
-/* HISTORY SELECTOR — restore compact behavior */
-#history-selector-card .selector {
-  position: relative;
-  display: inline-block;
-  max-width: 100%;
-  pointer-events: auto;
+#workout-history-card .calendar-view-container ol {
+  padding-left: 0;
+  margin-left: 0;
 }
-#history-selector-card .selector .options-list {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: auto;
-  display: none;
-  z-index: 3;
-}
-#history-selector-card .selector.is-open .options-list {
-  display: block;
-}
-#history-selector-card .selector .item-main-line { white-space: nowrap; }
 
+/* --- Log Layout Styling & Rhythm --- */
+/* (All vertical spacing is now handled by .stack `gap` in the template) */
+#workout-history-card .day-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-s);
+  font-size: 1rem;
+  font-weight: 600;
+}
+#workout-history-card .history-exercise-name {
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0;
+}
+#workout-history-card .history-exercise-set-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-s);
+}
+#workout-history-card .history-exercise-set-row .history-set-left {
+  margin-left: 100px;
+  white-space: nowrap;
+}
+#workout-history-card .history-exercise-set-row .history-set-right {
+  margin-left: auto;
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* General log styling */
+#workout-history-card .modal-divider {
+  margin: var(--space-m) 0;
+}
+#workout-history-card .history-session-divider {
+  margin: var(--space-m) 0;
+}
+#workout-history-card .card-footer-action-single {
+  margin-top: 0; /* Spacing handled by parent stack */
+}
+
+#workout-history-card .calendar-view-container p.day-card-placeholder-text {
+  color: var(--on-surface-medium);
+  font-style: italic;
+}

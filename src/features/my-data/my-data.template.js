@@ -2,6 +2,7 @@ import { appState } from "state";
 import { ui } from "ui";
 import { createSelectorHTML } from "ui";
 import { getWorkoutCalendarHTML } from "./my-data.templates.calendarView.js";
+import { getWeekRange } from "utils";
 
 function getHistorySelectorHTML() {
   const { selectedTab } = appState.ui.myDataPage;
@@ -36,32 +37,48 @@ function getHistorySelectorHTML() {
 }
 
 export function getMyDataPageTemplate() {
-  const { selectedTab } = appState.ui.myDataPage;
+  const { selectedTab, weekOffset } = appState.ui.myDataPage;
   let logContentHtml = "";
 
   if (selectedTab === "Workouts") {
     logContentHtml = getWorkoutCalendarHTML();
   } else if (selectedTab === "Conditioning") {
-    logContentHtml = `<div class="card my-data-card"><div class="card-content-container"><h2 class="card-header"><span class="truncate-text">Conditioning Logs</span></h2><p class="no-history-text">Your conditioning logs will appear here.</p></div></div>`;
+    logContentHtml = `<div class="card my-data-card"><div class="card-content-container"><div class="card-header"><span class="truncate-text">Conditioning Logs</span></div><p class="no-history-text">Your conditioning logs will appear here.</p></div></div>`;
   } else if (selectedTab === "Stretching") {
-    logContentHtml = `<div class="card my-data-card"><div class="card-content-container"><h2 class="card-header"><span class="truncate-text">Stretching Logs</span></h2><p class="no-history-text">Your stretching logs will appear here.</p></div></div>`;
+    logContentHtml = `<div class="card my-data-card"><div class="card-content-container"><div class="card-header"><span class="truncate-text">Stretching Logs</span></div><p class="no-history-text">Your stretching logs will appear here.</p></div></div>`;
   }
+
+  const weekRange = getWeekRange(weekOffset);
+  const nextButtonDisabled = weekOffset === 0 ? "disabled" : "";
 
   return `
     <div class="card my-data-card">
-      <div class="card-content-container">
-        <h2 class="card-header"><span class="truncate-text">Performance</span></h2>
+      <div class="card-content-container stack" style="--stack-space: var(--space-header-offset);">
+        <div class="card-header"><span class="truncate-text">Performance</span></div>
         <div class="action-button-container">
           <button class="action-button button-primary" disabled>Show Chart</button>
         </div>
       </div>
     </div>
-    <div class="card my-data-card" id="history-selector-card">
-      <div class="card-content-container">
-        <h2 class="card-header"><span class="truncate-text">Training History</span></h2>
-        ${getHistorySelectorHTML()}
-      </div>
+    <div class="card my-data-card" id="workout-history-card">
+        <div class="card-content-container stack">
+            <div class="stack" style="--stack-space: var(--space-header-offset);">
+                <div class="history-week-header">
+                    <div class="card-title">History</div>
+                    <div class="week-navigator">
+                        <button class="week-nav-button" data-action="previousWeek">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                        </button>
+                        <span class="week-range-text text-plan">${weekRange}</span>
+                        <button class="week-nav-button" data-action="nextWeek" ${nextButtonDisabled}>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+                        </button>
+                    </div>
+                </div>
+                ${getHistorySelectorHTML()}
+            </div>
+            ${logContentHtml}
+        </div>
     </div>
-    ${logContentHtml}
   `;
 }
