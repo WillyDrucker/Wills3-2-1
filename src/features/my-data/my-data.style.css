@@ -1,42 +1,68 @@
 /* ==========================================================================
-   MY-DATA PAGE — CEMENTED ALIGNMENT (16/7/16 rhythm)
-   Pattern mirrors Config card for architectural consistency.
-   Layout is controlled by nested .stack primitives in the HTML template.
-   This ensures predictable, token-driven spacing without hacks.
+   MY-DATA PAGE – SIMPLIFIED NATURAL FLOW
+   Minimal rules with natural margins, using tokens for consistency
    ========================================================================== */
 
-/* Universal Card Rhythm for My Data Page */
-.my-data-card .card-content-container {
-  padding: calc(var(--space-m) - var(--card-border-width, 2px));
+/* Base card setup - compensate for 2px border */
+.my-data-card {
+  margin: 0 0 16px 0; /* 16px bottom margin between cards */
+  border: 2px solid transparent; /* 2px border that needs compensation */
+  --header-left-adjust: -1px; /* Token for font bearing compensation */
 }
+
+/* Asymmetric padding - only adjust top for font metrics */
+.my-data-card .card-content-container {
+  padding: 11px 14px 14px 14px !important; /* top right bottom left - 14px sides for true 16px visual */
+  box-sizing: border-box;
+}
+
 .my-data-card .card-header,
 #workout-history-card .card-title {
   font-size: var(--font-size-h2);
   font-weight: 600;
-  line-height: 0.7;
+  line-height: 1;
+  color: var(--on-surface-light);
   margin: 0;
   padding: 0;
-  color: var(--on-surface-light);
+  margin-bottom: var(--space-header-offset); /* 7px to element below */
+  /* Visual adjustment for font metrics - documented as necessary */
+  position: relative;
+  left: var(--header-left-adjust); /* -1px via token for exact 16px visual alignment */
 }
 
-/* --- Specific Styles for the Unified History Card Header --- */
+/* Reset for Performance card to ensure consistent spacing */
+.my-data-card:first-child * {
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+/* Ensure button container has no extra margins */
+.my-data-card .action-button-container {
+  margin: 0;
+  padding: 0;
+}
+
+/* Universal reset for workout history card - MUST include line-height */
+#workout-history-card * {
+  margin: 0;
+  padding: 0;
+  line-height: 1;  /* Critical - removes browser default line spacing */
+}
+
+/* Week navigation header */
 #workout-history-card .history-week-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-#workout-history-card .history-week-header .week-range-text {
-  font-size: var(--font-size-h2);
-  font-weight: 600;
-  line-height: 0.7;
-  margin: 0;
-  padding: 0;
-}
+
 #workout-history-card .week-navigator {
   display: inline-flex;
   align-items: center;
   gap: var(--space-s);
 }
+
 #workout-history-card .week-nav-button {
   width: 32px;
   height: 14px;
@@ -44,86 +70,60 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #ffffff;
+  background: #fff;
   border: 1px solid rgba(0, 0, 0, 0.2);
   color: #000;
   cursor: pointer;
 }
+
 #workout-history-card .week-nav-button:disabled {
   background: #2a2a2a;
   border-color: #333;
   color: #666;
   cursor: default;
 }
+
 #workout-history-card .week-nav-button svg {
   width: 20px;
   height: 20px;
 }
 
-/*
-  ARCHITECTURAL FIX (Scoped Reset):
-  This is the definitive fix for all spacing issues. By using the universal
-  selector (*) scoped with the component ID, we create a highly specific rule
-  that overrides ALL competing browser-default margins on EVERY child element.
-  This "flattens" the layout, allowing the .stack primitive's `gap` property
-  to be the single, reliable source of truth for all vertical rhythm.
-*/
-#workout-history-card * {
-  margin: 0;
-}
-
-/* 16px Inset Fix: Neutralize unwanted horizontal space on log items. */
-#workout-history-card .calendar-view-container .day-card-header,
-#workout-history-card .calendar-view-container .history-exercise-block,
-#workout-history-card .calendar-view-container .history-log-item,
-#workout-history-card .calendar-view-container ul,
-#workout-history-card .calendar-view-container ol {
-  padding-left: 0;
-  margin-left: 0;
-}
-
-/* --- Log Layout Styling & Rhythm --- */
-/* (All vertical spacing is now handled by .stack `gap` in the template) */
+/* Natural content flow - all flattened */
 #workout-history-card .day-card-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: var(--space-s);
-  font-size: 1rem;
+  align-items: center;
   font-weight: 600;
 }
+
 #workout-history-card .history-exercise-name {
-  font-size: 1rem;
   font-weight: 600;
-  padding: 0;
 }
+
 #workout-history-card .history-exercise-set-row {
   display: flex;
   align-items: baseline;
-  gap: var(--space-s);
 }
-#workout-history-card .history-exercise-set-row .history-set-left {
+
+#workout-history-card .history-set-left {
   margin-left: 100px;
-  white-space: nowrap;
 }
-#workout-history-card .history-exercise-set-row .history-set-right {
+
+#workout-history-card .history-set-right {
   margin-left: auto;
-  white-space: nowrap;
   text-align: right;
 }
 
-/* General log styling */
-#workout-history-card .modal-divider {
-  margin: var(--space-m) 0;
-}
+/* Dividers */
+#workout-history-card .modal-divider,
 #workout-history-card .history-session-divider {
-  margin: var(--space-m) 0;
-}
-#workout-history-card .card-footer-action-single {
-  margin-top: 0; /* Spacing handled by parent stack */
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
 }
 
-#workout-history-card .calendar-view-container p.day-card-placeholder-text {
+/* Placeholder text */
+#workout-history-card .day-card-placeholder-text {
   color: var(--on-surface-medium);
   font-style: italic;
 }

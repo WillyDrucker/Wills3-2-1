@@ -121,9 +121,9 @@ export function getWorkoutCalendarHTML() {
                   })
                   .join("");
 
-                return `<div class="history-exercise-block stack" style="--stack-space: var(--space-s);">
+                return `<div class="history-exercise-block">
                           <div class="history-exercise-name ${exerciseColorClass}">${exerciseName}</div>
-                          <div class="history-set-rows-group stack" style="--stack-space: var(--space-s);">
+                          <div class="history-set-rows-group">
                             ${setRowsHtml}
                           </div>
                         </div>`;
@@ -139,7 +139,7 @@ export function getWorkoutCalendarHTML() {
                         ${sessionHeaderHtml}
                         <span class="date-text data-highlight text-plan">${day.dateString}</span>
                     </div>
-                    <div class="exercise-list-group stack" style="--stack-space: var(--space-m);">
+                    <div class="exercise-list-group">
                         ${exerciseBlocksHtml}
                     </div>
                     ${sessionSeparator}`;
@@ -161,14 +161,14 @@ export function getWorkoutCalendarHTML() {
           ? '<div class="modal-divider"></div>'
           : "";
 
-      return `<div class="day-section stack" style="--stack-space: var(--space-m);">${dayContentHtml}</div>${separator}`;
+      return `<div class="day-section">${dayContentHtml}</div>${separator}`;
     })
     .join("");
 
   const containerClass = hasWideResults ? "has-wide-results" : "";
 
   return `
-    <div class="workout-log-content-area stack">
+    <div class="workout-log-content-area">
         <div class="calendar-view-container ${containerClass}">
             ${daySectionsHtml}
         </div>

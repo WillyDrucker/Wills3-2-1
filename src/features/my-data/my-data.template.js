@@ -53,28 +53,28 @@ export function getMyDataPageTemplate() {
 
   return `
     <div class="card my-data-card">
-      <div class="card-content-container stack" style="--stack-space: var(--space-header-offset);">
-        <div class="card-header"><span class="truncate-text">Performance</span></div>
+      <div class="card-content-container">
+        <div class="card-header">Performance</div>
         <div class="action-button-container">
           <button class="action-button button-primary" disabled>Show Chart</button>
         </div>
       </div>
     </div>
     <div class="card my-data-card" id="workout-history-card">
-        <div class="card-content-container stack">
-            <div class="stack" style="--stack-space: var(--space-header-offset);">
-                <div class="history-week-header">
-                    <div class="card-title">History</div>
-                    <div class="week-navigator">
-                        <button class="week-nav-button" data-action="previousWeek">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-                        </button>
-                        <span class="week-range-text text-plan">${weekRange}</span>
-                        <button class="week-nav-button" data-action="nextWeek" ${nextButtonDisabled}>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
-                        </button>
-                    </div>
+        <div class="card-content-container">
+            <div class="history-week-header">
+                <div class="card-title">History</div>
+                <div class="week-navigator">
+                    <button class="week-nav-button" data-action="previousWeek">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                    </button>
+                    <span class="week-range-text text-plan">${weekRange}</span>
+                    <button class="week-nav-button" data-action="nextWeek" ${nextButtonDisabled}>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+                    </button>
                 </div>
+            </div>
+            <div class="selector-container">
                 ${getHistorySelectorHTML()}
             </div>
             ${logContentHtml}
