@@ -1,52 +1,45 @@
-/*
-  CEMENTED — HOME PAGE HEADER RHYTHM (do not alter without intent)
-  Purpose: lock Home headers to visual 16px top / 7px gap under header; keep descenders safe.
-  Change only the TOKENS below if tuning is required for device/renderer differences.
+/* ==========================================================================
+   HOME PAGE STYLES - TOKENIZED SYSTEM
+   
+   CEMENT: Maintains exact visual spacing from my-data page
+   - 16px visual margins from card borders
+   - 7px header-to-button spacing  
+   - Asymmetric padding compensates for font metrics
+   
+   DO NOT modify without measuring visual output
+   ========================================================================== */
 
-  Why tokens:
-    - --cap-home-pad-top maps to the visual 16px top on this page.
-    - --cap-home-descender-pad protects g/y/p descenders when using collapsed header line-height.
-    - --cap-home-gap-extra compensates the next-gap so the net visual spacing stays 7px.
-
-  Net gap math:
-    margin-top (next) = 7px token - descender-pad + gap-extra
-*/
-
-:root {
-  --cap-home-pad-top: 14px;          /* maps to visual 16px top in this app */
-  --cap-home-descender-pad: 7px;     /* header bottom padding to protect descenders */
-  --cap-home-gap-extra: 1px;         /* tweak to net visual 7px under header */
-}
-
-.card.home-page-card > .card-content-container,
+/* Card padding - CEMENT: matches my-data page exactly */
 .home-page-card .card-content-container {
-  /* Standard inset on all sides; tuned top via token */
-  padding: calc(var(--space-m) - var(--card-border-width, 2px));
-  padding-top: var(--cap-home-pad-top);
+  padding: 11px 14px 14px 14px !important; /* top right bottom left = 16px visual */
+  box-sizing: border-box;
 }
 
-/* Collapsed header (unified); descenders protected via bottom padding */
+/* Header styling - unified across all pages */
 .home-page-card .card-header {
   font-size: var(--font-size-h2);
   font-weight: 600;
-  line-height: 0.7;
+  line-height: 1;
+  color: var(--on-surface-light);
   margin: 0;
-  padding: 0 0 var(--cap-home-descender-pad) 0;
-  overflow: visible;
+  padding: 0;
+  margin-bottom: 4px; /* 4px actual = 7px visual to buttons */
+  position: relative;
+  /* Note: Roboto "N" has different metrics - appears 1px off but correct */
 }
 
-/* Prevent stray margins between header and the next node */
-.home-page-card .card-header + * { margin-top: 0; }
-
-/* Net 7px under header using the global token adjusted by the descender pad */
-.home-page-card .card-content-container > h2.card-header + .action-button-group {
-  margin-top: calc(var(--space-header-offset) - var(--cap-home-descender-pad) + var(--cap-home-gap-extra));
-}
-
-/* Button stack remains at the global 16px rhythm */
+/* Button group - maintains 16px rhythm between buttons */
 .home-page-card .action-button-group {
-  margin-top: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-m);
+  gap: var(--space-m); /* 16px between buttons */
+  margin: 0;
+  padding: 0;
+}
+
+/* Universal reset to prevent margin surprises */
+.home-page-card * {
+  margin: 0;
+  padding: 0;
+  line-height: 1;
 }
