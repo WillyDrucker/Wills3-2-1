@@ -1,39 +1,48 @@
-/*
-  CEMENTED (Card Rhythm & Header Pattern — Config Card):
-  - Card inset uses border-compensated padding so visual edge = 16px.
-  - H2 header uses line-height: 0.7 (allowed exception) to collapse ascent/descenders.
-  - Header→content gap is tokenized at 7px via --space-header-offset.
-*/
-/*
-  REFACTORED (Definitive Grouped Stack System - FINAL):
-  This is the final, correct implementation for the Config Card layout. The
-  layout is controlled by the nested stack architecture in the HTML, and this
-  stylesheet provides the crucial line-height tuning and padding adjustments.
-*/
+/* ==========================================================================
+   CONFIG CARD STYLES - TOKENIZED SYSTEM
+   
+   CEMENT: Uses global tokens from _variables.css
+   - 16px visual from card borders (--space-m)
+   - 7px header-to-selector spacing (--space-header-offset)
+   - Card-specific adjustments defined locally
+   
+   DO NOT modify without measuring visual output
+   ========================================================================== */
 
-/*
-  1. The container padding is now definitively tuned:
-     - padding-top: 14px: Creates the correct 16px VISUAL gap to the H2 text.
-*/
-#config-card .card-content-container {
-  /* CEMENTED: border-compensated inset → 16px visual */
-  padding: calc(var(--space-m) - var(--card-border-width, 2px));
+/* Card-specific visual adjustments */
+#config-card {
+  --card-padding-top: 11px;     /* Compensates for font ascender */
+  --card-padding-sides: 14px;   /* With 2px border = 16px visual */
+  --header-margin-bottom: 4px;  /* With font descender = 7px visual */
+  --group-spacing: 13px;         /* Between config groups = 16px visual */
 }
 
-/*
-  2. The H2 header is styled with the definitive 0.7 line-height, which
-     is the key to the entire layout working correctly.
-*/
+/* Card padding - CEMENT: achieves exact 16px visual */
+#config-card .card-content-container {
+  padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
+  box-sizing: border-box;
+}
+
+/* Header styling - unified across app */
 #config-card .card-header {
-  /* CEMENTED: H2 collapse for exact 16/7 rhythm */
-  color: var(--on-surface-light);
   font-size: var(--font-size-h2);
   font-weight: 600;
-  line-height: 0.7;
+  line-height: 1;
+  color: var(--on-surface-light);
   margin: 0;
   padding: 0;
+  margin-bottom: var(--header-margin-bottom);
 }
-#config-card .card-header + .card-content-container ~ * {
-  /* CEMENTED: 7px header→selector gap (token) */
-  margin-top: var(--space-header-offset);
+
+/* Config groups - maintains rhythm between sections */
+#config-card .config-group {
+  margin: 0;
+  padding: 0;
+  margin-bottom: var(--group-spacing);
 }
+
+#config-card .config-group:last-child {
+  margin-bottom: 0;
+}
+
+/* Note: Selectors maintain their own spacing from _selectors.css */

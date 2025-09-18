@@ -8,27 +8,21 @@ export function getConfigCardTemplate() {
     (log) => log.status !== "pending"
   );
 
-  /*
-    REFACTORED (Definitive Grouped Stack System):
-    - The headers are restored to semantic H2 tags with the .card-header class.
-    - The inner stack now uses the new --space-header-offset token to achieve the
-      correct 7px visual gap. This is the final, production-ready version.
-  */
   return `
     <div class="card" id="config-card">
-      <div class="card-content-container stack">
-        <div class="config-group stack" style="--stack-space: var(--space-header-offset);">
-          <h2 class="card-header"><span class="truncate-text">Current Setup</span></h2>
+      <div class="card-content-container">
+        <div class="config-group">
+          <h2 class="card-header">Current Setup</h2>
           ${getCurrentSetupSelectorHTML(isAnySetLogged)}
         </div>
 
-        <div class="config-group stack" style="--stack-space: var(--space-header-offset);">
-          <h2 class="card-header"><span class="truncate-text">Current Focus</span></h2>
+        <div class="config-group">
+          <h2 class="card-header">Current Focus</h2>
           ${getDaySelectorHTML(isAnySetLogged)}
         </div>
 
-        <div class="config-group stack" style="--stack-space: var(--space-header-offset);">
-          <h2 class="card-header"><span class="truncate-text">Current Session</span></h2>
+        <div class="config-group">
+          <h2 class="card-header">Current Session</h2>
           ${getTimeSelectorHTML(isAnySetLogged)}
         </div>
       </div>
