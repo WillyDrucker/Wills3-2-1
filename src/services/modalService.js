@@ -52,4 +52,26 @@ export function close() {
   focusTrapService.deactivate();
   appState.ui.modal.elementToFocusOnClose?.focus();
   appState.ui.modal.elementToFocusOnClose = null;
+  
+  // FIX: Clean up selector states after modal closes
+  // This prevents selectors from being stuck in muted state after 
+  // dismissing modal via background click
+  requestAnimationFrame(() => {
+    // Remove any lingering muted states from selectors
+    document.querySelectorAll('.app-selector.is-muted').forEach(selector => {
+      // Only remove muted state if there's no reason to keep it
+      // (e.g., no workout sets have been logged)
+      const shouldStayMuted = appState.session.workoutLog?.some(
+        log => log.status !== "pending"
+      );
+      
+      if (!shouldStayMuted) {
+        selector.classList.remove('is-muted');
+        selector.classList.remove('is-content-muted');
+      }
+    });
+    
+    // Ensure body state is clean
+    document.body.classList.remove('is-selector-open');
+  });
 }

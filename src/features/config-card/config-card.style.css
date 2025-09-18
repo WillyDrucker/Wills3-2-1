@@ -45,4 +45,14 @@
   margin-bottom: 0;
 }
 
+/* Balanced text for two-line selector items */
+#config-card .selector-content.balanced-text {
+  line-height: 1.15;
+  padding: 2px 0;
+}
+
+#config-card .selector-content.balanced-text span {
+  display: block;
+}
+
 /* Note: Selectors maintain their own spacing from _selectors.css */

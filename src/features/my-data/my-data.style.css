@@ -9,7 +9,16 @@
    DO NOT modify token values without measuring visual output.
    ========================================================================== */
 
-:root {
+/* Card-specific tokens for my-data cards */
+.my-data-card {
+  /* Core card padding */
+  --card-padding-top: 11px;       /* Compensates for font ascender */
+  --card-padding-sides: 14px;     /* With 2px border = 16px visual */
+  --header-margin-bottom: 4px;    /* With font descender = 7px visual */
+}
+
+/* History card specific tokens - CEMENT: Do not remove any of these */
+#workout-history-card {
   /* Visual compensation tokens - font metric adjustments */
   --visual-header-top: -3px;        /* H2 ascender space */
   --visual-header-left: -1px;       /* Font bearing */
@@ -20,8 +29,6 @@
   --visual-border-comp: -2px;       
   
   /* CEMENT: Actual measurements for precise visual targets */
-  --actual-padding-top: 11px;       /* = 16px visual with border */
-  --actual-padding-sides: 14px;     /* = 16px visual with border */
   --actual-selector-spacing: 15px;  
   --actual-day-header-spacing: 17px;
   --actual-placeholder-spacing: 15px;
@@ -41,7 +48,7 @@
 
 /* CEMENT: Card padding precisely calibrated for 16px visual */
 .my-data-card .card-content-container {
-  padding: var(--actual-padding-top) var(--actual-padding-sides) var(--actual-padding-sides) var(--actual-padding-sides) !important;
+  padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides) !important;
   box-sizing: border-box;
 }
 
@@ -61,7 +68,7 @@
 /* Performance card header spacing */
 .my-data-card:first-child .card-header {
   display: block;
-  margin-bottom: var(--visual-header-bottom);
+  margin-bottom: var(--header-margin-bottom);
 }
 
 /* Performance card reset */
@@ -164,7 +171,7 @@
 
 /* Placeholder compensation */
 #workout-history-card .day-card-header + .day-card-placeholder-text {
-  margin-top: 9px !important;
+  margin-top: 12px !important;  /* 3px header margin + 12px = 15px actual ≈ 16px visual */
 }
 
 #workout-history-card .day-card-placeholder-text {

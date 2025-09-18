@@ -28,15 +28,12 @@ export function getCurrentSetupSelectorHTML(isAnySetLogged) {
   options.push(
     `<li class="${
       isModeChangeDisabled ? "is-muted" : ""
-    }" data-action="openSupersetModal"><div class="selector-content multi-line"><span class="truncate-text">Superset Mode:</span><span class="truncate-text text-warning">Two Body Parts - Same Day</span></div></li>`
+    }" data-action="openSupersetModal"><div class="selector-content multi-line balanced-text"><span class="truncate-text">Superset Mode:</span><span class="truncate-text text-warning">Two Body Parts, Same Day</span></div></li>`
   );
   options.push(
     `<li class="${
       isModeChangeDisabled ? "is-muted" : ""
-    }" data-action="openPartnerMode"><div class="selector-content multi-line"><span class="truncate-text">Partner Mode:</span><span class="truncate-text text-primary">Two Lifters - Same Day</span></div></li>`
-  );
-  options.push(
-    `<li class="is-muted" data-action="openCoachMode"><div class="selector-content multi-line"><span class="truncate-text">Coach Mode:</span><span class="truncate-text text-primary">Multiple Lifters - Same Day</span></div></li>`
+    }" data-action="openPartnerMode"><div class="selector-content multi-line balanced-text"><span class="truncate-text">Partner Mode:</span><span class="truncate-text text-primary">Two Lifters, Same Day</span></div></li>`
   );
   options.push(
     `<li class="has-colored-border border-red" data-action="openResetConfirmationModal"><div class="selector-content"><span class="truncate-text text-skip">Reset Settings & Clear Logs</span></div></li>`

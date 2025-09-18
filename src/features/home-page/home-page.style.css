@@ -1,21 +1,28 @@
 /* ==========================================================================
    HOME PAGE STYLES - TOKENIZED SYSTEM
    
-   CEMENT: Maintains exact visual spacing from my-data page
-   - 16px visual margins from card borders
-   - 7px header-to-button spacing  
-   - Asymmetric padding compensates for font metrics
+   CEMENT: Uses global tokens from _variables.css
+   - 16px visual from card borders (--space-m)
+   - 7px header-to-button spacing (--space-header-offset)
+   - Card-specific adjustments defined locally
    
    DO NOT modify without measuring visual output
    ========================================================================== */
 
-/* Card padding - CEMENT: matches my-data page exactly */
+/* Card-specific visual adjustments */
+.home-page-card {
+  --card-padding-top: 11px;     /* Compensates for font ascender */
+  --card-padding-sides: 14px;   /* With 2px border = 16px visual */
+  --header-margin-bottom: 4px;  /* With font descender = 7px visual */
+}
+
+/* Card padding - CEMENT: achieves exact 16px visual */
 .home-page-card .card-content-container {
-  padding: 11px 14px 14px 14px !important; /* top right bottom left = 16px visual */
+  padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
   box-sizing: border-box;
 }
 
-/* Header styling - unified across all pages */
+/* Header styling - unified across app */
 .home-page-card .card-header {
   font-size: var(--font-size-h2);
   font-weight: 600;
@@ -23,12 +30,10 @@
   color: var(--on-surface-light);
   margin: 0;
   padding: 0;
-  margin-bottom: 4px; /* 4px actual = 7px visual to buttons */
-  position: relative;
-  /* Note: Roboto "N" has different metrics - appears 1px off but correct */
+  margin-bottom: var(--header-margin-bottom);
 }
 
-/* Button group - maintains 16px rhythm between buttons */
+/* Button group - maintains rhythm between buttons */
 .home-page-card .action-button-group {
   display: flex;
   flex-direction: column;
