@@ -1,21 +1,51 @@
 /* ==========================================================================
-   MY-DATA PAGE – SIMPLIFIED NATURAL FLOW
-   Minimal rules with natural margins, using tokens for consistency
+   MY-DATA PAGE STYLES - TOKENIZED SYSTEM
+   
+   CEMENT: Core spacing achieved through visual compensation tokens.
+   - 16px visual margins from card borders  
+   - 7px rhythm within exercise groups
+   - Font metric adjustments calibrated for Roboto at 1.25rem
+   
+   DO NOT modify token values without measuring visual output.
    ========================================================================== */
 
-/* Base card setup - compensate for 2px border */
-.my-data-card {
-  margin: 0 0 16px 0; /* 16px bottom margin between cards */
-  border: 2px solid transparent; /* 2px border that needs compensation */
-  --header-left-adjust: -1px; /* Token for font bearing compensation */
+:root {
+  /* Visual compensation tokens - font metric adjustments */
+  --visual-header-top: -3px;        /* H2 ascender space */
+  --visual-header-left: -1px;       /* Font bearing */
+  --visual-header-bottom: 4px;      /* 7px visual (7-3 descender) */
+  --visual-text-top: -1px;          
+  --visual-text-bottom: -4px;       
+  --visual-italic-bottom: -1px;     
+  --visual-border-comp: -2px;       
+  
+  /* CEMENT: Actual measurements for precise visual targets */
+  --actual-padding-top: 11px;       /* = 16px visual with border */
+  --actual-padding-sides: 14px;     /* = 16px visual with border */
+  --actual-selector-spacing: 15px;  
+  --actual-day-header-spacing: 17px;
+  --actual-placeholder-spacing: 15px;
+  --actual-footer-spacing: 11px;    
+  
+  /* Exercise rhythm tokens */
+  --exercise-name-spacing: 3px;     /* = 7px visual */
+  --exercise-set-spacing: 3px;      /* = 7px visual */
+  --exercise-block-spacing: 12px;   /* = 16px visual between exercises */
 }
 
-/* Asymmetric padding - only adjust top for font metrics */
+/* Card foundation */
+.my-data-card {
+  margin: 0 0 var(--space-m) 0;
+  border: 2px solid transparent;
+}
+
+/* CEMENT: Card padding precisely calibrated for 16px visual */
 .my-data-card .card-content-container {
-  padding: 11px 14px 14px 14px !important; /* top right bottom left - 14px sides for true 16px visual */
+  padding: var(--actual-padding-top) var(--actual-padding-sides) var(--actual-padding-sides) var(--actual-padding-sides) !important;
   box-sizing: border-box;
 }
 
+/* Header styling */
 .my-data-card .card-header,
 #workout-history-card .card-title {
   font-size: var(--font-size-h2);
@@ -24,43 +54,73 @@
   color: var(--on-surface-light);
   margin: 0;
   padding: 0;
-  margin-bottom: var(--space-header-offset); /* 7px to element below */
-  /* Visual adjustment for font metrics - documented as necessary */
   position: relative;
-  left: var(--header-left-adjust); /* -1px via token for exact 16px visual alignment */
+  left: var(--visual-header-left);
 }
 
-/* Reset for Performance card to ensure consistent spacing */
+/* Performance card header spacing */
+.my-data-card:first-child .card-header {
+  display: block;
+  margin-bottom: var(--visual-header-bottom);
+}
+
+/* Performance card reset */
 .my-data-card:first-child * {
   margin: 0;
   padding: 0;
   line-height: 1;
 }
 
-/* Ensure button container has no extra margins */
+/* Button container */
 .my-data-card .action-button-container {
   margin: 0;
   padding: 0;
 }
 
-/* Universal reset for workout history card - MUST include line-height */
+/* History card universal reset */
 #workout-history-card * {
   margin: 0;
   padding: 0;
-  line-height: 1;  /* Critical - removes browser default line spacing */
+  line-height: 1;
 }
 
-/* Week navigation header */
+/* History header with week navigation */
 #workout-history-card .history-week-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: var(--visual-header-bottom);
+  height: var(--font-size-h2);
 }
 
+/* Unified text styling for header elements */
+#workout-history-card .history-week-header .card-title,
+#workout-history-card .week-range-text {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+#workout-history-card .history-week-header .card-title {
+  color: var(--on-surface-light);
+  position: relative;
+  left: var(--visual-header-left);
+}
+
+#workout-history-card .week-range-text {
+  color: var(--text-green-plan) !important;
+}
+
+/* Week navigation controls */
 #workout-history-card .week-navigator {
   display: inline-flex;
   align-items: center;
   gap: var(--space-s);
+  vertical-align: middle;
 }
 
 #workout-history-card .week-nav-button {
@@ -88,23 +148,77 @@
   height: 20px;
 }
 
-/* Natural content flow - all flattened */
+/* Calendar content spacing */
+#workout-history-card .selector-container {
+  margin-bottom: var(--actual-selector-spacing);
+}
+
+/* Day headers */
 #workout-history-card .day-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-weight: 600;
+  margin-bottom: var(--exercise-name-spacing) !important;
 }
 
+/* Placeholder compensation */
+#workout-history-card .day-card-header + .day-card-placeholder-text {
+  margin-top: 9px !important;
+}
+
+#workout-history-card .day-card-placeholder-text {
+  color: var(--on-surface-medium);
+  font-style: italic;
+  margin-bottom: calc(var(--space-m) + var(--visual-italic-bottom));
+}
+
+/* Exercise list container */
+#workout-history-card .exercise-list-group {
+  margin-top: 0 !important;
+}
+
+/* Exercise blocks - 7px internal, 16px between */
+#workout-history-card .history-exercise-block {
+  margin: 0 0 var(--exercise-block-spacing) 0 !important;
+  padding: 0 !important;
+}
+
+#workout-history-card .history-exercise-block:last-child {
+  margin-bottom: 15px !important; /* To divider */
+}
+
+/* When followed by session divider */
+#workout-history-card .exercise-list-group:has(+ .history-session-divider) .history-exercise-block:last-child {
+  margin-bottom: 13px !important;
+}
+
+/* Exercise names */
 #workout-history-card .history-exercise-name {
   font-weight: 600;
+  margin: 0 0 var(--exercise-set-spacing) 0 !important;
+  padding: 0 !important;
 }
 
+/* Set rows container */
+#workout-history-card .history-set-rows-group {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Individual set rows */
 #workout-history-card .history-exercise-set-row {
   display: flex;
   align-items: baseline;
+  margin: 0 0 var(--exercise-set-spacing) 0 !important;
+  padding: 0 !important;
 }
 
+#workout-history-card .history-exercise-set-row:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Set row alignment */
 #workout-history-card .history-set-left {
   margin-left: 100px;
 }
@@ -114,16 +228,41 @@
   text-align: right;
 }
 
-/* Dividers */
-#workout-history-card .modal-divider,
-#workout-history-card .history-session-divider {
-  height: 1px;
-  background: rgba(255, 255, 255, 0.1);
+/* Day divider - 6px sandwich effect */
+#workout-history-card .modal-divider {
+  height: 2px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
   border: none;
+  background: #000000;
+  box-shadow: 
+    0 -2px 0 0 rgba(255, 255, 255, 0.1),
+    0 2px 0 0 rgba(255, 255, 255, 0.1);
+  margin-bottom: var(--actual-day-header-spacing);
 }
 
-/* Placeholder text */
-#workout-history-card .day-card-placeholder-text {
-  color: var(--on-surface-medium);
-  font-style: italic;
+/* Session divider - simple 2px line */
+#workout-history-card .history-session-divider {
+  height: 2px;
+  width: 100%;
+  margin: 13px 0 15px 0; /* Visual 16px both sides */
+  padding: 0;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Footer button */
+#workout-history-card .card-footer-action-single {
+  margin-top: var(--actual-footer-spacing);
+  padding-top: 0;
+}
+
+#workout-history-card .card-footer-action-single .action-button {
+  margin-top: 0;
+}
+
+/* Last placeholder to button spacing override */
+#workout-history-card .calendar-view-container > div:last-child .day-card-placeholder-text {
+  margin-bottom: 13px;
 }

@@ -7,16 +7,21 @@ import {
   pluralize,
 } from "utils";
 
+/**
+ * Generates HTML for the workout calendar view
+ * Displays 7 days of workout history with proper grouping and ordering
+ */
 export function getWorkoutCalendarHTML() {
   const { weekOffset } = appState.ui.myDataPage;
   const daysOfWeek = getDaysInWeek(weekOffset);
-  let hasWideResults = false; // Flag for dynamic layout
+  let hasWideResults = false; // Triggers wider layout for dumbbell exercises
 
   const daySectionsHtml = daysOfWeek
     .map((day, index) => {
       const dayStart = day.date.setHours(0, 0, 0, 0);
       const dayEnd = day.date.setHours(23, 59, 59, 999);
 
+      // Find all workout sessions for this day
       const workoutsForDay = appState.user.history.workouts.filter(
         (session) => {
           const sessionDate = new Date(session.id).getTime();
@@ -30,12 +35,16 @@ export function getWorkoutCalendarHTML() {
       if (workoutsForDay.length > 0) {
         isPlaceholder = false;
 
+        // Process each workout session
         dayContentHtml = workoutsForDay
           .map((session, sessionIndex) => {
+            // Color coding for body parts
             const bodyPartColorClass =
               colorCodeMap[session.bodyPartColorKey] || "text-plan";
             const bodyPart2ColorClass =
               colorCodeMap[session.bodyPart2ColorKey] || "text-warning";
+            
+            // Build header with color-coded body parts
             let sessionHeaderHtml;
             if (session.bodyPart.includes("&")) {
               const [part1, part2] = session.bodyPart.split("&");
@@ -49,27 +58,55 @@ export function getWorkoutCalendarHTML() {
             const currentPlan =
               programConfig[session.planName] || programConfig["Will's 3-2-1:"];
 
+            // Group exercises by name with metadata
             const exercisesGrouped = session.logs.reduce((acc, log) => {
               const key = log.exercise.exercise_name;
               if (!acc[key]) {
-                acc[key] = [];
+                acc[key] = {
+                  logs: [],
+                  supersetSide: log.supersetSide || null,
+                  exercise: log.exercise
+                };
               }
-              acc[key].push(log);
+              acc[key].logs.push(log);
               return acc;
             }, {});
 
+            // Sort sets within each exercise by set number
             for (const exerciseName in exercisesGrouped) {
-              exercisesGrouped[exerciseName].sort(
+              exercisesGrouped[exerciseName].logs.sort(
                 (a, b) => a.setNumber - b.setNumber
               );
             }
 
-            const exerciseBlocksHtml = Object.keys(exercisesGrouped)
-              .map((exerciseName) => {
-                const logsForExercise = exercisesGrouped[exerciseName];
-                const firstLog = logsForExercise[0];
-                let exerciseColorClass;
+            // CEMENT: Group exercises by type for proper ordering
+            // Normal → Left superset → Right superset
+            const leftExercises = [];
+            const rightExercises = [];
+            const normalExercises = [];
 
+            for (const exerciseName in exercisesGrouped) {
+              const exerciseData = exercisesGrouped[exerciseName];
+              if (exerciseData.supersetSide === 'left') {
+                leftExercises.push({ name: exerciseName, data: exerciseData });
+              } else if (exerciseData.supersetSide === 'right') {
+                rightExercises.push({ name: exerciseName, data: exerciseData });
+              } else {
+                normalExercises.push({ name: exerciseName, data: exerciseData });
+              }
+            }
+
+            // Combine in proper order
+            const orderedExercises = [...normalExercises, ...leftExercises, ...rightExercises];
+
+            // Build exercise HTML blocks
+            const exerciseBlocksHtml = orderedExercises
+              .map(({ name: exerciseName, data: exerciseData }) => {
+                const logsForExercise = exerciseData.logs;
+                const firstLog = logsForExercise[0];
+                
+                // Color based on superset side or exercise type
+                let exerciseColorClass;
                 if (firstLog.supersetSide) {
                   exerciseColorClass =
                     firstLog.supersetSide === "left"
@@ -81,11 +118,14 @@ export function getWorkoutCalendarHTML() {
                     "text-plan";
                 }
 
+                // Build set rows
                 const setRowsHtml = logsForExercise
                   .map((log) => {
                     const isDumbbell = isDumbbellExercise(log.exercise);
                     if (isDumbbell) hasWideResults = true;
                     const repsUnit = isDumbbell ? " (ea.)" : "";
+                    
+                    // Format results or show skipped
                     const resultText =
                       log.status === "skipped"
                         ? `<span class="text-orange">Skipped</span>`
@@ -108,6 +148,7 @@ export function getWorkoutCalendarHTML() {
                               "reps"
                             )}${repsUnit}</span>
                           </div>`;
+                    
                     const totalSets = firstLog.exercise.sets;
 
                     const setInfoHtml = `<span class="log-item-set-info-value data-highlight ${session.sessionColorClass}">${log.setNumber}</span>
@@ -130,6 +171,7 @@ export function getWorkoutCalendarHTML() {
               })
               .join("");
 
+            // Add session divider if multiple workouts in same day
             const sessionSeparator =
               sessionIndex < workoutsForDay.length - 1
                 ? '<hr class="history-session-divider">'
@@ -146,6 +188,7 @@ export function getWorkoutCalendarHTML() {
           })
           .join("");
       } else {
+        // Show placeholder for empty days
         const dayHeaderHtml = `<div class="day-card-header"><div class="day-name">${day.dayName}</div><span class="date-text data-highlight text-plan">${day.dateString}</span></div>`;
         const placeholderText = isDateInFuture(day.date)
           ? "Remaining Workout Day"
@@ -156,6 +199,7 @@ export function getWorkoutCalendarHTML() {
         `;
       }
 
+      // Day divider between days
       const separator =
         index < daysOfWeek.length - 1
           ? '<div class="modal-divider"></div>'
