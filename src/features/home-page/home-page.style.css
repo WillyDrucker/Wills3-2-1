@@ -4,11 +4,12 @@
    CEMENT: Uses global tokens from _variables.css
    - Universal card padding pattern for 16px visual margins
    - Standard header spacing for 7px visual gap
+   - 16px rhythm between buttons
    
    DO NOT modify without measuring visual output
    ========================================================================== */
 
-/* Card padding - CEMENT: uses global tokens for consistency */
+/* Card padding - uses global tokens for consistency */
 .home-page-card .card-content-container {
   padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
   box-sizing: border-box;

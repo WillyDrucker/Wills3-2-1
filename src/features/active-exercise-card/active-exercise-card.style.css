@@ -1,55 +1,60 @@
 /* ==========================================================================
-   ACTIVE EXERCISE CARD - UNIFIED TOKENIZED SYSTEM
+   ACTIVE EXERCISE CARD - TOKENIZED SYSTEM
    
-   CEMENT: Complete rebuild following established token patterns
-   - 16px visual margins using global padding tokens
-   - 100px selector height (local exception)
-   - Multi-state support: inactive, active (resting), dual-mode
-   - Anti-shift spacing preserved through state-specific tokens
+   CEMENT: Pixel-perfect spacing achieved through precise token adjustments
+   - Universal card padding: 16px visual margins via global tokens
+   - 100px selector height (exception to 50px standard - required for anti-shift)
+   - Timer line-height: 0.7 (only sub-1 line-height allowed - treats as display object)
    
    ACHIEVED MEASUREMENTS:
    Inactive State:
    - Top to "Current Exercise": 16px ✓
    - Between header lines: 7px ✓ 
    - Header to selector: 7px ✓
-   - "Begin Exercise" spacing: 19px ✓
-   - To "Log Set" button: 20px ✓
+   - "Begin Exercise" spacing: 19px ✓ (via 4px spacer)
+   - "Begin Exercise" to "Log Set": 20px ✓
    
-   Active State:
-   - Above "Resting For:": 16px ✓
+   Active State (Single):
+   - Fuel gauge to "Resting For:": 16px ✓
    - "Resting For:" to timer: 16px ✓
    - Timer to "Skip Rest": 16px ✓
-   - Timer line-height: 0.7 (required for pixel-perfect alignment)
    
-   DO NOT modify without testing ALL states for layout shift
+   Dual-Mode Active State:
+   - "Resting For:" to timer: 16px ✓
+   - "Resting For:" to "Log Set": 23px ✓ (via 1px transform)
+   - Bottom button alignment preserved
+   
+   DO NOT modify without measuring ALL states for layout shift
    ========================================================================== */
 
 /* =========================== LOCAL TOKENS =========================== */
-/* CEMENT: These precise values achieve exact visual measurements
-   DO NOT modify without measuring impact on BOTH inactive and active states */
+/* These precise values achieve exact visual measurements across all states */
 
 #active-card-container {
   /* Selector exception - 100px instead of standard 50px */
-  --selector-height: 100px;       /* CEMENT: Required for anti-shift */
+  --selector-height: 100px;       /* CEMENT: Must be 100px for anti-shift between states */
   --selector-padding-v: 20px;     /* Vertical padding within 100px */
   
   /* Header micro-adjustments for exact rhythm */
-  --header-first-line-top: -1px;  /* CEMENT: Achieves 16px from top */
-  --header-line-gap: -1px;        /* CEMENT: Achieves 7px between lines */
-  --header-to-selector: -6px;     /* CEMENT: Achieves 7px to selector */
+  --header-first-line-top: -1px;  /* Achieves 16px from top edge */
+  --header-line-gap: -1px;        /* Achieves 7px between header lines */
+  --header-to-selector: -6px;     /* Achieves 7px to selector */
   
   /* Fuel gauge spacing */
   --fuel-gauge-top: 9px;
   --fuel-gauge-bottom: 4px;
   
   /* State-specific spacing (defined per state) */
-  --inactive-slack-top: 5.5px;    /* CEMENT: Token value creates 19px visual */
+  --inactive-slack-top: 5.5px;    /* Creates 19px "Begin Exercise" spacing */
   --inactive-slack-bottom: 0px;   
   
   /* Timer adjustments for active state */
-  --active-timer-line-height: 0.7; /* CEMENT: Essential for timer alignment */
+  --active-timer-line-height: 0.7; /* CEMENT: Required for large text alignment - do not change */
   --active-timer-top: 5px;
   --active-timer-bottom: 9px;
+  
+  /* Dual-mode specific adjustments */
+  --dual-resting-to-logset: 7px;    /* Creates 23px visual from "Resting For:" to Log Set button */
 }
 
 /* =========================== CARD FOUNDATION =========================== */
@@ -77,8 +82,7 @@
 }
 
 /* =========================== HEADER SECTION =========================== */
-/* CEMENT: Header spacing achieves exact 16/7/7 rhythm
-   These values include compensation for font metrics and element differences */
+/* Header spacing achieves exact 16/7/7 rhythm through font metric compensation */
 
 #active-card-container .card-header-container,
 #active-card-container #active-card-header {
@@ -99,7 +103,7 @@
   min-width: 0;
 }
 
-/* Header typography - CEMENT: Force alignment with transform */
+/* Header typography - baseline alignment with transform adjustment */
 #active-card-container .card-header,
 #active-card-container .card-header-clock,
 #active-card-container .card-header-dynamic-text {
@@ -115,10 +119,10 @@
 
 /* Micro-adjust clock position to match header */
 #active-card-container .card-header-clock {
-  transform: translateY(-2px);  /* Increased nudge to fully align */
+  transform: translateY(-2px);  /* Aligns clock baseline with header text */
 }
 
-/* CEMENT: Color preservation for dynamic updates */
+/* Color preservation for dynamic header updates */
 #active-card-container .card-header-line.text-plan .card-header-dynamic-text,
 #active-card-container .card-header-line.text-plan .card-header-clock,
 #active-card-container .text-plan .card-header-dynamic-text,
@@ -168,12 +172,11 @@
 }
 
 /* =========================== EXERCISE SELECTOR =========================== */
-/* CEMENT: 100px height critical for anti-shift between states
-   !important flags required to override _selectors.css cascade */
+/* CEMENT: 100px height critical for preventing layout shift between states */
 
 #exercise-selector {
   margin: 0 !important;
-  margin-top: -3px !important; /* CEMENT: Achieves 7px visual spacing */
+  margin-top: -3px !important; /* Fine-tunes 7px visual spacing from header */
 }
 
 /* Override any wrapper spacing */
@@ -184,9 +187,9 @@
 }
 
 #exercise-selector.app-selector > summary {
-  height: var(--selector-height);
-  min-height: var(--selector-height);
-  padding: var(--selector-padding-v) var(--space-m);
+  height: var(--active-selector-height);     /* Uses global 100px exception token */
+  min-height: var(--active-selector-height);
+  padding: var(--active-selector-padding-v) var(--selector-padding-h);
   
   /* Flex centering for content */
   display: flex;
@@ -202,18 +205,18 @@
 }
 
 #exercise-selector .item-main-line {
-  font-size: 1.25rem;
+  font-size: var(--font-size-h2);
   font-weight: 600;
   margin-bottom: 2px;
 }
 
 #exercise-selector .item-sub-line {
-  font-size: 1rem;
+  font-size: var(--font-size-body-m);
   line-height: 1.1;
 }
 
 #exercise-selector .flex-separator {
-  margin: 0 4px;
+  margin: 0 var(--space-xxs);
   font-weight: 600;
 }
 
@@ -262,7 +265,7 @@
 
 .fuel-gauge-container {
   display: flex;
-  gap: 2px;
+  gap: var(--fuel-gauge-gap);
   height: var(--control-height);
 }
 
@@ -296,12 +299,13 @@
   padding: 0 !important;
 }
 
-/* Spacers for inactive state anti-shift - CEMENT: Direct values after token issues */
-/* CEMENT: These exact heights achieve 19px "Begin Exercise" spacing and 20px to button
-   Using direct values instead of tokens due to non-linear scaling behavior discovered */
+/* CEMENT: Spacer divs create exact anti-shift spacing for inactive state
+   Direct values used after discovering non-linear token behavior
+   4px top spacer = 19px visual "Begin Exercise" spacing
+   0px bottom spacer + button adjustment = 20px to "Log Set" */
 .action-prompt-spacer-top {
   display: block !important;
-  height: 4px !important;  /* CEMENT: Creates exact 19px visual */
+  height: 4px !important;  /* Creates exact 19px visual spacing */
   margin: 0 !important;
   padding: 0 !important;
   line-height: 0 !important;
@@ -354,21 +358,6 @@
   color: var(--on-surface-medium);
 }
 
-/* Spacers for inactive state anti-shift */
-.action-prompt-spacer-top {
-  height: var(--inactive-slack-top);
-  margin: 0;
-  padding: 0;
-  line-height: 0;
-}
-
-.action-prompt-spacer-bottom {
-  height: var(--inactive-slack-bottom);
-  margin: 0;
-  padding: 0;
-  line-height: 0;
-}
-
 /* Action buttons */
 .action-button-group {
   display: flex;
@@ -411,11 +400,11 @@
 }
 
 /* =========================== STATE: ACTIVE (RESTING) =========================== */
-/* CEMENT: Active state achieves perfect 16/16/16 spacing through:
-   - 1px margin-top on resting block
-   - 12px stack gap (creates 16px visual with timer line-height)
-   - Timer line-height of 0.7 (essential - do not change)
-   - 4px margin-bottom on timer for button spacing */
+/* CEMENT: Single timer state achieves perfect 16/16/16 spacing:
+   - 1px margin-top on resting block (16px from fuel gauge)
+   - 12px stack gap compensates for timer line-height
+   - Timer line-height 0.7 is essential - do not change
+   - 4px margin-bottom on timer maintains 16px to button */
 
 /* Remove all spacing from resting block - let stack control */
 #active-card-container .action-prompt-block.is-resting,
@@ -432,17 +421,16 @@
 
 /* Adjust "Resting For:" text position */
 #active-card-container .action-prompt-block.is-resting {
-  margin-top: 1px !important;  /* CEMENT: Creates 16px from fuel gauge */
+  margin-top: 1px !important;  /* Creates 16px from fuel gauge */
 }
 
-/* CEMENT: Stack gaps separated by state using :has() selector
-   This prevents cross-state interference discovered during testing */
+/* Stack gaps differ by state to maintain visual rhythm */
 #active-card-container #card-action-area.stack:has(.action-prompt-block.is-prompt) {
   gap: 16px !important;  /* Inactive state maintains standard gap */
 }
 
 #active-card-container #card-action-area.stack:has(.action-prompt-block.is-resting) {
-  gap: 12px !important;  /* CEMENT: Active state requires 12px for visual 16px */
+  gap: 12px !important;  /* Compensates for timer line-height to achieve visual 16px */
 }
 
 /* Timer container - no extra margins */
@@ -456,12 +444,12 @@
   margin-bottom: 4px !important; /* Maintains 16px to Skip Rest button */
 }
 
-/* Timer display - CEMENT: line-height 0.7 is essential for large text alignment
-   This treats timer as display object rather than readable text */
+/* Timer display - CEMENT: line-height 0.7 required for large display text
+   Only acceptable sub-1 line-height in app - treats timer as graphic element */
 .timer-display {
   font-size: 5.5rem;
   font-weight: 700;
-  line-height: 0.7 !important;  /* DO NOT CHANGE - required for pixel-perfect alignment */
+  line-height: var(--timer-line-height) !important;  /* DO NOT CHANGE - required for pixel-perfect alignment */
   color: var(--on-surface-light);
   text-align: center;
   display: block;
@@ -500,13 +488,19 @@
 
 /* Dual mode timer adjustments */
 .dual-action-area-container .timer-display {
-  line-height: var(--active-timer-line-height);
+  line-height: var(--timer-line-height);
 }
 
-/* Opposite side Log Set button compensation */
-.dual-action-area-container .action-area-cell:has(.timer-and-skip-container) + .action-area-cell .action-button-group,
-.dual-action-area-container .action-area-cell .action-button-group:has(+ .action-area-cell .timer-and-skip-container) {
-  margin-top: 7px; /* Aligns with timer on opposite side */
+/* Dual-mode active state - maintain standard 16px to timer
+   The dual-action-area-container uses standard spacing by default */
+#active-card-container .action-prompt-block.is-resting + .dual-action-area-container {
+  margin-top: 0 !important; /* Standard 16px from stack gap to maintain timer spacing */
+}
+
+/* CEMENT: Transform creates exact 23px from "Resting For:" to "Log Set"
+   1px visual shift aligns bottom buttons without affecting timer spacing */
+.dual-action-area-container:has(.timer-and-skip-container) .action-area-cell:not(:has(.timer-and-skip-container)) .action-button-group {
+  transform: translateY(1px) !important;
 }
 
 /* =========================== COLORS & STATES =========================== */

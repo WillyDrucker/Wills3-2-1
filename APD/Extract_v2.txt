@@ -1,0 +1,59 @@
+# --- EDIT THESE TWO LINES ---
+$sourceDir      = "C:\Dev\COMPRESS\Wills321_v5.2.8"      # Example: "C:\Projects\wills-3-2-1-main"
+$destinationDir = "C:\Dev\EXTRACT\Wills321_v5.2.8"        # Example: "C:\Projects\FlatProjectFiles"
+# ----------------------------
+
+# Create the destination directory if it doesn't exist
+if (-not (Test-Path -Path $destinationDir)) {
+    New-Item -ItemType Directory -Path $destinationDir
+    Write-Host "Created destination folder: $destinationDir"
+}
+
+# Get all files from the source directory and all its subdirectories
+Get-ChildItem -Path $sourceDir -Recurse -File | ForEach-Object {
+    # Get the file's path relative to the source directory
+    $relativePath = $_.FullName.Substring($sourceDir.Length)
+
+    # Create a new, unique filename by replacing path separators with underscores
+    # Example: \src\features\active-exercise-card\index.js -> _src_features_active-exercise-card_index.js
+    $newFileName = $relativePath.Replace('\', '_').Replace('/', '_')
+    
+    # Remove the leading underscore for cleanliness
+    $newFileName = $newFileName.TrimStart('_')
+
+    # Construct the full path for the new file
+    $destinationPath = Join-Path -Path $destinationDir -ChildPath $newFileName
+
+    # Copy the original file to the new location with the new name
+    Copy-Item -Path $_.FullName -Destination $destinationPath
+    
+    Write-Host "Copied and renamed $($_.Name) -> $newFileName"
+}
+
+Write-Host "----------------------------------"
+Write-Host "Flattening complete. Starting cleanup..."
+
+# --- NEW SECTION: Delete specified files from the destination directory ---
+$filesToDelete = @(
+    "netlify.toml",
+    "data_exercises.json",
+    "APD_Extract_v2.txt",
+    "APD_RegressionCheck_v2.txt",
+    "APD_System_Instructions_v4.txt",
+    "APD_UPDATE_PROMPT.txt",
+    "package.json"
+)
+
+foreach ($file in $filesToDelete) {
+    $filePath = Join-Path -Path $destinationDir -ChildPath $file
+    if (Test-Path -Path $filePath) {
+        Remove-Item -Path $filePath -Force
+        Write-Host "Deleted: $file"
+    } else {
+        Write-Host "Skipped (not found): $file"
+    }
+}
+# -------------------------------------------------------------------------
+
+Write-Host "----------------------------------"
+Write-Host "Process complete. All files are in $destinationDir"

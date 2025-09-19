@@ -4,17 +4,12 @@
    CEMENT: Uses global tokens from _variables.css
    - Universal card padding pattern for 16px visual margins
    - Standard header spacing for 7px visual gap
-   - Card-specific adjustments defined locally
+   - 13px between config groups creates 16px visual
    
    DO NOT modify without measuring visual output
    ========================================================================== */
 
-/* Card-specific visual adjustments */
-#config-card {
-  --group-spacing: 13px;         /* Between config groups = 16px visual */
-}
-
-/* Card padding - CEMENT: uses global tokens for consistency */
+/* Card padding - uses global tokens for consistency */
 #config-card .card-content-container {
   padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
   box-sizing: border-box;
@@ -35,18 +30,14 @@
 #config-card .config-group {
   margin: 0;
   padding: 0;
-  margin-bottom: var(--group-spacing);
+  margin-bottom: var(--modal-section-spacing); /* 13px = 16px visual between groups */
 }
 
 #config-card .config-group:last-child {
   margin-bottom: 0;
 }
 
-/* Multi-line selector content - applies to all wrapped text */
-/* CEMENT: Global tokens from _variables.css control multi-line spacing
-   - 7px top, 9px bottom padding for descender balance
-   - -3px line gap achieves 7px visual between lines
-   DO NOT modify without measuring visual output */
+/* Multi-line selector content - uses global selector tokens */
 #config-card .selector-content.multi-line {
   display: block;
   text-align: center;

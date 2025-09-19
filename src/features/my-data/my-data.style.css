@@ -9,33 +9,12 @@
    DO NOT modify token values without measuring visual output.
    ========================================================================== */
 
-/* History card specific tokens - CEMENT: Do not remove any of these */
-#workout-history-card {
-  /* Visual compensation tokens - font metric adjustments */
-  --visual-header-top: -3px;        /* H2 ascender space */
-  --visual-header-left: -1px;       /* Font bearing */
-  --visual-header-bottom: 4px;      /* 7px visual (7-3 descender) */
-  --visual-text-top: -1px;          
-  --visual-text-bottom: -4px;       
-  --visual-italic-bottom: -1px;     
-  --visual-border-comp: -2px;       
-  
-  /* CEMENT: Actual measurements for precise visual targets */
-  --actual-selector-spacing: 15px;  
-  --actual-day-header-spacing: 17px;
-  --actual-placeholder-spacing: 15px;
-  --actual-footer-spacing: 11px;    
-  
-  /* Exercise rhythm tokens */
-  --exercise-name-spacing: 3px;     /* = 7px visual */
-  --exercise-set-spacing: 3px;      /* = 7px visual */
-  --exercise-block-spacing: 12px;   /* = 16px visual between exercises */
-}
+/* History card no longer needs local tokens - using globals from _variables.css */
 
 /* Card foundation */
 .my-data-card {
   margin: 0 0 var(--space-m) 0;
-  border: 2px solid transparent;
+  border: var(--card-border-width) solid transparent;
 }
 
 /* CEMENT: Card padding precisely calibrated for 16px visual */
@@ -58,7 +37,7 @@
 
 /* History card title needs left adjustment for font bearing */
 #workout-history-card .card-title {
-  left: var(--visual-header-left);
+  left: var(--history-header-left);
 }
 
 /* Performance card header spacing */
@@ -92,7 +71,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--visual-header-bottom);
+  margin-bottom: var(--header-margin-bottom);
   height: var(--font-size-h2);
 }
 
@@ -111,7 +90,7 @@
 #workout-history-card .history-week-header .card-title {
   color: var(--on-surface-light);
   position: relative;
-  left: var(--visual-header-left);
+  left: var(--history-header-left);
 }
 
 #workout-history-card .week-range-text {
@@ -153,7 +132,7 @@
 
 /* Calendar content spacing */
 #workout-history-card .selector-container {
-  margin-bottom: var(--actual-selector-spacing);
+  margin-bottom: 15px; /* Specific spacing maintained */
 }
 
 /* Day headers */
@@ -162,18 +141,18 @@
   justify-content: space-between;
   align-items: center;
   font-weight: 600;
-  margin-bottom: var(--exercise-name-spacing) !important;
+  margin-bottom: var(--history-exercise-spacing) !important;
 }
 
 /* Placeholder compensation */
 #workout-history-card .day-card-header + .day-card-placeholder-text {
-  margin-top: 12px !important;  /* 3px header margin + 12px = 15px actual ≈ 16px visual */
+  margin-top: 12px !important;  /* 3px header margin + 12px = 15px actual */
 }
 
 #workout-history-card .day-card-placeholder-text {
   color: var(--on-surface-medium);
   font-style: italic;
-  margin-bottom: calc(var(--space-m) + var(--visual-italic-bottom));
+  margin-bottom: calc(var(--space-m) - 1px); /* Compensates for italic */
 }
 
 /* Exercise list container */
@@ -183,7 +162,7 @@
 
 /* Exercise blocks - 7px internal, 16px between */
 #workout-history-card .history-exercise-block {
-  margin: 0 0 var(--exercise-block-spacing) 0 !important;
+  margin: 0 0 var(--history-exercise-block) 0 !important;
   padding: 0 !important;
 }
 
@@ -199,7 +178,7 @@
 /* Exercise names */
 #workout-history-card .history-exercise-name {
   font-weight: 600;
-  margin: 0 0 var(--exercise-set-spacing) 0 !important;
+  margin: 0 0 var(--history-exercise-spacing) 0 !important;
   padding: 0 !important;
 }
 
@@ -213,7 +192,7 @@
 #workout-history-card .history-exercise-set-row {
   display: flex;
   align-items: baseline;
-  margin: 0 0 var(--exercise-set-spacing) 0 !important;
+  margin: 0 0 var(--history-exercise-spacing) 0 !important;
   padding: 0 !important;
 }
 
@@ -242,7 +221,7 @@
   box-shadow: 
     0 -2px 0 0 rgba(255, 255, 255, 0.1),
     0 2px 0 0 rgba(255, 255, 255, 0.1);
-  margin-bottom: var(--actual-day-header-spacing);
+  margin-bottom: var(--history-day-header-spacing);
 }
 
 /* Session divider - simple 2px line */
@@ -257,7 +236,7 @@
 
 /* Footer button */
 #workout-history-card .card-footer-action-single {
-  margin-top: var(--actual-footer-spacing);
+  margin-top: 11px; /* Specific spacing maintained */
   padding-top: 0;
 }
 

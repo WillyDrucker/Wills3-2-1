@@ -14,7 +14,7 @@
 /* Style for two-toned text in the partner profile selectors */
 .item-main-line .text-on-surface-medium {
   color: var(--on-surface-medium);
-  margin-right: 4px;
+  margin-right: var(--space-xxs); /* 4px spacing */
 }
 
 /* Partner modal specific spacing adjustments */
@@ -22,11 +22,11 @@
    18px top = 16px visual from "Current User Focus" selector
    15px bottom + 1px ascender = 16px visual to "Partner" header */
 #partner-modal-container .modal-divider {
-  margin: 18px 0 15px 0; /* DO NOT modify without measuring */
+  margin: 18px 0 var(--modal-divider-spacing) 0; /* 18px top, 15px bottom */
 }
 
 /* Ensure proper spacing for "Partner" header after divider */
-/* CEMENT: Reset margin since divider handles all spacing */
+/* Reset margin since divider handles all spacing */
 #partner-modal-container .modal-divider + .card-header {
   margin-top: 0;
 }
