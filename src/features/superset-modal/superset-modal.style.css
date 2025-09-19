@@ -1,29 +1,69 @@
-/* Contains SHARED styles for selection modals (Superset & Partner) */
-/* Migrated from _superset-modal.css */
+/* ==========================================================================
+   SUPERSET MODAL STYLES - SHARED WITH PARTNER MODAL
+   
+   CEMENT: Modal spacing follows app-wide 16px/7px rhythm
+   - Universal card padding pattern from global tokens
+   - Standard header spacing for 7px visual gap
+   - 16px between all major sections
+   
+   Shared styles prevent duplication between superset/partner modals
+   Modal-specific overrides go in individual modal CSS files
+   
+   DO NOT modify without measuring visual output
+   ========================================================================== */
 
-/* Universal rule to center headers in all selection modals */
+/* Modal card padding - CEMENT: uses global tokens for consistency */
+.superset-modal-content.card {
+  --section-spacing: 13px;      /* Between major sections = 16px visual */
+  --buttons-spacing: 16px;      /* Selector to buttons = 16px visual */
+  
+  padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
+  box-sizing: border-box;
+}
+
+/* Header styling - unified with rest of app */
 .superset-modal-content .card-header {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--on-surface-light);
+  margin: 0;
+  padding: 0;
+  margin-bottom: var(--header-margin-bottom);
   text-align: center;
 }
+
+/* Headers after other elements need spacing */
 .superset-modal-content .card-header.with-header {
-  margin-top: 16px;
-}
-.superset-modal-actions {
-  display: flex;
-  gap: 16px;
-  margin-top: 16px;
+  margin-top: var(--section-spacing);
 }
 
+/* Selector spacing within modals */
+.superset-modal-content .app-selector {
+  margin-bottom: 0; /* Selectors handle their own spacing */
+}
+
+/* Action buttons container */
+/* CEMENT: Maintains 16px rhythm - gap between buttons, margin from selector */
+.superset-modal-actions {
+  display: flex;
+  gap: var(--space-m); /* 16px between buttons */
+  margin-top: var(--buttons-spacing); /* 16px from selector above */
+}
+
+/* Modal divider - 6px sandwich effect matching my-data page */
 .modal-divider {
   position: relative;
   border: none;
-  height: 3px;
+  height: 2px;
   background-color: #000000;
-  margin: 16px 0;
-  box-shadow: 0 -3px 0 0 var(--surface-dark-accent),
-    0 3px 0 0 var(--surface-dark-accent);
+  margin: 14px 0; /* Default spacing for superset modal */
+  box-shadow: 
+    0 -2px 0 0 rgba(255, 255, 255, 0.1),
+    0 2px 0 0 rgba(255, 255, 255, 0.1);
 }
 
+/* Animation classes for selection feedback */
 .is-animating-selection-green {
   animation: selection-feedback-green 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }

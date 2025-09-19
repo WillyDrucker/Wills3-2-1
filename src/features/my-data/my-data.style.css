@@ -2,20 +2,12 @@
    MY-DATA PAGE STYLES - TOKENIZED SYSTEM
    
    CEMENT: Core spacing achieved through visual compensation tokens.
-   - 16px visual margins from card borders  
+   - Universal card padding pattern for 16px visual margins
    - 7px rhythm within exercise groups
    - Font metric adjustments calibrated for Roboto at 1.25rem
    
    DO NOT modify token values without measuring visual output.
    ========================================================================== */
-
-/* Card-specific tokens for my-data cards */
-.my-data-card {
-  /* Core card padding */
-  --card-padding-top: 11px;       /* Compensates for font ascender */
-  --card-padding-sides: 14px;     /* With 2px border = 16px visual */
-  --header-margin-bottom: 4px;    /* With font descender = 7px visual */
-}
 
 /* History card specific tokens - CEMENT: Do not remove any of these */
 #workout-history-card {
@@ -62,6 +54,10 @@
   margin: 0;
   padding: 0;
   position: relative;
+}
+
+/* History card title needs left adjustment for font bearing */
+#workout-history-card .card-title {
   left: var(--visual-header-left);
 }
 

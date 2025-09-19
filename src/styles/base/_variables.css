@@ -1,11 +1,81 @@
 :root {
-  /* CEMENTED: Active/Inactive CAP tokens — do not rename; referenced by card rules */
-/* CEMENTED: core spacing tokens (global rhythm) */
-  /* These should remain stable and are referenced across Active/Inactive cards. */
+  /* ==========================================================================
+     GLOBAL TOKENS - CEMENTED SPACING SYSTEM
+     
+     Visual rhythm: 16px margins, 7px header-to-content
+     Card padding pattern: 11px top, 14px sides/bottom
+     
+     DO NOT modify without measuring visual output across all components
+     ========================================================================== */
 
+  /* --- UNIVERSAL CARD SPACING TOKENS --- */
+  /* CEMENT: Used across ALL cards for consistent 16px visual margins */
+  --card-padding-top: 11px;        /* Compensates for font ascender = 16px visual */
+  --card-padding-sides: 14px;      /* With 2px border = 16px visual */
+  --header-margin-bottom: 4px;     /* With font descender = 7px visual */
+  
+  /* --- TYPOGRAPHY TOKENS --- */
+  --font-size-h1: 2.5rem;
+  --font-size-h2: 1.25rem;
+  --font-size-body-l: 1.1rem;
+  --font-size-body-m: 1rem;
+  --font-size-body-s: 0.9rem;
+  --lh-normal: 1.2;
+
+  /* --- SPACING TOKENS (The Rhythm) --- */
+  --space-xs: 2px;
+  --space-s: 7px;                  /* Secondary rhythm unit */
+  --space-header-offset: 7px;      /* Header→content gap (visual) */
+  --space-m: 16px;                 /* Primary rhythm unit */
+  --space-l: 24px;
+  --space-xl: 40px;
+  
+  /* --- SELECTOR MULTI-LINE TOKENS --- */
+  /* CEMENT: Controls two-line text in 50px selectors */
+  --selector-multiline-padding-top: 7px;     /* Reduced for descender balance */
+  --selector-multiline-padding-bottom: 9px;  /* Increased for descender compensation */
+  --selector-multiline-line-gap: -3px;       /* Negative margin for 7px visual gap */
+  --selector-multiline-line-height: 1.2;     /* Base line-height for multi-line */
+
+  /* --- LAYOUT TOKENS --- */
+  --app-side-margin: 10px;
+  --card-padding: var(--space-m);  /* Legacy - being phased out */
+  --border-radius: 8px;
+  --control-height: 50px;
+
+  /* --- COLORS: Foundations --- */
+  --background-dark: #000000;
+  --surface-dark: #1e1e1e;
+  --surface-medium-dark: #4f4f4f;
+  --surface-dark-accent: #262626;
+  --on-surface-light: #f5f5f5;
+  --on-surface-medium: #9e9e9e;
+  --on-surface-disabled: #5f6368;
+
+  /* --- COLORS: UI Actions & States --- */
+  --primary-blue: #0099ff;
+  --primary-blue-dark: #001f33;
+  --primary-blue-light: #adeeff;
+  --warning-orange: #ffb74d;
+  --skip-red: #b30000;
+  --log-green: #00cc00;
+  --youtube-red: #ff0000;
+  --text-on-action-color: #000000;
+
+  /* --- COLORS: Data States & Context --- */
+  --text-green-plan: #00cc00;
+  --text-yellow-maintenance: #ffff00;
+  --text-olive-deviation: #bfff00;
+  --text-orange-deviation: #ffb74d;
+  --text-red-skip: #b30000;
+  
+  /* ==========================================================================
+     LEGACY TOKENS - Being phased out, do not use in new code
+     ========================================================================== */
+  
+  /* Active/Inactive CAP tokens - used by active-exercise-card */
   --cap-inactive-prompt-bottom-adjust: 0px;
   --cap-inactive-prompt-top-adjust: 0px;
-  --space-xl: 40px;
   --space-xxs: 4px;
   --cap-active-timer-line-height: 0.82;
   --cap-active-button-container-mt: 0px;
@@ -15,9 +85,9 @@
   --cap-active-timer-shift: 0px;
   --cap-active-timer-bottom-adjust: 0px;
   --cap-active-timer-top-adjust: 0px;
-    --cap-fix-resting-wrapper-bottom: 0px;
-    --cap-fix-resting-wrapper-top: 0px;
-    --cap-fix-resting-label-top: 0px;
+  --cap-fix-resting-wrapper-bottom: 0px;
+  --cap-fix-resting-wrapper-top: 0px;
+  --cap-fix-resting-label-top: 0px;
   --action-prompt-spacer-bottom: 0px;
   --action-prompt-spacer-top: 0px;
   --cap-fix-action-prompt-top: 0px;
@@ -28,64 +98,14 @@
   --anchor-gap-bottom: 4px;
   --anchor-gap-top: 9px;
   --fuel-gauge-height: 50px;
-  /* --- TYPOGRAPHY TOKENS --- */
-  --font-size-h1: 2.5rem;
-  --font-size-h2: 1.25rem;
-  --font-size-body-l: 1.1rem;
-  --font-size-body-m: 1rem;
-  --font-size-body-s: 0.9rem;
-  --lh-normal: 1.2;
-  --cap-offset-h2: 4px; /* The nudge for Roboto @ 1.25rem to achieve perfect visual alignment */
-
-  /* --- SPACING TOKENS (The Rhythm) --- */
-  --space-xs: 2px;
-  --space-s: 7px;
-  --space-header-offset: 7px;
-  /* CEMENTED: header→selector gap (7px) */
-  --space-m: 16px;
-  /* CEMENTED: global rhythm unit (16px) for insets & gaps */
-  --space-l: 24px;
-  /* Global header visual adjust tokens (match config-card baseline behavior) */
-  --cap-header-top-adjust: 2px;   /* positive = nudge up visually by translateY(-value) */
-  /* CEMENTED: reserved tiny visual nudge when needed; avoid unless required */
+  
+  /* Legacy spacing tokens - being replaced */
+  --cap-offset-h2: 4px;
+  --cap-header-top-adjust: 2px;
   --cap-header-left-adjust: 2px;
-  --cap-container-inset-adjust: -2px; /* nudges visual inset to 16px when fonts/borders add ~2px */
-  /* positive = nudge left visually by translateX(-value) */
-
-  /* --- LAYOUT TOKENS --- */
-  --app-side-margin: 10px;
-  --card-padding: var(--space-m);
-  /* CEMENTED: per-card inset; may use border-comp calc in component CSS */
-  --card-inset-visual: 14px; /* 2px border + 14px inset = 16px visual */
-  --border-radius: 8px;
-  --control-height: 50px;
-
-  /* --- Foundational Colors --- */
-  --background-dark: #000000;
-  --surface-dark: #1e1e1e;
-  --surface-medium-dark: #4f4f4f;
-  --surface-dark-accent: #262626;
-  --on-surface-light: #f5f5f5;
-  --on-surface-medium: #9e9e9e;
-  --on-surface-disabled: #5f6368;
-
-  /* --- UI Action & State Colors --- */
-  --primary-blue: #0099ff;
-  --primary-blue-dark: #001f33; /* Gold Standard Muted Border */
-  --primary-blue-light: #adeeff; /* For bright flash effects */
-  --warning-orange: #ffb74d;
-  --skip-red: #b30000;
-  --log-green: #00cc00;
-  --youtube-red: #ff0000;
-  --text-on-action-color: #000000;
-
-  /* --- Data State & Context Colors (The Golden Rule) --- */
-  --text-green-plan: #00cc00;
-  --text-yellow-maintenance: #ffff00;
-  --text-olive-deviation: #bfff00;
-  --text-orange-deviation: #ffb74d;
-  --text-red-skip: #b30000;
+  --cap-container-inset-adjust: -2px;
+  --card-inset-visual: 14px;
+  
+  /* Dual-mode timer specific */
+  --sp-timer-line-height: 0.7;
 }
-
-/* CEMENTED: Dual-mode timers use 0.7 line-height via --sp-timer-line-height */
-:root { --sp-timer-line-height: 0.7; }

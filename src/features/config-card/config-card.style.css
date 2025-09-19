@@ -2,8 +2,8 @@
    CONFIG CARD STYLES - TOKENIZED SYSTEM
    
    CEMENT: Uses global tokens from _variables.css
-   - 16px visual from card borders (--space-m)
-   - 7px header-to-selector spacing (--space-header-offset)
+   - Universal card padding pattern for 16px visual margins
+   - Standard header spacing for 7px visual gap
    - Card-specific adjustments defined locally
    
    DO NOT modify without measuring visual output
@@ -11,13 +11,10 @@
 
 /* Card-specific visual adjustments */
 #config-card {
-  --card-padding-top: 11px;     /* Compensates for font ascender */
-  --card-padding-sides: 14px;   /* With 2px border = 16px visual */
-  --header-margin-bottom: 4px;  /* With font descender = 7px visual */
   --group-spacing: 13px;         /* Between config groups = 16px visual */
 }
 
-/* Card padding - CEMENT: achieves exact 16px visual */
+/* Card padding - CEMENT: uses global tokens for consistency */
 #config-card .card-content-container {
   padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
   box-sizing: border-box;
@@ -45,14 +42,44 @@
   margin-bottom: 0;
 }
 
-/* Balanced text for two-line selector items */
+/* Multi-line selector content - applies to all wrapped text */
+/* CEMENT: Global tokens from _variables.css control multi-line spacing
+   - 7px top, 9px bottom padding for descender balance
+   - -3px line gap achieves 7px visual between lines
+   DO NOT modify without measuring visual output */
+#config-card .selector-content.multi-line {
+  display: block;
+  text-align: center;
+  padding: var(--selector-multiline-padding-top) 0 var(--selector-multiline-padding-bottom) 0;
+  line-height: var(--selector-multiline-line-height);
+}
+
+#config-card .selector-content.multi-line span {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+#config-card .selector-content.multi-line span:first-child {
+  margin-bottom: var(--selector-multiline-line-gap);
+}
+
+/* Balanced text for two-line selector items (same as multi-line) */
 #config-card .selector-content.balanced-text {
-  line-height: 1.15;
-  padding: 2px 0;
+  display: block;
+  text-align: center;
+  padding: var(--selector-multiline-padding-top) 0 var(--selector-multiline-padding-bottom) 0;
+  line-height: var(--selector-multiline-line-height);
 }
 
 #config-card .selector-content.balanced-text span {
   display: block;
+  margin: 0;
+  padding: 0;
+}
+
+#config-card .selector-content.balanced-text span:first-child {
+  margin-bottom: var(--selector-multiline-line-gap);
 }
 
 /* Note: Selectors maintain their own spacing from _selectors.css */
