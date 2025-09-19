@@ -1,382 +1,493 @@
-/*
-  CEMENTED (Card Rhythm & Header Pattern — Active Exercise Card):
-  - Card inset uses border-compensated padding so visual edge = 16px.
-  - H2 header uses line-height: 0.7 (allowed exception) to collapse ascent/descenders.
-  - Header→content gap is tokenized at 7px via --space-header-offset.
-*/
-/*
-  ACTIVE EXERCISE CARD — rhythm (16/7/7), selector=100px, adherence color
+/* ==========================================================================
+   ACTIVE EXERCISE CARD - UNIFIED TOKENIZED SYSTEM
+   
+   CEMENT: Complete rebuild following established token patterns
+   - 16px visual margins using global padding tokens
+   - 100px selector height (local exception)
+   - Multi-state support: inactive, active (resting), dual-mode
+   - Anti-shift spacing preserved through state-specific tokens
+   
+   DO NOT modify without testing ALL states for layout shift
+   ========================================================================== */
 
-  Rules of engagement:
-  - Spacing uses tokens + cap-aware margins only (no transforms / no !important).
-  - Headers readable (no sub-1 line-height anywhere).
-  - Selector outer shell locked to exactly 100px; inner text is temporarily auto-balanced.
-*/
+/* =========================== LOCAL TOKENS =========================== */
 
-/* ===== Card inset (border-aware 16px) ===== */
-#active-card-container .card-content-container {
-  /* CEMENTED: border-compensated inset → 16px visual */
-  padding: calc(var(--space-m) - var(--card-border-width, 2px));
+#active-card-container {
+  /* Selector exception - 100px instead of standard 50px */
+  --selector-height: 100px;
+  --selector-padding-v: 20px;  /* Vertical padding within 100px */
+  
+  /* Header micro-adjustments for exact rhythm */
+  --header-first-line-top: -1px;     /* Achieves 16px from top */
+  --header-line-gap: -1px;           /* Achieves 7px between lines */
+  --header-to-selector: -6px;        /* To achieve 7px to selector (was -3px) */
+  
+  /* Fuel gauge spacing */
+  --fuel-gauge-top: 9px;
+  --fuel-gauge-bottom: 4px;
+  
+  /* State-specific spacing (defined per state) */
+  --inactive-slack-top: -3px;        /* To achieve 20px total */
+  --inactive-slack-bottom: 0px;    
+  
+  /* Timer adjustments for active state */
+  --active-timer-line-height: 0.7;
+  --active-timer-top: 5px;
+  --active-timer-bottom: 9px;
 }
 
-/* ===== Header block (two rows) ===== */
-#active-card-container .card-header-container {
+/* =========================== CARD FOUNDATION =========================== */
+
+/* Card padding - uses global tokens */
+#active-card-container .card-content-container {
+  padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
+  box-sizing: border-box;
+}
+
+/* Stack layout system */
+#active-card-container .stack {
   display: flex;
   flex-direction: column;
-  row-gap: 0; /* control spacing via margins on the lines below */
-  margin: 0;
+  gap: var(--space-m); /* Default 16px rhythm */
 }
 
-/* One header row: left label + right clock */
+/* Override inline stack spacing for header/selector area */
+#active-card-container .header-and-selector-group.stack {
+  gap: 7px !important; /* Force 7px between header and selector */
+}
+
+#active-card-container .stack[style*="--stack-space"] {
+  gap: var(--stack-space);
+}
+
+/* =========================== HEADER SECTION =========================== */
+
+#active-card-container .card-header-container,
+#active-card-container #active-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0; /* Manual control for precise spacing */
+  margin: 0;
+  padding: 0;
+}
+
 #active-card-container .card-header-line {
   display: flex;
-  align-items: center;
+  align-items: baseline;  /* Use baseline alignment */
   justify-content: space-between;
   gap: var(--space-m);
+  margin: 0;
+  padding: 0;
   min-width: 0;
-  margin: 0;
 }
 
-/* Reset any stray default margins on nested headings/paragraphs */
-#active-card-container .card-header-line h1,
-#active-card-container .card-header-line h2,
-#active-card-container .card-header-line h3,
-#active-card-container .card-header-line h4,
-#active-card-container .card-header-line h5,
-#active-card-container .card-header-line h6,
-#active-card-container .card-header-line p {
-  margin: 0;
-}
-
-/* Header typography — readable (no clipping) */
-#active-card-container .card-header-dynamic-text,
-#active-card-container .card-header-clock {
-  color: var(--on-surface-light);
+/* Header typography - CEMENT: Force alignment with transform */
+#active-card-container .card-header,
+#active-card-container .card-header-clock,
+#active-card-container .card-header-dynamic-text {
   font-size: var(--font-size-h2);
   font-weight: 600;
-  line-height: var(--lh-normal);
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-m);
-  min-width: 0;
+  line-height: 1;
+  color: var(--on-surface-light);
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  vertical-align: top;  /* Align to top of line */
 }
 
-/* Keep inner spans at normal line-height */
-#active-card-container .card-header-dynamic-text > span,
-#active-card-container .card-header-clock > span {
-  line-height: var(--lh-normal);
+/* Micro-adjust clock position to match header */
+#active-card-container .card-header-clock {
+  transform: translateY(-2px);  /* Increased nudge to fully align */
 }
 
-/* Subtle right-edge alignment quirk preserved */
+/* CEMENT: Color preservation for dynamic updates */
+#active-card-container .card-header-line.text-plan .card-header-dynamic-text,
+#active-card-container .card-header-line.text-plan .card-header-clock,
+#active-card-container .text-plan .card-header-dynamic-text,
+#active-card-container .text-plan .card-header-clock {
+  color: var(--text-green-plan) !important;
+}
+
+#active-card-container .card-header-line.text-deviation .card-header-dynamic-text,
+#active-card-container .card-header-line.text-deviation .card-header-clock,
+#active-card-container .text-deviation .card-header-dynamic-text,
+#active-card-container .text-deviation .card-header-clock {
+  color: var(--text-olive-deviation) !important;
+}
+
+#active-card-container .card-header-line.text-warning .card-header-dynamic-text,
+#active-card-container .card-header-line.text-warning .card-header-clock,
+#active-card-container .text-warning .card-header-dynamic-text,
+#active-card-container .text-warning .card-header-clock {
+  color: var(--text-yellow-maintenance) !important;
+}
+
+/* Ensure spans inside headers don't break alignment */
+#active-card-container .card-header span,
+#active-card-container .card-header-clock span,
+#active-card-container .card-header-dynamic-text span {
+  line-height: inherit;
+  vertical-align: baseline;
+  display: inline;
+}
+
+/* Header spacing - precise measurements */
+#active-card-container .card-header-line:first-child {
+  margin-top: var(--header-first-line-top);
+}
+
+#active-card-container .card-header-line:nth-child(2) {
+  margin-top: var(--header-line-gap);
+}
+
+#active-card-container .card-header-container {
+  margin-bottom: var(--header-to-selector);
+}
+
+/* Right edge micro-adjustment */
 #active-card-container .card-header-line > *:last-child {
   margin-right: -1px;
 }
 
-/* ===== Selector under header =====
-   CEMENTED: Lock outer shell to exactly 100px total height.
-   TEMP: Vertical balance via flex centering; replace with tokenized padding later. */
-#exercise-selector { margin: 0; }
+/* =========================== EXERCISE SELECTOR =========================== */
 
-#active-card-container .app-selector > summary {
-  box-sizing: border-box;
-  height: 100px;                 /* CEMENTED: requested exact height */
-  min-height: 100px;             /* safety against external overrides */
-  display: flex;                 /* TEMP auto-balance */
-  align-items: center;           /* vertical centering for now */
-  padding-top: 0;                /* prevent height creep */
-  padding-bottom: 0;             /* prevent height creep */
-  padding-left: var(--space-m);  /* keep 16px column */
-  padding-right: var(--space-m); /* keep 16px column */
+#exercise-selector {
+  margin: 0 !important;
+  margin-top: -3px !important; /* Force 7px spacing */
+  /* Inherits font styles from _selectors.css but overrides height */
 }
 
-/* Selector typography (kept tasteful; will be tokenized later) */
-#exercise-selector.app-selector { font-size: initial; font-weight: initial; }
-#exercise-selector .selector-content { font-weight: 500; }
+/* Override any wrapper spacing */
+.youtube-overlay-wrapper {
+  position: relative;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#exercise-selector.app-selector > summary {
+  height: var(--selector-height);
+  min-height: var(--selector-height);
+  padding: var(--selector-padding-v) var(--space-m);
+  
+  /* Flex centering for content */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* Selector content */
+#exercise-selector .selector-content {
+  font-weight: 500;
+  width: 100%;
+}
+
 #exercise-selector .item-main-line {
   font-size: 1.25rem;
   font-weight: 600;
-  margin-bottom: 2px; /* TEMP for the 100px shell */
+  margin-bottom: 2px;
 }
-#exercise-selector .flex-separator { font-weight: 600; margin: 0 4px; }
-#exercise-selector .options-list li .item-main-line { margin-bottom: 0; line-height: 1.1; }
 
-/* ===== Other preserved layout ===== */
-.youtube-overlay-wrapper { position: relative; }
-.input-group { margin: 0; }
-#card-anchor-area { position: relative; z-index: 1; }
-#card-action-area { margin: 0; }
+#exercise-selector .item-sub-line {
+  font-size: 1rem;
+  line-height: 1.1;
+}
 
-/* Action prompt + labels (unchanged) */
+#exercise-selector .flex-separator {
+  margin: 0 4px;
+  font-weight: 600;
+}
+
+/* YouTube overlay button */
+.youtube-overlay-wrapper {
+  position: relative;
+}
+
+.youtube-overlay-button {
+  position: absolute;
+  bottom: 6px;  /* Adjusted to achieve 4px visual */
+  right: 6px;   /* Adjusted to achieve 4px visual */
+  /* Button styles inherited from buttons.css */
+}
+
+/* =========================== INPUT SECTION =========================== */
+
+.input-group {
+  margin: 0;
+  padding: 0;
+}
+
+.input-2col-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: var(--space-s);
+  column-gap: var(--space-m);
+}
+
+.input-label {
+  font-weight: 500;
+  color: var(--on-surface-medium);
+}
+
+/* Number input inherits from _inputs.css */
+
+/* =========================== FUEL GAUGE ANCHOR =========================== */
+
+#card-anchor-area {
+  position: relative;
+  z-index: 1;
+  margin-top: var(--fuel-gauge-top);
+  margin-bottom: var(--fuel-gauge-bottom);
+}
+
+.fuel-gauge-container {
+  display: flex;
+  gap: 2px;
+  height: var(--control-height);
+}
+
+.dual-fuel-gauge-container {
+  display: flex;
+  gap: var(--space-m);
+  height: var(--control-height);
+}
+
+/* =========================== ACTION AREA =========================== */
+
+#card-action-area {
+  margin: 0;
+  padding: 0;
+}
+
+/* Action prompt block */
+.action-prompt-block {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#active-card-container .action-prompt-block.is-prompt {
+  margin-top: -1px !important; /* Force 20px spacing */
+  margin-bottom: 0 !important;
+}
+
+/* Override stack spacing for action area */
+#active-card-container #card-action-area.stack {
+  gap: var(--space-m);
+}
+
+/* Target the actual prompt text element */
+#active-card-container .action-prompt-text {
+  margin-top: -1px !important;
+  margin-bottom: 0 !important;
+}
+
+/* Override any fuel gauge bottom margin that might be adding space */
+#active-card-container #card-anchor-area {
+  margin-bottom: 3px !important; /* Reduce from 4px to get 20px total */
+}
+
 .action-prompt-text,
 .resting-label {
   font-size: var(--font-size-h2);
   font-weight: 600;
-  color: var(--primary-blue-dark);
-  cursor: pointer;
-  min-width: 0;
+  line-height: var(--lh-normal);
   text-align: center;
-}
-.resting-label { color: var(--on-surface-medium); }
-
-.action-prompt-text > .truncate-text,
-.resting-label > .truncate-text { line-height: var(--lh-normal); }
-
-body.start-glow-animations .action-prompt-text.is-glowing span {
-  animation: text-glow 4s ease-in-out infinite;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
 }
 
-/* Buttons & dual areas */
-.action-button-group { display: flex; flex-direction: column; gap: 16px; }
-.timer-container { display: flex; flex-direction: column; }
-.timer-container .timer-display {
+.action-prompt-text {
+  color: var(--primary-blue-dark);
+}
+
+.resting-label {
+  color: var(--on-surface-medium);
+}
+
+/* Spacers for inactive state anti-shift */
+.action-prompt-spacer-top {
+  height: var(--inactive-slack-top);
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+}
+
+.action-prompt-spacer-bottom {
+  height: var(--inactive-slack-bottom);
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+}
+
+/* Action buttons */
+.action-button-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  margin: 0;
+  padding: 0;
+}
+
+/* Timer container */
+.timer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+
+.timer-display {
   font-size: 5.5rem;
   font-weight: 700;
   line-height: var(--lh-normal);
-  display: flex; align-items: center; justify-content: center;
-}
-.dual-fuel-gauge-container { display: flex; gap: 16px; height: var(--control-height); }
-.dual-action-area-container { display: flex; gap: 16px; flex-grow: 1; }
-
-/* Waiting state */
-.waiting-card-message {
-  color: var(--on-surface-medium);
+  color: var(--on-surface-light);
   text-align: center;
-  font-style: italic;
-  padding: 40px 0;
+  display: block;
+  margin: 0;
+  padding: 0;
 }
 
-/* Muting logic (preserved) */
-.is-muted { pointer-events: none; }
+/* =========================== STATE: INACTIVE (PROMPT) =========================== */
+
+/* Inactive uses spacers to prevent shift when switching to active */
+#active-card-container .action-prompt-block.is-prompt .action-prompt-spacer-top {
+  height: var(--inactive-slack-top);
+}
+
+#active-card-container .action-prompt-block.is-prompt .action-prompt-spacer-bottom {
+  height: var(--inactive-slack-bottom);
+}
+
+/* =========================== STATE: ACTIVE (RESTING) =========================== */
+
+/* Remove all spacing from resting block - let stack control */
+#active-card-container .action-prompt-block.is-resting,
+#active-card-container .action-prompt-block.is-resting * {
+  margin: 0;
+  padding: 0;
+}
+
+#active-card-container .action-prompt-block.is-resting .action-prompt-spacer-top,
+#active-card-container .action-prompt-block.is-resting .action-prompt-spacer-bottom {
+  display: none;
+}
+
+/* Timer adjustments for active state */
+#active-card-container .action-prompt-block.is-resting ~ .timer-container .timer-display {
+  line-height: var(--active-timer-line-height);
+  margin-top: var(--active-timer-top);
+  margin-bottom: var(--active-timer-bottom);
+}
+
+/* =========================== STATE: DUAL MODE (SUPERSET/PARTNER) =========================== */
+
+.dual-action-area-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-m);
+  align-items: start; /* Critical for independent columns */
+}
+
+.action-area-cell {
+  margin: 0;
+  padding: 0;
+}
+
+/* Timer and skip container for dual mode */
+.timer-and-skip-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  margin: 0;
+  padding: 0;
+}
+
+/* Dual mode timer adjustments */
+.dual-action-area-container .timer-display {
+  line-height: var(--active-timer-line-height);
+}
+
+/* Opposite side Log Set button compensation */
+.dual-action-area-container .action-area-cell:has(.timer-and-skip-container) + .action-area-cell .action-button-group,
+.dual-action-area-container .action-area-cell .action-button-group:has(+ .action-area-cell .timer-and-skip-container) {
+  margin-top: 7px; /* Aligns with timer on opposite side */
+}
+
+/* =========================== COLORS & STATES =========================== */
+
+/* Session color classes */
+.text-plan { color: var(--text-green-plan); }
+.text-deviation { color: var(--text-olive-deviation); }
+.text-warning { color: var(--text-yellow-maintenance); }
+.text-orange { color: var(--text-orange-deviation); }
+.text-skip { color: var(--text-red-skip); }
+.text-primary { color: var(--primary-blue); }
+
+/* Muted state */
+.is-muted {
+  pointer-events: none;
+}
+
 .is-muted > summary {
   background-color: var(--background-dark);
   box-shadow: inset 0 0 0 2px var(--primary-blue-dark);
 }
-.is-muted > summary .selector-content { opacity: 0.2; }
-summary.is-content-muted .selector-content { opacity: 0.2; }
 
-/* Global override while ANY selector is open */
-body.is-selector-open details:not([open]) { pointer-events: none; }
-body.is-selector-open
-  details:not(.workout-log-item-container):not([open])
-  > summary {
+.is-muted > summary .selector-content {
+  opacity: 0.2;
+}
+
+/* Selector open states */
+body.is-selector-open details:not([open]) {
+  pointer-events: none;
+}
+
+body.is-selector-open details:not([open]) > summary {
   background-color: var(--background-dark);
   box-shadow: inset 0 0 0 2px var(--primary-blue-dark);
 }
-body.is-selector-open
-  details:not(.workout-log-item-container):not([open])
-  > summary .selector-content {
+
+body.is-selector-open details:not([open]) > summary .selector-content {
   filter: brightness(0.5) saturate(0.5);
   opacity: 0.7;
 }
 
-/* Utilities */
-.text-primary { color: var(--primary-blue); }
-.text-info    { color: var(--on-surface-medium); }
+/* =========================== ANIMATIONS =========================== */
 
-/* ---------------------------------------------------------------------------------
-   CEMENTED — RHYTHM LOCK (specificity + order; adjust ONLY here if tokens change)
-   Targets:
-     • Top → “Current Exercise” line = 16px (visual)
-     • “Current Exercise” → “# Minutes Remaining” = 7px (visual)
-     • “# Minutes Remaining” → selector = 7px (visual)
-
-   These micro-tweaks were measured to fix 17/9/15 → 16/7/7 exactly.
-----------------------------------------------------------------------------------*/
-
-/* Scoped micro-tokens — safe to tune if the font metrics change */
-#active-card-container {
-  --cap-tweak-top: 1px;        /* pulls first line up +1px → 16px top */
-  --cap-tweak-internal: 2px;   /* reduces line↔line by 2px → 7px */
-  --cap-tweak-bottom: 8px;     /* reduces second→selector by 8px → 7px */
+/* Glow animation for prompt text */
+body.start-glow-animations .action-prompt-text.is-glowing span {
+  animation: text-glow 4s ease-in-out infinite;
 }
 
-/* Ensure we’re hitting the wrapper that renders header lines */
-#active-card-container #active-card-header {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  margin: 0;
+/* Border glow for card */
+.is-glowing-border {
+  animation: border-glow 4s ease-in-out infinite;
 }
 
-/* Top edge → first line = 16px */
-#active-card-container #active-card-header > .card-header-line:first-child {
-  margin-top: calc((var(--cap-offset-h2, 5px) + var(--cap-tweak-top)) * -1);
-}
+/* =========================== SPECIAL STATES =========================== */
 
-/* First line → second line = 7px (7 - 2*cap - tweak) */
-#active-card-container #active-card-header > .card-header-line:nth-child(2) {
-  margin-top: calc(var(--space-s) - (var(--cap-offset-h2, 5px) * 2) - var(--cap-tweak-internal));
-}
-
-/* Second line → selector = 7px (7 - cap - tweak) */
-#active-card-container #active-card-header > .card-header-line:last-child {
-  margin-bottom: calc(var(--space-s) - var(--cap-offset-h2, 5px) - var(--cap-tweak-bottom));
-}
-
-/* CEMENTED — Adherence color lock (resilient to re-renders) */
-#active-card-container .card-header-line.text-plan .card-header-dynamic-text,
-#active-card-container .card-header-line.text-plan .card-header-clock,
-#active-card-container .card-header-line .card-header-dynamic-text.text-plan,
-#active-card-container .card-header-line .card-header-clock.text-plan {
-  color: var(--adherence-green);
-}
-#active-card-container .card-header-line.text-deviation .card-header-dynamic-text,
-#active-card-container .card-header-line.text-deviation .card-header-clock,
-#active-card-container .card-header-line .card-header-dynamic-text.text-deviation,
-#active-card-container .card-header-line .card-header-clock.text-deviation {
-  color: var(--adherence-olive);
-}
-#active-card-container .card-header-line.text-warning .card-header-dynamic-text,
-#active-card-container .card-header-line.text-warning .card-header-clock,
-#active-card-container .card-header-line .card-header-dynamic-text.text-warning,
-#active-card-container .card-header-line .card-header-clock.text-warning {
-  color: var(--adherence-yellow);
-}
-
-
-/* Fuel Gauge anchor spacing: enforce 16/16 via tokens */
-#active-card-container #card-anchor-area {
-  margin-top: var(--anchor-gap-top, 9px);
-  margin-bottom: var(--anchor-gap-bottom, 4px);
-}
-
-
-#active-card-container #card-action-area .action-prompt-text {
-  margin-top: var(--cap-fix-action-prompt-top, -3px);
-  margin-bottom: var(--cap-fix-action-prompt-bottom, 0px);
-  padding: 0;
-  line-height: var(--lh-normal);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#active-card-container #card-action-area .resting-label {
-  margin-top: var(--cap-fix-resting-label-top, -3px);
-  margin-bottom: var(--cap-fix-resting-label-bottom, 0px);
-  padding: 0;
-  line-height: var(--lh-normal);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#active-card-container #card-action-area .timer-display {
-  margin: 0;
-  line-height: var(--lh-normal);
-  margin-top: var(--cap-fix-timer-top, 0px);
-  margin-bottom: var(--cap-fix-timer-bottom, 0px);
-}
-
-#active-card-container #card-action-area .action-button-group {
-  margin: 0;
-}
-
-
-
-/* CEMENTED (inactive only): tokens define spacing, no structure changes */
-#active-card-container #card-anchor-area {
-  margin-top: var(--anchor-gap-top);
-  margin-bottom: var(--anchor-gap-bottom);
-}
-#active-card-container #card-action-area .action-prompt-block.is-prompt .action-prompt-text {
-  margin-top: var(--cap-fix-action-prompt-top);
-  margin-bottom: var(--cap-fix-action-prompt-bottom);
-}
-#active-card-container #card-action-area .action-button-group { margin: 0; padding-top: 0; padding-bottom: 0; }
-
-
-
-/* ===============================================================
-   CEMENTED (active — normal workout): rely solely on .stack 16px gap
-   =============================================================== */
-/* Prompt block and its internals don't add extra vertical space */
-#active-card-container #card-action-area.stack > .action-prompt-block.is-resting,
-#active-card-container #card-action-area.stack > .action-prompt-block.is-resting * {
-  margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0;
-}
-#active-card-container #card-action-area.stack > .action-prompt-block.is-resting .action-prompt-spacer-top,
-#active-card-container #card-action-area.stack > .action-prompt-block.is-resting .action-prompt-spacer-bottom {
-  height: 0; line-height: 0;
-}
-
-/* Timer and buttons: no extra spacing beyond stack gap */
-#active-card-container #card-action-area.stack > .timer-container { margin: 0; padding: 0; }
-#active-card-container #card-action-area.stack > .timer-container .timer-display { margin: 0; line-height: var(--lh-normal); }
-#active-card-container #card-action-area.stack > .action-button-group { margin: 0; padding-top: 0; padding-bottom: 0; }
-
-/* CEMENTED: Active tokens host (parent) — siblings inherit custom properties */
-#active-card-container #card-action-area.stack:has(> .action-prompt-block.is-resting) {
-  --cap-active-timer-line-height: 0.7;
-  --cap-active-timer-top-adjust: 5px;  /* Resting → Timer final nudge */
-  --cap-active-timer-bottom-adjust: 9px;/* Timer → Skip final nudge */
-  --cap-active-timer-container-mt: 0px;
-  --cap-active-timer-container-mb: 0px;
-  --cap-active-button-container-mt: 0px;
-}
-
-/* Active (resting) — neutralize inner gaps; rely on outer .stack 16px */
-#active-card-container #card-action-area.stack .action-prompt-block.is-resting ~ .timer-container,
-#active-card-container #card-action-area.stack .action-prompt-block.is-resting ~ .action-button-group {
-  gap: 0;
-  margin: 0;
-  padding: 0;
-}
-
-/* Active (resting) — flow adjustments via tokens (container-level) */
-#active-card-container #card-action-area.stack .action-prompt-block.is-resting ~ .timer-container {
-  margin-top: var(--cap-active-timer-container-mt);
-  margin-bottom: var(--cap-active-timer-container-mb);
-}
-#active-card-container #card-action-area.stack .action-prompt-block.is-resting ~ .action-button-group {
-  margin-top: var(--cap-active-button-container-mt);
-}
-
-/* Active (resting) — fine-tune timer vertical offset */
-#active-card-container #card-action-area.stack .action-prompt-block.is-resting ~ .timer-container .timer-display {
-  margin-top: var(--cap-active-timer-top-adjust);
-  margin-bottom: var(--cap-active-timer-bottom-adjust);
-}
-
-/* CEMENTED: Final override — timer line-height & centering (wins cascade) */
-#active-card-container #card-action-area.stack > .action-prompt-block.is-resting + .timer-container .timer-display {
-  display: block;
+/* Waiting/completion message */
+.waiting-card-message {
+  color: var(--on-surface-medium);
   text-align: center;
-  line-height: var(--cap-active-timer-line-height);
+  font-style: italic;
+  padding: var(--space-xl) 0;
+  margin: 0;
 }
 
-/* CEMENTED: Inactive prompt spacing — redistribute 7px to match active height */
-#active-card-container #card-action-area.stack > .action-prompt-block.is-prompt {
-  --cap-inactive-prompt-top-adjust: 3px;   /* 16 + 3 = 19 */
-  --cap-inactive-prompt-bottom-adjust: 4px;/* 16 + 4 = 20 */
-}
-#active-card-container #card-action-area.stack > .action-prompt-block.is-prompt .action-prompt-spacer-top {
-  height: var(--cap-inactive-prompt-top-adjust);
-}
-#active-card-container #card-action-area.stack > .action-prompt-block.is-prompt .action-prompt-spacer-bottom {
-  height: var(--cap-inactive-prompt-bottom-adjust);
+/* Rest day */
+.rest-day-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
 }
 
-/* Shared within component — ensure gaps are tokenized */
-#active-card-container #card-action-area .action-button-group { gap: var(--space-m); }
-.dual-fuel-gauge-container { gap: var(--space-m); }
-.dual-action-area-container { gap: var(--space-m); }
-#exercise-selector .flex-separator { margin: 0 var(--space-xxs, 4px); }
-/* CEMENTED: Dual-mode (superset/partner) active-state spacing rules are defined in
-   features/superset-modal/superset-modal.superset-partner.css to avoid collisions.
-   This file governs normal workout cards and shared visuals only. */
-
-#active-card-container .card-header {
-  /* CEMENTED: H2 collapse for exact 16/7 rhythm */
-  color: var(--on-surface-light);
+.rest-day-text {
   font-size: var(--font-size-h2);
   font-weight: 600;
-  line-height: 0.7;
-  margin: 0;
-  padding: 0;
-}
-
-#active-card-container .card-header + .card-content-container ~ * {
-  /* CEMENTED: 7px header→selector gap (token) */
-  margin-top: var(--space-header-offset);
+  color: var(--on-surface-medium);
 }

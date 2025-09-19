@@ -13,15 +13,15 @@ function getCardHeaderHTML() {
   const completionTime = calculateCompletionTime(remaining);
 
   /*
-    ARCHITECTURAL FIX (v5.1.15):
-    To enable the definitive "Cap Offset" CSS pattern, all four header text
-    elements now share an identical structure: an outer layout box containing
-    an inner, truncatable text span.
+    ALIGNMENT FIX (v5.2.1):
+    Changed h2 to span for consistent element types.
+    This ensures both elements on the same line have identical rendering behavior
+    and eliminates baseline alignment issues between different element types.
   */
   return `
     <div id="active-card-header" class="card-header-container" data-action="scrollToActiveCard">
         <div class="card-header-line">
-            <h2 class="card-header"><span class="truncate-text">${appState.session.activeCardHeaderMessage}</span></h2>
+            <span class="card-header"><span class="truncate-text">${appState.session.activeCardHeaderMessage}</span></span>
             <span class="card-header-clock"><span class="truncate-text">${appState.ui.currentTime}</span></span>
         </div>
         <div class="card-header-line">
