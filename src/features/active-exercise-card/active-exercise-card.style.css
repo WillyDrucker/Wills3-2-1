@@ -7,31 +7,47 @@
    - Multi-state support: inactive, active (resting), dual-mode
    - Anti-shift spacing preserved through state-specific tokens
    
+   ACHIEVED MEASUREMENTS:
+   Inactive State:
+   - Top to "Current Exercise": 16px ✓
+   - Between header lines: 7px ✓ 
+   - Header to selector: 7px ✓
+   - "Begin Exercise" spacing: 19px ✓
+   - To "Log Set" button: 20px ✓
+   
+   Active State:
+   - Above "Resting For:": 16px ✓
+   - "Resting For:" to timer: 16px ✓
+   - Timer to "Skip Rest": 16px ✓
+   - Timer line-height: 0.7 (required for pixel-perfect alignment)
+   
    DO NOT modify without testing ALL states for layout shift
    ========================================================================== */
 
 /* =========================== LOCAL TOKENS =========================== */
+/* CEMENT: These precise values achieve exact visual measurements
+   DO NOT modify without measuring impact on BOTH inactive and active states */
 
 #active-card-container {
   /* Selector exception - 100px instead of standard 50px */
-  --selector-height: 100px;
-  --selector-padding-v: 20px;  /* Vertical padding within 100px */
+  --selector-height: 100px;       /* CEMENT: Required for anti-shift */
+  --selector-padding-v: 20px;     /* Vertical padding within 100px */
   
   /* Header micro-adjustments for exact rhythm */
-  --header-first-line-top: -1px;     /* Achieves 16px from top */
-  --header-line-gap: -1px;           /* Achieves 7px between lines */
-  --header-to-selector: -6px;        /* To achieve 7px to selector (was -3px) */
+  --header-first-line-top: -1px;  /* CEMENT: Achieves 16px from top */
+  --header-line-gap: -1px;        /* CEMENT: Achieves 7px between lines */
+  --header-to-selector: -6px;     /* CEMENT: Achieves 7px to selector */
   
   /* Fuel gauge spacing */
   --fuel-gauge-top: 9px;
   --fuel-gauge-bottom: 4px;
   
   /* State-specific spacing (defined per state) */
-  --inactive-slack-top: -3px;        /* To achieve 20px total */
-  --inactive-slack-bottom: 0px;    
+  --inactive-slack-top: 5.5px;    /* CEMENT: Token value creates 19px visual */
+  --inactive-slack-bottom: 0px;   
   
   /* Timer adjustments for active state */
-  --active-timer-line-height: 0.7;
+  --active-timer-line-height: 0.7; /* CEMENT: Essential for timer alignment */
   --active-timer-top: 5px;
   --active-timer-bottom: 9px;
 }
@@ -61,6 +77,8 @@
 }
 
 /* =========================== HEADER SECTION =========================== */
+/* CEMENT: Header spacing achieves exact 16/7/7 rhythm
+   These values include compensation for font metrics and element differences */
 
 #active-card-container .card-header-container,
 #active-card-container #active-card-header {
@@ -150,11 +168,12 @@
 }
 
 /* =========================== EXERCISE SELECTOR =========================== */
+/* CEMENT: 100px height critical for anti-shift between states
+   !important flags required to override _selectors.css cascade */
 
 #exercise-selector {
   margin: 0 !important;
-  margin-top: -3px !important; /* Force 7px spacing */
-  /* Inherits font styles from _selectors.css but overrides height */
+  margin-top: -3px !important; /* CEMENT: Achieves 7px visual spacing */
 }
 
 /* Override any wrapper spacing */
@@ -236,8 +255,9 @@
 #card-anchor-area {
   position: relative;
   z-index: 1;
-  margin-top: var(--fuel-gauge-top);
-  margin-bottom: var(--fuel-gauge-bottom);
+  margin-top: var(--fuel-gauge-top) !important;
+  margin-bottom: 3px !important; /* Reduced from 4px to achieve 20px total */
+  padding: 0 !important;
 }
 
 .fuel-gauge-container {
@@ -255,8 +275,8 @@
 /* =========================== ACTION AREA =========================== */
 
 #card-action-area {
-  margin: 0;
-  padding: 0;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* Action prompt block */
@@ -266,24 +286,53 @@
 }
 
 #active-card-container .action-prompt-block.is-prompt {
-  margin-top: -1px !important; /* Force 20px spacing */
-  margin-bottom: 0 !important;
-}
-
-/* Override stack spacing for action area */
-#active-card-container #card-action-area.stack {
-  gap: var(--space-m);
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* Target the actual prompt text element */
 #active-card-container .action-prompt-text {
-  margin-top: -1px !important;
-  margin-bottom: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-/* Override any fuel gauge bottom margin that might be adding space */
-#active-card-container #card-anchor-area {
-  margin-bottom: 3px !important; /* Reduce from 4px to get 20px total */
+/* Spacers for inactive state anti-shift - CEMENT: Direct values after token issues */
+/* CEMENT: These exact heights achieve 19px "Begin Exercise" spacing and 20px to button
+   Using direct values instead of tokens due to non-linear scaling behavior discovered */
+.action-prompt-spacer-top {
+  display: block !important;
+  height: 4px !important;  /* CEMENT: Creates exact 19px visual */
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 0 !important;
+  font-size: 0 !important;
+  border: none !important;
+  min-height: 4px !important;
+  max-height: 4px !important;
+}
+
+.action-prompt-spacer-bottom {
+  display: block !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 0 !important;
+  font-size: 0 !important;
+  border: none !important;
+}
+
+/* Override stack spacing for action area */
+#active-card-container #card-action-area.stack {
+  gap: var(--space-m) !important; /* Force 16px */
+}
+
+/* Action buttons - target from top to reduce gap */
+#active-card-container .action-button-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  margin: -1px 0 0 0 !important; /* Negative top margin to pull up by 1px */
+  padding: 0 !important;
 }
 
 .action-prompt-text,
@@ -362,24 +411,68 @@
 }
 
 /* =========================== STATE: ACTIVE (RESTING) =========================== */
+/* CEMENT: Active state achieves perfect 16/16/16 spacing through:
+   - 1px margin-top on resting block
+   - 12px stack gap (creates 16px visual with timer line-height)
+   - Timer line-height of 0.7 (essential - do not change)
+   - 4px margin-bottom on timer for button spacing */
 
 /* Remove all spacing from resting block - let stack control */
 #active-card-container .action-prompt-block.is-resting,
 #active-card-container .action-prompt-block.is-resting * {
-  margin: 0;
-  padding: 0;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
+/* Hide spacers in active state */
 #active-card-container .action-prompt-block.is-resting .action-prompt-spacer-top,
 #active-card-container .action-prompt-block.is-resting .action-prompt-spacer-bottom {
-  display: none;
+  display: none !important;
 }
 
-/* Timer adjustments for active state */
-#active-card-container .action-prompt-block.is-resting ~ .timer-container .timer-display {
-  line-height: var(--active-timer-line-height);
-  margin-top: var(--active-timer-top);
-  margin-bottom: var(--active-timer-bottom);
+/* Adjust "Resting For:" text position */
+#active-card-container .action-prompt-block.is-resting {
+  margin-top: 1px !important;  /* CEMENT: Creates 16px from fuel gauge */
+}
+
+/* CEMENT: Stack gaps separated by state using :has() selector
+   This prevents cross-state interference discovered during testing */
+#active-card-container #card-action-area.stack:has(.action-prompt-block.is-prompt) {
+  gap: 16px !important;  /* Inactive state maintains standard gap */
+}
+
+#active-card-container #card-action-area.stack:has(.action-prompt-block.is-resting) {
+  gap: 12px !important;  /* CEMENT: Active state requires 12px for visual 16px */
+}
+
+/* Timer container - no extra margins */
+#active-card-container .timer-container {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* CEMENT: Timer compensation for perfect spacing to button */
+#active-card-container .action-prompt-block.is-resting ~ .timer-container {
+  margin-bottom: 4px !important; /* Maintains 16px to Skip Rest button */
+}
+
+/* Timer display - CEMENT: line-height 0.7 is essential for large text alignment
+   This treats timer as display object rather than readable text */
+.timer-display {
+  font-size: 5.5rem;
+  font-weight: 700;
+  line-height: 0.7 !important;  /* DO NOT CHANGE - required for pixel-perfect alignment */
+  color: var(--on-surface-light);
+  text-align: center;
+  display: block;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Action buttons in active state */
+#active-card-container .action-prompt-block.is-resting ~ .action-button-group {
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* =========================== STATE: DUAL MODE (SUPERSET/PARTNER) =========================== */
