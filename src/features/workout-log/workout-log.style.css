@@ -1,55 +1,48 @@
-/*
-  CEMENTED (Card Rhythm & Header Pattern):
-  - Card inset uses border-compensated padding so visual edge = 16px.
-  - H2 header uses line-height: 0.7 (allowed exception) to collapse ascent/descenders.
-  - Header→content gap is tokenized at 7px via --space-header-offset.
-  - Log rows have no extra horizontal padding; edges align to card inset.
-*/
-#workout-log-card {
-  --card-padding: var(--card-inset-visual);
-}
+/* ==========================================================================
+   WORKOUT LOG STYLES - TOKENIZED SYSTEM
+   
+   CEMENT: Core spacing achieved through global tokens
+   - Universal card padding pattern for 16px visual margins
+   - Standard header spacing for 7px visual gap
+   - Log items maintain 50px height with balanced content
+   
+   DO NOT modify without measuring visual output
+   ========================================================================== */
 
-/* Contains styles migrated from _log-item.css */
-
-/*
-  CEMENTED (v5.0.6 - Final Tuning):
-  A specific padding-top of 17px is required to create a 16px VISUAL gap
-  above the header, compensating for the h2 font's internal metrics and
-  collapsed line-height. This is the definitive value.
-*/
+/* Card padding - CEMENT: Achieves exact 16px visual from top */
 #workout-log-card > .card-content-container {
-    /* CEMENTED: border-compensated inset → 16px visual */
-padding: calc(var(--space-m) - var(--card-border-width, 2px));
+  padding: calc(var(--card-padding-top) + 3px) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
+  box-sizing: border-box;
 }
 
-
-/* CEMENTED PATTERN: Forcing the header to align perfectly within the container's padding. */
+/* Header styling - unified with rest of app */
 #workout-log-card .card-header {
-    /* CEMENTED: H2 collapse for exact 16/7 rhythm */
-color: var(--on-surface-light);
   font-size: var(--font-size-h2);
   font-weight: 600;
-  line-height: 0.7;
+  line-height: 0.7;  /* Collapsed for exact spacing */
+  color: var(--on-surface-light);
   margin: 0;
   padding: 0;
 }
 
-
+/* Header to content spacing */
 #workout-log-card .card-header + #workout-content {
-    /* CEMENTED: 7px header→selector gap (token) */
-margin-top: var(--space-header-offset);
+  margin-top: var(--space-s); /* 7px gap */
 }
 
+/* Workout content container */
 #workout-content {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-xxs); /* 4px between log items */
 }
-/* CEMENTED (v5.0.2): The container is now for positioning ONLY. No visual styles. */
+
+/* Log item container - positioning only */
 .workout-log-item-container {
-  position: relative; /* Anchors the absolute-positioned edit panel. */
-  scroll-margin-top: 16px;
+  position: relative; /* Anchors the edit panel */
+  scroll-margin-top: var(--space-m);
 }
+
 .workout-log-item-container.is-next-up-clickable {
   cursor: pointer;
 }
@@ -59,70 +52,64 @@ margin-top: var(--space-header-offset);
   cursor: pointer;
   list-style: none;
 }
+
 .workout-log-item-container summary::-webkit-details-marker {
   display: none;
 }
 
-/*
-  CEMENTED (v5.0.6 - Final Architecture):
-  The .workout-log-item is a flex container with a fixed height. Its direct children
-  (the text lines) are perfectly centered vertically using `justify-content`.
-  Asymmetric padding is used to counteract browser rendering quirks and achieve a
-  visually perfect 12px horizontal gap on both sides.
-*/
+/* Log item visual styling */
 .workout-log-item {
-    /* CEMENTED: no extra horizontal padding; align to card inset */
-background-color: var(--background-dark);
-  border: 2px solid transparent;
+  background-color: var(--background-dark);
+  border: var(--card-border-width) solid transparent;
   border-radius: var(--border-radius);
-  /*
-    CEMENTED (v5.0.6 - Final Tuning):
-    - Height is 63px to achieve a 12px top/bottom visual gap with centered content.
-    - Asymmetric padding (12px left, 11px right) creates a visually uniform 12px horizontal gap.
-  */
-  min-height: 63px;
-  padding: 0;
+  min-height: var(--control-height); /* 50px standard height */
+  padding: 0 12px; /* Horizontal padding only */
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 4px;
+  justify-content: space-evenly; /* Balanced vertical spacing */
+  gap: 0; /* Let space-evenly handle distribution */
 }
 
-/* When the container is open, the bottom corners of the top item are squared off. */
+/* When container is open, square off bottom corners */
 .workout-log-item-container[open] > summary > .workout-log-item {
-      /* CEMENTED: keep open state aligned; no extra padding */
-/* CEMENTED: no extra horizontal padding; align to card inset */
-border-bottom-left-radius: 0;
+  border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   border-color: var(--primary-blue);
-
-  padding: 0;
+  padding: 0 12px; /* Maintain same padding when open */
 }
 
+/* Line layouts within log item - balanced spacing */
 .log-item-line-1,
 .log-item-line-2 {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
-  gap: 8px;
+  align-items: center; /* Center align for better balance */
+  gap: var(--space-s);
   min-width: 0;
+  line-height: 1; /* Prevent extra line spacing */
 }
 
+/* Fine-tune first line position for 7px from top */
+.log-item-line-1 {
+  margin-top: 1px; /* Shift down 1px to achieve 7px visual from top */
+}
+
+/* Typography for log items */
 .log-item-exercise-name {
+  font-size: var(--font-size-body-m);
+  font-weight: 600;
   flex-grow: 1;
   flex-shrink: 1;
   min-width: 40px;
 }
 
 .log-item-timestamp {
-  font-size: 1rem;
+  font-size: var(--font-size-body-m);
   font-weight: 600;
   flex-shrink: 0;
 }
 
-/*
-  CEMENTED: Log Item Layout & Truncation
-*/
+/* Log item details */
 .log-item-details-left {
   flex-shrink: 1;
   min-width: 0;
@@ -144,17 +131,17 @@ border-bottom-left-radius: 0;
   flex-shrink: 0;
 }
 
+/* Text sizing and colors */
 .log-item-exercise-name,
 .log-item-results-value,
 .log-item-set-info-value,
 .log-item-superset-part,
 .log-item-results-unit,
 .log-item-set-info-label {
-  font-size: 1rem;
+  font-size: var(--font-size-body-m);
   font-weight: 600;
 }
 
-/* Color Rules */
 .log-item-results-value,
 .log-item-set-info-value,
 .log-item-details-content .data-highlight {
@@ -171,10 +158,12 @@ border-bottom-left-radius: 0;
 }
 
 .log-item-skipped-text {
-  font-size: 1rem;
+  font-size: var(--font-size-body-m);
   font-weight: 600;
   color: var(--text-orange-deviation);
 }
+
+/* Log item states */
 .workout-log-item.log-completed {
   border-color: var(--primary-blue);
 }
@@ -196,77 +185,71 @@ body.start-glow-animations .workout-log-item.is-next-up {
   animation: laser-etch-update 1.7s ease-out;
 }
 
-/*
-  CEMENTED (v5.0.6 - Architectural Fix):
-  This component-specific rule now defines the muted state for workout log items.
-  By moving this logic out of the global _helpers.css, we prevent conflicts and
-  ensure the log item's unique styling (like border-radius) is correctly preserved.
-  It correctly applies a muted border color WITHOUT affecting opacity or text color.
-*/
+/* Muted state for log items */
 body.is-selector-open
   .workout-log-item-container:not([open])
   > summary
   > .workout-log-item {
-    /* CEMENTED: no extra horizontal padding; align to card inset */
-border-color: var(--primary-blue-dark) !important;
-
-  padding: 0;
+  border-color: var(--primary-blue-dark) !important;
 }
 
-/* --- Edit Log Controls --- */
-/* CEMENTED: The panel is absolutely positioned to overlay content below it. */
+/* === EDIT LOG CONTROLS === */
+/* Panel that overlays below the log item when editing */
+
 .edit-log-controls {
   background: var(--background-dark);
-  border: 2px solid var(--primary-blue);
+  border: var(--card-border-width) solid var(--primary-blue);
   border-top: none;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   border-bottom-left-radius: var(--border-radius);
   border-bottom-right-radius: var(--border-radius);
-  /*
-    CEMENTED (v5.0.6 - Final Tuning):
-    - Asymmetric padding matches the log item above it for perfect alignment.
-    - Top padding is set to 13px to create the desired visual gap.
-    - Bottom padding is set to 12px to create the desired visual gap.
-  */
-  padding: 13px 11px 12px 12px;
+  padding: 12px; /* Uniform 12px padding all around */
   display: flex;
   flex-direction: column;
   position: absolute;
   width: 100%;
   z-index: 100;
 }
-/* CEMENTED: Precise margin to achieve the 7px bottom visual gap. */
+
+/* Input labels spacing */
 .edit-log-controls .input-labels-container {
   margin-top: 0;
-  margin-bottom: 4px;
+  margin-bottom: var(--space-xxs); /* 4px to inputs for 7px visual */
 }
-/* CEMENTED: Matched font style and applied a precisely tuned line-height fix. */
+
+/* Label typography */
 .edit-log-controls .input-label {
-  font-size: 1rem;
+  font-size: var(--font-size-body-m);
   font-weight: 600;
   line-height: 0.9;
 }
-/* Neutralized the margin-top to prevent conflicting spacing. */
+
+/* Input controls spacing - 12px to buttons */
 .edit-log-controls .input-controls-grid {
   margin-top: 0;
-  margin-bottom: 16px;
-}
-.edit-log-controls .number-input-container {
-  height: 40px;
-}
-.edit-log-buttons {
-  display: flex;
-  gap: 16px;
-}
-.edit-log-buttons .action-button {
-  height: 32px;
-  font-size: 1rem;
+  margin-bottom: 12px; /* 12px spacing to buttons */
 }
 
-/* --- New Card Footer Action --- */
+.edit-log-controls .number-input-container {
+  height: 40px; /* Slightly smaller than standard */
+}
+
+/* Edit buttons layout - 12px gaps */
+.edit-log-buttons {
+  display: flex;
+  gap: 12px; /* 12px between buttons */
+}
+
+.edit-log-buttons .action-button {
+  height: 32px; /* Compact buttons */
+  font-size: var(--font-size-body-m);
+}
+
+/* === CARD FOOTER === */
+
 .card-footer-action {
-  margin-top: 16px;
-  padding-top: 16px;
+  margin-top: var(--space-m);
+  padding-top: var(--space-m);
   border-top: 2px solid var(--surface-dark-accent);
 }
