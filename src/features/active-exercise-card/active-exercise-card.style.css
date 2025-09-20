@@ -36,16 +36,17 @@
   --selector-padding-v: 20px;     /* Vertical padding within 100px */
   
   /* Header micro-adjustments for exact rhythm */
-  --header-first-line-top: -1px;  /* Achieves 16px from top edge */
-  --header-line-gap: -1px;        /* Achieves 7px between header lines */
-  --header-to-selector: -6px;     /* Achieves 7px to selector */
+  /* CEMENT: These precise values transform 15/7/7 to 16/7/7 */
+  --header-first-line-top: -1px;  /* 15px + 1px = 16px from top */
+  --header-line-gap: 0px;          /* 7px already correct */
+  --header-to-selector: 0px;       /* 7px already correct */
   
   /* Fuel gauge spacing */
   --fuel-gauge-top: 9px;
   --fuel-gauge-bottom: 4px;
   
   /* State-specific spacing (defined per state) */
-  --inactive-slack-top: 5.5px;    /* Creates 19px "Begin Exercise" spacing */
+  --inactive-slack-top: 4px;      /* Creates 19px "Begin Exercise" spacing */
   --inactive-slack-bottom: 0px;   
   
   /* Timer adjustments for active state */
@@ -153,17 +154,23 @@
   display: inline;
 }
 
-/* Header spacing - precise measurements */
-#active-card-container .card-header-line:first-child {
-  margin-top: var(--header-first-line-top);
+/* CEMENT: Header spacing - precise measurements for 16/7/7 */
+#active-card-container #active-card-header > .card-header-line:first-child {
+  margin-top: 2px !important; /* 14→16px (need +2px) */
 }
 
-#active-card-container .card-header-line:nth-child(2) {
-  margin-top: var(--header-line-gap);
+#active-card-container #active-card-header > .card-header-line:nth-child(2) {
+  margin-top: 1px !important; /* 6→7px (need +1px) */
 }
 
-#active-card-container .card-header-container {
-  margin-bottom: var(--header-to-selector);
+#active-card-container #active-card-header {
+  margin-bottom: 0px; /* 7px to selector already correct */
+}
+
+/* Restore original selector fine-tuning */
+#active-card-container #exercise-selector {
+  margin: 0 !important;
+  margin-top: -3px !important; /* Original fine-tuning for 7px visual */
 }
 
 /* Right edge micro-adjustment */
@@ -187,9 +194,9 @@
 }
 
 #exercise-selector.app-selector > summary {
-  height: var(--active-selector-height);     /* Uses global 100px exception token */
-  min-height: var(--active-selector-height);
-  padding: var(--active-selector-padding-v) var(--selector-padding-h);
+  height: var(--selector-height);     /* Uses local 100px exception token */
+  min-height: var(--selector-height);
+  padding: var(--selector-padding-v) var(--selector-padding-h);
   
   /* Flex centering for content */
   display: flex;

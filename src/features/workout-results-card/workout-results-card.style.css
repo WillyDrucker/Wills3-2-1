@@ -1,137 +1,162 @@
-/*
-  CEMENTED (Workout Results — Card Rhythm & Behavior):
-  - Border‑compensated inset: .card-content-container uses calc(var(--space-m) - var(--card-border-width, 2px)) so the visual edge = 16px.
-  - Header (H2) uses line-height: 0.7 with a tiny top nudge via --cap-header-top-adjust to lock the top gap at 16px.
-  - Header → animation gap is 16px (completion state), tokenized with var(--space-m).
-  - Animation: plays on render and replays on click via index.js (see CEMENTED comments there).
-*/
-/*
-  CEMENTED (Card Rhythm & Header Pattern — Workout Results):
-  - Card inset uses border-compensated padding so visual edge = 16px.
-  - H2 header uses line-height: 0.7 + 2px nudge to collapse ascent/descenders and lock top at 16px.
-  - Header→animation gap tuned to 16px (margin-top calc).
-  - Left/right/bottom insets = 16px visual.
-*/
-/*
-  CEMENTED (Card Rhythm & Header Pattern — Workout Results Card):
-  - Card inset uses border-compensated padding so visual edge = 16px.
-  - H2 header uses line-height: 0.7 (allowed exception) to collapse ascent/descenders.
-  - Header→content gap is tokenized at 7px via --space-header-offset.
-*/
-/* --- Completion Card Styles --- */
+/* ==========================================================================
+   WORKOUT RESULTS CARD - TOKENIZED SYSTEM
+   
+   CEMENT: Core spacing achieved through global tokens
+   - Universal card padding pattern for 16px visual margins
+   - Standard header spacing for 7px visual gap
+   - Animation container: 24px top/bottom for breathing room
+   - Subtext paragraphs: 7px between lines
+   - 16px rhythm maintained throughout
+   
+   DO NOT modify without measuring visual output
+   ========================================================================== */
+
+/* === CARD FOUNDATION === */
+
+/* CEMENT: Border-compensated padding achieves exact 16px visual margins */
+.workout-results-container .card-content-container {
+  padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
+  box-sizing: border-box;
+}
+
+/* === HEADER SECTION === */
+
+/* Header typography - unified with rest of app */
 .workout-results-container .card-header {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--on-surface-light);
+  margin: 0;
+  padding: 0;
+  margin-bottom: var(--header-margin-bottom); /* CEMENT: 4px + descender = 7px visual */
   text-align: left;
 }
+
+/* === ANIMATION CONTAINER === */
+
 .completion-animation-container {
   position: relative;
-  height: 50px;
-  margin: 24px 0;
+  height: var(--control-height); /* 50px standard control height */
+  margin-top: var(--space-l); /* CEMENT: 24px breathing room above */
+  margin-bottom: var(--space-l); /* CEMENT: 24px breathing room below */
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
+/* Central success message */
 .workout-results-text {
   text-align: center;
-  font-size: var(--font-size-h2); /* REFACTORED: Using new token. */
+  font-size: var(--font-size-h2);
   font-weight: 600;
   color: var(--text-green-plan);
   flex-shrink: 0;
-  padding: 0 16px;
+  padding: 0 var(--space-m); /* 16px horizontal protection */
   position: relative;
-  z-index: 2;
+  z-index: 2; /* Above animated plates */
 }
+
+/* === SUBTEXT SECTION === */
+
 .workout-results-subtext {
   text-align: center;
-  line-height: 1.5;
+  line-height: 1.5; /* Comfortable reading spacing */
   color: var(--on-surface-medium);
-  margin-bottom: 16px;
+  margin-bottom: var(--space-m); /* CEMENT: 16px to action button */
 }
+
+/* Reset paragraph defaults */
+.workout-results-subtext p {
+  margin: 0;
+  padding: 0;
+}
+
+/* CEMENT: 7px between paragraph lines for tight grouping */
+.workout-results-subtext p + p {
+  margin-top: var(--space-s);
+}
+
+/* Emphasize the set count */
+.workout-results-subtext .data-highlight {
+  font-weight: 600;
+}
+
+/* === ACTION BUTTON CONTAINER === */
+
+.workout-results-container .action-button-container {
+  margin: 0;
+  padding: 0;
+}
+
+/* === PLATE ANIMATION ELEMENTS === */
+
 .plate {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 50px;
-  height: 50px;
+  width: var(--control-height); /* 50px circular plates */
+  height: var(--control-height);
   transform: translate(-50%, -50%);
   background-color: var(--background-dark);
   border-radius: 50%;
-  border: 2px solid var(--primary-blue);
+  border: var(--card-border-width) solid var(--primary-blue);
   color: var(--text-green-plan);
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: var(--font-size-body-l);
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 0 4px;
-  opacity: 0;
+  padding: 0 var(--space-xxs); /* 4px internal padding */
+  opacity: 0; /* Hidden until animation */
   animation-duration: 0.5s;
   animation-timing-function: ease-out;
   animation-fill-mode: forwards;
   z-index: 1;
 }
+
+/* Center hole in plate */
 .plate-hole {
   width: 8px;
   height: 8px;
   background-color: transparent;
   border-radius: 50%;
-  border: 2px solid var(--primary-blue);
+  border: var(--card-border-width) solid var(--primary-blue);
   flex-shrink: 0;
 }
+
+/* === ANIMATION TIMING CASCADE === */
+
+/* First plates - immediate start */
 .is-animating .plate-left.plate-num-3 {
   animation-name: plate-move-left-3;
   animation-delay: 0.5s;
 }
+
 .is-animating .plate-right.plate-num-3 {
   animation-name: plate-move-right-3;
   animation-delay: 0.5s;
 }
+
+/* Second plates - staggered delay */
 .is-animating .plate-left.plate-num-2 {
   animation-name: plate-move-left-2;
-  animation-delay: 1.5s; /* 0.5s initial + 0.5s travel + 0.5s pause */
+  animation-delay: 1.5s; /* Previous + travel + pause */
 }
+
 .is-animating .plate-right.plate-num-2 {
   animation-name: plate-move-right-2;
   animation-delay: 1.5s;
 }
+
+/* Third plates - final sequence */
 .is-animating .plate-left.plate-num-1 {
   animation-name: plate-move-left-1;
-  animation-delay: 2.5s; /* 1.5s + 0.5s travel + 0.5s pause */
+  animation-delay: 2.5s; /* Complete cascade timing */
 }
+
 .is-animating .plate-right.plate-num-1 {
   animation-name: plate-move-right-1;
   animation-delay: 2.5s;
 }
-
-#active-card-container > .card-content-container {
-  /* CEMENTED: border-compensated inset → 16px visual */
-  padding: calc(var(--space-m) - var(--card-border-width, 2px));
-}
-
-#active-card-container .card-header {
-  /* CEMENTED: H2 collapse + nudge to lock visual top at 16px */
-  color: var(--on-surface-light);
-  font-size: var(--font-size-h2);
-  font-weight: 600;
-  line-height: 0.7;
-  margin: 0;
-  padding: 0;
-  transform: translateY(calc(var(--cap-header-top-adjust, 2px) * -1));
-}
-
-
-#active-card-container .card-header + .card-content-container ~ * {
-  /* CEMENTED: 7px header→selector gap (token) */
-  margin-top: var(--space-header-offset);
-}
-
-#active-card-container .card-header + .completion-animation-container {
-  /* CEMENTED: header→animation gap tuned to visual 16px */
-  /* CEMENTED: header→animation gap is 16px for completion state */
-  margin-top: calc(var(--space-m) - 4px);
-}
-
-
-
-
-#active-card-container .completion-animation-container { padding-top: 0; }

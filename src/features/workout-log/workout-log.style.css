@@ -5,41 +5,49 @@
    - Universal card padding pattern for 16px visual margins
    - Standard header spacing for 7px visual gap
    - Log items maintain 50px height with balanced content
+   - Edit panel: 7px labels to inputs, 16px between inputs, 16px to buttons
+   - 16px direct spacing from last log to Full Screen button (no divider)
    
    DO NOT modify without measuring visual output
    ========================================================================== */
 
-/* Card padding - CEMENT: Achieves exact 16px visual from top */
+/* === CARD FOUNDATION === */
+
+/* CEMENT: Border-compensated padding achieves exact 16px visual from top */
 #workout-log-card > .card-content-container {
   padding: calc(var(--card-padding-top) + 3px) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
   box-sizing: border-box;
 }
 
-/* Header styling - unified with rest of app */
+/* === HEADER SECTION === */
+
+/* Header typography - collapsed line-height for precise spacing control */
 #workout-log-card .card-header {
   font-size: var(--font-size-h2);
   font-weight: 600;
-  line-height: 0.7;  /* Collapsed for exact spacing */
+  line-height: 0.7;  /* Collapsed to control exact visual spacing */
   color: var(--on-surface-light);
   margin: 0;
   padding: 0;
 }
 
-/* Header to content spacing */
+/* CEMENT: 7px visual gap from header to content */
 #workout-log-card .card-header + #workout-content {
-  margin-top: var(--space-s); /* 7px gap */
+  margin-top: var(--space-s);
 }
 
-/* Workout content container */
+/* === WORKOUT CONTENT CONTAINER === */
+
 #workout-content {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xxs); /* 4px between log items */
+  gap: var(--space-xxs); /* 4px between log items for tight stacking */
 }
 
-/* Log item container - positioning only */
+/* === LOG ITEM STRUCTURE === */
+
 .workout-log-item-container {
-  position: relative; /* Anchors the edit panel */
+  position: relative; /* Anchors the edit panel overlay */
   scroll-margin-top: var(--space-m);
 }
 
@@ -47,6 +55,7 @@
   cursor: pointer;
 }
 
+/* Remove default details/summary styling */
 .workout-log-item-container summary {
   display: block;
   cursor: pointer;
@@ -57,7 +66,8 @@
   display: none;
 }
 
-/* Log item visual styling */
+/* === LOG ITEM VISUAL CARD === */
+
 .workout-log-item {
   background-color: var(--background-dark);
   border: var(--card-border-width) solid transparent;
@@ -66,35 +76,37 @@
   padding: 0 12px; /* Horizontal padding only */
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly; /* Balanced vertical spacing */
-  gap: 0; /* Let space-evenly handle distribution */
+  justify-content: space-evenly; /* Balanced vertical distribution */
+  gap: 0; /* Let space-evenly handle all spacing */
 }
 
-/* When container is open, square off bottom corners */
+/* Square off bottom corners when edit panel is open */
 .workout-log-item-container[open] > summary > .workout-log-item {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   border-color: var(--primary-blue);
-  padding: 0 12px; /* Maintain same padding when open */
+  padding: 0 12px; /* Maintain consistent padding */
 }
 
-/* Line layouts within log item - balanced spacing */
+/* === LOG ITEM CONTENT LAYOUT === */
+
 .log-item-line-1,
 .log-item-line-2 {
   display: flex;
   justify-content: space-between;
-  align-items: center; /* Center align for better balance */
+  align-items: center;
   gap: var(--space-s);
   min-width: 0;
   line-height: 1; /* Prevent extra line spacing */
 }
 
-/* Fine-tune first line position for 7px from top */
+/* Fine-tune vertical position for exact 7px from top edge */
 .log-item-line-1 {
-  margin-top: 1px; /* Shift down 1px to achieve 7px visual from top */
+  margin-top: 1px; /* Micro-adjustment for visual balance */
 }
 
-/* Typography for log items */
+/* === LOG ITEM TYPOGRAPHY === */
+
 .log-item-exercise-name {
   font-size: var(--font-size-body-m);
   font-weight: 600;
@@ -109,7 +121,6 @@
   flex-shrink: 0;
 }
 
-/* Log item details */
 .log-item-details-left {
   flex-shrink: 1;
   min-width: 0;
@@ -131,7 +142,7 @@
   flex-shrink: 0;
 }
 
-/* Text sizing and colors */
+/* Unified text sizing and colors */
 .log-item-exercise-name,
 .log-item-results-value,
 .log-item-set-info-value,
@@ -163,7 +174,8 @@
   color: var(--text-orange-deviation);
 }
 
-/* Log item states */
+/* === LOG ITEM STATES === */
+
 .workout-log-item.log-completed {
   border-color: var(--primary-blue);
 }
@@ -176,6 +188,7 @@ body.start-glow-animations .workout-log-item.is-next-up {
   border-color: var(--warning-orange);
 }
 
+/* Maintain orange border when skipped item is open */
 .workout-log-item-container.is-skipped-item[open] > summary > .workout-log-item,
 .workout-log-item-container.is-skipped-item .edit-log-controls {
   border-color: var(--warning-orange);
@@ -185,16 +198,28 @@ body.start-glow-animations .workout-log-item.is-next-up {
   animation: laser-etch-update 1.7s ease-out;
 }
 
-/* Muted state for log items */
+/* === MUTED STATE (when other selectors open) === */
+
+/* CEMENT: Preserves rounded shape while muting - prevents square overlay */
 body.is-selector-open
   .workout-log-item-container:not([open])
   > summary
   > .workout-log-item {
   border-color: var(--primary-blue-dark) !important;
+  box-shadow: none !important; /* Block generic box-shadow */
+  background-color: var(--background-dark) !important; /* Maintain background */
+  border-radius: var(--border-radius) !important; /* Preserve rounded corners */
 }
 
-/* === EDIT LOG CONTROLS === */
-/* Panel that overlays below the log item when editing */
+/* Prevent generic selector muting from applying square overlay */
+body.is-selector-open
+  .workout-log-item-container:not([open])
+  > summary {
+  box-shadow: none !important; /* Block the square inset shadow */
+  background-color: transparent !important; /* Keep transparent background */
+}
+
+/* === EDIT LOG CONTROLS PANEL === */
 
 .edit-log-controls {
   background: var(--background-dark);
@@ -204,7 +229,7 @@ body.is-selector-open
   border-top-right-radius: 0;
   border-bottom-left-radius: var(--border-radius);
   border-bottom-right-radius: var(--border-radius);
-  padding: 12px; /* Uniform 12px padding all around */
+  padding: 12px; /* Consistent 12px internal padding */
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -212,44 +237,48 @@ body.is-selector-open
   z-index: 100;
 }
 
-/* Input labels spacing */
+/* CEMENT: 7px visual from labels to inputs via font compensation */
 .edit-log-controls .input-labels-container {
   margin-top: 0;
-  margin-bottom: var(--space-xxs); /* 4px to inputs for 7px visual */
+  margin-bottom: var(--space-xxs); /* 4px + line-height = 7px visual */
 }
 
-/* Label typography */
 .edit-log-controls .input-label {
   font-size: var(--font-size-body-m);
   font-weight: 600;
   line-height: 0.9;
 }
 
-/* Input controls spacing - 12px to buttons */
+/* CEMENT: 16px between inputs, 16px to buttons */
 .edit-log-controls .input-controls-grid {
   margin-top: 0;
-  margin-bottom: 12px; /* 12px spacing to buttons */
+  margin-bottom: var(--space-m); /* 16px to buttons */
+  gap: var(--space-m); /* 16px between weight/reps inputs */
+  display: flex;
 }
 
 .edit-log-controls .number-input-container {
-  height: 40px; /* Slightly smaller than standard */
+  height: 40px; /* Compact height for edit mode */
 }
 
-/* Edit buttons layout - 12px gaps */
+/* CEMENT: 16px gaps between all three buttons via grid */
 .edit-log-buttons {
-  display: flex;
-  gap: 12px; /* 12px between buttons */
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr; /* Equal width columns */
+  gap: var(--space-m); /* 16px between all buttons */
 }
 
 .edit-log-buttons .action-button {
-  height: 32px; /* Compact buttons */
+  height: 32px; /* Compact button height */
   font-size: var(--font-size-body-m);
+  width: 100%; /* Fill grid column */
 }
 
 /* === CARD FOOTER === */
 
+/* CEMENT: Direct 16px spacing from last log - no divider */
 .card-footer-action {
-  margin-top: var(--space-m);
-  padding-top: var(--space-m);
-  border-top: 2px solid var(--surface-dark-accent);
+  margin-top: var(--space-m); /* 16px from last log item */
+  padding: 0; /* No padding */
+  border: none; /* No divider */
 }
