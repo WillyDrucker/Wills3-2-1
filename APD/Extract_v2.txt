@@ -1,6 +1,6 @@
 # --- EDIT THESE TWO LINES ---
-$sourceDir      = "C:\Dev\COMPRESS\Wills321_v5.2.9"      # Example: "C:\Projects\wills-3-2-1-main"
-$destinationDir = "C:\Dev\EXTRACT\Wills321_v5.2.9"        # Example: "C:\Projects\FlatProjectFiles"
+$sourceDir      = "C:\Dev\COMPRESS\Wills321_v5.3.0"      # Example: "C:\Projects\wills-3-2-1-main"
+$destinationDir = "C:\Dev\EXTRACT\Wills321_v5.3.0"        # Example: "C:\Projects\FlatProjectFiles"
 # ----------------------------
 
 # Create the destination directory if it doesn't exist
