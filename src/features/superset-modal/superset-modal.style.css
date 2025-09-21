@@ -1,8 +1,68 @@
 /* ==========================================================================
-   SUPERSET MODAL - LEGACY REDIRECT
+   SUPERSET MODAL - MAIN ENTRY POINT
    
-   This file now just imports the new core file for backwards compatibility
-   All styles have been refactored into component parts
+   Architecture: Modal with day selection
+   - Global: Modals, headers, buttons, dual-mode patterns
+   - Local: Superset-specific colors and animations
+   
+   Component Structure:
+   └── .dual-mode.css - Green/yellow color scheme
    ========================================================================== */
 
-@import url("./superset-modal.core.css");
+/* Global dependencies */
+@import url("../../styles/components/_card-headers.css");
+@import url("../../styles/components/_card-foundations.css");
+@import url("../../styles/components/_action-button-groups.css");
+@import url("../../styles/components/_dual-mode-patterns.css");
+@import url("../../styles/components/_modals.css");
+
+/* Local component files */
+@import url("./superset-modal.dual-mode.css");
+
+/* === MODAL SPACING === */
+/* Uses global modal container from _modals.css */
+.superset-modal-content.card {
+  padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
+  box-sizing: border-box;
+}
+
+/* === HEADERS === */
+/* Centered modal headers */
+.superset-modal-content .card-header {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--on-surface-light);
+  margin: 0;
+  padding: 0;
+  margin-bottom: var(--header-margin-bottom); /* Global: 7px visual */
+  text-align: center;
+}
+
+/* "With" header needs top spacing */
+.superset-modal-content .card-header.with-header {
+  margin-top: var(--modal-section-spacing); /* Global: 13px = 16px visual */
+}
+
+/* === SELECTORS === */
+.superset-modal-content .app-selector {
+  margin-bottom: 0; /* Stack handles spacing */
+}
+
+/* === ACTION BUTTONS === */
+/* Two-button layout from global */
+.superset-modal-actions {
+  display: flex;
+  gap: var(--space-m);              /* Global: 16px */
+  margin-top: var(--modal-button-spacing); /* Global: 16px */
+}
+
+/* === ANIMATIONS === */
+/* Selection feedback - green/yellow flash */
+.is-animating-selection-green {
+  animation: selection-feedback-green 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.is-animating-selection-yellow {
+  animation: selection-feedback-yellow 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}

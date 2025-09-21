@@ -1,8 +1,79 @@
 /* ==========================================================================
-   WORKOUT RESULTS CARD - LEGACY REDIRECT
+   WORKOUT RESULTS CARD - MAIN ENTRY POINT
    
-   This file now just imports the new core file for backwards compatibility
-   All styles have been refactored into component parts
+   Architecture: Completion card with plate animations
+   - Global: Cards, headers, buttons
+   - Local: Animation container, plate elements
+   
+   Component Structure:
+   └── .animations.css - Plate stacking animations
    ========================================================================== */
 
-@import url("./workout-results-card.core.css");
+/* workout-results-card.style.css */
+@import url("../../styles/components/_card-headers.css");
+@import url("../../styles/components/_card-foundations.css");
+@import url("../../styles/components/_action-button-groups.css");
+@import url("./workout-results-card.animations.css");
+
+.workout-results-container .card-content-container {
+  padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
+  box-sizing: border-box;
+}
+
+.workout-results-container .card-header {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--on-surface-light);
+  margin: 0;
+  padding: 0;
+  margin-bottom: var(--header-margin-bottom); /* Global: 7px visual */
+  text-align: left;
+}
+
+.completion-animation-container {
+  position: relative;
+  height: var(--control-height); /* Global: 50px */
+  margin-top: var(--space-l);    /* Global: 24px breathing room */
+  margin-bottom: var(--space-l);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.workout-results-text {
+  text-align: center;
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  color: var(--text-green-plan);
+  flex-shrink: 0;
+  padding: 0 var(--space-m);
+  position: relative;
+  z-index: 2;
+}
+
+.workout-results-subtext {
+  text-align: center;
+  line-height: 1.5;
+  color: var(--on-surface-medium);
+  margin-bottom: var(--space-m); /* Global: 16px to button */
+}
+
+.workout-results-subtext p {
+  margin: 0;
+  padding: 0;
+}
+
+.workout-results-subtext p + p {
+  margin-top: var(--space-s); /* Global: 7px between lines */
+}
+
+.workout-results-subtext .data-highlight {
+  font-weight: 600;
+}
+
+.workout-results-container .action-button-container {
+  margin: 0;
+  padding: 0;
+}

@@ -1,8 +1,29 @@
 /* ==========================================================================
-   RESET CONFIRMATION MODAL - MAIN STYLES
+   RESET CONFIRMATION MODAL - MAIN ENTRY POINT
    
-   Option 1: Rename this file to .style.css and delete the redirect
-   Option 2: Keep as redirect for backwards compatibility
+   Architecture: Minimal modal with header and buttons
+   - Global: All patterns (modals, headers, buttons)
+   - Local: None needed - fully uses global patterns
    ========================================================================== */
 
-@import url("./reset-confirmation-modal.core.css");
+/* reset-confirmation-modal.style.css */
+@import url("../../styles/components/_modals.css");
+@import url("../../styles/components/_card-headers.css");
+@import url("../../styles/components/_action-button-groups.css");
+
+#reset-confirmation-modal-container .card-header {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--on-surface-light);
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  /* Direct to buttons - no bottom margin */
+}
+
+#reset-confirmation-modal-container .superset-modal-actions {
+  display: flex;
+  gap: var(--space-m);        /* Global: 16px */
+  margin-top: var(--space-m); /* Global: 16px from header */
+}

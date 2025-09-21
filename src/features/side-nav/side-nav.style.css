@@ -1,26 +1,39 @@
-/* Contains styles migrated from _side-nav.css */
+/* ==========================================================================
+   SIDE NAV - MAIN STYLES
+   
+   Architecture: Slide-out navigation panel
+   - Global: Colors, typography, spacing tokens
+   - Local: Fixed positioning, slide animation, nav items
+   
+   Structure: Full-screen overlay with right-side panel
+   ========================================================================== */
 
+/* === CONTAINER === */
+/* Full-screen fixed overlay */
 .side-nav-container {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 2000;
+  z-index: 2000;  /* Above all other content */
   pointer-events: none;
   visibility: hidden;
 }
 
+/* Active state */
 html.is-side-nav-open .side-nav-container {
   pointer-events: auto;
   visibility: visible;
 }
 
-/* The definitive solution. When the side nav is open, disable scrolling on the <html> element. */
+/* Prevent body scroll when nav is open */
 html.is-side-nav-open {
   overflow: hidden;
 }
 
+/* === BACKDROP === */
+/* Semi-transparent overlay */
 .side-nav-backdrop {
   position: absolute;
   top: 0;
@@ -29,31 +42,35 @@ html.is-side-nav-open {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   cursor: pointer;
-  z-index: 9; /* Place backdrop behind content, but still high */
+  z-index: 9;  /* Behind panel */
 }
 
 html.is-side-nav-open .side-nav-backdrop {
   opacity: 1;
 }
 
+/* === NAVIGATION PANEL === */
+/* Right-side sliding panel */
 .side-nav-content {
   position: absolute;
   top: 0;
   right: 0;
   width: 280px;
   height: 100%;
-  background-color: var(--surface-dark);
+  background-color: var(--surface-dark);  /* Global: dark surface */
   box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
-  transform: translateX(100%);
+  transform: translateX(100%);  /* Hidden off-screen */
   transition: transform 0.3s ease-in-out;
   padding: 32px 16px;
-  z-index: 10; /* Explicitly place content panel on top of all other elements */
+  z-index: 10;  /* Above backdrop */
 }
 
+/* Slide in when open */
 html.is-side-nav-open .side-nav-content {
   transform: translateX(0);
 }
 
+/* === NAVIGATION LIST === */
 .side-nav-content ul {
   list-style: none;
   padding: 0;
@@ -62,36 +79,41 @@ html.is-side-nav-open .side-nav-content {
   flex-direction: column;
 }
 
+/* === NAV ITEMS === */
 .side-nav-content li {
   display: flex;
   align-items: center;
-  gap: 16px;
-  color: var(--on-surface-light);
-  font-size: var(--font-size-h2); /* REFACTORED: Using new token. */
+  gap: var(--space-m);  /* Global: 16px */
+  color: var(--on-surface-light);  /* Global: text color */
+  font-size: var(--font-size-h2);  /* Global: 1.25rem */
   font-weight: 500;
   cursor: pointer;
-  padding: 12px 8px; /* Added more vertical padding for better spacing */
-  border-radius: var(--border-radius);
+  padding: 12px 8px;
+  border-radius: var(--border-radius);  /* Global: 8px */
 }
 
+/* Hover state */
 .side-nav-content li:hover {
-  background-color: var(--surface-dark-accent);
+  background-color: var(--surface-dark-accent);  /* Global: accent color */
 }
 
+/* === ICONS === */
 .side-nav-icon {
   width: 24px;
   height: 24px;
-  flex-shrink: 0; /* Prevent icons from shrinking */
+  flex-shrink: 0;  /* Prevent icon shrinking */
 }
 
+/* === DIVIDER === */
 .side-nav-divider {
   border: none;
-  border-top: 1px solid var(--surface-dark-accent);
-  margin: 8px 0; /* Space out the groups */
+  border-top: 1px solid var(--surface-dark-accent);  /* Global: accent color */
+  margin: 8px 0;
 }
 
-/* Make this rule more specific to override the color inherited from the LI */
+/* === SPECIAL TEXT COLORS === */
+/* Profile name highlight */
 .side-nav-content li .text-primary {
-  color: var(--primary-blue);
+  color: var(--primary-blue);  /* Global: primary blue */
   font-weight: 600;
 }

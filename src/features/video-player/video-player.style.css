@@ -1,21 +1,36 @@
-/* Contains styles migrated from _modals.css */
+/* ==========================================================================
+   VIDEO PLAYER - MAIN STYLES
+   
+   Architecture: Full-screen modal with YouTube iframe
+   - Global: Typography tokens, border radius
+   - Local: Fixed positioning, video aspect ratio, countdown overlay
+   
+   Structure: Backdrop + centered video wrapper + close button
+   ========================================================================== */
 
+/* === MODAL CONTAINER === */
+/* Full-screen fixed overlay */
 .video-modal-container {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 10000; /* Highest z-index to be above Side Nav */
+  z-index: 10000;  /* Highest z-index - above side nav */
   display: flex;
   justify-content: center;
   align-items: center;
   transition: opacity 0.3s ease;
 }
+
+/* Hidden state */
 .video-modal-container.is-hidden {
   opacity: 0;
   pointer-events: none;
 }
+
+/* === BACKDROP === */
+/* Dark overlay behind video */
 .video-player-backdrop {
   position: absolute;
   top: 0;
@@ -26,29 +41,38 @@
   cursor: pointer;
 }
 
+/* === VIDEO WRAPPER === */
+/* Content container */
 .video-content-wrapper {
   position: relative;
 }
 
+/* Video container with aspect ratio */
 .video-wrapper {
   position: relative;
   background-color: #000;
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius);  /* Global: 8px */
   overflow: hidden;
-  box-shadow: 0 0 20px rgba(0, 153, 255, 0.5);
+  box-shadow: 0 0 20px rgba(0, 153, 255, 0.5);  /* Blue glow */
   height: 85vh;
   max-width: 95vw;
-  aspect-ratio: 9 / 16;
-  z-index: 1; /* Establish stacking context */
+  aspect-ratio: 9 / 16;  /* Vertical video */
+  z-index: 1;
 }
+
+/* === YOUTUBE PLAYER === */
+/* Iframe container */
 #youtube-player-container {
   width: 100%;
   height: 100%;
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 2; /* Above wrapper background */
+  z-index: 2;  /* Above wrapper background */
 }
+
+/* === COUNTDOWN OVERLAY === */
+/* Return to app countdown */
 .video-countdown-overlay {
   position: absolute;
   top: 0;
@@ -60,33 +84,37 @@
   justify-content: center;
   align-items: center;
   pointer-events: none;
-  color: var(--on-surface-light);
+  color: var(--on-surface-light);  /* Global: text color */
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
-  z-index: 3; /* Above player */
+  z-index: 3;  /* Above player */
 }
+
+/* === CLOSE BUTTON === */
 .video-close-button {
   position: absolute;
   top: -10px;
   right: -10px;
   width: 32px;
   height: 32px;
-  background-color: var(--primary-blue);
-  color: var(--text-on-action-color);
-  border-radius: var(--border-radius);
+  background-color: var(--primary-blue);  /* Global: primary color */
+  color: var(--text-on-action-color);     /* Global: button text */
+  border-radius: var(--border-radius);    /* Global: 8px */
   border: none;
   font-size: 24px;
   cursor: pointer;
-  z-index: 4; /* Above everything in the wrapper */
+  z-index: 4;  /* Above everything */
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+/* === COUNTDOWN TEXT === */
 .video-countdown-overlay h2 {
   text-align: center;
-  font-size: var(--font-size-h2); /* REFACTORED: Using new token. */
+  font-size: var(--font-size-h2);  /* Global: 1.25rem */
   font-weight: 600;
 }
+
 .video-countdown-overlay .countdown-timer {
   margin-top: 4px;
 }

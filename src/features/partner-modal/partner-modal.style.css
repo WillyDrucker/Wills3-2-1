@@ -1,8 +1,75 @@
 /* ==========================================================================
-   PARTNER MODAL - LEGACY REDIRECT
+   PARTNER MODAL - MAIN ENTRY POINT
    
-   This file now just imports the new core file for backwards compatibility
-   All styles have been refactored into component parts
+   Architecture: Modal with user profiles and day selection
+   - Global: Modals, headers, buttons, dual-mode patterns
+   - Local: User profiles, divider placement, blue color scheme
+   
+   Component Structure:
+   └── .dual-mode.css - Green/blue color scheme for users
    ========================================================================== */
 
-@import url("./partner-modal.core.css");
+/* Global dependencies */
+@import url("../../styles/components/_card-headers.css");
+@import url("../../styles/components/_card-foundations.css");
+@import url("../../styles/components/_action-button-groups.css");
+@import url("../../styles/components/_dual-mode-patterns.css");
+@import url("../../styles/components/_modals.css");
+
+/* Local component files */
+@import url("./partner-modal.dual-mode.css");
+
+/* === MODAL SPACING === */
+/* Uses global modal container from _modals.css */
+#partner-modal-container .card {
+  padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
+  box-sizing: border-box;
+}
+
+/* === HEADERS === */
+/* Centered modal headers from global */
+#partner-modal-container .card-header {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--on-surface-light);
+  margin: 0;
+  padding: 0;
+  margin-bottom: var(--header-margin-bottom); /* Global: 7px visual */
+  text-align: center;
+}
+
+/* Headers after elements need spacing */
+#partner-modal-container .card-header.with-header {
+  margin-top: var(--modal-section-spacing); /* Global: 13px = 16px visual */
+}
+
+/* === SELECTORS === */
+#partner-modal-container .app-selector {
+  margin-bottom: 0;
+}
+
+/* === DIVIDER === */
+/* Partner-specific divider placement between user sections */
+#partner-modal-container .modal-divider {
+  margin: 18px 0 var(--modal-divider-spacing) 0; /* 18px top, 15px bottom */
+}
+
+/* Header after divider needs no extra margin */
+#partner-modal-container .modal-divider + .card-header {
+  margin-top: 0;
+}
+
+/* === USER PROFILES === */
+/* Two-toned profile text */
+.item-main-line .text-on-surface-medium {
+  color: var(--on-surface-medium);
+  margin-right: var(--space-xxs); /* Global: 4px */
+}
+
+/* === ACTION BUTTONS === */
+#partner-modal-container .superset-modal-actions {
+  display: flex;
+  gap: var(--space-m);              /* Global: 16px */
+  margin-top: var(--modal-button-spacing); /* Global: 16px */
+}

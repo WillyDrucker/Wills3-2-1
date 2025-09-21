@@ -1,8 +1,48 @@
 /* ==========================================================================
-   CONFIG CARD - LEGACY REDIRECT
+   CONFIG CARD - MAIN ENTRY POINT
    
-   This file now just imports the new core file for backwards compatibility
-   All styles have been refactored into component parts
+   Architecture: Three config sections with selectors
+   - Global: Card foundations, headers, base selectors
+   - Local: Multi-line selector layouts
+   
+   Component Structure:
+   └── .selectors.css - Two-line selector customization
    ========================================================================== */
 
-@import url("./config-card.core.css");
+/* Global dependencies */
+@import url("../../styles/components/_card-headers.css");
+@import url("../../styles/components/_card-foundations.css");
+
+/* Local component files */
+@import url("./config-card.selectors.css");
+
+/* === CARD FOUNDATION === */
+/* Uses global padding pattern */
+#config-card .card-content-container {
+  padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
+  box-sizing: border-box;
+}
+
+/* === HEADERS === */
+/* Standard header from global */
+#config-card .card-header {
+  font-size: var(--font-size-h2);      /* Global token */
+  font-weight: 600;
+  line-height: 1;
+  color: var(--on-surface-light);
+  margin: 0;
+  padding: 0;
+  margin-bottom: var(--header-margin-bottom); /* Global: 7px visual */
+}
+
+/* === CONFIG GROUPS === */
+/* 16px rhythm between sections */
+#config-card .config-group {
+  margin: 0;
+  padding: 0;
+  margin-bottom: var(--modal-section-spacing); /* Global: 13px = 16px visual */
+}
+
+#config-card .config-group:last-child {
+  margin-bottom: 0;
+}

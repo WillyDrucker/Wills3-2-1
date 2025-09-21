@@ -1,8 +1,77 @@
 /* ==========================================================================
-   MY DATA - LEGACY REDIRECT
+   MY DATA - MAIN ENTRY POINT
    
-   This file now just imports the new core file for backwards compatibility
-   All styles have been refactored into component parts
+   Architecture: Performance card + History calendar view
+   - Global: Card foundations, headers, buttons
+   - Local: Week navigation, calendar layout, exercise history
+   
+   Component Structure:
+   ├── .header.css        - Week navigation controls
+   ├── .calendar.css      - Seven-day layout
+   ├── .history-items.css - Exercise blocks (7px internal/16px between)
+   └── .dividers.css      - Day/session separators
    ========================================================================== */
 
-@import url("./my-data.core.css");
+/* Global dependencies */
+@import url("../../styles/components/_card-headers.css");
+@import url("../../styles/components/_card-foundations.css");
+@import url("../../styles/components/_action-button-groups.css");
+
+/* Local component files */
+@import url("./my-data.header.css");
+@import url("./my-data.calendar.css");
+@import url("./my-data.history-items.css");
+@import url("./my-data.dividers.css");
+
+/* === CARD FOUNDATION === */
+.my-data-card {
+  margin: 0 0 var(--space-m) 0; /* Global: 16px bottom */
+  border: var(--card-border-width) solid transparent;
+}
+
+/* Standard card padding from global */
+.my-data-card .card-content-container {
+  padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides) !important;
+  box-sizing: border-box;
+}
+
+/* === PERFORMANCE CARD === */
+.my-data-card:first-child .card-header {
+  display: block;
+  margin-bottom: var(--header-margin-bottom); /* Global: 7px visual */
+}
+
+/* Reset for clean layout */
+.my-data-card:first-child * {
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+.my-data-card .action-button-container {
+  margin: 0;
+  padding: 0;
+}
+
+/* === HISTORY CARD === */
+/* Universal reset for precise control */
+#workout-history-card * {
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+/* Selector spacing (legacy - needs tokenization) */
+#workout-history-card .selector-container {
+  margin-bottom: 15px;
+}
+
+/* Footer button (legacy - needs tokenization) */
+#workout-history-card .card-footer-action-single {
+  margin-top: 11px;
+  padding-top: 0;
+}
+
+#workout-history-card .card-footer-action-single .action-button {
+  margin-top: 0;
+}

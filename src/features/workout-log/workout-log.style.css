@@ -1,8 +1,47 @@
 /* ==========================================================================
-   WORKOUT LOG - LEGACY REDIRECT
+   WORKOUT LOG - MAIN ENTRY POINT
    
-   This file now just imports the new core file for backwards compatibility
-   All styles have been refactored into component parts
+   Architecture: Component-based with focused separation
+   - Global: Card foundations, headers, button groups
+   - Local: Log items, edit panel, visual states
+   
+   Component Structure:
+   ├── .header.css     - "Today's Workout" header
+   ├── .items.css      - 50px log item cards  
+   ├── .edit-panel.css - Weight/reps edit controls
+   └── .states.css     - Completed/skipped/updating states
    ========================================================================== */
 
-@import url("./workout-log.core.css");
+/* Global dependencies */
+@import url("../../styles/components/_card-headers.css");
+@import url("../../styles/components/_card-foundations.css");
+@import url("../../styles/components/_action-button-groups.css");
+
+/* Local component files */
+@import url("./workout-log.header.css");
+@import url("./workout-log.items.css");
+@import url("./workout-log.edit-panel.css");
+@import url("./workout-log.states.css");
+
+/* === CARD FOUNDATION === */
+/* Border compensation for exact 16px visual */
+#workout-log-card > .card-content-container {
+  padding: calc(var(--card-padding-top) + 3px) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
+  box-sizing: border-box;
+}
+
+/* === CONTENT CONTAINER === */
+/* 4px gaps create tight stacking between log items */
+#workout-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xxs); /* Global: 4px */
+}
+
+/* === FOOTER === */
+/* Direct 16px spacing from last log item */
+.card-footer-action {
+  margin-top: var(--space-m); /* Global: 16px */
+  padding: 0;
+  border: none;
+}
