@@ -1,51 +1,53 @@
 /* ==========================================================================
    MY DATA - HEADER WITH WEEK NAVIGATION
    
-   History card header with week range and navigation buttons
-   Performance card uses standard header
+   History card header with week range selector and navigation controls
+   Uses semantic class selectors for maintainable cascade
    ========================================================================== */
 
 /* === HISTORY WEEK HEADER === */
-#workout-history-card .history-week-header {
+.history-week-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--header-margin-bottom);
   height: var(--font-size-h2);
+  margin-bottom: var(--space-s); /* 7px spacing to selector below */
 }
 
-/* === TITLE STYLING === */
-#workout-history-card .history-week-header .card-title,
-#workout-history-card .week-range-text {
+/* === WEEK TITLE === */
+.history-week-title {
   font-size: var(--font-size-h2);
   font-weight: 600;
   line-height: 1;
+  color: var(--on-surface-light);
+  margin: 0;
+  padding: 0;
+  position: relative;
+  left: var(--history-header-left); /* Compensates for font bearing */
+}
+
+/* === WEEK RANGE TEXT === */
+.week-range-text {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--text-green-plan);
   margin: 0;
   padding: 0;
   display: inline-block;
   vertical-align: middle;
 }
 
-#workout-history-card .history-week-header .card-title {
-  color: var(--on-surface-light);
-  position: relative;
-  left: var(--history-header-left); /* Font bearing adjustment */
-}
-
-#workout-history-card .week-range-text {
-  color: var(--text-green-plan) !important;
-}
-
 /* === WEEK NAVIGATOR === */
-#workout-history-card .week-navigator {
+.week-navigator {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-s);
+  gap: var(--space-s); /* Global: 7px */
   vertical-align: middle;
 }
 
 /* === NAVIGATION BUTTONS === */
-#workout-history-card .week-nav-button {
+.week-nav-button {
   width: 32px;
   height: 14px;
   border-radius: var(--border-radius);
@@ -58,14 +60,14 @@
   cursor: pointer;
 }
 
-#workout-history-card .week-nav-button:disabled {
+.week-nav-button:disabled {
   background: #2a2a2a;
   border-color: #333;
   color: #666;
   cursor: default;
 }
 
-#workout-history-card .week-nav-button svg {
+.week-nav-button svg {
   width: 20px;
   height: 20px;
 }

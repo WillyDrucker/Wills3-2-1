@@ -48,11 +48,11 @@ export function getWorkoutCalendarHTML() {
             let sessionHeaderHtml;
             if (session.bodyPart.includes("&")) {
               const [part1, part2] = session.bodyPart.split("&");
-              sessionHeaderHtml = `<div class="day-name">${
+              sessionHeaderHtml = `<div class="day-name day-workout-name">${
                 day.dayName
               }: <span class="${bodyPartColorClass}">${part1.trim()}</span><span class="text-on-surface-medium"> & </span><span class="${bodyPart2ColorClass}">${part2.trim()}</span></div>`;
             } else {
-              sessionHeaderHtml = `<div class="day-name">${day.dayName}: <span class="${bodyPartColorClass}">${session.bodyPart}</span></div>`;
+              sessionHeaderHtml = `<div class="day-name day-workout-name">${day.dayName}: <span class="${bodyPartColorClass}">${session.bodyPart}</span></div>`;
             }
 
             const currentPlan =
@@ -79,8 +79,8 @@ export function getWorkoutCalendarHTML() {
               );
             }
 
-            // CEMENT: Group exercises by type for proper ordering
-            // Normal → Left superset → Right superset
+            // Group exercises by type for proper ordering
+            // Normal -> Left superset -> Right superset
             const leftExercises = [];
             const rightExercises = [];
             const normalExercises = [];
@@ -128,21 +128,21 @@ export function getWorkoutCalendarHTML() {
                     // Format results or show skipped
                     const resultText =
                       log.status === "skipped"
-                        ? `<span class="text-orange">Skipped</span>`
-                        : `<div class="log-item-results-container">
-                            <span class="log-item-results-value">${
+                        ? `<span class="text-orange history-skipped-text">Skipped</span>`
+                        : `<div class="log-item-results-container history-results-container">
+                            <span class="log-item-results-value history-results-value">${
                               log.weight
                             }</span>
-                            <span class="log-item-results-unit">&nbsp;${pluralize(
+                            <span class="log-item-results-unit history-results-unit">&nbsp;${pluralize(
                               log.weight,
                               "lb",
                               "lbs"
                             )}</span>
-                            <span class="log-item-results-unit">&nbsp;x&nbsp;</span>
-                            <span class="log-item-results-value">${
+                            <span class="log-item-results-unit history-results-unit">&nbsp;x&nbsp;</span>
+                            <span class="log-item-results-value history-results-value">${
                               log.reps
                             }</span>
-                            <span class="log-item-results-unit">&nbsp;${pluralize(
+                            <span class="log-item-results-unit history-results-unit">&nbsp;${pluralize(
                               log.reps,
                               "rep",
                               "reps"
@@ -151,11 +151,11 @@ export function getWorkoutCalendarHTML() {
                     
                     const totalSets = firstLog.exercise.sets;
 
-                    const setInfoHtml = `<span class="log-item-set-info-value data-highlight ${session.sessionColorClass}">${log.setNumber}</span>
-                        <span class="log-item-set-info-label">&nbsp;of&nbsp;</span>
-                        <span class="log-item-set-info-value data-highlight ${session.sessionColorClass}">${totalSets}</span>`;
+                    const setInfoHtml = `<span class="log-item-set-info-value history-set-value data-highlight ${session.sessionColorClass}">${log.setNumber}</span>
+                        <span class="log-item-set-info-label history-set-label">&nbsp;of&nbsp;</span>
+                        <span class="log-item-set-info-value history-set-value data-highlight ${session.sessionColorClass}">${totalSets}</span>`;
 
-                    return `<div class="history-exercise-set-row">
+                    return `<div class="history-exercise-set-row history-set-row">
                               <div class="history-set-left">${setInfoHtml}</div>
                               <div class="history-set-right">${resultText}</div>
                            </div>`;
@@ -177,11 +177,11 @@ export function getWorkoutCalendarHTML() {
                 ? '<hr class="history-session-divider">'
                 : "";
 
-            return `<div class="day-card-header">
+            return `<div class="day-card-header history-day-header">
                         ${sessionHeaderHtml}
-                        <span class="date-text data-highlight text-plan">${day.dateString}</span>
+                        <span class="date-text history-date-text data-highlight text-plan">${day.dateString}</span>
                     </div>
-                    <div class="exercise-list-group">
+                    <div class="exercise-list-group history-exercise-list">
                         ${exerciseBlocksHtml}
                     </div>
                     ${sessionSeparator}`;
@@ -189,35 +189,35 @@ export function getWorkoutCalendarHTML() {
           .join("");
       } else {
         // Show placeholder for empty days
-        const dayHeaderHtml = `<div class="day-card-header"><div class="day-name">${day.dayName}</div><span class="date-text data-highlight text-plan">${day.dateString}</span></div>`;
+        const dayHeaderHtml = `<div class="day-card-header history-day-header"><div class="day-name day-empty-name">${day.dayName}</div><span class="date-text history-date-text data-highlight text-plan">${day.dateString}</span></div>`;
         const placeholderText = isDateInFuture(day.date)
           ? "Remaining Workout Day"
           : "No Workouts Logged";
         dayContentHtml = `
             ${dayHeaderHtml}
-            <p class="day-card-placeholder-text">${placeholderText}</p>
+            <p class="day-card-placeholder-text history-placeholder-text">${placeholderText}</p>
         `;
       }
 
       // Day divider between days
       const separator =
         index < daysOfWeek.length - 1
-          ? '<div class="modal-divider"></div>'
+          ? '<div class="modal-divider history-day-divider"></div>'
           : "";
 
-      return `<div class="day-section">${dayContentHtml}</div>${separator}`;
+      return `<div class="day-section history-day-section">${dayContentHtml}</div>${separator}`;
     })
     .join("");
 
   const containerClass = hasWideResults ? "has-wide-results" : "";
 
   return `
-    <div class="workout-log-content-area">
-        <div class="calendar-view-container ${containerClass}">
+    <div class="workout-log-content-area history-content-area">
+        <div class="calendar-view-container history-calendar ${containerClass}">
             ${daySectionsHtml}
         </div>
-        <div class="card-footer-action-single">
-            <button class="action-button button-rest-skip" data-action="clearHistory">Test Clear History</button>
+        <div class="card-footer-action-single history-footer">
+            <button class="action-button button-rest-skip history-clear-button" data-action="clearHistory">Test Clear History</button>
         </div>
     </div>
     `;

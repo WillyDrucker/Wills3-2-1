@@ -6,27 +6,17 @@
    ========================================================================== */
 
 /* === DAY HEADERS === */
-#workout-history-card .day-card-header {
+.history-day-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-weight: 600;
-  margin-bottom: var(--history-exercise-spacing) !important;
+  /* Spacing handled in main file due to reset cascade */
 }
 
 /* === PLACEHOLDER TEXT === */
-/* Compensation for header spacing */
-#workout-history-card .day-card-header + .day-card-placeholder-text {
-  margin-top: 12px !important; /* 3px header + 12px = 15px actual */
-}
-
-#workout-history-card .day-card-placeholder-text {
+.history-placeholder-text {
   color: var(--on-surface-medium);
   font-style: italic;
-  margin-bottom: calc(var(--space-m) - 1px); /* Compensates for italic */
-}
-
-/* Last placeholder to button spacing */
-#workout-history-card .calendar-view-container > div:last-child .day-card-placeholder-text {
-  margin-bottom: 13px;
+  /* Spacing handled in main file due to reset cascade */
 }
