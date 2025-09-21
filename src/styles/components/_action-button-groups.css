@@ -1,0 +1,117 @@
+/* ==========================================================================
+   GLOBAL ACTION BUTTON GROUPS - UNIFIED PATTERNS
+   
+   CEMENT: Standard button group layouts with 16px rhythm
+   - Vertical stacks with consistent gaps
+   - Horizontal layouts for modals
+   - Grid layouts for edit panels
+   
+   Used by: active-card, workout-log, home-page, modals
+   ========================================================================== */
+
+/* === VERTICAL BUTTON STACKS === */
+/* Standard pattern for action buttons */
+.action-button-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m); /* 16px between buttons */
+  margin: 0;
+  padding: 0;
+}
+
+/* Active card specific - pulls up by 1px for precise spacing */
+#active-card-container .action-button-group {
+  margin: -1px 0 0 0 !important;
+}
+
+/* === HORIZONTAL BUTTON LAYOUTS === */
+/* Modal action buttons */
+.superset-modal-actions,
+.modal-actions {
+  display: flex;
+  gap: var(--space-m); /* 16px between buttons */
+  margin-top: var(--modal-button-spacing); /* 16px from content above */
+}
+
+/* === GRID BUTTON LAYOUTS === */
+/* Three-button edit panels */
+.edit-log-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr; /* Equal width columns */
+  gap: var(--space-m); /* 16px between all buttons */
+}
+
+.edit-log-buttons .action-button {
+  height: 32px; /* Compact button height */
+  font-size: var(--font-size-body-m);
+  width: 100%; /* Fill grid column */
+}
+
+/* === BUTTON CONTAINERS === */
+/* Wrapper for single buttons */
+.action-button-container {
+  margin: 0;
+  padding: 0;
+}
+
+/* === DUAL-MODE BUTTON LAYOUTS === */
+/* Timer and skip container for superset/partner modes */
+.timer-and-skip-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m); /* 16px between timer and button */
+  margin: 0;
+  padding: 0;
+}
+
+/* === SPECIAL BUTTON POSITIONS === */
+/* YouTube overlay button */
+.youtube-overlay-wrapper {
+  position: relative;
+}
+
+.youtube-overlay-button {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 48px;
+  height: 27px;
+  z-index: 5;
+}
+
+/* === BUTTON STATE ANIMATIONS === */
+/* Flashing error state */
+.button-is-flashing {
+  animation: button-red-pulse 0.56s linear 3;
+}
+
+/* === ACTION PROMPTS === */
+/* Clickable prompt text above buttons */
+.action-prompt-block {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.action-prompt-text,
+.resting-label {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: var(--lh-normal);
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.action-prompt-text {
+  color: var(--primary-blue-dark);
+}
+
+.resting-label {
+  color: var(--on-surface-medium);
+}
+
+/* Glowing prompt animation */
+body.start-glow-animations .action-prompt-text.is-glowing span {
+  animation: text-glow 4s ease-in-out infinite;
+}

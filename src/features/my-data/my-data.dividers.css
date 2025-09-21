@@ -1,0 +1,32 @@
+/* ==========================================================================
+   MY DATA - DIVIDERS
+   
+   Day dividers (6px sandwich effect) and session dividers (2px line)
+   Consistent spacing between sections
+   ========================================================================== */
+
+/* === DAY DIVIDER === */
+/* 6px sandwich effect between days */
+#workout-history-card .modal-divider {
+  height: 2px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: #000000;
+  box-shadow: 
+    0 -2px 0 0 rgba(255, 255, 255, 0.1),
+    0 2px 0 0 rgba(255, 255, 255, 0.1);
+  margin-bottom: var(--history-day-header-spacing);
+}
+
+/* === SESSION DIVIDER === */
+/* Simple 2px line between multiple workouts in same day */
+#workout-history-card .history-session-divider {
+  height: 2px;
+  width: 100%;
+  margin: 13px 0 15px 0; /* Visual 16px both sides */
+  padding: 0;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+}

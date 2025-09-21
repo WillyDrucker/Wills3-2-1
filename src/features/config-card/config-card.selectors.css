@@ -1,0 +1,46 @@
+/* ==========================================================================
+   CONFIG CARD - SELECTORS
+   
+   Multi-line selector content for workout setup
+   Balanced text layouts for two-line items
+   ========================================================================== */
+
+/* === MULTI-LINE SELECTORS === */
+/* Two-line content with centered text */
+#config-card .selector-content.multi-line {
+  display: block;
+  text-align: center;
+  padding: var(--selector-multiline-padding-top) 0 var(--selector-multiline-padding-bottom) 0;
+  line-height: var(--selector-multiline-line-height);
+}
+
+#config-card .selector-content.multi-line span {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+#config-card .selector-content.multi-line span:first-child {
+  margin-bottom: var(--selector-multiline-line-gap);
+}
+
+/* === BALANCED TEXT === */
+/* Same layout as multi-line for consistency */
+#config-card .selector-content.balanced-text {
+  display: block;
+  text-align: center;
+  padding: var(--selector-multiline-padding-top) 0 var(--selector-multiline-padding-bottom) 0;
+  line-height: var(--selector-multiline-line-height);
+}
+
+#config-card .selector-content.balanced-text span {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+#config-card .selector-content.balanced-text span:first-child {
+  margin-bottom: var(--selector-multiline-line-gap);
+}
+
+/* Note: Base selector styles inherited from global _selectors.css */

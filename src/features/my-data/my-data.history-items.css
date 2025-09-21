@@ -1,0 +1,62 @@
+/* ==========================================================================
+   MY DATA - HISTORY ITEMS
+   
+   Exercise blocks and set rows for workout history
+   7px internal spacing, 16px between exercises
+   ========================================================================== */
+
+/* === EXERCISE LIST GROUP === */
+#workout-history-card .exercise-list-group {
+  margin-top: 0 !important;
+}
+
+/* === EXERCISE BLOCKS === */
+/* 7px internal, 16px between exercises */
+#workout-history-card .history-exercise-block {
+  margin: 0 0 var(--history-exercise-block) 0 !important;
+  padding: 0 !important;
+}
+
+#workout-history-card .history-exercise-block:last-child {
+  margin-bottom: 15px !important; /* To divider */
+}
+
+/* When followed by session divider */
+#workout-history-card .exercise-list-group:has(+ .history-session-divider) .history-exercise-block:last-child {
+  margin-bottom: 13px !important;
+}
+
+/* === EXERCISE NAMES === */
+#workout-history-card .history-exercise-name {
+  font-weight: 600;
+  margin: 0 0 var(--history-exercise-spacing) 0 !important;
+  padding: 0 !important;
+}
+
+/* === SET ROWS === */
+#workout-history-card .history-set-rows-group {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Individual set rows */
+#workout-history-card .history-exercise-set-row {
+  display: flex;
+  align-items: baseline;
+  margin: 0 0 var(--history-exercise-spacing) 0 !important;
+  padding: 0 !important;
+}
+
+#workout-history-card .history-exercise-set-row:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* === SET ROW ALIGNMENT === */
+#workout-history-card .history-set-left {
+  margin-left: 100px;
+}
+
+#workout-history-card .history-set-right {
+  margin-left: auto;
+  text-align: right;
+}

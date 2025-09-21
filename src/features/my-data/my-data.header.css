@@ -1,0 +1,71 @@
+/* ==========================================================================
+   MY DATA - HEADER WITH WEEK NAVIGATION
+   
+   History card header with week range and navigation buttons
+   Performance card uses standard header
+   ========================================================================== */
+
+/* === HISTORY WEEK HEADER === */
+#workout-history-card .history-week-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--header-margin-bottom);
+  height: var(--font-size-h2);
+}
+
+/* === TITLE STYLING === */
+#workout-history-card .history-week-header .card-title,
+#workout-history-card .week-range-text {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+#workout-history-card .history-week-header .card-title {
+  color: var(--on-surface-light);
+  position: relative;
+  left: var(--history-header-left); /* Font bearing adjustment */
+}
+
+#workout-history-card .week-range-text {
+  color: var(--text-green-plan) !important;
+}
+
+/* === WEEK NAVIGATOR === */
+#workout-history-card .week-navigator {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-s);
+  vertical-align: middle;
+}
+
+/* === NAVIGATION BUTTONS === */
+#workout-history-card .week-nav-button {
+  width: 32px;
+  height: 14px;
+  border-radius: var(--border-radius);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  color: #000;
+  cursor: pointer;
+}
+
+#workout-history-card .week-nav-button:disabled {
+  background: #2a2a2a;
+  border-color: #333;
+  color: #666;
+  cursor: default;
+}
+
+#workout-history-card .week-nav-button svg {
+  width: 20px;
+  height: 20px;
+}

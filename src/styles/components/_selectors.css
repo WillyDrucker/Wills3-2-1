@@ -1,28 +1,23 @@
-/*
-  CEMENTED (v5.0.6 - New Standard):
-  The .app-selector now defaults to a larger, bolder font style to match the h2
-  headers, creating a stronger visual hierarchy. This is the new standard for
-  all selectors application-wide. Specific components, like the active-exercise-card,
-  may override this for their unique layout needs.
-*/
+/* ==========================================================================
+   SELECTORS - GLOBAL DROPDOWN STYLES
+   
+   Base selector (details/summary) patterns
+   Standard height: 50px, Exception: active-card uses 100px
+   ========================================================================== */
+
+/* === BASE SELECTOR === */
 .app-selector {
   position: relative;
   font-size: var(--font-size-h2);
   font-weight: 600;
-  /*
-    DEFINITIVE FIX (Evidence-Based):
-    The diagnostic test proved a stubborn default margin exists on the
-    <details> element. This `margin: 0 !important` rule is the permanent,
-    architecturally correct solution to neutralize it, guaranteeing that our
-    layout system has absolute control.
-  */
-  margin: 0 !important;
+  margin: 0 !important; /* Override browser defaults */
 }
+
 .app-selector:last-child {
   margin-bottom: 0;
 }
 
-/* CEMENTED: The summary's own padding ensures its text aligns with the headers in a full-bleed layout. */
+/* === SUMMARY (CLOSED STATE) === */
 .app-selector summary {
   background-color: var(--background-dark);
   box-shadow: inset 0 0 0 2px var(--primary-blue);
@@ -35,15 +30,18 @@
   cursor: pointer;
   list-style: none;
 }
+
 .app-selector summary::-webkit-details-marker {
   display: none;
 }
 
+/* Square bottom corners when open */
 .app-selector[open] > summary {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
 
+/* === OPTIONS LIST (OPEN STATE) === */
 .options-list {
   list-style: none;
   background-color: var(--background-dark);
@@ -67,10 +65,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden; /* Prevent content from spilling out */
+  overflow: hidden;
 }
 
-/* CORRECTED: Make note items look like standard list items */
+.options-list li:not(:last-child):not(.is-note) {
+  margin-bottom: 4px;
+}
+
+.options-list li:hover {
+  background-color: var(--surface-dark);
+}
+
+/* === NOTE ITEMS === */
 .options-list li.is-note {
   border: none;
   cursor: default;
@@ -82,39 +88,29 @@
   font-weight: 500;
   font-size: 1rem;
 }
+
 .options-list li.is-note:hover {
   background-color: transparent;
 }
 
-.options-list li:not(:last-child):not(.is-note) {
-  margin-bottom: 4px;
-}
-
+/* === COLORED BORDERS === */
 .options-list li.has-colored-border.border-yellow {
   border-color: var(--text-yellow-maintenance);
 }
+
 .options-list li.has-colored-border.border-blue {
   border-color: var(--primary-blue);
 }
+
 .options-list li.has-colored-border.border-red {
   border-color: var(--text-red-skip);
 }
 
-.options-list li:hover {
-  background-color: var(--surface-dark);
-}
-
-/*
-  CEMENTED (v5.0.6 - Color & Truncation Fix):
-  - `align-items: stretch` is the key to fixing truncation. It forces child elements
-    to fill the container's width, allowing `truncate-text` to work correctly.
-  - `color` is explicitly set here to restore the gray informational text that was
-    lost due to a specificity conflict. This is the definitive color for this component.
-*/
+/* === SELECTOR CONTENT === */
 .selector-content {
   display: flex;
   flex-direction: column;
-  align-items: stretch; /* FIX: Changed from 'center' to allow truncation */
+  align-items: stretch;
   width: 100%;
   text-align: center;
   overflow: hidden;
@@ -127,7 +123,7 @@
   padding: 4px 0;
 }
 
-/* CEMENTED (v5.0.6 - New Standard): Set to inherit the new, larger font size from .app-selector */
+/* === ITEM LINES === */
 .item-main-line {
   font-size: inherit;
 }
@@ -140,36 +136,36 @@
 .item-sub-line {
   font-size: 1rem;
 }
+
 .item-sub-line + .item-sub-line {
   margin-top: 4px;
 }
 
+/* === FLEX LAYOUTS === */
 .flex-line-container {
   display: flex;
   width: 100%;
   overflow: hidden;
   justify-content: center;
 }
+
 .flex-priority {
   flex-shrink: 0;
   white-space: nowrap;
 }
+
 .flex-separator {
   flex-shrink: 0;
   white-space: nowrap;
 }
 
-/*
-  CEMENTED (v5.0.6 - Architectural Fix):
-  This utility class is for the "rigid" part of a complex multi-part truncation line.
-  It groups the non-truncating elements together so the final element can truncate correctly.
-*/
 .flex-truncate-group-rigid {
   display: flex;
   flex-shrink: 0;
   white-space: nowrap;
 }
 
+/* === ERROR STATE === */
 summary.is-flashing-error {
   animation: button-red-pulse 0.56s linear 3;
 }

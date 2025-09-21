@@ -1,0 +1,45 @@
+/* ==========================================================================
+   ACTIVE EXERCISE CARD - DUAL MODE STATE
+   
+   Superset and Partner mode specific adjustments
+   Most dual-mode patterns in global _dual-mode-patterns.css
+   ========================================================================== */
+
+/* === DUAL ACTION AREA === */
+.dual-action-area-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-m);
+  align-items: start;
+}
+
+.action-area-cell {
+  margin: 0;
+  padding: 0;
+}
+
+/* === TIMER AND SKIP CONTAINER === */
+.timer-and-skip-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  margin: 0;
+  padding: 0;
+}
+
+/* === DUAL TIMER ADJUSTMENTS === */
+.dual-action-area-container .timer-display {
+  line-height: var(--active-timer-line-height);
+}
+
+/* === DUAL SPACING === */
+/* Standard 16px to timer */
+#active-card-container .action-prompt-block.is-resting + .dual-action-area-container {
+  margin-top: 0 !important;
+}
+
+/* CEMENT: 1px shift for 23px total to Log Set */
+.dual-action-area-container:has(.timer-and-skip-container) 
+  .action-area-cell:not(:has(.timer-and-skip-container)) .action-button-group {
+  transform: translateY(1px) !important;
+}

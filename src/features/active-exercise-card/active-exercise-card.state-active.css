@@ -1,0 +1,62 @@
+/* ==========================================================================
+   ACTIVE EXERCISE CARD - ACTIVE STATE (SINGLE TIMER)
+   
+   CEMENT: "Resting For" timer state with 16/16/16 spacing
+   - 16px from fuel gauge to "Resting For"
+   - 16px from "Resting For" to timer
+   - 16px from timer to button
+   ========================================================================== */
+
+/* === RESTING BLOCK === */
+#active-card-container .action-prompt-block.is-resting,
+#active-card-container .action-prompt-block.is-resting * {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Hide spacers in active state */
+#active-card-container .action-prompt-block.is-resting .action-prompt-spacer-top,
+#active-card-container .action-prompt-block.is-resting .action-prompt-spacer-bottom {
+  display: none !important;
+}
+
+/* "Resting For" position */
+#active-card-container .action-prompt-block.is-resting {
+  margin-top: 1px !important;  /* 16px from fuel gauge */
+}
+
+/* === ACTIVE STACK GAPS === */
+/* Compensates for timer line-height */
+#active-card-container #card-action-area.stack:has(.action-prompt-block.is-resting) {
+  gap: 12px !important;
+}
+
+/* === TIMER SPACING === */
+#active-card-container .timer-container {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* CEMENT: Timer to button spacing */
+#active-card-container .action-prompt-block.is-resting ~ .timer-container {
+  margin-bottom: 4px !important;
+}
+
+/* === TIMER DISPLAY === */
+/* CEMENT: Line-height 0.7 required for large text */
+.timer-display {
+  font-size: 5.5rem;
+  font-weight: 700;
+  line-height: var(--active-timer-line-height) !important;
+  color: var(--on-surface-light);
+  text-align: center;
+  display: block;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* === ACTION BUTTONS === */
+#active-card-container .action-prompt-block.is-resting ~ .action-button-group {
+  margin: 0 !important;
+  padding: 0 !important;
+}

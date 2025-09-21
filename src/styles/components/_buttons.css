@@ -1,16 +1,23 @@
+/* ==========================================================================
+   BUTTONS - GLOBAL STYLES
+   
+   Base button styles and color variants
+   Button groups moved to _action-button-groups.css
+   ========================================================================== */
+
+/* === BASE BUTTON === */
 .action-button {
   width: 100%;
   height: var(--control-height);
   border-radius: var(--border-radius);
   border: none;
-  font-size: var(--font-size-h2); /* REFACTORED: Using new token. */
+  font-size: var(--font-size-h2);
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  /* CEMENTED (v5.0.6 - Proactive Improvement): Add truncation to all buttons. */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -22,6 +29,7 @@
   opacity: 0.7;
 }
 
+/* === COLOR VARIANTS === */
 .button-primary {
   background-color: var(--primary-blue);
   color: var(--text-on-action-color);
@@ -31,56 +39,62 @@
   background-color: var(--log-green);
   color: var(--text-on-action-color);
 }
+
 .button-skip {
   background-color: var(--warning-orange);
   color: var(--text-on-action-color);
 }
+
 .button-rest-skip {
   background-color: var(--skip-red);
   color: var(--text-on-action-color);
 }
+
 .button-finish {
   background-color: var(--primary-blue);
   color: var(--text-on-action-color);
 }
+
 .button-clear-logs-results {
   background-color: var(--skip-red);
   color: var(--text-on-action-color);
 }
+
 .button-youtube {
   background-color: var(--youtube-red);
   color: #ffffff;
 }
+
 .button-cancel {
   background-color: var(--surface-medium-dark);
   color: var(--on-surface-light);
 }
+
 .button-clear-set {
   background-color: var(--skip-red);
   color: var(--text-on-action-color);
 }
+
 .button-update-log {
   background-color: var(--log-green);
   color: var(--text-on-action-color);
 }
 
-/* FINAL TUNING: Adjusted position per request. */
+/* === SPECIAL BUTTON SIZES === */
+/* YouTube overlay - smaller size */
 .youtube-overlay-button {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
   width: 48px;
   height: 27px;
-  border-radius: var(--border-radius);
   padding: 0;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-/* CORRECTED: Sizing restored for the complex, original YouTube icon */
 .youtube-overlay-button svg {
   height: 24px;
   width: 24px;
+}
+
+/* Edit panel buttons - compact height */
+.edit-log-buttons .action-button {
+  height: 32px;
+  font-size: var(--font-size-body-m);
 }

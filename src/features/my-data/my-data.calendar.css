@@ -1,0 +1,32 @@
+/* ==========================================================================
+   MY DATA - CALENDAR VIEW
+   
+   Seven-day calendar layout with workout sessions
+   Day headers and placeholder text
+   ========================================================================== */
+
+/* === DAY HEADERS === */
+#workout-history-card .day-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  margin-bottom: var(--history-exercise-spacing) !important;
+}
+
+/* === PLACEHOLDER TEXT === */
+/* Compensation for header spacing */
+#workout-history-card .day-card-header + .day-card-placeholder-text {
+  margin-top: 12px !important; /* 3px header + 12px = 15px actual */
+}
+
+#workout-history-card .day-card-placeholder-text {
+  color: var(--on-surface-medium);
+  font-style: italic;
+  margin-bottom: calc(var(--space-m) - 1px); /* Compensates for italic */
+}
+
+/* Last placeholder to button spacing */
+#workout-history-card .calendar-view-container > div:last-child .day-card-placeholder-text {
+  margin-bottom: 13px;
+}

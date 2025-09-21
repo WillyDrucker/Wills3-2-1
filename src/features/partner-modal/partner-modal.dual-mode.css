@@ -1,0 +1,40 @@
+/* ==========================================================================
+   PARTNER MODAL - DUAL MODE STYLES
+   
+   Partner-specific dual-mode adjustments
+   User 1 = green, User 2 = blue color scheme
+   ========================================================================== */
+
+/* === PARTNER SPECIFIC TIMERS === */
+/* Timer colors when partner mode is active */
+#active-card-container.partner-active .timer-display[data-side="left"] {
+  color: var(--text-green-plan);
+}
+
+#active-card-container.partner-active .timer-display[data-side="right"] {
+  color: var(--primary-blue);
+}
+
+/* === PARTNER FUEL GAUGE COLORS === */
+/* Left side / User 1 - green */
+.partner-active .fuel-segment.is-complete-log-left {
+  background-color: var(--log-green);
+}
+
+/* Right side / User 2 - blue */
+.partner-active .fuel-segment.is-complete-log-right-partner {
+  background-color: var(--primary-blue);
+}
+
+/* === PARTNER USER INDICATORS === */
+/* User name colors in log items */
+.partner-active .log-item-superset-part[data-user="1"] {
+  color: var(--text-green-plan);
+}
+
+.partner-active .log-item-superset-part[data-user="2"] {
+  color: var(--primary-blue);
+}
+
+/* === PARTNER SPECIFIC SPACING === */
+/* Partner uses global dual-mode spacing from _dual-mode-patterns.css */

@@ -1,0 +1,28 @@
+/* ==========================================================================
+   ACTIVE EXERCISE CARD - FUEL GAUGE
+   
+   Local fuel gauge positioning and spacing
+   Core gauge styles in global _fuel-gauge.css
+   ========================================================================== */
+
+/* === ANCHOR AREA === */
+#card-anchor-area {
+  position: relative;
+  z-index: 1;
+  margin-top: var(--fuel-gauge-top) !important;
+  margin-bottom: 3px !important;
+  padding: 0 !important;
+}
+
+/* === CONTAINER OVERRIDES === */
+.fuel-gauge-container {
+  display: flex;
+  gap: var(--fuel-gauge-gap);
+  height: var(--control-height);
+}
+
+.dual-fuel-gauge-container {
+  display: flex;
+  gap: var(--space-m);
+  height: var(--control-height);
+}

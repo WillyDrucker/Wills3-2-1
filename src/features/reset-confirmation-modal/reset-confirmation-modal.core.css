@@ -1,0 +1,35 @@
+/* ==========================================================================
+   RESET CONFIRMATION MODAL - CORE STYLES
+   
+   Simple modal with header and two buttons
+   Uses all global modal patterns
+   ========================================================================== */
+
+/* Import global shared patterns */
+@import url("../../styles/components/_modals.css");
+@import url("../../styles/components/_card-headers.css");
+@import url("../../styles/components/_action-button-groups.css");
+
+/* === MODAL STRUCTURE === */
+/* All modal container styles inherited from _modals.css */
+
+/* === HEADER === */
+#reset-confirmation-modal-container .card-header {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--on-surface-light);
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  /* No bottom margin - goes directly to buttons */
+}
+
+/* === ACTION BUTTONS === */
+#reset-confirmation-modal-container .superset-modal-actions {
+  display: flex;
+  gap: var(--space-m);
+  margin-top: var(--space-m); /* 16px from header */
+}
+
+/* Note: This modal has no selectors or dividers, just header and buttons */

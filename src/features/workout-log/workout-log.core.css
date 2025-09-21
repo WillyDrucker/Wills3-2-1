@@ -1,0 +1,39 @@
+/* ==========================================================================
+   WORKOUT LOG - CORE IMPORTS & FOUNDATION
+   
+   Main entry point importing all component parts
+   Replaces the monolithic workout-log.style.css
+   ========================================================================== */
+
+/* Import global shared patterns */
+@import url("../../styles/components/_card-headers.css");
+@import url("../../styles/components/_card-foundations.css");
+@import url("../../styles/components/_action-button-groups.css");
+
+/* Import local component parts */
+@import url("./workout-log.header.css");
+@import url("./workout-log.items.css");
+@import url("./workout-log.edit-panel.css");
+@import url("./workout-log.states.css");
+
+/* === CARD FOUNDATION === */
+/* CEMENT: Border-compensated padding for 16px visual */
+#workout-log-card > .card-content-container {
+  padding: calc(var(--card-padding-top) + 3px) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
+  box-sizing: border-box;
+}
+
+/* === WORKOUT CONTENT CONTAINER === */
+#workout-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xxs); /* 4px between log items */
+}
+
+/* === CARD FOOTER === */
+/* Direct 16px spacing from last log */
+.card-footer-action {
+  margin-top: var(--space-m);
+  padding: 0;
+  border: none;
+}

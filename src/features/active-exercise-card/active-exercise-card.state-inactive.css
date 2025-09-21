@@ -1,0 +1,21 @@
+/* ==========================================================================
+   ACTIVE EXERCISE CARD - INACTIVE STATE
+   
+   "Begin Exercise" prompt state with Log/Skip buttons
+   Uses spacers to prevent layout shift
+   ========================================================================== */
+
+/* === INACTIVE STATE SPACING === */
+/* Spacers prevent shift when switching to active */
+#active-card-container .action-prompt-block.is-prompt .action-prompt-spacer-top {
+  height: var(--inactive-slack-top);
+}
+
+#active-card-container .action-prompt-block.is-prompt .action-prompt-spacer-bottom {
+  height: var(--inactive-slack-bottom);
+}
+
+/* === INACTIVE STACK GAPS === */
+#active-card-container #card-action-area.stack:has(.action-prompt-block.is-prompt) {
+  gap: 16px !important;
+}

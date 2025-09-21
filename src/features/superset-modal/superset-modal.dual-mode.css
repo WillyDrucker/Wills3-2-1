@@ -1,0 +1,41 @@
+/* ==========================================================================
+   SUPERSET MODAL - DUAL MODE STYLES
+   
+   Superset-specific dual-mode adjustments
+   Most patterns in global _dual-mode-patterns.css
+   This file replaces the old superset-modal.superset-partner.css
+   ========================================================================== */
+
+/* === SUPERSET SPECIFIC TIMERS === */
+/* These styles apply when superset mode is active in the active card */
+
+/* Timer display with superset colors */
+#active-card-container.superset-active .timer-display[data-side="left"] {
+  color: var(--text-green-plan);
+}
+
+#active-card-container.superset-active .timer-display[data-side="right"] {
+  color: var(--text-yellow-maintenance);
+}
+
+/* === SUPERSET FUEL GAUGE COLORS === */
+/* Left side - green */
+.superset-active .fuel-segment.is-complete-log-left {
+  background-color: var(--log-green);
+}
+
+/* Right side - yellow */
+.superset-active .fuel-segment.is-complete-log-right {
+  background-color: var(--text-yellow-maintenance);
+}
+
+/* === SUPERSET SPECIFIC SPACING === */
+/* Superset uses global dual-mode spacing from _dual-mode-patterns.css */
+
+/* === SUPERSET TIME DEDUCTIONS === */
+/* Visual indicator for bonus minute deductions */
+.superset-time-deduction {
+  color: var(--text-yellow-maintenance);
+  font-size: var(--font-size-body-s);
+  margin-top: var(--space-xxs);
+}

@@ -1,2 +1,8 @@
-/* This component uses only shared modal styles. */
-/* This file is created for architectural consistency. */
+/* ==========================================================================
+   RESET CONFIRMATION MODAL - MAIN STYLES
+   
+   Option 1: Rename this file to .style.css and delete the redirect
+   Option 2: Keep as redirect for backwards compatibility
+   ========================================================================== */
+
+@import url("./reset-confirmation-modal.core.css");

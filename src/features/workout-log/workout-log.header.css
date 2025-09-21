@@ -1,0 +1,21 @@
+/* ==========================================================================
+   WORKOUT LOG - HEADER
+   
+   "Today's Workout" header with 7px spacing to content
+   Uses global _card-headers.css patterns
+   ========================================================================== */
+
+/* === HEADER TYPOGRAPHY === */
+#workout-log-card .card-header {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 0.7; /* Collapsed for precise spacing */
+  color: var(--on-surface-light);
+  margin: 0;
+  padding: 0;
+}
+
+/* CEMENT: 7px visual gap to content */
+#workout-log-card .card-header + #workout-content {
+  margin-top: var(--space-s);
+}

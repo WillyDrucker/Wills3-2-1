@@ -1,0 +1,70 @@
+/* ==========================================================================
+   WORKOUT LOG - EDIT PANEL
+   
+   Edit controls that appear below log items when opened
+   7px labels to inputs, 16px between inputs, 16px to buttons
+   ========================================================================== */
+
+/* === EDIT CONTROLS PANEL === */
+.edit-log-controls {
+  background: var(--background-dark);
+  border: var(--card-border-width) solid var(--primary-blue);
+  border-top: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  width: 100%;
+  z-index: 100;
+}
+
+/* === LABELS === */
+/* CEMENT: 7px visual from labels to inputs */
+.edit-log-controls .input-labels-container {
+  margin-top: 0;
+  margin-bottom: var(--space-xxs); /* 4px + line-height = 7px visual */
+}
+
+.edit-log-controls .input-label {
+  font-size: var(--font-size-body-m);
+  font-weight: 600;
+  line-height: 0.9;
+}
+
+/* === INPUT CONTROLS === */
+/* CEMENT: 16px between inputs, 16px to buttons */
+.edit-log-controls .input-controls-grid {
+  margin-top: 0;
+  margin-bottom: var(--space-m); /* 16px to buttons */
+  gap: var(--space-m); /* 16px between inputs */
+  display: flex;
+}
+
+.edit-log-controls .number-input-container {
+  height: 40px; /* Compact height */
+}
+
+/* === BUTTON GRID === */
+/* CEMENT: 16px gaps between all three buttons */
+.edit-log-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-m);
+}
+
+.edit-log-buttons .action-button {
+  height: 32px;
+  font-size: var(--font-size-body-m);
+  width: 100%;
+}
+
+/* === SKIPPED ITEM BORDER === */
+/* Orange border for skipped items */
+.workout-log-item-container.is-skipped-item[open] > summary > .workout-log-item,
+.workout-log-item-container.is-skipped-item .edit-log-controls {
+  border-color: var(--warning-orange);
+}

@@ -1,0 +1,122 @@
+/* ==========================================================================
+   GLOBAL CARD FOUNDATIONS - UNIFIED PADDING & BORDERS
+   
+   CEMENT: Universal card structure achieving 16px visual margins
+   - 11px top padding compensates for font ascender = 16px visual
+   - 14px side padding + 2px border = 16px visual
+   - All cards use this foundation pattern
+   
+   Used by: ALL card components in the app
+   ========================================================================== */
+
+/* === BASE CARD STRUCTURE === */
+/* Already defined in _scaffolding.css but included here for reference */
+/* .card {
+  background-color: var(--surface-dark);
+  border-radius: var(--border-radius);
+  margin-bottom: var(--space-m);
+  border: 2px solid transparent;
+  scroll-margin-top: var(--space-m);
+} */
+
+/* === UNIVERSAL CARD PADDING === */
+/* CEMENT: This padding pattern achieves exact 16px visual margins */
+.card-content-container,
+.card .card-content-container,
+#config-card .card-content-container,
+#active-card-container .card-content-container,
+#workout-log-card > .card-content-container,
+.my-data-card .card-content-container,
+.home-page-card .card-content-container,
+.workout-results-container .card-content-container,
+.superset-modal-content.card,
+.modal-content.card {
+  padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
+  box-sizing: border-box;
+}
+
+/* === SPECIAL PADDING CASES === */
+
+/* Workout log needs extra 3px for border compensation */
+#workout-log-card > .card-content-container {
+  padding-top: calc(var(--card-padding-top) + 3px);
+}
+
+/* Active card uses tokenized values */
+#active-card-container .card-content-container {
+  padding: 11px 14px 14px 14px; /* CEMENT: DO NOT MODIFY */
+}
+
+/* === CARD BORDERS & STATES === */
+
+/* Glowing border animation */
+.card.is-glowing-border {
+  animation: border-glow 4s ease-in-out infinite;
+}
+
+/* Completed state border */
+.card.log-completed,
+.workout-log-item.log-completed {
+  border-color: var(--primary-blue);
+}
+
+/* Skipped state border */
+.card.log-skipped,
+.workout-log-item.log-skipped {
+  border-color: var(--warning-orange);
+}
+
+/* === CARD SECTIONS === */
+
+/* Config groups maintain rhythm between sections */
+.card .config-group,
+.card .home-group {
+  margin: 0;
+  padding: 0;
+  margin-bottom: var(--modal-section-spacing); /* 13px = 16px visual */
+}
+
+.card .config-group:last-child,
+.card .home-group:last-child {
+  margin-bottom: 0;
+}
+
+/* === CARD FOOTERS === */
+
+/* Direct spacing from content to footer */
+.card-footer-action {
+  margin-top: var(--space-m); /* 16px from last item */
+  padding: 0;
+  border: none;
+}
+
+.card-footer-action-single {
+  margin-top: 11px; /* Specific spacing maintained */
+  padding-top: 0;
+}
+
+/* === WAITING/EMPTY STATES === */
+
+.waiting-card-message,
+.no-history-text,
+.day-card-placeholder-text {
+  color: var(--on-surface-medium);
+  text-align: center;
+  font-style: italic;
+  padding: var(--space-xl) 0;
+  margin: 0;
+}
+
+/* Rest day container */
+.rest-day-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.rest-day-text {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  color: var(--on-surface-medium);
+}

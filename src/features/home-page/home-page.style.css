@@ -1,43 +1,8 @@
 /* ==========================================================================
-   HOME PAGE STYLES - TOKENIZED SYSTEM
+   HOME PAGE - LEGACY REDIRECT
    
-   CEMENT: Uses global tokens from _variables.css
-   - Universal card padding pattern for 16px visual margins
-   - Standard header spacing for 7px visual gap
-   - 16px rhythm between buttons
-   
-   DO NOT modify without measuring visual output
+   This file now just imports the new core file for backwards compatibility
+   All styles have been refactored
    ========================================================================== */
 
-/* Card padding - uses global tokens for consistency */
-.home-page-card .card-content-container {
-  padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
-  box-sizing: border-box;
-}
-
-/* Header styling - unified across app */
-.home-page-card .card-header {
-  font-size: var(--font-size-h2);
-  font-weight: 600;
-  line-height: 1;
-  color: var(--on-surface-light);
-  margin: 0;
-  padding: 0;
-  margin-bottom: var(--header-margin-bottom);
-}
-
-/* Button group - maintains rhythm between buttons */
-.home-page-card .action-button-group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-m); /* 16px between buttons */
-  margin: 0;
-  padding: 0;
-}
-
-/* Universal reset to prevent margin surprises */
-.home-page-card * {
-  margin: 0;
-  padding: 0;
-  line-height: 1;
-}
+@import url("./home-page.core.css");

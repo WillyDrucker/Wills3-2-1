@@ -1,76 +1,8 @@
 /* ==========================================================================
-   CONFIG CARD STYLES - TOKENIZED SYSTEM
+   CONFIG CARD - LEGACY REDIRECT
    
-   CEMENT: Uses global tokens from _variables.css
-   - Universal card padding pattern for 16px visual margins
-   - Standard header spacing for 7px visual gap
-   - 13px between config groups creates 16px visual
-   
-   DO NOT modify without measuring visual output
+   This file now just imports the new core file for backwards compatibility
+   All styles have been refactored into component parts
    ========================================================================== */
 
-/* Card padding - uses global tokens for consistency */
-#config-card .card-content-container {
-  padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
-  box-sizing: border-box;
-}
-
-/* Header styling - unified across app */
-#config-card .card-header {
-  font-size: var(--font-size-h2);
-  font-weight: 600;
-  line-height: 1;
-  color: var(--on-surface-light);
-  margin: 0;
-  padding: 0;
-  margin-bottom: var(--header-margin-bottom);
-}
-
-/* Config groups - maintains rhythm between sections */
-#config-card .config-group {
-  margin: 0;
-  padding: 0;
-  margin-bottom: var(--modal-section-spacing); /* 13px = 16px visual between groups */
-}
-
-#config-card .config-group:last-child {
-  margin-bottom: 0;
-}
-
-/* Multi-line selector content - uses global selector tokens */
-#config-card .selector-content.multi-line {
-  display: block;
-  text-align: center;
-  padding: var(--selector-multiline-padding-top) 0 var(--selector-multiline-padding-bottom) 0;
-  line-height: var(--selector-multiline-line-height);
-}
-
-#config-card .selector-content.multi-line span {
-  display: block;
-  margin: 0;
-  padding: 0;
-}
-
-#config-card .selector-content.multi-line span:first-child {
-  margin-bottom: var(--selector-multiline-line-gap);
-}
-
-/* Balanced text for two-line selector items (same as multi-line) */
-#config-card .selector-content.balanced-text {
-  display: block;
-  text-align: center;
-  padding: var(--selector-multiline-padding-top) 0 var(--selector-multiline-padding-bottom) 0;
-  line-height: var(--selector-multiline-line-height);
-}
-
-#config-card .selector-content.balanced-text span {
-  display: block;
-  margin: 0;
-  padding: 0;
-}
-
-#config-card .selector-content.balanced-text span:first-child {
-  margin-bottom: var(--selector-multiline-line-gap);
-}
-
-/* Note: Selectors maintain their own spacing from _selectors.css */
+@import url("./config-card.core.css");

@@ -1,9 +1,18 @@
+/* ==========================================================================
+   FUEL GAUGE - GLOBAL BASE STYLES
+   
+   Core fuel gauge structure and animations
+   Dual-mode patterns moved to _dual-mode-patterns.css
+   ========================================================================== */
+
+/* === BASE STRUCTURE === */
 .fuel-gauge-container {
   display: flex;
   justify-content: space-between;
   height: var(--fuel-gauge-height);
   flex-grow: 1;
 }
+
 .fuel-segment {
   flex-grow: 1;
   background-color: var(--surface-dark-accent);
@@ -12,33 +21,20 @@
   position: relative;
   overflow: hidden;
 }
+
 .fuel-segment:last-child {
   margin-right: 0;
 }
 
-/*
-  --- CEMENTED: Universal Fuel Gauge Animation Logic ---
-  This block defines the robust, two-part animation for the fuel gauge.
-
-  1. .segment-progress (The Parent): This element's animation is responsible ONLY
-     for the `width` (the fill effect). Crucially, its `animation-delay` is set
-     dynamically in fuelGauge.js. This is the key to the alt-tab sync fix.
-
-  2. .segment-progress::after (The Pseudo-Element): This element handles the COLOR.
-     It inherits the `animation-delay` from its parent, ensuring the color and
-     width animations are always perfectly synchronized, even after a page is hidden
-     and re-focused.
-
-  DO NOT change this structure. The animation keyframes themselves are defined in
-  _animations-fuel-gauge.css and should be edited there.
-*/
+/* === PROGRESS ANIMATION === */
+/* Two-part animation: parent controls width, pseudo controls color */
 .segment-progress {
   position: absolute;
   left: 0;
   top: 0;
   height: 100%;
   width: 0%;
-  background-color: transparent; /* The parent is just a container for the fill */
+  background-color: transparent;
   border-top-right-radius: var(--border-radius);
   border-bottom-right-radius: var(--border-radius);
 }
@@ -53,15 +49,16 @@
   background-color: var(--primary-blue-dark);
   border-top-right-radius: var(--border-radius);
   border-bottom-right-radius: var(--border-radius);
-  animation-delay: inherit;
+  animation-delay: inherit; /* Sync with parent */
 }
 
+/* === ACTIVE STATE === */
 .fuel-segment.is-active .segment-progress {
   animation-name: segment-fill-animate;
   animation-duration: 60s;
   animation-timing-function: linear;
   animation-fill-mode: forwards;
-  animation-delay: inherit;
+  animation-delay: inherit; /* Dynamic value from JS */
 }
 
 .fuel-segment.is-active .segment-progress::after {
@@ -71,44 +68,19 @@
   animation-fill-mode: forwards;
 }
 
-/* --- Base Segment Colors --- */
-.fuel-segment.is-complete-log-left {
-  background-color: var(--log-green);
-}
-.fuel-segment.is-complete-log-right {
-  background-color: var(--text-yellow-maintenance);
-}
-.fuel-segment.is-complete-log-right-partner {
-  background-color: var(--primary-blue);
-}
+/* === COMPLETED STATES === */
 .fuel-segment.is-complete-skip {
   background-color: var(--warning-orange);
 }
 
-/* --- Stamping Animations --- */
-.fuel-segment.is-stamping-log-left {
-  animation: stamp-effect-log-left 1.2s forwards;
-}
-.fuel-segment.is-stamping-log-right {
-  animation: stamp-effect-log-right 1.2s forwards;
-}
-.fuel-segment.is-stamping-log-right-partner {
-  animation: stamp-effect-log-right-partner 1.2s forwards;
-}
+/* === STAMPING ANIMATIONS === */
 .fuel-segment.is-stamping-skip {
   animation: stamp-effect-skip 1.2s forwards;
 }
 
-/* --- Final Fade-out Animations --- */
-.fuel-segment.is-fading-out-log-left {
-  animation: final-stamp-and-fade-log-left 4s linear forwards;
-}
-.fuel-segment.is-fading-out-log-right {
-  animation: final-stamp-and-fade-log-right 4s linear forwards;
-}
-.fuel-segment.is-fading-out-log-right-partner {
-  animation: final-stamp-and-fade-log-right-partner 4s linear forwards;
-}
+/* === FADE-OUT ANIMATIONS === */
 .fuel-segment.is-fading-out-skip {
   animation: final-stamp-and-fade-skip 4s linear forwards;
 }
+
+/* Note: Dual-mode specific colors and animations in _dual-mode-patterns.css */

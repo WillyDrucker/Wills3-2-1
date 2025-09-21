@@ -1,32 +1,8 @@
 /* ==========================================================================
-   PARTNER MODAL STYLES - SPECIFIC OVERRIDES
+   PARTNER MODAL - LEGACY REDIRECT
    
-   CEMENT: Partner modal uses shared base styles from superset-modal.style.css
-   with specific spacing adjustments for its unique divider placement
-   
-   - Divider appears between selector groups (not after headers)
-   - 18px top margin achieves 16px visual from selector
-   - 15px bottom margin achieves 16px visual to "Partner" header
-   
-   DO NOT modify margins without measuring visual output
+   This file now just imports the new core file for backwards compatibility
+   All styles have been refactored into component parts
    ========================================================================== */
 
-/* Style for two-toned text in the partner profile selectors */
-.item-main-line .text-on-surface-medium {
-  color: var(--on-surface-medium);
-  margin-right: var(--space-xxs); /* 4px spacing */
-}
-
-/* Partner modal specific spacing adjustments */
-/* CEMENT: Divider placement unique to partner modal structure
-   18px top = 16px visual from "Current User Focus" selector
-   15px bottom + 1px ascender = 16px visual to "Partner" header */
-#partner-modal-container .modal-divider {
-  margin: 18px 0 var(--modal-divider-spacing) 0; /* 18px top, 15px bottom */
-}
-
-/* Ensure proper spacing for "Partner" header after divider */
-/* Reset margin since divider handles all spacing */
-#partner-modal-container .modal-divider + .card-header {
-  margin-top: 0;
-}
+@import url("./partner-modal.core.css");

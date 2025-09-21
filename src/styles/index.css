@@ -1,45 +1,74 @@
-/*
-  Will's 3-2-1 CSS Manifest (v6.0 - Component Architecture)
-  This file imports all other CSS partials.
-  The order is critical for the cascade.
-*/
+/* ==========================================================================
+   WILL'S 3-2-1 CSS MANIFEST (v6.0 - Component Architecture)
+   
+   This file imports all CSS partials in the correct cascade order
+   Now using refactored component structure with focused files
+   ========================================================================== */
 
-/* 1. Variables - Must be first */
+/* === 1. VARIABLES - Must be first === */
 @import url("./base/_variables.css");
 
-/* 2. Base Styles - Foundational setup */
+/* === 2. BASE STYLES - Foundational setup === */
 @import url("./base/_reset.css");
 @import url("./base/_typography.css");
 @import url("./base/_scaffolding.css");
 
-/* 3. Shared Components - Reusable, generic elements */
+/* === 3. GLOBAL COMPONENTS - Shared patterns === */
 @import url("./components/_buttons.css");
 @import url("./components/_inputs.css");
 @import url("./components/_selectors.css");
 @import url("./components/_fuel-gauge.css");
 @import url("./components/_modals.css");
+@import url("./components/_card-headers.css");
+@import url("./components/_card-foundations.css");
+@import url("./components/_action-button-groups.css");
+@import url("./components/_dual-mode-patterns.css");
 
-/* 4. Feature Components - Styles for specific, complex UI parts */
-/* CORRECTED: The paths now correctly use ../ to point from /src/styles up to /src */
+/* === 4. FEATURE COMPONENTS - Specific UI parts === */
+
+/* App Header */
 @import url("../features/app-header/app-header.style.css");
-@import url("../features/side-nav/side-nav.style.css");
-@import url("../features/video-player/video-player.style.css");
-@import url("../features/superset-modal/superset-modal.style.css");
-@import url("../features/superset-modal/superset-modal.superset-partner.css"); /* NEW: Isolated Superset/Partner Styles */
-@import url("../features/partner-modal/partner-modal.style.css");
-@import url("../features/reset-confirmation-modal/reset-confirmation-modal.style.css");
-@import url("../features/home-page/home-page.style.css");
-@import url("../features/my-data/my-data.style.css");
-@import url("../features/config-card/config-card.style.css");
-@import url("../features/active-exercise-card/active-exercise-card.style.css");
-@import url("../features/workout-results-card/workout-results-card.style.css");
-@import url("../features/workout-log/workout-log.style.css");
 
-/* 5. Utility Classes & Animations - Helpers must come AFTER components to override them */
+/* Side Navigation */
+@import url("../features/side-nav/side-nav.style.css");
+
+/* Video Player */
+@import url("../features/video-player/video-player.style.css");
+
+/* Modals */
+@import url("../features/superset-modal/superset-modal.core.css");
+@import url("../features/partner-modal/partner-modal.core.css");
+@import url("../features/reset-confirmation-modal/reset-confirmation-modal.core.css");
+
+/* Pages */
+@import url("../features/home-page/home-page.core.css");
+@import url("../features/my-data/my-data.core.css");
+
+/* Cards */
+@import url("../features/config-card/config-card.core.css");
+@import url("../features/active-exercise-card/active-exercise-card.core.css");
+@import url("../features/workout-results-card/workout-results-card.core.css");
+@import url("../features/workout-log/workout-log.core.css");
+
+/* === 5. UTILITY CLASSES & ANIMATIONS === */
 @import url("./utils/_helpers.css");
 @import url("./utils/_animations.css");
 @import url("./utils/_animations-fuel-gauge.css");
 
-/* 6. Themes - Final layer for cosmetic overrides */
+/* === 6. THEMES - Final layer for cosmetic overrides === */
 @import url("./themes/_default.css");
 @import url("./themes/_dark.css");
+
+/* ==========================================================================
+   NOTES:
+   
+   - Old monolithic files can be deleted after verification:
+     * active-exercise-card.style.css (573 lines → 11 files)
+     * workout-log.style.css (348 lines → 6 files)
+     * my-data.style.css (321 lines → 6 files)
+     * superset-modal.superset-partner.css (241 lines → split)
+   
+   - Redirect files are optional - can be deleted if not needed
+   
+   - To simplify further, rename all .core.css to .style.css
+   ========================================================================== */

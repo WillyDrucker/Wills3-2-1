@@ -1,0 +1,98 @@
+/* ==========================================================================
+   ACTIVE EXERCISE CARD - HEADER
+   
+   CEMENT: Pixel-perfect 16/7/7 spacing achieved
+   - 16px: Card top to "Current Exercise"
+   - 7px: "Current Exercise" to "Minutes Remaining"  
+   - 7px: "Minutes Remaining" to selector
+   
+   DO NOT MODIFY without measuring visual output
+   ========================================================================== */
+
+/* === HEADER CONTAINER === */
+#active-card-container .card-header-container,
+#active-card-container #active-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0; /* CEMENT: Spacing via margins only */
+  margin: 0;
+  padding: 0;
+}
+
+/* CEMENT: Header to selector spacing */
+#active-card-container #active-card-header {
+  margin-bottom: 7px !important;
+}
+
+/* === HEADER LINES === */
+#active-card-container .card-header-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-m);
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+/* CEMENT: Second line spacing - 4px creates 7px visual */
+#active-card-container .card-header-line:nth-child(2) {
+  margin-top: var(--header-line-spacing);
+}
+
+/* === TYPOGRAPHY === */
+#active-card-container .card-header,
+#active-card-container .card-header-clock {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--on-surface-light);
+  margin: 0;
+  padding: 0;
+}
+
+#active-card-container .card-header-dynamic-text {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--on-surface-light);
+  margin: 0;
+  padding: 0;
+}
+
+/* CEMENT: Second line requires line-height 0.7 */
+#active-card-container .card-header-line:nth-child(2) .card-header-dynamic-text {
+  line-height: var(--header-line2-height) !important;
+  display: inline-block;
+}
+
+/* === COLOR PRESERVATION === */
+#active-card-container .card-header-line.text-plan .card-header-dynamic-text,
+#active-card-container .card-header-line.text-plan .card-header-clock,
+#active-card-container .text-plan .card-header-dynamic-text,
+#active-card-container .text-plan .card-header-clock {
+  color: var(--text-green-plan) !important;
+}
+
+#active-card-container .card-header-line.text-deviation .card-header-dynamic-text,
+#active-card-container .card-header-line.text-deviation .card-header-clock,
+#active-card-container .text-deviation .card-header-dynamic-text,
+#active-card-container .text-deviation .card-header-clock {
+  color: var(--text-olive-deviation) !important;
+}
+
+#active-card-container .card-header-line.text-warning .card-header-dynamic-text,
+#active-card-container .card-header-line.text-warning .card-header-clock,
+#active-card-container .text-warning .card-header-dynamic-text,
+#active-card-container .text-warning .card-header-clock {
+  color: var(--text-yellow-maintenance) !important;
+}
+
+/* Ensure spans don't break alignment */
+#active-card-container .card-header span,
+#active-card-container .card-header-clock span,
+#active-card-container .card-header-dynamic-text span {
+  line-height: inherit;
+  vertical-align: baseline;
+  display: inline;
+}

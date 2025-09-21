@@ -1,0 +1,125 @@
+/* ==========================================================================
+   WORKOUT LOG - ITEMS
+   
+   Individual log item cards with 50px height
+   Two-line layout with exercise name and details
+   ========================================================================== */
+
+/* === LOG ITEM CONTAINER === */
+.workout-log-item-container {
+  position: relative;
+  scroll-margin-top: var(--space-m);
+}
+
+.workout-log-item-container.is-next-up-clickable {
+  cursor: pointer;
+}
+
+/* Remove default details/summary styling */
+.workout-log-item-container summary {
+  display: block;
+  cursor: pointer;
+  list-style: none;
+}
+
+.workout-log-item-container summary::-webkit-details-marker {
+  display: none;
+}
+
+/* === LOG ITEM CARD === */
+.workout-log-item {
+  background-color: var(--background-dark);
+  border: var(--card-border-width) solid transparent;
+  border-radius: var(--border-radius);
+  min-height: var(--control-height); /* 50px */
+  padding: 0 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  gap: 0;
+}
+
+/* Square bottom corners when edit panel open */
+.workout-log-item-container[open] > summary > .workout-log-item {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-color: var(--primary-blue);
+  padding: 0 12px;
+}
+
+/* === CONTENT LAYOUT === */
+.log-item-line-1,
+.log-item-line-2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-s);
+  min-width: 0;
+  line-height: 1;
+}
+
+/* Fine-tune vertical position */
+.log-item-line-1 {
+  margin-top: 1px;
+}
+
+/* === TYPOGRAPHY === */
+.log-item-exercise-name {
+  font-size: var(--font-size-body-m);
+  font-weight: 600;
+  flex-grow: 1;
+  flex-shrink: 1;
+  min-width: 40px;
+}
+
+.log-item-timestamp {
+  font-size: var(--font-size-body-m);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.log-item-details-left {
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.log-item-details-content {
+  color: var(--on-surface-medium);
+}
+
+.log-item-separator {
+  color: var(--on-surface-medium);
+  font-weight: 600;
+}
+
+/* === RESULTS DISPLAY === */
+.log-item-results-container {
+  display: flex;
+  align-items: baseline;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.log-item-results-value,
+.log-item-set-info-value {
+  font-size: var(--font-size-body-m);
+  font-weight: 600;
+  color: var(--on-surface-light);
+}
+
+.log-item-superset-part.text-primary {
+  color: var(--primary-blue);
+}
+
+.log-item-results-unit,
+.log-item-set-info-label {
+  font-size: var(--font-size-body-m);
+  font-weight: 600;
+  color: var(--on-surface-medium);
+}
+
+.log-item-skipped-text {
+  font-size: var(--font-size-body-m);
+  font-weight: 600;
+  color: var(--text-orange-deviation);
+}

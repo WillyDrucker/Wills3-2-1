@@ -1,0 +1,26 @@
+/* ==========================================================================
+   ACTIVE EXERCISE CARD - INPUTS
+   
+   Weight and reps input section
+   Uses global input styles with local spacing
+   ========================================================================== */
+
+/* === INPUT SECTION === */
+.input-group {
+  margin: 0;
+  padding: 0;
+}
+
+/* Two-column grid */
+.input-2col-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: var(--space-s);
+  column-gap: var(--space-m);
+}
+
+/* === LABELS === */
+.input-label {
+  font-weight: 500;
+  color: var(--on-surface-medium);
+}

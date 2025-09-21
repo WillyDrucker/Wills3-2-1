@@ -1,0 +1,97 @@
+/* ==========================================================================
+   ACTIVE EXERCISE CARD - CORE IMPORTS & FOUNDATION
+   
+   This is the main entry point that imports all component parts
+   Replaces the monolithic active-exercise-card.style.css
+   ========================================================================== */
+
+/* Import global shared patterns */
+@import url("../../styles/components/_card-headers.css");
+@import url("../../styles/components/_card-foundations.css");
+@import url("../../styles/components/_action-button-groups.css");
+@import url("../../styles/components/_dual-mode-patterns.css");
+
+/* Import local component parts */
+@import url("./active-exercise-card.header.css");
+@import url("./active-exercise-card.selector.css");
+@import url("./active-exercise-card.inputs.css");
+@import url("./active-exercise-card.fuel-gauge.css");
+@import url("./active-exercise-card.action-area.css");
+@import url("./active-exercise-card.state-inactive.css");
+@import url("./active-exercise-card.state-active.css");
+@import url("./active-exercise-card.state-dual.css");
+@import url("./active-exercise-card.animations.css");
+
+/* === LOCAL TOKENS === */
+#active-card-container {
+  /* Selector exception - 100px for anti-shift */
+  --selector-height: 100px;
+  --selector-padding-v: 20px;
+  
+  /* Header spacing tokens */
+  --header-line-spacing: 4px;
+  --header-line2-height: 0.7;
+  
+  /* Fuel gauge spacing */
+  --fuel-gauge-top: 9px;
+  --fuel-gauge-bottom: 3px;
+  
+  /* State-specific spacing */
+  --inactive-slack-top: 4px;
+  --inactive-slack-bottom: 0px;
+  
+  /* Timer adjustments */
+  --active-timer-line-height: 0.7;
+  --active-timer-top: 5px;
+  --active-timer-bottom: 9px;
+  
+  /* Dual-mode adjustments */
+  --dual-resting-to-logset: 7px;
+}
+
+/* === CARD FOUNDATION === */
+/* CEMENT: Exact padding for 16px visual margins */
+#active-card-container .card-content-container {
+  padding: 11px 14px 14px 14px;
+  box-sizing: border-box;
+}
+
+/* === STACK LAYOUT === */
+#active-card-container .stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+}
+
+/* Header/selector group uses manual spacing */
+#active-card-container .header-and-selector-group.stack {
+  gap: 0 !important;
+}
+
+#active-card-container .stack[style*="--stack-space"] {
+  gap: var(--stack-space);
+}
+
+/* === SPECIAL STATES === */
+/* Waiting/completion message */
+.waiting-card-message {
+  color: var(--on-surface-medium);
+  text-align: center;
+  font-style: italic;
+  padding: var(--space-xl) 0;
+  margin: 0;
+}
+
+/* Rest day */
+.rest-day-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.rest-day-text {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  color: var(--on-surface-medium);
+}

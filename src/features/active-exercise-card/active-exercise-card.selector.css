@@ -1,0 +1,87 @@
+/* ==========================================================================
+   ACTIVE EXERCISE CARD - SELECTOR
+   
+   CEMENT: 100px height exception for anti-shift
+   Standard selectors use 50px, this prevents layout shift between states
+   ========================================================================== */
+
+/* === SELECTOR CONTAINER === */
+#exercise-selector {
+  margin: 0 !important;
+}
+
+/* YouTube overlay wrapper */
+.youtube-overlay-wrapper {
+  position: relative;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* === 100px HEIGHT EXCEPTION === */
+#exercise-selector.app-selector > summary {
+  height: var(--selector-height);     /* 100px exception */
+  min-height: var(--selector-height);
+  padding: var(--selector-padding-v) var(--selector-padding-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* === SELECTOR CONTENT === */
+#exercise-selector .selector-content {
+  font-weight: 500;
+  width: 100%;
+}
+
+#exercise-selector .item-main-line {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+#exercise-selector .item-sub-line {
+  font-size: var(--font-size-body-m);
+  line-height: 1.1;
+}
+
+#exercise-selector .flex-separator {
+  margin: 0 var(--space-xxs);
+  font-weight: 600;
+}
+
+/* === YOUTUBE OVERLAY === */
+.youtube-overlay-button {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+}
+
+/* === MUTED STATE === */
+.is-muted {
+  pointer-events: none;
+}
+
+.is-muted > summary {
+  background-color: var(--background-dark);
+  box-shadow: inset 0 0 0 2px var(--primary-blue-dark);
+}
+
+.is-muted > summary .selector-content {
+  opacity: 0.2;
+}
+
+/* === SELECTOR OPEN STATES === */
+body.is-selector-open details:not([open]) {
+  pointer-events: none;
+}
+
+body.is-selector-open details:not([open]) > summary {
+  background-color: var(--background-dark);
+  box-shadow: inset 0 0 0 2px var(--primary-blue-dark);
+}
+
+body.is-selector-open details:not([open]) > summary .selector-content {
+  filter: brightness(0.5) saturate(0.5);
+  opacity: 0.7;
+}

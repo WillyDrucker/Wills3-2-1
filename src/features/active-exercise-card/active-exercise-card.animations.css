@@ -1,0 +1,25 @@
+/* ==========================================================================
+   ACTIVE EXERCISE CARD - ANIMATIONS
+   
+   Local animations specific to active card
+   Global animations in _animations.css
+   ========================================================================== */
+
+/* === GLOW ANIMATIONS === */
+/* Prompt text glow */
+body.start-glow-animations .action-prompt-text.is-glowing span {
+  animation: text-glow 4s ease-in-out infinite;
+}
+
+/* Border glow */
+.is-glowing-border {
+  animation: border-glow 4s ease-in-out infinite;
+}
+
+/* === COLOR STATES === */
+.text-plan { color: var(--text-green-plan); }
+.text-deviation { color: var(--text-olive-deviation); }
+.text-warning { color: var(--text-yellow-maintenance); }
+.text-orange { color: var(--text-orange-deviation); }
+.text-skip { color: var(--text-red-skip); }
+.text-primary { color: var(--primary-blue); }

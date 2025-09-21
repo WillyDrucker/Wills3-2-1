@@ -1,0 +1,85 @@
+/* ==========================================================================
+   WORKOUT RESULTS CARD - CORE IMPORTS & FOUNDATION
+   
+   Main entry point for workout completion card
+   Shows "Workout Complete!" with animated plates
+   ========================================================================== */
+
+/* Import global shared patterns */
+@import url("../../styles/components/_card-headers.css");
+@import url("../../styles/components/_card-foundations.css");
+@import url("../../styles/components/_action-button-groups.css");
+
+/* Import local component parts */
+@import url("./workout-results-card.animations.css");
+
+/* === CARD FOUNDATION === */
+/* CEMENT: Border-compensated padding for 16px visual margins */
+.workout-results-container .card-content-container {
+  padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
+  box-sizing: border-box;
+}
+
+/* === HEADER === */
+.workout-results-container .card-header {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--on-surface-light);
+  margin: 0;
+  padding: 0;
+  margin-bottom: var(--header-margin-bottom); /* 7px visual */
+  text-align: left;
+}
+
+/* === ANIMATION CONTAINER === */
+.completion-animation-container {
+  position: relative;
+  height: var(--control-height); /* 50px */
+  margin-top: var(--space-l); /* 24px breathing room */
+  margin-bottom: var(--space-l); /* 24px breathing room */
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* === SUCCESS MESSAGE === */
+.workout-results-text {
+  text-align: center;
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  color: var(--text-green-plan);
+  flex-shrink: 0;
+  padding: 0 var(--space-m); /* Horizontal protection */
+  position: relative;
+  z-index: 2; /* Above animated plates */
+}
+
+/* === SUBTEXT SECTION === */
+.workout-results-subtext {
+  text-align: center;
+  line-height: 1.5;
+  color: var(--on-surface-medium);
+  margin-bottom: var(--space-m); /* 16px to action button */
+}
+
+.workout-results-subtext p {
+  margin: 0;
+  padding: 0;
+}
+
+/* CEMENT: 7px between paragraph lines */
+.workout-results-subtext p + p {
+  margin-top: var(--space-s);
+}
+
+.workout-results-subtext .data-highlight {
+  font-weight: 600;
+}
+
+/* === ACTION BUTTON === */
+.workout-results-container .action-button-container {
+  margin: 0;
+  padding: 0;
+}

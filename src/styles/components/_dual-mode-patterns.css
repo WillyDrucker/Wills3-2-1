@@ -1,0 +1,115 @@
+/* ==========================================================================
+   GLOBAL DUAL-MODE PATTERNS - SUPERSET & PARTNER SHARED
+   
+   CEMENT: Shared patterns for dual-mode operations
+   - Two-column grid layouts with 16px gaps
+   - Side-specific timers with 0.7 line-height
+   - Color coding: left=green, right=yellow/blue
+   
+   Used by: active-card, superset-modal, partner-modal
+   ========================================================================== */
+
+/* === DUAL-MODE GRID === */
+.dual-action-area-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-m);
+  align-items: start; /* Independent column heights */
+}
+
+.action-area-cell {
+  margin: 0;
+  padding: 0;
+}
+
+/* === DUAL FUEL GAUGE === */
+.dual-fuel-gauge-container {
+  display: flex;
+  gap: var(--space-m);
+  height: var(--control-height);
+}
+
+.fuel-gauge-wrapper {
+  flex: 1;
+}
+
+/* === DUAL-MODE TIMERS === */
+.dual-action-area-container .timer-display {
+  font-size: 5rem;
+  font-weight: 700;
+  line-height: 0.7; /* CEMENT: Required for spacing */
+  color: var(--on-surface-light);
+  text-align: center;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+/* === COLOR CODING === */
+/* Left/User1: Green */
+.fuel-segment.is-complete-log-left,
+.timer-display.text-plan {
+  color: var(--text-green-plan);
+}
+
+/* Right/Superset: Yellow */
+.fuel-segment.is-complete-log-right,
+.timer-display.text-warning {
+  color: var(--text-yellow-maintenance);
+}
+
+/* Right/Partner: Blue */
+.fuel-segment.is-complete-log-right-partner,
+.timer-display.text-primary {
+  color: var(--primary-blue);
+}
+
+/* === SPACING ADJUSTMENTS === */
+/* Resting to dual grid */
+#active-card-container .action-prompt-block.is-resting + .dual-action-area-container {
+  margin-top: 0;
+}
+
+/* Opposite Log Set gets extra 1px for 23px total */
+.dual-action-area-container:has(.timer-and-skip-container)
+  .action-area-cell:not(:has(.timer-and-skip-container)) .action-button-group {
+  transform: translateY(1px);
+}
+
+/* === FUEL GAUGE ANIMATIONS === */
+.fuel-segment.is-stamping-log-left {
+  animation: stamp-effect-log-left 1.2s forwards;
+}
+
+.fuel-segment.is-stamping-log-right {
+  animation: stamp-effect-log-right 1.2s forwards;
+}
+
+.fuel-segment.is-stamping-log-right-partner {
+  animation: stamp-effect-log-right-partner 1.2s forwards;
+}
+
+.fuel-segment.is-fading-out-log-left {
+  animation: final-stamp-and-fade-log-left 4s linear forwards;
+}
+
+.fuel-segment.is-fading-out-log-right {
+  animation: final-stamp-and-fade-log-right 4s linear forwards;
+}
+
+.fuel-segment.is-fading-out-log-right-partner {
+  animation: final-stamp-and-fade-log-right-partner 4s linear forwards;
+}
+
+/* === BUTTON STATES === */
+.dual-action-area-container .action-button[disabled] {
+  pointer-events: none;
+  filter: brightness(0.5) saturate(0.5);
+  opacity: 0.7;
+}
+
+/* Prevent margin stacking in cells */
+.dual-action-area-container .action-area-cell > * {
+  margin-top: 0;
+  margin-bottom: 0;
+}

@@ -1,0 +1,46 @@
+/* ==========================================================================
+   WORKOUT LOG - STATES
+   
+   Visual states for log items (completed, skipped, next-up, updating)
+   Muted states when selectors are open
+   ========================================================================== */
+
+/* === COMPLETED STATE === */
+.workout-log-item.log-completed {
+  border-color: var(--primary-blue);
+}
+
+/* === NEXT UP STATE === */
+body.start-glow-animations .workout-log-item.is-next-up {
+  animation: glow-border 4s ease-in-out infinite;
+}
+
+/* === SKIPPED STATE === */
+.workout-log-item.log-skipped {
+  border-color: var(--warning-orange);
+}
+
+/* === UPDATING ANIMATION === */
+.workout-log-item.is-updating-log .log-item-results-container {
+  animation: laser-etch-update 1.7s ease-out;
+}
+
+/* === MUTED STATE (when selectors open) === */
+/* CEMENT: Preserves rounded shape while muting */
+body.is-selector-open
+  .workout-log-item-container:not([open])
+  > summary
+  > .workout-log-item {
+  border-color: var(--primary-blue-dark) !important;
+  box-shadow: none !important;
+  background-color: var(--background-dark) !important;
+  border-radius: var(--border-radius) !important;
+}
+
+/* Prevent generic selector muting */
+body.is-selector-open
+  .workout-log-item-container:not([open])
+  > summary {
+  box-shadow: none !important;
+  background-color: transparent !important;
+}

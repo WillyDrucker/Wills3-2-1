@@ -1,14 +1,11 @@
-/* CEMENTED — Inputs Layout Contract
-   • Two‑column grid aligns labels directly over inputs.
-   • 7px row gap and 16px column gap via tokens only.
-   • Label optical 7/7 achieved via cap‑fix tokens; do not change margins elsewhere. */
-.input-labels-container { display: flex; gap: var(--space-m); margin: 0; }
-.input-label { flex: 1; font-size: var(--font-size-body-m); font-weight: 500; color: var(--on-surface-medium); text-align: center; margin: 0; line-height: var(--lh-normal);
-  line-height: var(--lh-normal);
-  padding: 0;
-}
-.input-controls-grid { display: flex; gap: var(--space-m); margin: 0; }
+/* ==========================================================================
+   INPUTS - GLOBAL NUMBER INPUT STYLES
+   
+   Shared number input controls with increment/decrement buttons
+   Two-column grid layout for weight/reps
+   ========================================================================== */
 
+/* === NUMBER INPUT CONTAINER === */
 .number-input-container {
   display: flex;
   align-items: center;
@@ -18,6 +15,8 @@
   flex-grow: 1;
   border: 1px solid var(--on-surface-disabled);
 }
+
+/* === INCREMENT/DECREMENT BUTTONS === */
 .number-input-container button {
   background-color: var(--background-dark);
   color: var(--on-surface-light);
@@ -32,18 +31,17 @@
   justify-content: center;
 }
 
+.number-input-container button:hover {
+  background-color: #333;
+}
+
+/* Decrement symbol positioning fix */
 .decrement-button-symbol {
   position: relative;
   top: -2px;
 }
 
-.button-is-flashing {
-  animation: button-red-pulse 0.56s linear 3;
-}
-
-.number-input-container button:hover {
-  background-color: #333;
-}
+/* === INPUT FIELD === */
 .number-input-container input {
   width: 100%;
   height: 100%;
@@ -54,7 +52,6 @@
   border-left: 1px solid var(--on-surface-disabled);
   border-right: 1px solid var(--on-surface-disabled);
   font-size: 1.25rem;
-  /* CEMENTED FIX: Added the standard `appearance` property for full browser compatibility. */
   -moz-appearance: textfield;
   appearance: none;
 }
@@ -63,16 +60,14 @@
   outline: none;
 }
 
+/* Remove spin buttons */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-
-/* CEMENTED: Two-column input grid ensures labels align directly above their respective inputs,
-   maintaining token rhythm: 7px between rows, 16px between columns, with centered label text. */
-/* CEMENTED: Grid is the structural alignment mechanism for labels/inputs. */
+/* === TWO-COLUMN GRID === */
 .input-2col-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -81,35 +76,46 @@ input::-webkit-inner-spin-button {
   align-items: start;
 }
 
-/* Ensure number-input containers align within the grid columns without extra margins. */
-/* CEMENTED: No extra margins inside grid; controls center within their column. */
 .input-2col-grid .number-input-container {
   margin: 0;
   width: 100%;
   display: flex;
-  justify-content: center; /* visually center the control within its column */
-}
-
-
-
-/* CEMENTED: Cap-fix margins for body labels (Roboto @ var(--font-size-body-m)).
-   Using margins (not padding) is permitted by the Project Bible to correct the optical gap.
-   This yields ~7px above (selector border → label text) and ~7px below (label text → input border). */
-/* CEMENTED: Tokenized cap-fix for body labels (Roboto @ var(--font-size-body-m)).
-   Uses tokens so adjustments remain centralized and consistent app-wide. */
-/* CEMENTED: Cap-fix margins for labels, tokenized with safe fallbacks and higher specificity.
-   Guarantees 7px/7px visual rhythm even if variables load later or other rules match .input-label. */
-.selector-and-inputs .input-2col-grid .input-label.input-label {
-  line-height: var(--lh-normal);
-  padding: 0;
-  margin-top: var(--cap-fix-label-top, -3px);
-  margin-bottom: var(--cap-fix-label-bottom, -4px);
-  display: flex;
-  align-items: center;
   justify-content: center;
 }
 
+/* === INPUT LABELS === */
+.input-label {
+  flex: 1;
+  font-size: var(--font-size-body-m);
+  font-weight: 500;
+  color: var(--on-surface-medium);
+  text-align: center;
+  margin: 0;
+  line-height: var(--lh-normal);
+  padding: 0;
+}
 
+/* Labels container */
+.input-labels-container {
+  display: flex;
+  gap: var(--space-m);
+  margin: 0;
+}
 
-/* Ensure inline spans in labels don't change line metrics */
-.selector-and-inputs .input-2col-grid .input-label * { line-height: inherit; }
+/* Input controls grid */
+.input-controls-grid {
+  display: flex;
+  gap: var(--space-m);
+  margin: 0;
+}
+
+/* === EDIT MODE SPECIFIC === */
+/* Compact height for edit panels */
+.edit-log-controls .number-input-container {
+  height: 40px;
+}
+
+/* === ERROR STATE === */
+.button-is-flashing {
+  animation: button-red-pulse 0.56s linear 3;
+}
