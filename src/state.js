@@ -22,7 +22,8 @@ export function getInitialAppState() {
       activeCardMessage: "Begin Exercise - Log Results",
       activeCardHeaderMessage: "Current Exercise", // CEMENTED FIX: New state property for the header.
       currentExerciseColorClass: "text-plan",
-      currentSessionColorClass: "text-plan",
+      currentSessionColorClass: "text-plan", /* 🔒 CEMENT: Controls header colors (Minutes Remaining, clock) */
+      currentTimerColorClass: "text-plan", /* 🔒 CEMENT: Controls timer colors, separate from headers */
       workoutTimeRemaining: 0,
       playCompletionAnimation: false,
     },

@@ -1,41 +1,58 @@
 /* ==========================================================================
    HOME PAGE - MAIN ENTRY POINT
-   
-   Architecture: Simple cards with action buttons
-   - Global: All patterns (cards, headers, buttons)
-   - Local: None needed - fully uses global patterns
+
+   CEMENT: Cascade management through selective restoration
+   - Reset all elements to 0 for precise control
+   - Selectively restore spacing with specific overrides
+   - All spacing managed here to win cascade battles
+
+   Architecture: Simple cards with action buttons and home groups
+   Component files handle structure, main file handles spacing
    ========================================================================== */
 
-/* home-page.style.css */
+/* Global dependencies */
 @import url("../../styles/components/_card-headers.css");
 @import url("../../styles/components/_card-foundations.css");
 @import url("../../styles/components/_action-button-groups.css");
 
+/* === CARD FOUNDATION === */
+.home-page-card {
+  margin: 0 0 var(--space-m) 0; /* Global: 16px bottom */
+  border: var(--card-border-width) solid transparent;
+}
+
+/* Standard card padding from global */
 .home-page-card .card-content-container {
   padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
   box-sizing: border-box;
 }
 
-.home-page-card .card-header {
-  font-size: var(--font-size-h2);
-  font-weight: 600;
-  line-height: 1;
-  color: var(--on-surface-light);
-  margin: 0;
-  padding: 0;
-  margin-bottom: var(--header-margin-bottom); /* Global: 7px visual */
-}
-
-.home-page-card .action-button-group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-m); /* Global: 16px */
-  margin: 0;
-  padding: 0;
-}
-
+/* === HOME PAGE CASCADE MANAGEMENT === */
+/* CEMENT: Nuclear reset enables precise spacing control */
 .home-page-card * {
   margin: 0;
   padding: 0;
   line-height: 1;
+}
+
+/* CEMENT: Selective spacing restoration - all measurements verified */
+
+/* Headers */
+.home-page-card .card-header {
+  margin-bottom: var(--header-margin-bottom); /* 4px + descender = 7px visual */
+}
+
+/* Home groups - maintain rhythm between sections */
+.home-page-card .home-group {
+  margin-bottom: var(--modal-section-spacing); /* 13px = 16px visual */
+}
+
+.home-page-card .home-group:last-child {
+  margin-bottom: 0; /* No margin on last group */
+}
+
+/* Action button groups - preserve from reset */
+.home-page-card .action-button-group {
+  margin: 0;
+  padding: 0;
 }

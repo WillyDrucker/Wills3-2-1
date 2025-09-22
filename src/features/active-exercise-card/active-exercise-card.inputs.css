@@ -1,26 +1,72 @@
 /* ==========================================================================
    ACTIVE EXERCISE CARD - INPUTS
-   
-   Weight and reps input section
-   Uses global input styles with local spacing
+
+   CEMENT: Precise 7px/7px spacing around input labels achieved
+   Critical solution: Override global line-height + precise grid gap
    ========================================================================== */
 
-/* === INPUT SECTION === */
-.input-group {
-  margin: 0;
+#active-card-container .input-group {
+  margin-top: 6px;    /* CEMENT: Precise spacing - achieves 7px visual above W character */
+  margin-bottom: 0;
   padding: 0;
 }
 
-/* Two-column grid */
-.input-2col-grid {
+#active-card-container .input-2col-grid {
+  /* CEMENT: CSS grid layout for precise control */
   display: grid;
   grid-template-columns: 1fr 1fr;
-  row-gap: var(--space-s);
-  column-gap: var(--space-m);
+  gap: 4px 16px; /* CEMENT: 4px row gap achieves 7px visual below W character */
+  grid-template-areas:
+    "weight-label reps-label"
+    "weight-input reps-input";
 }
 
-/* === LABELS === */
-.input-label {
+#active-card-container .input-label {
   font-weight: 500;
   color: var(--on-surface-medium);
+  text-align: center;
+  line-height: 1; /* CEMENT: Critical override of global 1.2 line-height */
 }
+
+/* === ESSENTIAL INPUT CONTROL STYLES === */
+/* Styles for number input controls */
+#active-card-container .number-input-container {
+  display: flex;
+  align-items: center;
+  height: var(--control-height);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  flex-grow: 1;
+  border: 1px solid var(--on-surface-disabled);
+  margin: 0; /* No margins on input controls */
+}
+
+#active-card-container .number-input-container button {
+  background-color: var(--background-dark);
+  color: var(--on-surface-light);
+  border: none;
+  width: 50px;
+  flex-shrink: 0;
+  height: 100%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#active-card-container .number-input-container input {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  background-color: var(--background-dark);
+  color: var(--on-surface-light);
+  border: none;
+  border-left: 1px solid var(--on-surface-disabled);
+  border-right: 1px solid var(--on-surface-disabled);
+  font-size: 1.25rem;
+  -moz-appearance: textfield;
+  appearance: none;
+}
+
+/* Fuel gauge spacing handled in fuel-gauge.css */

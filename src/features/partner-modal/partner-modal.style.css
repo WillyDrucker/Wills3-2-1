@@ -1,12 +1,14 @@
 /* ==========================================================================
    PARTNER MODAL - MAIN ENTRY POINT
-   
-   Architecture: Modal with user profiles and day selection
+
+   Architecture: Modal with user profiles, divider, and dual day selection
    - Global: Modals, headers, buttons, dual-mode patterns
-   - Local: User profiles, divider placement, blue color scheme
-   
+   - Local: User profiles, divider spacing, blue color scheme
+
    Component Structure:
-   └── .dual-mode.css - Green/blue color scheme for users
+   └── .dual-mode.css - Green/blue color scheme for partner users
+
+   CEMENT: Divider spacing critical for visual balance between user sections
    ========================================================================== */
 
 /* Global dependencies */
@@ -20,28 +22,22 @@
 @import url("./partner-modal.dual-mode.css");
 
 /* === MODAL SPACING === */
-/* Uses global modal container from _modals.css */
+/* Standard card padding from global patterns */
 #partner-modal-container .card {
   padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
   box-sizing: border-box;
 }
 
 /* === HEADERS === */
-/* Centered modal headers from global */
+/* Centered modal headers with standard spacing */
 #partner-modal-container .card-header {
-  font-size: var(--font-size-h2);
-  font-weight: 600;
-  line-height: 1;
-  color: var(--on-surface-light);
-  margin: 0;
-  padding: 0;
-  margin-bottom: var(--header-margin-bottom); /* Global: 7px visual */
+  margin-bottom: var(--header-margin-bottom); /* 4px + descender = 7px visual */
   text-align: center;
 }
 
-/* Headers after elements need spacing */
+/* Headers after elements need section spacing */
 #partner-modal-container .card-header.with-header {
-  margin-top: var(--modal-section-spacing); /* Global: 13px = 16px visual */
+  margin-top: var(--modal-section-spacing); /* 13px = 16px visual */
 }
 
 /* === SELECTORS === */
@@ -49,15 +45,20 @@
   margin-bottom: 0;
 }
 
-/* === DIVIDER === */
-/* Partner-specific divider placement between user sections */
-#partner-modal-container .modal-divider {
-  margin: 18px 0 var(--modal-divider-spacing) 0; /* 18px top, 15px bottom */
+/* Selector before divider - fine-tune spacing for 16px visual */
+#partner-modal-container .app-selector:has(+ .modal-divider) {
+  margin-bottom: -2px; /* Compensate for header descender = 16px visual to divider */
 }
 
-/* Header after divider needs no extra margin */
+/* === DIVIDER === */
+/* CEMENT: 16px visual spacing both sides of divider for balance */
+#partner-modal-container .modal-divider {
+  margin: 18px 0 15px 0; /* 18px top, 15px bottom = 16px visual both sides */
+}
+
+/* Header after divider - compensate for divider spacing */
 #partner-modal-container .modal-divider + .card-header {
-  margin-top: 0;
+  margin-top: 1px; /* Fine-tune to achieve 16px visual */
 }
 
 /* === USER PROFILES === */

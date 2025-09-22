@@ -249,6 +249,7 @@ export function initialize(dependencies) {
         if (time) {
           handleTimeChange(time);
           coreActions.updateActiveWorkoutAndLog();
+          coreActions.renderAll(); // Ensure timer color updates immediately
         }
         if (exerciseSwap) {
           handleExerciseSwap(exerciseSwap);

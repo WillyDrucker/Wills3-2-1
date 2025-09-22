@@ -34,6 +34,7 @@
 @import url("./active-exercise-card.state-dual.css");     /* Dual modes */
 @import url("./active-exercise-card.animations.css");     /* Glow effects */
 
+
 /* === LOCAL TOKENS === */
 /* Component-specific measurements that differ from global defaults */
 #active-card-container {
@@ -41,23 +42,29 @@
   --selector-height: 100px;
   --selector-padding-v: 20px;
   
-  /* Header: CEMENTED values for 16/7/7 rhythm */
-  --header-line-spacing: 4px;      /* Creates 7px visual between lines */
-  --header-line2-height: 0.7;      /* Required for second line only */
+  /* Header: 🔒 TITANIUM-CEMENTED for 16/7/7 rhythm */
+  /* --header-line-spacing: REMOVED - using direct -9px in header.css */
+  --header-line2-height: 1;        /* Consistent line-height for alignment */
   
   /* Fuel gauge: Local positioning */
-  --fuel-gauge-top: 9px;
+  --fuel-gauge-top: 16px;
   --fuel-gauge-bottom: 3px;
   
-  /* States: Inactive/active spacing */
-  --inactive-slack-top: 4px;       /* Anti-shift spacer */
-  --inactive-slack-bottom: 0px;
+  /* States: Inactive/active spacing with spacer divs */
+  --inactive-slack-top: 14px;      /* 🔒 CEMENT: Static slack prevents card height shift */
+  --inactive-slack-bottom: 3px;    /* 🔒 CEMENT: 6px total compensates active vs inactive (491px vs 485px) */
+  --active-slack-top: 8px;         /* 🔒 CEMENT: Achieves 16px visual above Resting For */
+  --active-slack-bottom: 0px;
   
   /* Timer: Display adjustments */
   --active-timer-line-height: 0.7; /* Large text requirement */
   
   /* Dual-mode: Extra spacing */
   --dual-resting-to-logset: 7px;
+
+  /* Fine-tuning tokens */
+  --youtube-overlay-spacing: 7px;
+  --action-button-pullup: -1px;
 }
 
 /* === CARD FOUNDATION === */
@@ -66,6 +73,9 @@
 #active-card-container .card-content-container {
   padding: 11px 14px 14px 14px;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 /* === STACK LAYOUT === */
@@ -76,9 +86,9 @@
   gap: var(--space-m); /* Global: 16px */
 }
 
-/* Header/selector uses manual spacing for precision */
+/* CEMENT: Header/selector uses manual spacing for precision */
 #active-card-container .header-and-selector-group.stack {
-  gap: 0 !important; /* Controlled in .header.css */
+  gap: 0; /* Controlled in .header.css */
 }
 
 /* Dynamic gap support */

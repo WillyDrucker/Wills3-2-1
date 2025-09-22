@@ -7,14 +7,14 @@
 
 /* === SELECTOR CONTAINER === */
 #exercise-selector {
-  margin: 0 !important;
+  margin: 0;
 }
 
 /* YouTube overlay wrapper */
 .youtube-overlay-wrapper {
   position: relative;
-  margin: 0 !important;
-  padding: 0 !important;
+  margin: 0;
+  padding: 0;
 }
 
 /* === 100px HEIGHT EXCEPTION === */

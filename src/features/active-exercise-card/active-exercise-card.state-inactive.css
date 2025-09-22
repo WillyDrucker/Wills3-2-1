@@ -6,16 +6,16 @@
    ========================================================================== */
 
 /* === INACTIVE STATE SPACING === */
-/* Spacers prevent shift when switching to active */
+/* 🔒 CEMENT: Spacers prevent card height shift between inactive/active states */
 #active-card-container .action-prompt-block.is-prompt .action-prompt-spacer-top {
-  height: var(--inactive-slack-top);
+  height: var(--inactive-slack-top); /* 22px visual above Begin Exercise (was 19px) */
 }
 
 #active-card-container .action-prompt-block.is-prompt .action-prompt-spacer-bottom {
-  height: var(--inactive-slack-bottom);
+  height: var(--inactive-slack-bottom); /* 19px visual below Begin Exercise (was 16px) */
 }
 
 /* === INACTIVE STACK GAPS === */
 #active-card-container #card-action-area.stack:has(.action-prompt-block.is-prompt) {
-  gap: 16px !important;
+  gap: var(--space-m); /* Global: 16px */
 }

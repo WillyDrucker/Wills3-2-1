@@ -90,10 +90,11 @@
   border: none;
 }
 
-.card-footer-action-single {
-  margin-top: 11px; /* Specific spacing maintained */
+/* TEMPORARILY DISABLED FOR TESTING */
+/* .card-footer-action-single {
+  margin-top: 11px;
   padding-top: 0;
-}
+} */
 
 /* === WAITING/EMPTY STATES === */
 

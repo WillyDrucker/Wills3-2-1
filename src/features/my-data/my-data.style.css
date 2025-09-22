@@ -93,11 +93,6 @@
   margin: 13px 0 15px 0; /* 16px visual both sides */
 }
 
-/* Exercise list container */
-.history-card .history-exercise-list {
-  /* First exercise block is already 7px from day header */
-}
-
 /* Exercise blocks - CEMENT: 16px between exercises */
 .history-card .history-exercise-block {
   margin: 0 0 calc(var(--space-m) - 4px) 0; /* 12px + 4px line = 16px visual between */
@@ -125,6 +120,15 @@
 
 .history-card .history-set-row:last-child {
   margin-bottom: 0; /* No margin on last row */
+}
+
+/* Set row horizontal alignment - preserve from reset */
+.history-card .history-set-left {
+  margin-left: 100px; /* Indent for set numbers */
+}
+
+.history-card .history-set-right {
+  margin-left: auto; /* Push results to right */
 }
 
 /* Selector container */

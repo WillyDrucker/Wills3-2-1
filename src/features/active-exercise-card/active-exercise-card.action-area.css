@@ -6,63 +6,64 @@
    ========================================================================== */
 
 /* === ACTION AREA CONTAINER === */
-#card-action-area {
-  margin: 0 !important;
-  padding: 0 !important;
+/* CEMENT: Action area spacing controlled by stack layout */
+#active-card-container #card-action-area {
+  margin: 0;
+  padding: 0;
 }
 
-/* Override stack spacing */
+/* Stack spacing override with higher specificity */
 #active-card-container #card-action-area.stack {
-  gap: var(--space-m) !important;
+  gap: var(--space-m);
 }
 
 /* === ACTION PROMPT BLOCK === */
-.action-prompt-block {
-  margin: 0 !important;
-  padding: 0 !important;
+/* CEMENT: Prompt block resets for precise spacing control */
+#active-card-container .action-prompt-block {
+  margin: 0;
+  padding: 0;
 }
 
 #active-card-container .action-prompt-block.is-prompt {
-  margin: 0 !important;
-  padding: 0 !important;
+  margin: 0;
+  padding: 0;
 }
 
 #active-card-container .action-prompt-text {
-  margin: 0 !important;
-  padding: 0 !important;
+  margin: 0;
+  padding: 0;
 }
 
 /* === SPACER DIVS === */
-/* CEMENT: Creates exact anti-shift spacing */
-.action-prompt-spacer-top {
-  display: block !important;
-  height: 4px !important;  /* 19px visual spacing */
-  margin: 0 !important;
-  padding: 0 !important;
-  line-height: 0 !important;
-  font-size: 0 !important;
-  border: none !important;
-  min-height: 4px !important;
-  max-height: 4px !important;
+/* CEMENT: Critical anti-shift spacing - high specificity needed */
+#active-card-container .action-prompt-spacer-top {
+  display: block;
+  height: 0; /* Default base - overridden by state-specific rules */
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+  font-size: 0;
+  border: none;
 }
 
-.action-prompt-spacer-bottom {
-  display: block !important;
-  height: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  line-height: 0 !important;
-  font-size: 0 !important;
-  border: none !important;
+#active-card-container .action-prompt-spacer-bottom {
+  display: block;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+  font-size: 0;
+  border: none;
 }
 
 /* === ACTION BUTTONS === */
+/* CEMENT: Button group with precise margin adjustment */
 #active-card-container .action-button-group {
   display: flex;
   flex-direction: column;
   gap: var(--space-m);
-  margin: -1px 0 0 0 !important; /* Pull up by 1px */
-  padding: 0 !important;
+  margin: var(--action-button-pullup) 0 0 0; /* Pull up for visual alignment */
+  padding: 0;
 }
 
 /* === TIMER CONTAINER === */
@@ -79,7 +80,7 @@
   font-size: 5.5rem;
   font-weight: 700;
   line-height: var(--lh-normal);
-  color: var(--on-surface-light);
+  /* Color set by template class (currentSessionColorClass) */
   text-align: center;
   display: block;
   margin: 0;

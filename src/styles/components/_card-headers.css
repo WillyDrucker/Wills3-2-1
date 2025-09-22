@@ -61,20 +61,7 @@
   padding: 0;
 }
 
-.card-header-line {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-m);
-  margin: 0;
-  padding: 0;
-  min-width: 0;
-}
-
-/* Second line spacing - creates 7px visual gap */
-.card-header-line:nth-child(2) {
-  margin-top: var(--header-line-spacing); /* 4px token */
-}
+/* .card-header-line rules removed - component specific */
 
 /* === SPECIAL CASES === */
 
@@ -97,24 +84,24 @@
 }
 
 /* === COLOR PRESERVATION === */
-/* Dynamic header color states */
+/* Dynamic header color states - removed !important flags */
 .card-header-line.text-plan .card-header-dynamic-text,
 .card-header-line.text-plan .card-header-clock,
 .text-plan .card-header-dynamic-text,
 .text-plan .card-header-clock {
-  color: var(--text-green-plan) !important;
+  color: var(--text-green-plan);
 }
 
 .card-header-line.text-deviation .card-header-dynamic-text,
 .card-header-line.text-deviation .card-header-clock,
 .text-deviation .card-header-dynamic-text,
 .text-deviation .card-header-clock {
-  color: var(--text-olive-deviation) !important;
+  color: var(--text-olive-deviation);
 }
 
 .card-header-line.text-warning .card-header-dynamic-text,
 .card-header-line.text-warning .card-header-clock,
 .text-warning .card-header-dynamic-text,
 .text-warning .card-header-clock {
-  color: var(--text-yellow-maintenance) !important;
+  color: var(--text-yellow-maintenance);
 }

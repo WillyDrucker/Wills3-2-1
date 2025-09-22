@@ -51,6 +51,20 @@
   max-width: 100%;
 }
 
+/* === MODAL DIVIDERS === */
+/* 6px sandwich effect divider for modal sections */
+.modal-divider {
+  height: 2px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: #000000;
+  box-shadow:
+    0 -2px 0 0 rgba(255, 255, 255, 0.1),
+    0 2px 0 0 rgba(255, 255, 255, 0.1);
+}
+
 /* === BACKGROUND BLUR === */
 /* Make app content inert when modal open */
 html.is-modal-open .app-container {

@@ -1,20 +1,18 @@
 /* ==========================================================================
-   ACTIVE EXERCISE CARD - FUEL GAUGE
-   
-   Local fuel gauge positioning and spacing
-   Core gauge styles in global _fuel-gauge.css
+   ACTIVE EXERCISE CARD - FUEL GAUGE (RESTORED TO WORKING v5.3.0)
+
+   Target: 16px spacing from inputs to fuel gauge
+   Solution: Simple margin approach that worked originally
    ========================================================================== */
 
-/* === ANCHOR AREA === */
-#card-anchor-area {
+#active-card-container .input-group + #card-anchor-area {
   position: relative;
   z-index: 1;
-  margin-top: var(--fuel-gauge-top) !important;
-  margin-bottom: 3px !important;
-  padding: 0 !important;
+  margin-top: var(--fuel-gauge-top);
+  margin-bottom: var(--fuel-gauge-bottom);
+  padding: 0;
 }
 
-/* === CONTAINER OVERRIDES === */
 .fuel-gauge-container {
   display: flex;
   gap: var(--fuel-gauge-gap);

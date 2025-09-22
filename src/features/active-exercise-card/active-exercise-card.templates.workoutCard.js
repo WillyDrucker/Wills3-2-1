@@ -62,28 +62,28 @@ export function getWorkoutCardHTML(logEntry) {
 
   return `
       <div class="card ${cardGlowClass}" id="active-card-container">
-        <div class="card-content-container stack stack">
-          <div class="selector-and-inputs stack" style="--stack-space: var(--space-s);">
-<div class="header-and-selector-group stack" style="--stack-space: var(--space-s);">
-            ${getCardHeaderHTML()}
-            <div class="youtube-overlay-wrapper">
-              ${getExerciseSelectorHTML(logEntry, setsForThisExercise)}
-              ${getYouTubeOverlayButtonHTML(logEntry)}
+        <div class="card-content-container">
+
+          ${getCardHeaderHTML()}
+
+          <div class="youtube-overlay-wrapper" style="margin-top: var(--youtube-overlay-spacing);">
+            ${getExerciseSelectorHTML(logEntry, setsForThisExercise)}
+            ${getYouTubeOverlayButtonHTML(logEntry)}
+          </div>
+
+          <div class="input-group">
+            <div class="input-2col-grid">
+              <div class="input-label truncate-text" style="grid-area: weight-label">${weightLabel}</div>
+              <div class="input-label truncate-text" style="grid-area: reps-label">${repsLabel}</div>
+              <div style="grid-area: weight-input">${createNumberInputHTML("weight", logEntry.weight)}</div>
+              <div style="grid-area: reps-input">${createNumberInputHTML("reps", logEntry.reps)}</div>
             </div>
           </div>
 
-<div class="input-group">
-  <div class="input-2col-grid" style="--row-gap: var(--space-s); --col-gap: var(--space-m);">
-    <div class="input-label truncate-text">${weightLabel}</div>
-    <div class="input-label truncate-text">${repsLabel}</div>
-    ${createNumberInputHTML("weight", logEntry.weight)}
-    ${createNumberInputHTML("reps", logEntry.reps)}
-  </div>
-</div>
-          
           <div id="card-anchor-area" data-action="scrollToActiveCard">${getAnchorAreaHTML()}</div>
-          
+
           <div id="card-action-area" class="stack">${getActionAreaHTML()}</div>
+
         </div>
       </div>`;
 }

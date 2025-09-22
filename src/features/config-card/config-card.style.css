@@ -1,10 +1,14 @@
 /* ==========================================================================
    CONFIG CARD - MAIN ENTRY POINT
-   
-   Architecture: Three config sections with selectors
-   - Global: Card foundations, headers, base selectors
-   - Local: Multi-line selector layouts
-   
+
+   CEMENT: Cascade management through selective restoration
+   - Reset all elements to 0 for precise control
+   - Selectively restore spacing with specific overrides
+   - All spacing managed here to win cascade battles
+
+   Architecture: Three config sections with multi-line selectors
+   Component files handle structure, main file handles spacing
+
    Component Structure:
    └── .selectors.css - Two-line selector customization
    ========================================================================== */
@@ -12,12 +16,18 @@
 /* Global dependencies */
 @import url("../../styles/components/_card-headers.css");
 @import url("../../styles/components/_card-foundations.css");
+@import url("../../styles/components/_selectors.css");
 
 /* Local component files */
 @import url("./config-card.selectors.css");
 
 /* === CARD FOUNDATION === */
-/* Uses global padding pattern */
+#config-card {
+  margin: 0 0 var(--space-m) 0; /* Global: 16px bottom */
+  border: var(--card-border-width) solid transparent;
+}
+
+/* Standard card padding from global */
 #config-card .card-content-container {
   padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
   box-sizing: border-box;

@@ -46,6 +46,9 @@ function resetSessionAndLogs() {
   appState.user.history = userHistory;
   appState.session.currentDayName = today;
 
+  // 🔒 CEMENT: Initialize timer color to match today's workout
+  appState.session.currentTimerColorClass = "text-plan"; // Today is always text-plan
+
   this.updateActiveWorkoutAndLog(); // `this` will be bound from main.js
 }
 

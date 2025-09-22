@@ -1,6 +1,6 @@
 /* ==========================================================================
    CONFIG CARD - SELECTORS
-   
+
    Multi-line selector content for workout setup
    Balanced text layouts for two-line items
    ========================================================================== */
@@ -43,4 +43,4 @@
   margin-bottom: var(--selector-multiline-line-gap);
 }
 
-/* Note: Base selector styles inherited from global _selectors.css */
+/* Base selector styles inherited from global _selectors.css */

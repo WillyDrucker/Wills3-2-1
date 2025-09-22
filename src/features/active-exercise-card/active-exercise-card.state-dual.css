@@ -35,11 +35,11 @@
 /* === DUAL SPACING === */
 /* Standard 16px to timer */
 #active-card-container .action-prompt-block.is-resting + .dual-action-area-container {
-  margin-top: 0 !important;
+  margin-top: 0;
 }
 
 /* CEMENT: 1px shift for 23px total to Log Set */
 .dual-action-area-container:has(.timer-and-skip-container) 
   .action-area-cell:not(:has(.timer-and-skip-container)) .action-button-group {
-  transform: translateY(1px) !important;
+  transform: translateY(1px);
 }
