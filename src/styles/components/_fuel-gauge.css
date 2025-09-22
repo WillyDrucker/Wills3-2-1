@@ -73,14 +73,80 @@
   background-color: var(--warning-orange);
 }
 
+/* Current Focus dynamic colors for normal mode */
+.fuel-segment.is-complete-text-plan {
+  background-color: var(--log-green); /* Today's workout = green */
+}
+
+.fuel-segment.is-complete-text-deviation {
+  background-color: var(--text-yellow-maintenance); /* Off-plan workout = yellow */
+}
+
+/* Static dual-mode colors */
+.fuel-segment.is-complete-log-left {
+  background-color: var(--log-green);
+}
+
+.fuel-segment.is-complete-log-right {
+  background-color: var(--text-yellow-maintenance);
+}
+
+.fuel-segment.is-complete-log-right-partner {
+  background-color: var(--primary-blue);
+}
+
 /* === STAMPING ANIMATIONS === */
 .fuel-segment.is-stamping-skip {
   animation: stamp-effect-skip 1.2s forwards;
 }
 
+/* Current Focus dynamic animations for normal mode */
+.fuel-segment.is-stamping-text-plan {
+  animation: stamp-effect-log-left 1.2s forwards; /* Today's workout = green animation */
+}
+
+.fuel-segment.is-stamping-text-deviation {
+  animation: stamp-effect-log-right 1.2s forwards; /* Off-plan workout = yellow animation */
+}
+
+/* Static dual-mode animations */
+.fuel-segment.is-stamping-log-left {
+  animation: stamp-effect-log-left 1.2s forwards;
+}
+
+.fuel-segment.is-stamping-log-right {
+  animation: stamp-effect-log-right 1.2s forwards;
+}
+
+.fuel-segment.is-stamping-log-right-partner {
+  animation: stamp-effect-log-right-partner 1.2s forwards;
+}
+
 /* === FADE-OUT ANIMATIONS === */
 .fuel-segment.is-fading-out-skip {
   animation: final-stamp-and-fade-skip 4s linear forwards;
+}
+
+/* Current Focus dynamic fade-out animations for normal mode */
+.fuel-segment.is-fading-out-text-plan {
+  animation: final-stamp-and-fade-log-left 4s linear forwards; /* Today's workout = green fade */
+}
+
+.fuel-segment.is-fading-out-text-deviation {
+  animation: final-stamp-and-fade-log-right 4s linear forwards; /* Off-plan workout = yellow fade */
+}
+
+/* Static dual-mode fade-out animations */
+.fuel-segment.is-fading-out-log-left {
+  animation: final-stamp-and-fade-log-left 4s linear forwards;
+}
+
+.fuel-segment.is-fading-out-log-right {
+  animation: final-stamp-and-fade-log-right 4s linear forwards;
+}
+
+.fuel-segment.is-fading-out-log-right-partner {
+  animation: final-stamp-and-fade-log-right-partner 4s linear forwards;
 }
 
 /* Note: Dual-mode specific colors and animations in _dual-mode-patterns.css */

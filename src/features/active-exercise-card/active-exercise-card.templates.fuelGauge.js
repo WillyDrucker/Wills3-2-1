@@ -45,6 +45,12 @@ function getNormalFuelGaugeHTML() {
   const typeForColor = restState.isFadingOut
     ? restState.finalAnimationType
     : restState.type;
+
+  // 🔒 CEMENT: Use Current Focus color (currentTimerColorClass) for fuel gauge segments
+  const colorSuffix = typeForColor === "log"
+    ? appState.session.currentTimerColorClass
+    : "skip";
+
   const segmentsHTML = Array(5)
     .fill("")
     .map((_, index) => {
@@ -52,23 +58,14 @@ function getNormalFuelGaugeHTML() {
       let inlineStyle = "";
       if (typeForColor !== "none") {
         if (restState.isFadingOut) {
-          classList +=
-            typeForColor === "log"
-              ? " is-fading-out-log-left"
-              : " is-fading-out-skip";
+          classList += ` is-fading-out-${colorSuffix}`;
           const elapsed = Date.now() - restState.animationStartTime;
           inlineStyle = `style="animation-delay: -${elapsed}ms;"`;
         } else if (restState.completedSegments[index]) {
-          classList +=
-            typeForColor === "log"
-              ? " is-complete-log-left"
-              : " is-complete-skip";
+          classList += ` is-complete-${colorSuffix}`;
         }
         if (restState.animatingSegments[index]) {
-          classList +=
-            typeForColor === "log"
-              ? " is-stamping-log-left"
-              : " is-stamping-skip";
+          classList += ` is-stamping-${colorSuffix}`;
         }
       }
       if (activeSegmentIndex === index) {

@@ -46,20 +46,15 @@
 }
 
 /* === COLOR CODING === */
-/* Left/User1: Green */
-.fuel-segment.is-complete-log-left,
+/* Timer colors only - fuel gauge colors handled in _fuel-gauge.css */
 .timer-display.text-plan {
   color: var(--text-green-plan);
 }
 
-/* Right/Superset: Yellow */
-.fuel-segment.is-complete-log-right,
 .timer-display.text-warning {
   color: var(--text-yellow-maintenance);
 }
 
-/* Right/Partner: Blue */
-.fuel-segment.is-complete-log-right-partner,
 .timer-display.text-primary {
   color: var(--primary-blue);
 }
@@ -77,29 +72,7 @@
 }
 
 /* === FUEL GAUGE ANIMATIONS === */
-.fuel-segment.is-stamping-log-left {
-  animation: stamp-effect-log-left 1.2s forwards;
-}
-
-.fuel-segment.is-stamping-log-right {
-  animation: stamp-effect-log-right 1.2s forwards;
-}
-
-.fuel-segment.is-stamping-log-right-partner {
-  animation: stamp-effect-log-right-partner 1.2s forwards;
-}
-
-.fuel-segment.is-fading-out-log-left {
-  animation: final-stamp-and-fade-log-left 4s linear forwards;
-}
-
-.fuel-segment.is-fading-out-log-right {
-  animation: final-stamp-and-fade-log-right 4s linear forwards;
-}
-
-.fuel-segment.is-fading-out-log-right-partner {
-  animation: final-stamp-and-fade-log-right-partner 4s linear forwards;
-}
+/* Note: Animation definitions moved to _fuel-gauge.css for centralization */
 
 /* === BUTTON STATES === */
 .dual-action-area-container .action-button[disabled] {
