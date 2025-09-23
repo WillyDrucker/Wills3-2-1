@@ -1,43 +1,94 @@
 /* ==========================================================================
-   DUAL-MODE LAYOUT - Grid and Structure
+   DUAL-MODE LAYOUT - CSS Table Architecture
 
-   CEMENT: Two-column grid architecture for superset and partner modes
-   - Independent column heights with align-items: start
-   - Grid gap controlled via CSS tokens
-   - Flattened structure without spacer divs
+   🔒 CEMENT: CRITICAL POSITIONING SOLUTION - DO NOT MODIFY
+   This CSS table layout eliminates the 2px shift bug that occurred with CSS Grid.
+   Any changes to this structure may reintroduce positioning instability.
 
-   Grid Structure:
-   ├── .dual-action-area-container - Main grid container
-   ├── .action-area-cell - Individual grid cells
+   Architecture: CSS Table with transparent border gaps
+   - table-layout: fixed prevents content-based column rebalancing
+   - 50% width ensures exactly equal columns regardless of timer vs button content
+   - Transparent borders create 16px visual gap without affecting button sizing
+   - Viewport responsive while maintaining positioning stability
+
+   Layout Structure:
+   ├── .dual-action-area-container - CSS table container
+   ├── .action-area-cell - Table cells with transparent border gaps
    └── .dual-fuel-gauge-container - Fuel gauge grid layout
    ========================================================================== */
 
-/* === MAIN GRID CONTAINER === */
+/* === MAIN TABLE CONTAINER === */
+/* 🔒 CEMENT: CSS table prevents content-based rebalancing that caused 2px shift */
 .dual-action-area-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-m);
-  align-items: start; /* Independent column heights */
+  display: table;
+  width: 100%;
+  table-layout: fixed; /* 🔒 CEMENT: Forces equal columns regardless of timer/button content */
+  border-spacing: 0; /* 🔒 CEMENT: Prevents unwanted outer margins */
 }
 
+/* 🔒 CEMENT: Table cells with exact 50% width and transparent border gaps */
 .action-area-cell {
+  display: table-cell;
+  width: 50%; /* 🔒 CEMENT: Exactly half width - prevents content-based rebalancing */
+  margin: 0;
+  padding: 0; /* 🔒 CEMENT: No padding prevents timer centering shift */
+  vertical-align: top;
+  box-sizing: border-box;
+}
+
+/* === CONTENT SIZING === */
+/* 🔒 CEMENT: Timer containers use full width for proper centering */
+.action-area-cell .timer-and-skip-container {
+  width: 100%;
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+/* 🔒 CEMENT: Button groups use full cell width for maximum button size */
+.action-area-cell .action-button-group {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* === CRITICAL GAP SOLUTION === */
+/* 🔒 CEMENT: Transparent borders create 16px gap without affecting button sizing */
+.action-area-cell:first-child {
+  border-right: calc(var(--space-m) / 2) solid transparent; /* 8px gap on right */
+}
+
+.action-area-cell:last-child {
+  border-left: calc(var(--space-m) / 2) solid transparent; /* 8px gap on left */
+}
+
+/* === BUTTON SIZING === */
+/* 🔒 CEMENT: Buttons fill full available width within table cells */
+.dual-action-area-container .action-button {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: var(--button-padding-y) var(--button-padding-x);
+}
+
 /* === FUEL GAUGE GRID === */
+/* 🔒 CEMENT: Fuel gauge layout uses flexbox for proper dual-mode distribution */
 .dual-fuel-gauge-container {
   display: flex;
   gap: var(--space-m);
   height: var(--control-height);
+  margin: 0;
+  padding: 0;
 }
 
 .fuel-gauge-wrapper {
   flex: 1;
+  min-width: 0; /* Allows equal flex distribution */
 }
 
-/* === GRID CELL MARGIN CONTROL === */
-/* Prevent margin stacking in cells - exclude action-prompt-block which needs custom spacing */
+/* === MARGIN CONTROL === */
+/* 🔒 CEMENT: Prevent margin stacking in table cells */
 .dual-action-area-container .action-area-cell > *:not(.action-prompt-block) {
   margin-top: 0;
   margin-bottom: 0;

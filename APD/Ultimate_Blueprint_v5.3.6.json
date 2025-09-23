@@ -1,6 +1,6 @@
 {
   "project": "Will's 3-2-1 Workout Tracking Application",
-  "version": "5.3.5",
+  "version": "5.3.6",
   "philosophy": "SUPER STUPID SIMPLE (SSS), REMOVE DON'T ADD",
   "tech_stack": "Vanilla JavaScript, ES Modules, CSS Tokens",
 
@@ -29,53 +29,53 @@
 
       "features/": {
         "dual-mode/": {
-          "dual-mode.style.css": "Main entry point with imports",
-          "dual-mode.layout.css": "Grid structure and positioning",
-          "dual-mode.colors.css": "Timer and button color management",
-          "dual-mode.spacing.css": "CEMENT spacing constraints with !important flags",
-          "dual-mode.active-card.css": "Active exercise card integration",
-          "dual-mode.superset-modal.css": "Superset-specific styling",
-          "dual-mode.partner-modal.css": "Partner-specific styling"
+          "dual-mode.style.css": "Main entry point",
+          "dual-mode.layout.css": "🔒 CEMENT: CSS table with transparent borders",
+          "dual-mode.colors.css": "Static color assignments",
+          "dual-mode.spacing.css": "!important overrides for global reset",
+          "dual-mode.active-card.css": "Timer sizing overrides",
+          "dual-mode.superset-modal.css": "Superset modal integration",
+          "dual-mode.partner-modal.css": "Partner modal integration"
         },
         "fuel-gauge/": {
-          "fuel-gauge.style.css": "Main entry point with imports",
-          "fuel-gauge.layout.css": "Base structure and positioning",
-          "fuel-gauge.colors.css": "Dynamic color states and animation assignments",
-          "fuel-gauge.animations.css": "Keyframes for 60s fill, 1.2s stamp, 4s fade-out"
+          "fuel-gauge.style.css": "Main entry point",
+          "fuel-gauge.layout.css": "Base structure",
+          "fuel-gauge.colors.css": "Dynamic/static color states",
+          "fuel-gauge.animations.css": "60s fill, 1.2s stamp, 4s fade"
         },
         "active-exercise-card/": {
-          "active-exercise-card.index.js": "Main component logic and event handlers",
-          "active-exercise-card.style.css": "Main entry point with clean dependencies",
-          "active-exercise-card.templates.actionArea.js": "Action area HTML generation including dual-mode",
-          "active-exercise-card.templates.fuelGauge.js": "Fuel gauge HTML generation",
-          "active-exercise-card.templates.workoutCard.js": "Workout card HTML templates",
-          "active-exercise-card.templates.exerciseSelector.js": "Exercise selector templates",
-          "active-exercise-card.header.css": "Exercise title and session info",
-          "active-exercise-card.selector.css": "100px height anti-shift layout",
-          "active-exercise-card.inputs.css": "Weight and reps input controls",
-          "active-exercise-card.fuel-gauge.css": "Progress indicator positioning",
-          "active-exercise-card.action-area.css": "Prompts, buttons, timer container",
-          "active-exercise-card.state-inactive.css": "Begin Exercise prompt state",
-          "active-exercise-card.state-active.css": "Resting For timer state with :not(.is-dual-mode) exclusions",
-          "active-exercise-card.animations.css": "Glow and interaction effects"
+          "active-exercise-card.index.js": "Component logic",
+          "active-exercise-card.style.css": "Main entry point",
+          "active-exercise-card.templates.actionArea.js": "🔒 CEMENT: Static color assignments",
+          "active-exercise-card.templates.fuelGauge.js": "Fuel gauge HTML",
+          "active-exercise-card.templates.workoutCard.js": "Card templates",
+          "active-exercise-card.templates.exerciseSelector.js": "Selector templates",
+          "active-exercise-card.header.css": "Exercise title",
+          "active-exercise-card.selector.css": "100px anti-shift",
+          "active-exercise-card.inputs.css": "Weight/reps inputs",
+          "active-exercise-card.fuel-gauge.css": "Progress positioning",
+          "active-exercise-card.action-area.css": "Prompts and buttons",
+          "active-exercise-card.state-inactive.css": "🔒 CEMENT: Dual-mode spacer overrides",
+          "active-exercise-card.state-active.css": "Timer state with :not(.is-dual-mode)",
+          "active-exercise-card.animations.css": "Glow effects"
         },
         "config-card/": {
-          "config-card.index.js": "Configuration component logic",
-          "config-card.style.css": "Main entry point - architectural reference for documentation style",
-          "config-card.selectors.css": "Two-line selector customization",
-          "config-card.templates.daySelector.js": "Day selection templates",
-          "config-card.templates.timeSelector.js": "Time selection templates",
-          "config-card.templates.currentSetup.js": "Current setup display templates"
+          "config-card.index.js": "Configuration logic",
+          "config-card.style.css": "Reference architecture for docs",
+          "config-card.selectors.css": "Two-line selectors",
+          "config-card.templates.daySelector.js": "Day templates",
+          "config-card.templates.timeSelector.js": "Time templates",
+          "config-card.templates.currentSetup.js": "Setup display"
         },
         "superset-modal/": {
-          "superset-modal.index.js": "Superset configuration logic",
-          "superset-modal.style.css": "Modal with dual-day selection, cleaned dual-mode dependencies",
-          "superset-modal.template.js": "Modal HTML generation"
+          "superset-modal.index.js": "Superset logic",
+          "superset-modal.style.css": "Dual-day selection modal",
+          "superset-modal.template.js": "Modal HTML"
         },
         "partner-modal/": {
-          "partner-modal.index.js": "Partner configuration logic",
-          "partner-modal.style.css": "Modal with user profiles, cleaned dual-mode dependencies",
-          "partner-modal.template.js": "Partner modal HTML generation"
+          "partner-modal.index.js": "Partner logic",
+          "partner-modal.style.css": "User profile modal",
+          "partner-modal.template.js": "Modal HTML"
         },
         "app-header/": {
           "app-header.style.css": "Navigation and branding"
@@ -166,9 +166,9 @@
   },
 
   "critical_notes": {
-    "dual_mode_spacing": "v5.3.6 solution requires !important flags due to global CSS reset constraints",
-    "fuel_gauge_animations": "v5.3.3 complete rebuild with 3-phase animation system",
-    "css_cascade_order": "Import sequence in index.css affects dual-mode pattern specificity",
-    "cement_system": "🔒 markers protect critical architectural decisions throughout codebase"
+    "dual_mode_layout": "🔒 CEMENT: CSS table with transparent borders eliminates 2px shift bug",
+    "global_reset_constraints": "!important required to override * { margin: 0; padding: 0; }",
+    "static_color_schemes": "Dual-mode: Superset (green/yellow), Partner (green/blue)",
+    "cement_protection": "🔒 markers prevent regression of critical solutions"
   }
 }

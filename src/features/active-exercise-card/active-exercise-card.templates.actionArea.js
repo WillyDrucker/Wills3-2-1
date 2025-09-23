@@ -1,15 +1,15 @@
 /* ==========================================================================
    ACTIVE EXERCISE CARD - ACTION AREA TEMPLATES
 
-   🔒 CEMENT: Dual Color System Architecture
-   - Timer Colors: Controlled by "Current Focus" day selector (currentTimerColorClass)
-   - Header Colors: Controlled by "Current Session" time selector (currentSessionColorClass)
-   - Skip Timers: Always orange regardless of selectors
+   🔒 CEMENT: Template-driven color assignments
+   - Single-mode: Dynamic colors from Current Focus selector
+   - Dual-mode: Static colors (Superset: green/yellow, Partner: green/blue)
+   - Skip timers: Always orange
+   - Spacer divs: Prevent layout shifts
 
-   Template Features:
-   - Spacer divs prevent layout shift between states
-   - Log/skip timer color differentiation
-   - Support for normal and dual-mode timers
+   Architecture: Conditional HTML generation
+   Dependencies: appState, formatTime utility
+   Used by: Active card render cycle
    ========================================================================== */
 
 import { appState } from "state";
@@ -26,7 +26,7 @@ export function getActionAreaHTML() {
       ? `<div class="action-prompt-block is-resting is-dual-mode">
           <p class="resting-label"><span class="truncate-text">Resting For:</span></p>
         </div>`
-      : `<div class="action-prompt-block is-prompt">
+      : `<div class="action-prompt-block is-prompt is-dual-mode">
           <div class="action-prompt-spacer-top"></div>
           <p class="action-prompt-text ${promptGlowClass}"><span class="truncate-text">${appState.session.activeCardMessage}</span></p>
           <div class="action-prompt-spacer-bottom"></div>
@@ -78,20 +78,28 @@ export function getActionAreaHTML() {
 /**
  * 🔒 CEMENT: Dual-mode side generator
  *
- * Generates complete, self-contained HTML for one side of dual-mode layout.
- * Critical for CSS Grid independence - each side must be architecturally isolated.
- *
- * Spacing: Uses global stack system (--space-m tokens) for consistent 16px rhythm
- * Colors: Timer colors from currentTimerColorClass, skip timers always orange
+ * Generates HTML for one side of dual-mode table layout.
+ * Static color assignments prevent dynamic color inheritance issues.
+ * Superset: left=green, right=yellow | Partner: left=green, right=blue
  */
 function getDualModeSideActionHTML(side) {
   const restState = appState.rest.superset[side];
 
   if (restState.type !== "none") {
-    /* 🔒 CEMENT: Dual-mode timers use same color logic as normal timers */
-    let colorClass = restState.type === "log"
-      ? (appState.session.currentTimerColorClass || appState.session.currentSessionColorClass || 'text-green')
-      : "text-orange"; /* Skip timers always orange */
+    /* 🔒 CEMENT: Dual-mode timers use static color schemes */
+    let colorClass;
+    if (restState.type === "log") {
+      // Static color schemes for dual modes
+      if (appState.superset.isActive) {
+        colorClass = side === "left" ? "text-plan" : "text-warning"; // Green left, Yellow right
+      } else if (appState.partner.isActive) {
+        colorClass = side === "left" ? "text-plan" : "text-primary"; // Green left, Blue right
+      } else {
+        colorClass = "text-plan"; // Fallback to green
+      }
+    } else {
+      colorClass = "text-orange"; /* Skip timers always orange */
+    }
     return `<div class="timer-and-skip-container stack" style="--stack-space: 16px">
               <p class="timer-display ${colorClass}" data-side="${side}">${formatTime(
       restState.timeRemaining
@@ -108,17 +116,19 @@ function getDualModeSideActionHTML(side) {
     const completedRight = appState.session.workoutLog.filter(
       (log) => log.supersetSide === "right" && log.status !== "pending"
     ).length;
-    let isDisabled =
+    let isLogDisabled =
       !hasPendingSets ||
       (side === "left" && completedLeft > completedRight) ||
       (side === "right" && completedRight > completedLeft);
 
+    let isSkipDisabled = !hasPendingSets;
+
     return `<div class="action-button-group">
               <button class="action-button button-log" data-action="logSet" data-side="${side}" ${
-      isDisabled ? "disabled" : ""
+      isLogDisabled ? "disabled" : ""
     }>Log Set</button>
               <button class="action-button button-skip" data-action="skipSet" data-side="${side}" ${
-      isDisabled ? "disabled" : ""
+      isSkipDisabled ? "disabled" : ""
     }>Skip Set</button>
             </div>`;
   }

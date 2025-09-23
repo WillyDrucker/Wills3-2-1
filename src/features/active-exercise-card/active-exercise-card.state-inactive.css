@@ -1,18 +1,33 @@
 /* ==========================================================================
    ACTIVE EXERCISE CARD - INACTIVE STATE
-   
-   "Begin Exercise" prompt state with Log/Skip buttons
-   Uses spacers to prevent layout shift
+
+   🔒 CEMENT: "Begin Exercise" prompt with spacer-based height stability
+   - Spacers prevent card height shifts between states
+   - Dual-mode specific overrides for proper alignment
+
+   Architecture: Spacer divs for height consistency
+   Dependencies: Active card foundations
+   Used by: Inactive card state
    ========================================================================== */
 
 /* === INACTIVE STATE SPACING === */
-/* 🔒 CEMENT: Spacers prevent card height shift between inactive/active states */
+/* 🔒 CEMENT: Spacers maintain consistent card height */
 #active-card-container .action-prompt-block.is-prompt .action-prompt-spacer-top {
-  height: var(--inactive-slack-top); /* 22px visual above Begin Exercise (was 19px) */
+  height: var(--inactive-slack-top); /* 22px visual spacing */
 }
 
 #active-card-container .action-prompt-block.is-prompt .action-prompt-spacer-bottom {
-  height: var(--inactive-slack-bottom); /* 19px visual below Begin Exercise (was 16px) */
+  height: var(--inactive-slack-bottom); /* 19px visual spacing */
+}
+
+/* === DUAL-MODE INACTIVE SPACING OVERRIDES === */
+/* 🔒 CEMENT: Dual-mode requires adjusted spacing to prevent shifts */
+#active-card-container .action-prompt-block.is-prompt.is-dual-mode .action-prompt-spacer-top {
+  height: calc(var(--inactive-slack-top) - 3px); /* 19px visual result */
+}
+
+#active-card-container .action-prompt-block.is-prompt.is-dual-mode .action-prompt-spacer-bottom {
+  height: 0px; /* 20px visual achieved through other margins */
 }
 
 /* === INACTIVE STACK GAPS === */

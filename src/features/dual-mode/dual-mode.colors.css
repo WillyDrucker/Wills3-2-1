@@ -1,19 +1,22 @@
 /* ==========================================================================
    DUAL-MODE COLORS - Timer and Visual States
 
-   CEMENT: Color coding system for dual-mode timers
-   - Left side: Green (plan/today)
-   - Right side: Yellow (superset) or Blue (partner)
-   - Fuel gauge colors handled in fuel-gauge feature
+   🔒 CEMENT: Static color assignments for dual-mode timers
+   - Superset: Left=Green, Right=Yellow
+   - Partner: Left=Green, Right=Blue
+   - Skip timers: Always Orange
 
-   Color Architecture:
-   ├── Timer text colors only (fuel gauge separate)
-   ├── Button disabled states
-   └── Visual feedback states
+   Architecture: Timer text colors only
+   Component Structure:
+   ├── Timer color classes
+   └── Button disabled states
+
+   Dependencies: Global color tokens
+   Used by: Dual-mode timer displays
    ========================================================================== */
 
 /* === TIMER COLOR CODING === */
-/* Timer colors only - fuel gauge colors handled in fuel-gauge feature */
+/* Static colors via template-assigned classes */
 .timer-display.text-plan {
   color: var(--text-green-plan);
 }

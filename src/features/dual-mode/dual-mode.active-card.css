@@ -1,24 +1,27 @@
 /* ==========================================================================
    DUAL-MODE ACTIVE CARD INTEGRATION
 
-   CEMENT: Active exercise card specific dual-mode adaptations
-   - Timer sizing overrides for dual-mode layout
-   - Higher specificity to override single-mode timers
-   - Timer and skip button container structure
+   🔒 CEMENT: Active card dual-mode timer and button overrides
+   - Timer: 5.0rem with 0.7 line-height for compact display
+   - Higher specificity prevents single-mode inheritance
+   - Container width matches button groups for table stability
 
-   Integration Points:
-   ├── Timer display sizing and positioning
-   ├── Timer and skip button container layout
-   └── Active card container specific selectors
+   Architecture: Timer and button container overrides
+   Component Structure:
+   ├── Timer display sizing
+   ├── Timer/skip container structure
+   └── Line-height adjustments
+
+   Dependencies: Active card foundations
+   Used by: Active card during dual-mode workouts
    ========================================================================== */
 
 /* === DUAL-MODE TIMERS === */
-/* CEMENT: Higher specificity needed to override active-exercise-card timer size */
+/* 🔒 CEMENT: Higher specificity override for dual-mode timer sizing */
 #active-card-container .dual-action-area-container .timer-display {
-  font-size: 5.0rem; /* Dual-mode timer size - fits within grid bounds */
+  font-size: 5.0rem;
   font-weight: 700;
-  line-height: 0.7; /* CEMENT: Required for spacing */
-  color: var(--on-surface-light);
+  line-height: 0.7; /* 🔒 CEMENT: Required for compact spacing */
   text-align: center;
   display: block;
   margin: 0;
@@ -26,12 +29,17 @@
 }
 
 /* === TIMER AND SKIP CONTAINER === */
+/* 🔒 CEMENT: Container width matches button groups for table stability */
 .timer-and-skip-container {
   display: flex;
   flex-direction: column;
-  /* gap controlled by .stack class with --stack-space override */
   margin: 0;
   padding: 0;
+  width: 100%; /* 🔒 CEMENT: Prevents table column rebalancing */
+}
+
+.timer-and-skip-container .action-button {
+  width: 100%;
 }
 
 /* === DUAL TIMER LINE HEIGHT === */

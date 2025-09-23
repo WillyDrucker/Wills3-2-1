@@ -1,21 +1,20 @@
 /* ==========================================================================
    FUEL GAUGE - MAIN ENTRY POINT
 
-   CEMENT: Progress indicator with dynamic color system
-   - 60-second fill animation per segment
-   - Dynamic colors based on Current Focus selector
-   - Static colors for dual-mode (superset/partner)
+   🔒 CEMENT: Visual progress indicator with 60-second segments
    - Three animation phases: fill, stamp, fade-out
+   - Dynamic colors: Single-mode follows Current Focus selector
+   - Static colors: Dual-mode uses fixed green/yellow or green/blue
 
-   Architecture: Modular animation and color system
+   Architecture: Segment-based fill animation
    Component Structure:
-   ├── Base structure and layout
-   ├── Animation keyframes and timing
+   ├── Base layout structure
+   ├── Animation keyframes
    ├── Color state management
-   └── Dual-mode integration
+   └── Dual-mode static colors
 
-   Dependencies: Animation keyframes, color tokens
-   Used by: active-card, dual-mode layouts
+   Dependencies: Global color tokens, animation utilities
+   Used by: Active card exercise tracking
    ========================================================================== */
 
 /* Global dependencies */

@@ -6,6 +6,15 @@
 
 ## VERSION CHANGELOG
 
+### **v6.2 - CRITICAL: Dual-Mode 2px Shift Bug Resolution**
+**Date**: 2025-09-23
+**Problem**: Persistent 2px shift of buttons when timers start in dual-mode workouts
+**Root Cause**: CSS Grid rebalancing columns based on timer vs button content width differences
+**Solution**: Replaced CSS Grid with CSS table layout using `table-layout: fixed` and transparent border gaps
+**Key Innovation**: Transparent borders create 16px visual gap without affecting button sizing
+**Impact**: ELIMINATED ALL POSITIONING SHIFTS - Critical stability improvement
+**Status**: COMPLETE - CEMENTed with 🔒 markers to prevent regression
+
 ### **v6.1 - Feature-Based Architecture Refactor**
 **Date**: 2025-09-23
 **Problem**: Dual-mode and fuel-gauge files scattered across directories
@@ -48,6 +57,9 @@
 
 ### **Global CSS Reset Constraint (v5.3.6)**
 Found that `* { margin: 0; padding: 0; }` combined with component-level !important declarations prevents normal margin control, requiring architectural workarounds.
+
+### **CSS Table Layout Stability (v6.2)**
+CSS Grid's content-based column balancing causes positioning instability. CSS table with `table-layout: fixed` provides content-independent equal columns, eliminating layout shifts.
 
 ### **CSS Import Order Dependencies (v5.3.5)**
 Import sequence in main style files affects cascade specificity, requiring careful ordering and exclusion selectors for dual-mode patterns.

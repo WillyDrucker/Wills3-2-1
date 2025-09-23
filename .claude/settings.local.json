@@ -3,7 +3,8 @@
     "allow": [
       "Read(//c/Dev/Wills321/src/features/config-card/**)",
       "Bash(python:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(ren:*)"
     ],
     "deny": [],
     "ask": []
