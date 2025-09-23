@@ -46,7 +46,8 @@ function getNormalFuelGaugeHTML() {
     ? restState.finalAnimationType
     : restState.type;
 
-  // 🔒 CEMENT: Use Current Focus color (currentTimerColorClass) for fuel gauge segments
+  // 🔒 CEMENT: Fuel gauge gets color directly from Current Focus selector value
+  // Both timer and fuel gauge independently use currentTimerColorClass
   const colorSuffix = typeForColor === "log"
     ? appState.session.currentTimerColorClass
     : "skip";

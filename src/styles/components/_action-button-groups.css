@@ -59,7 +59,7 @@
 .timer-and-skip-container {
   display: flex;
   flex-direction: column;
-  gap: var(--space-m); /* 16px between timer and button */
+  /* gap controlled by .stack class with --stack-space override */
   margin: 0;
   padding: 0;
 }

@@ -1,0 +1,174 @@
+{
+  "project": "Will's 3-2-1 Workout Tracking Application",
+  "version": "5.3.5",
+  "philosophy": "SUPER STUPID SIMPLE (SSS), REMOVE DON'T ADD",
+  "tech_stack": "Vanilla JavaScript, ES Modules, CSS Tokens",
+
+  "critical_dependencies": {
+    "global_css_reset": "src/styles/base/_reset.css - Contains * { margin: 0; padding: 0; } that requires !important overrides",
+    "import_map": "index.html - ES module bare specifier mapping for native browser support",
+    "app_state": "src/state.js - Centralized state management",
+    "render_system": "src/main.js - renderAll() pattern for UI updates"
+  },
+
+  "file_structure": {
+    "root": {
+      "index.html": "Main application entry point with ES module import map",
+      "APD/": {
+        "CLAUDE.md": "Main system instructions for Claude Code",
+        "CLAUDE_STANDARDS.md": "5 development standards (handoff, CEMENT, CSS, tokens, naming)",
+        "CLAUDE_SESSION_HANDOFF.md": "Current session status and changes",
+        "CLAUDE_PROJECT_NOTES.md": "Version changelog and critical discoveries"
+      }
+    },
+
+    "src/": {
+      "main.js": "Application bootstrap and renderAll() system",
+      "state.js": "Centralized appState object",
+      "config.js": "Application constants and API endpoints",
+
+      "features/": {
+        "dual-mode/": {
+          "dual-mode.style.css": "Main entry point with imports",
+          "dual-mode.layout.css": "Grid structure and positioning",
+          "dual-mode.colors.css": "Timer and button color management",
+          "dual-mode.spacing.css": "CEMENT spacing constraints with !important flags",
+          "dual-mode.active-card.css": "Active exercise card integration",
+          "dual-mode.superset-modal.css": "Superset-specific styling",
+          "dual-mode.partner-modal.css": "Partner-specific styling"
+        },
+        "fuel-gauge/": {
+          "fuel-gauge.style.css": "Main entry point with imports",
+          "fuel-gauge.layout.css": "Base structure and positioning",
+          "fuel-gauge.colors.css": "Dynamic color states and animation assignments",
+          "fuel-gauge.animations.css": "Keyframes for 60s fill, 1.2s stamp, 4s fade-out"
+        },
+        "active-exercise-card/": {
+          "active-exercise-card.index.js": "Main component logic and event handlers",
+          "active-exercise-card.style.css": "Main entry point with clean dependencies",
+          "active-exercise-card.templates.actionArea.js": "Action area HTML generation including dual-mode",
+          "active-exercise-card.templates.fuelGauge.js": "Fuel gauge HTML generation",
+          "active-exercise-card.templates.workoutCard.js": "Workout card HTML templates",
+          "active-exercise-card.templates.exerciseSelector.js": "Exercise selector templates",
+          "active-exercise-card.header.css": "Exercise title and session info",
+          "active-exercise-card.selector.css": "100px height anti-shift layout",
+          "active-exercise-card.inputs.css": "Weight and reps input controls",
+          "active-exercise-card.fuel-gauge.css": "Progress indicator positioning",
+          "active-exercise-card.action-area.css": "Prompts, buttons, timer container",
+          "active-exercise-card.state-inactive.css": "Begin Exercise prompt state",
+          "active-exercise-card.state-active.css": "Resting For timer state with :not(.is-dual-mode) exclusions",
+          "active-exercise-card.animations.css": "Glow and interaction effects"
+        },
+        "config-card/": {
+          "config-card.index.js": "Configuration component logic",
+          "config-card.style.css": "Main entry point - architectural reference for documentation style",
+          "config-card.selectors.css": "Two-line selector customization",
+          "config-card.templates.daySelector.js": "Day selection templates",
+          "config-card.templates.timeSelector.js": "Time selection templates",
+          "config-card.templates.currentSetup.js": "Current setup display templates"
+        },
+        "superset-modal/": {
+          "superset-modal.index.js": "Superset configuration logic",
+          "superset-modal.style.css": "Modal with dual-day selection, cleaned dual-mode dependencies",
+          "superset-modal.template.js": "Modal HTML generation"
+        },
+        "partner-modal/": {
+          "partner-modal.index.js": "Partner configuration logic",
+          "partner-modal.style.css": "Modal with user profiles, cleaned dual-mode dependencies",
+          "partner-modal.template.js": "Partner modal HTML generation"
+        },
+        "app-header/": {
+          "app-header.style.css": "Navigation and branding"
+        },
+        "side-nav/": {
+          "side-nav.index.js": "Navigation menu logic",
+          "side-nav.style.css": "Slide-out navigation styling"
+        },
+        "video-player/": {
+          "video-player.index.js": "YouTube video player logic",
+          "video-player.style.css": "Modal video player styling"
+        },
+        "home-page/": {
+          "home-page.style.css": "Landing page layout"
+        },
+        "my-data/": {
+          "my-data.style.css": "Data visualization and calendar",
+          "my-data.templates.calendarView.js": "Calendar view templates",
+          "my-data.header.css": "Data page header styling",
+          "my-data.calendar.css": "Calendar grid and navigation"
+        },
+        "workout-results-card/": {
+          "workout-results-card.index.js": "Results display logic",
+          "workout-results-card.style.css": "Results card styling",
+          "workout-results-card.animations.css": "Results reveal animations"
+        },
+        "workout-log/": {
+          "workout-log.index.js": "Workout log component logic",
+          "workout-log.style.css": "Log display styling",
+          "workout-log.template.js": "Log item templates",
+          "workout-log.items.css": "Individual log item styling",
+          "workout-log.header.css": "Log header styling",
+          "workout-log.edit-panel.css": "Log editing interface"
+        },
+        "reset-confirmation-modal/": {
+          "reset-confirmation-modal.template.js": "Reset confirmation HTML",
+          "reset-confirmation-modal.style.css": "Modal confirmation styling"
+        }
+      },
+
+      "services/": {
+        "appInitializerService.js": "Application startup and initialization",
+        "actionService.js": "User action handling and state mutations",
+        "modalService.js": "Modal management and state",
+        "workoutFactoryService.js": "Workout session creation",
+        "workoutMetricsService.js": "Performance calculations and analytics",
+        "workoutService.js": "Core workout business logic",
+        "timerService.js": "Timer state management and progression",
+        "timerLedgerService.js": "Timer history and fuel gauge coordination",
+        "selectorService.js": "Day and time selector state management",
+        "historyService.js": "Workout history and data persistence",
+        "navigationService.js": "Page routing and navigation state",
+        "persistenceService.js": "Local storage state persistence"
+      },
+
+      "styles/": {
+        "index.css": "Main CSS manifest with organized feature imports (v6.1)",
+        "base/": {
+          "_variables.css": "Global CSS tokens and design system",
+          "_reset.css": "CRITICAL: Global reset with margin/padding constraints",
+          "_typography.css": "Font definitions and text styling",
+          "_scaffolding.css": "App container and layout structure"
+        },
+        "components/": {
+          "_buttons.css": "Button component patterns",
+          "_inputs.css": "Form input styling",
+          "_selectors.css": "Dropdown and selection components",
+          "_modals.css": "Modal overlay and container patterns",
+          "_card-headers.css": "Card header component styling",
+          "_card-foundations.css": "Base card structure and padding",
+          "_action-button-groups.css": "CRITICAL: Contains !important margin overrides"
+        },
+        "utils/": {
+          "_helpers.css": "Stack layout utility and helper classes",
+          "_animations.css": "General animation keyframes"
+        },
+        "themes/": {
+          "_default.css": "Default theme variables",
+          "_dark.css": "Dark theme overrides"
+        }
+      },
+
+      "shared/": {
+        "ui.js": "DOM element references and selectors",
+        "utils.js": "Pure utility functions (formatTime, etc.)"
+      }
+    }
+  },
+
+  "critical_notes": {
+    "dual_mode_spacing": "v5.3.6 solution requires !important flags due to global CSS reset constraints",
+    "fuel_gauge_animations": "v5.3.3 complete rebuild with 3-phase animation system",
+    "css_cascade_order": "Import sequence in index.css affects dual-mode pattern specificity",
+    "cement_system": "🔒 markers protect critical architectural decisions throughout codebase"
+  }
+}

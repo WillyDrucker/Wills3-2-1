@@ -1,0 +1,27 @@
+/* ==========================================================================
+   FUEL GAUGE - MAIN ENTRY POINT
+
+   CEMENT: Progress indicator with dynamic color system
+   - 60-second fill animation per segment
+   - Dynamic colors based on Current Focus selector
+   - Static colors for dual-mode (superset/partner)
+   - Three animation phases: fill, stamp, fade-out
+
+   Architecture: Modular animation and color system
+   Component Structure:
+   ├── Base structure and layout
+   ├── Animation keyframes and timing
+   ├── Color state management
+   └── Dual-mode integration
+
+   Dependencies: Animation keyframes, color tokens
+   Used by: active-card, dual-mode layouts
+   ========================================================================== */
+
+/* Global dependencies */
+@import url("../../styles/base/_variables.css");
+
+/* Local component files */
+@import url("./fuel-gauge.layout.css");
+@import url("./fuel-gauge.animations.css");
+@import url("./fuel-gauge.colors.css");

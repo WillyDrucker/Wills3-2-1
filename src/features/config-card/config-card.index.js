@@ -23,7 +23,8 @@ export function handleDayChange(newDayName) {
 
   appState.session.currentDayName = newDayName;
 
-  // 🔒 CEMENT: Update timer color to match selected day (separate from header colors)
+  // 🔒 CEMENT: Current Focus selector determines timer and fuel gauge colors
+  // Today = green (text-plan), Any other day = olive (text-deviation)
   const timerColorClass = newDayName === appState.todayDayName ? "text-plan" : "text-deviation";
   appState.session.currentTimerColorClass = timerColorClass;
 }

@@ -1,25 +1,26 @@
 /* ==========================================================================
    PARTNER MODAL - MAIN ENTRY POINT
 
-   Architecture: Modal with user profiles, divider, and dual day selection
-   - Global: Modals, headers, buttons, dual-mode patterns
-   - Local: User profiles, divider spacing, blue color scheme
+   CEMENT: Partner workout configuration interface
+   - Configure partner workouts with user profiles and day selection
+   - Green/blue color scheme for user differentiation
+   - Modal overlay with structured user sections
 
+   Architecture: Modal with dual user configuration
    Component Structure:
-   └── .dual-mode.css - Green/blue color scheme for partner users
+   ├── User profile sections
+   ├── Visual divider between users
+   └── Day selection controls
 
-   CEMENT: Divider spacing critical for visual balance between user sections
+   Dependencies: Modals, card foundations, buttons
+   Used by: Partner workout setup flow
    ========================================================================== */
 
 /* Global dependencies */
 @import url("../../styles/components/_card-headers.css");
 @import url("../../styles/components/_card-foundations.css");
 @import url("../../styles/components/_action-button-groups.css");
-@import url("../../styles/components/_dual-mode-patterns.css");
 @import url("../../styles/components/_modals.css");
-
-/* Local component files */
-@import url("./partner-modal.dual-mode.css");
 
 /* === MODAL SPACING === */
 /* Standard card padding from global patterns */

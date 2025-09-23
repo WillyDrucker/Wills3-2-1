@@ -1,42 +1,75 @@
 # CLAUDE SESSION HANDOFF
 
-**Date**: 2025-09-22
-**Status**: ⚠️ PARTIAL FIX - Fuel gauge normal mode still showing yellow instead of dynamic colors
-**Next Session**: Debug fuel gauge color application in normal mode
+**Date**: 2025-09-23
+**Status**: COMPLETE - Dual-mode spacing resolved + Architecture refactored
 
-## CURRENT ISSUE SUMMARY
+## ULTRA COMPACT HISTORY
 
-### **Problem**
-Fuel gauge segments in normal mode are still displaying yellow instead of dynamically changing based on Current Focus selector.
+**v5.3.4-5.3.5**: Dual-mode spacing inconsistencies (8px/21px/14px instead of 16px/16px/16px)
+**v5.3.6**: Found global CSS reset + !important constraints preventing margin control
+**Final Solution**: Required !important flags to override global resets
 
-### **Work Completed This Session**
-✅ **Root cause identified**: Missing CSS completed state rules
-✅ **CSS structure fixed**: Added all missing animation and completed state rules
-✅ **Template logic updated**: Normal mode now uses `currentTimerColorClass` directly
-✅ **Dual modes verified**: Static color schemes working correctly
+## THIS SESSION CHANGES (2025-09-23)
 
-### **What's Still Broken**
-❌ **Normal mode segments**: Still showing yellow (`text-deviation` color) regardless of Current Focus setting
-❌ **Expected behavior**: Should show green when Current Focus = Today, yellow when Current Focus = Different day
+### MAJOR REFACTOR: Feature-Based Architecture
 
-### **Files Modified This Session**
-- `src/styles/components/_fuel-gauge.css` - Added dynamic color rules for `text-plan`/`text-deviation`
-- `src/features/active-exercise-card/active-exercise-card.templates.fuelGauge.js` - Updated to use `currentTimerColorClass` directly
+**Problem**: Dual-mode and fuel-gauge files scattered across multiple directories
+**Solution**: Created dedicated feature folders with modular organization
 
-## NEXT SESSION PRIORITIES
+### New Folder Structure Created:
+- `src/features/dual-mode/` - 7 modular CSS files
+- `src/features/fuel-gauge/` - 3 organized components
 
-1. **Debug CSS rule application** - Check if `is-complete-text-plan` classes are being applied
-2. **Verify currentTimerColorClass values** - Confirm Current Focus selector is setting correct values
-3. **Test color cascade** - Ensure new CSS rules have proper specificity
-4. **Final testing** - Verify fuel gauge colors match timer colors in all scenarios
+### Files Moved and Reorganized:
+**FROM**: `src/styles/components/_dual-mode-patterns.css`
+**TO**: Split into modular components:
+- `dual-mode.layout.css` - Grid structure
+- `dual-mode.colors.css` - Timer colors
+- `dual-mode.spacing.css` - CEMENT spacing constraints
+- `dual-mode.active-card.css` - Active card integration
+- `dual-mode.superset-modal.css` - Superset styling
+- `dual-mode.partner-modal.css` - Partner styling
 
-## ARCHITECTURE STATUS
+**FROM**: `src/styles/components/_fuel-gauge.css` + `src/styles/utils/_animations-fuel-gauge.css`
+**TO**: Reorganized into:
+- `fuel-gauge.layout.css` - Base structure
+- `fuel-gauge.colors.css` - State management and animations
+- `fuel-gauge.animations.css` - Keyframes
 
-✅ **Dual color system** - Timer and header colors working independently
-✅ **Static dual modes** - Superset/Partner using correct hardcoded colors
-✅ **CSS foundation** - All animation states and completed rules now present
-⚠️ **Dynamic normal mode** - Logic implemented but not visually working yet
+### Documentation Updates:
+- Applied config-card style headers to all new files
+- Updated main CSS imports in `src/styles/index.css`
+- Cleaned feature imports (removed dual-mode dependencies)
+- Simplified index.html comments
 
----
+### Files Removed:
+- `src/styles/components/_dual-mode-patterns.css`
+- `src/styles/components/_fuel-gauge.css`
+- `src/styles/utils/_animations-fuel-gauge.css`
+- `src/features/superset-modal/superset-modal.dual-mode.css`
+- `src/features/partner-modal/partner-modal.dual-mode.css`
+- `src/features/active-exercise-card/active-exercise-card.state-dual.css`
 
-**Key Achievement**: Established complete CSS animation foundation and template logic structure. Issue is now isolated to color rule application/cascading in normal mode only.
+### Import Structure Updated:
+**Main CSS**: Now imports dual-mode and fuel-gauge as feature components
+**Feature Files**: Cleaned dual-mode dependencies from active-card, superset-modal, partner-modal
+
+## PRESERVED FUNCTIONALITY
+
+All CEMENT constraints maintained:
+- Dual-mode spacing: 16px/16px/16px rhythm intact
+- Fuel gauge animations: Complete system preserved
+- Global CSS reset solutions: !important flags kept where required
+
+## TECHNICAL ACHIEVEMENTS
+
+**Modular Architecture**: Clean separation of concerns
+**Maintainable Documentation**: Consistent header format
+**Dependency Management**: Clear import relationships
+**Feature Isolation**: Dual-mode and fuel-gauge properly encapsulated
+
+## NEXT SESSION
+
+**Status**: Architecture stable and organized
+**Priority**: Continue with other development tasks
+**Notes**: Codebase now follows consistent feature-based organization pattern

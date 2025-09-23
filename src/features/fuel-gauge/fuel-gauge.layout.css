@@ -1,0 +1,60 @@
+/* ==========================================================================
+   FUEL GAUGE LAYOUT - Structure and Positioning
+
+   CEMENT: Base structure for progress indicator
+   - Flexbox container with equal segment distribution
+   - Individual segment positioning and overflow control
+   - Progress bar internal structure
+
+   Layout Architecture:
+   ├── .fuel-gauge-container - Main flex container
+   ├── .fuel-segment - Individual progress segments
+   └── .segment-progress - Internal progress bar
+   ========================================================================== */
+
+/* === BASE STRUCTURE === */
+.fuel-gauge-container {
+  display: flex;
+  justify-content: space-between;
+  height: var(--fuel-gauge-height);
+  flex-grow: 1;
+}
+
+.fuel-segment {
+  flex-grow: 1;
+  background-color: var(--surface-dark-accent);
+  border-radius: var(--border-radius);
+  margin-right: 5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.fuel-segment:last-child {
+  margin-right: 0;
+}
+
+/* === PROGRESS BAR STRUCTURE === */
+/* Two-part animation: parent controls width, pseudo controls color */
+.segment-progress {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 0%;
+  background-color: transparent;
+  border-top-right-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+}
+
+.segment-progress::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--primary-blue-dark);
+  border-top-right-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+  animation-delay: inherit; /* Sync with parent */
+}

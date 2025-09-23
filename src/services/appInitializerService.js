@@ -46,8 +46,8 @@ function resetSessionAndLogs() {
   appState.user.history = userHistory;
   appState.session.currentDayName = today;
 
-  // 🔒 CEMENT: Initialize timer color to match today's workout
-  appState.session.currentTimerColorClass = "text-plan"; // Today is always text-plan
+  // 🔒 CEMENT: Initialize timer color based on today's workout type
+  // Will be properly set after weeklyPlan is built
 
   this.updateActiveWorkoutAndLog(); // `this` will be bound from main.js
 }
@@ -101,10 +101,20 @@ export async function initialize(dependencies) {
     if (loadedState.ui && loadedState.ui.currentPage) {
       appState.ui.currentPage = loadedState.ui.currentPage;
     }
+
+    // 🔒 CEMENT: Set timer color after loading state
+    // Today = green (text-plan), Any other day = olive (text-deviation)
+    if (appState.session.currentDayName) {
+      appState.session.currentTimerColorClass =
+        appState.session.currentDayName === appState.todayDayName ? "text-plan" : "text-deviation";
+    }
+
     timerService.resumeTimersFromState();
     renderAll();
   } else {
     appState.session.currentDayName = appState.todayDayName;
+    // Today = green (text-plan)
+    appState.session.currentTimerColorClass = "text-plan";
     updateActiveWorkoutAndLog();
   }
 

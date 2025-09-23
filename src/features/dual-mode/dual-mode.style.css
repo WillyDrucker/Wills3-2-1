@@ -1,0 +1,33 @@
+/* ==========================================================================
+   DUAL-MODE - MAIN ENTRY POINT
+
+   CEMENT: Superset and Partner mode shared architecture
+   - Two-column grid layouts with 16px gaps
+   - Flattened structure (no spacer divs unlike single-timer mode)
+   - Timer size: 5.0rem with line-height: 0.7
+   - Independent spacing calculations due to CSS grid complexity
+
+   Architecture: Precision cascade overrides for dual-mode states
+   Component Structure:
+   ├── Grid layout with independent left/right columns
+   ├── Timer sizing with higher specificity than single-mode
+   ├── Manual margin control (gap: 0 + specific margins)
+   ├── Color coding system (left=green, right=yellow/blue)
+   └── Independent "Log Set" button positioning
+
+   Dependencies: _action-button-groups.css, active-exercise-card styles
+   Used by: active-card, superset-modal, partner-modal
+   ========================================================================== */
+
+/* Global dependencies */
+@import url("../../styles/components/_action-button-groups.css");
+
+/* Local component files */
+@import url("./dual-mode.layout.css");
+@import url("./dual-mode.spacing.css");
+@import url("./dual-mode.colors.css");
+
+/* Feature integration */
+@import url("./dual-mode.active-card.css");
+@import url("./dual-mode.superset-modal.css");
+@import url("./dual-mode.partner-modal.css");

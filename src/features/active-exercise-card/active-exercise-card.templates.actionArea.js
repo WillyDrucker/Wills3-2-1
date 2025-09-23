@@ -23,10 +23,8 @@ export function getActionAreaHTML() {
     const promptGlowClass = !isAnySideResting ? "is-glowing" : "";
 
     const topContent = isAnySideResting
-      ? `<div class="action-prompt-block is-resting">
-          <div class="action-prompt-spacer-top"></div>
+      ? `<div class="action-prompt-block is-resting is-dual-mode">
           <p class="resting-label"><span class="truncate-text">Resting For:</span></p>
-          <div class="action-prompt-spacer-bottom"></div>
         </div>`
       : `<div class="action-prompt-block is-prompt">
           <div class="action-prompt-spacer-top"></div>
@@ -53,8 +51,8 @@ export function getActionAreaHTML() {
         <div class="timer-container">
           <p class="timer-display ${
             appState.rest.normal.type === "log"
-              ? /* 🔒 CEMENT: Timer color from Current Focus, NOT Current Session */
-                appState.session.currentTimerColorClass || appState.session.currentSessionColorClass || 'text-green'
+              ? /* 🔒 CEMENT: Timer gets color directly from Current Focus selector value */
+                appState.session.currentTimerColorClass || appState.session.currentSessionColorClass || 'text-plan'
               : "text-orange" /* Skip timers always orange */
           }">${formatTime(appState.rest.normal.timeRemaining)}</p>
         </div>
@@ -78,10 +76,13 @@ export function getActionAreaHTML() {
 }
 
 /**
- * CEMENTED ():
- * This function's sole purpose is to generate a complete, self-contained, and
- * architecturally independent block of HTML for a single side of the dual-mode card.
- * This separation is critical for the perfected CSS Grid layout to function correctly.
+ * 🔒 CEMENT: Dual-mode side generator
+ *
+ * Generates complete, self-contained HTML for one side of dual-mode layout.
+ * Critical for CSS Grid independence - each side must be architecturally isolated.
+ *
+ * Spacing: Uses global stack system (--space-m tokens) for consistent 16px rhythm
+ * Colors: Timer colors from currentTimerColorClass, skip timers always orange
  */
 function getDualModeSideActionHTML(side) {
   const restState = appState.rest.superset[side];
@@ -91,7 +92,7 @@ function getDualModeSideActionHTML(side) {
     let colorClass = restState.type === "log"
       ? (appState.session.currentTimerColorClass || appState.session.currentSessionColorClass || 'text-green')
       : "text-orange"; /* Skip timers always orange */
-    return `<div class="timer-and-skip-container stack" style="--stack-space: 0;">
+    return `<div class="timer-and-skip-container stack" style="--stack-space: 16px">
               <p class="timer-display ${colorClass}" data-side="${side}">${formatTime(
       restState.timeRemaining
     )}</p>

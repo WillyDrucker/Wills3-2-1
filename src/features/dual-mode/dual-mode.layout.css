@@ -1,0 +1,44 @@
+/* ==========================================================================
+   DUAL-MODE LAYOUT - Grid and Structure
+
+   CEMENT: Two-column grid architecture for superset and partner modes
+   - Independent column heights with align-items: start
+   - Grid gap controlled via CSS tokens
+   - Flattened structure without spacer divs
+
+   Grid Structure:
+   ├── .dual-action-area-container - Main grid container
+   ├── .action-area-cell - Individual grid cells
+   └── .dual-fuel-gauge-container - Fuel gauge grid layout
+   ========================================================================== */
+
+/* === MAIN GRID CONTAINER === */
+.dual-action-area-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-m);
+  align-items: start; /* Independent column heights */
+}
+
+.action-area-cell {
+  margin: 0;
+  padding: 0;
+}
+
+/* === FUEL GAUGE GRID === */
+.dual-fuel-gauge-container {
+  display: flex;
+  gap: var(--space-m);
+  height: var(--control-height);
+}
+
+.fuel-gauge-wrapper {
+  flex: 1;
+}
+
+/* === GRID CELL MARGIN CONTROL === */
+/* Prevent margin stacking in cells - exclude action-prompt-block which needs custom spacing */
+.dual-action-area-container .action-area-cell > *:not(.action-prompt-block) {
+  margin-top: 0;
+  margin-bottom: 0;
+}

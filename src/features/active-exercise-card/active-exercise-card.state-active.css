@@ -9,8 +9,8 @@
 
 /* === RESTING BLOCK === */
 /* CEMENT: Resting state spacing reset for precise control */
-#active-card-container .action-prompt-block.is-resting,
-#active-card-container .action-prompt-block.is-resting * {
+#active-card-container .action-prompt-block.is-resting:not(.is-dual-mode),
+#active-card-container .action-prompt-block.is-resting:not(.is-dual-mode) * {
   margin: 0;
   padding: 0;
 }
@@ -26,7 +26,8 @@
 }
 
 /* === ACTIVE STACK GAPS === */
-#active-card-container #card-action-area.stack:has(.action-prompt-block.is-resting) {
+/* 🔒 CEMENT: Single-timer mode only - dual-mode controlled separately */
+#active-card-container #card-action-area.stack:has(.action-prompt-block.is-resting:not(.is-dual-mode)) {
   gap: 13px; /* 🔒 CEMENT: Achieves 16px visual below Resting For */
 }
 

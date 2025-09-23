@@ -1,0 +1,63 @@
+/* ==========================================================================
+   DUAL-MODE SPACING - Precision Layout Control
+
+   CEMENT: Manual spacing control due to global CSS reset constraints
+   - Global reset overrides require !important flags
+   - Transform positioning for button alignment
+   - 16px rhythm maintenance across all elements
+
+   Spacing Architecture:
+   ├── Stack gap reset and manual margin control
+   ├── Fuel gauge to "Resting For:" spacing (16px)
+   ├── "Resting For:" to dual-action grid spacing (16px)
+   └── "Log Set" button positioning (23px from "Resting For:")
+
+   CONSTRAINT: Global CSS reset requires !important overrides
+   ========================================================================== */
+
+/* === STACK SPACING CONTROL === */
+/* CEMENT: Reset gap and use manual margin control for precision */
+#active-card-container.card #card-action-area.stack:has(> .action-prompt-block.is-resting.is-dual-mode):has(> .dual-action-area-container) {
+  gap: 0; /* Reset gap - using manual margin control for precision */
+  align-items: flex-start; /* Override default stretch to allow margin control */
+}
+
+/* === DUAL-ACTION GRID SPACING === */
+/* CEMENT: Manual spacing between "Resting For:" and dual-action grid */
+#active-card-container.card .action-prompt-block.is-resting.is-dual-mode + .dual-action-area-container {
+  margin-top: 11px; /* Achieves 16px visual spacing */
+}
+
+/* === FLATTENED STRUCTURE RESETS === */
+/* CEMENT: Dual-mode uses clean structure without spacer divs */
+#active-card-container .action-prompt-block.is-dual-mode {
+  margin: 0;
+  padding: 0;
+}
+
+/* === FUEL GAUGE SPACING === */
+/* CEMENT: FINAL SOLUTION - !important required to override global reset
+   ROOT CAUSE: Global CSS reset + action-prompt-block margin: 0 !important
+   SOLUTION: Must compete with existing architectural constraints */
+#active-card-container .action-prompt-block.is-resting.is-dual-mode {
+  margin: 8px 0 0 0 !important; /* 8px + fuel gauge base = 16px total */
+  padding: 0;
+  width: 100%; /* Full width for text centering */
+  text-align: center; /* Center the text within the block */
+}
+
+#active-card-container .action-prompt-block.is-dual-mode .resting-label {
+  margin: 0;
+  padding: 0;
+  line-height: 1.25; /* Standard line-height for clean spacing */
+  font-size: var(--font-size-h2); /* Restore to 1.25rem */
+}
+
+/* === BUTTON ALIGNMENT === */
+/* CEMENT: FINAL SOLUTION - Transform required to override -1px margin constraint
+   ROOT CAUSE: Action button group has margin: -1px !important in globals
+   SOLUTION: Transform bypasses layout flow constraints */
+.dual-action-area-container:has(.timer-and-skip-container)
+  .action-area-cell:not(:has(.timer-and-skip-container)) .action-button-group {
+  transform: translateY(7px); /* 23px target - 16px base = 7px adjustment */
+}

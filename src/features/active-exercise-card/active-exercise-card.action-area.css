@@ -18,8 +18,8 @@
 }
 
 /* === ACTION PROMPT BLOCK === */
-/* CEMENT: Prompt block resets for precise spacing control */
-#active-card-container .action-prompt-block {
+/* CEMENT: Prompt block resets for precise spacing control - exclude dual-mode */
+#active-card-container .action-prompt-block:not(.is-dual-mode) {
   margin: 0;
   padding: 0;
 }

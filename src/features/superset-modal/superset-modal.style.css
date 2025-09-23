@@ -1,25 +1,24 @@
 /* ==========================================================================
    SUPERSET MODAL - MAIN ENTRY POINT
 
-   Architecture: Modal with dual-day selection and color feedback
-   - Global: Modals, headers, buttons, dual-mode patterns
-   - Local: Superset-specific animations and color scheme
+   CEMENT: Dual-day workout selection interface
+   - Configure superset workouts with two exercise days
+   - Green/yellow color scheme for day differentiation
+   - Modal overlay with card-style content
 
+   Architecture: Modal with structured day selection
    Component Structure:
-   └── .dual-mode.css - Green/yellow color scheme for dual selection
+   └── Standard modal with global patterns
 
-   CEMENT: Modal structure relies on global patterns for consistency
+   Dependencies: Modals, card foundations, buttons
+   Used by: Workout configuration flow
    ========================================================================== */
 
 /* Global dependencies */
 @import url("../../styles/components/_card-headers.css");
 @import url("../../styles/components/_card-foundations.css");
 @import url("../../styles/components/_action-button-groups.css");
-@import url("../../styles/components/_dual-mode-patterns.css");
 @import url("../../styles/components/_modals.css");
-
-/* Local component files */
-@import url("./superset-modal.dual-mode.css");
 
 /* === MODAL SPACING === */
 /* Standard card padding from global patterns */

@@ -1,11 +1,18 @@
 /* ==========================================================================
-   PARTNER MODAL - DUAL MODE STYLES
-   
-   Partner-specific dual-mode adjustments
-   User 1 = green, User 2 = blue color scheme
+   DUAL-MODE PARTNER INTEGRATION
+
+   CEMENT: Partner-specific dual-mode styling
+   - Left side: Green timers and fuel gauge (User 1)
+   - Right side: Blue timers and fuel gauge (User 2)
+   - Partner user indicators in log items
+
+   Partner Architecture:
+   ├── Timer color overrides (left=green, right=blue)
+   ├── Fuel gauge color coordination
+   └── User identification in workout logs
    ========================================================================== */
 
-/* === PARTNER SPECIFIC TIMERS === */
+/* === PARTNER TIMER COLORS === */
 /* Timer colors when partner mode is active */
 #active-card-container.partner-active .timer-display[data-side="left"] {
   color: var(--text-green-plan);
@@ -35,6 +42,3 @@
 .partner-active .log-item-superset-part[data-user="2"] {
   color: var(--primary-blue);
 }
-
-/* === PARTNER SPECIFIC SPACING === */
-/* Partner uses global dual-mode spacing from _dual-mode-patterns.css */

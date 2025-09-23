@@ -21,14 +21,8 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
     />
 
-    <!--
-      DEFINITIVE ARCHITECTURAL UPGRADE: IMPORT MAP
-      As you correctly diagnosed, this is the definitive solution to the module
-      loading failures. It maps all "bare specifiers" used in the project to
-      their absolute file paths, making the native ES Module system robust and
-      reliable. This fixes the MIME type errors and allows the application to
-      bootstrap correctly.
-    -->
+    <!-- ES Module Import Map -->
+    <!-- Maps bare specifiers to absolute paths for native ES module support -->
     <script type="importmap">
       {
         "imports": {

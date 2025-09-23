@@ -1,0 +1,160 @@
+/* ==========================================================================
+   FUEL GAUGE COLORS - State and Mode Management
+
+   CEMENT: Dynamic color system based on Current Focus selector
+   - Normal mode: Dynamic colors from selector state
+   - Dual mode: Static left/right color schemes
+   - Skip timers: Always orange regardless of mode
+
+   Color Architecture:
+   ├── Completed states (final segment colors)
+   ├── Dynamic normal mode colors
+   └── Static dual-mode colors
+   ========================================================================== */
+
+/* === COMPLETED STATES === */
+.fuel-segment.is-complete-skip {
+  background-color: var(--warning-orange);
+}
+
+/* === DYNAMIC NORMAL MODE COLORS === */
+/* Colors determined by Current Focus selector */
+.fuel-segment.is-complete-text-plan {
+  background-color: var(--log-green); /* Today */
+}
+
+.fuel-segment.is-complete-text-deviation {
+  background-color: var(--text-olive-deviation); /* Other days */
+}
+
+/* Additional color classes for future expansion */
+.fuel-segment.is-complete-text-warning {
+  background-color: var(--text-yellow-maintenance);
+}
+
+.fuel-segment.is-complete-text-orange {
+  background-color: var(--text-orange-deviation);
+}
+
+.fuel-segment.is-complete-text-primary {
+  background-color: var(--primary-blue);
+}
+
+.fuel-segment.is-complete-text-info {
+  background-color: var(--on-surface-medium);
+}
+
+/* === STATIC DUAL-MODE COLORS === */
+.fuel-segment.is-complete-log-left {
+  background-color: var(--log-green);
+}
+
+.fuel-segment.is-complete-log-right {
+  background-color: var(--text-yellow-maintenance);
+}
+
+.fuel-segment.is-complete-log-right-partner {
+  background-color: var(--primary-blue);
+}
+
+/* === ACTIVE ANIMATION STATES === */
+.fuel-segment.is-active .segment-progress {
+  animation-name: segment-fill-animate;
+  animation-duration: 60s;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  animation-delay: inherit; /* Dynamic value from JS */
+}
+
+.fuel-segment.is-active .segment-progress::after {
+  animation-name: segment-color-pulse;
+  animation-duration: 60s;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+/* === STAMPING ANIMATIONS === */
+.fuel-segment.is-stamping-skip {
+  animation: stamp-effect-skip 1.2s forwards;
+}
+
+/* Dynamic animations for normal mode */
+.fuel-segment.is-stamping-text-plan {
+  animation: stamp-effect-log-left 1.2s forwards;
+}
+
+.fuel-segment.is-stamping-text-deviation {
+  animation: stamp-effect-deviation 1.2s forwards;
+}
+
+.fuel-segment.is-stamping-text-warning {
+  animation: stamp-effect-log-right 1.2s forwards;
+}
+
+.fuel-segment.is-stamping-text-orange {
+  animation: stamp-effect-skip 1.2s forwards;
+}
+
+.fuel-segment.is-stamping-text-primary {
+  animation: stamp-effect-log-right-partner 1.2s forwards;
+}
+
+.fuel-segment.is-stamping-text-info {
+  animation: stamp-effect-log-right 1.2s forwards;
+}
+
+/* Static dual-mode animations */
+.fuel-segment.is-stamping-log-left {
+  animation: stamp-effect-log-left 1.2s forwards;
+}
+
+.fuel-segment.is-stamping-log-right {
+  animation: stamp-effect-log-right 1.2s forwards;
+}
+
+.fuel-segment.is-stamping-log-right-partner {
+  animation: stamp-effect-log-right-partner 1.2s forwards;
+}
+
+/* === FADE-OUT ANIMATIONS === */
+.fuel-segment.is-fading-out-skip {
+  animation: final-stamp-and-fade-skip 4s linear forwards;
+}
+
+/* Dynamic fade-out animations for normal mode */
+.fuel-segment.is-fading-out-text-plan {
+  animation: final-stamp-and-fade-log-left 4s linear forwards;
+}
+
+.fuel-segment.is-fading-out-text-deviation {
+  animation: final-stamp-and-fade-deviation 4s linear forwards;
+}
+
+.fuel-segment.is-fading-out-text-warning {
+  animation: final-stamp-and-fade-log-right 4s linear forwards;
+}
+
+.fuel-segment.is-fading-out-text-orange {
+  animation: final-stamp-and-fade-skip 4s linear forwards;
+}
+
+.fuel-segment.is-fading-out-text-primary {
+  animation: final-stamp-and-fade-log-right-partner 4s linear forwards;
+}
+
+.fuel-segment.is-fading-out-text-info {
+  animation: final-stamp-and-fade-log-right 4s linear forwards;
+}
+
+/* Static dual-mode fade-out animations */
+.fuel-segment.is-fading-out-log-left {
+  animation: final-stamp-and-fade-log-left 4s linear forwards;
+}
+
+.fuel-segment.is-fading-out-log-right {
+  animation: final-stamp-and-fade-log-right 4s linear forwards;
+}
+
+.fuel-segment.is-fading-out-log-right-partner {
+  animation: final-stamp-and-fade-log-right-partner 4s linear forwards;
+}

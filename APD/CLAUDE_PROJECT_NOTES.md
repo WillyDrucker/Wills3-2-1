@@ -4,84 +4,53 @@
 **Tech Stack**: Vanilla JavaScript, ES Modules, CSS Tokens
 **Philosophy**: SUPER STUPID SIMPLE (SSS), REMOVE DON'T ADD
 
-## MAJOR ARCHITECTURAL ACHIEVEMENTS
+## VERSION CHANGELOG
+
+### **v6.1 - Feature-Based Architecture Refactor**
+**Date**: 2025-09-23
+**Problem**: Dual-mode and fuel-gauge files scattered across directories
+**Solution**: Created dedicated feature folders with modular CSS organization
+**Status**: COMPLETE - Clean architecture with preserved functionality
+
+### **v5.3.6 - Global CSS Reset Discovery & Final Workaround Solution**
+**Date**: 2025-09-23
+**Problem**: Margins not working despite nuclear CSS specificity
+**Root Cause**: Global CSS reset + multiple !important declarations in component files
+**Solution**: Required !important flags to override architectural constraints
+**Status**: COMPLETE - 16px/16px/16px rhythm achieved with workarounds
+
+### **v5.3.5 - Dual-Mode Spacing Architecture & CSS Cascade Resolution**
+**Date**: 2025-09-23
+**Problem**: Dual-mode spacing inconsistencies (8px/21px/14px instead of 16px)
+**Root Cause**: CSS import order conflicts between dual-mode patterns and state files
+**Solution**: Modified state-active.css to exclude dual-mode with :not() selectors
+**Status**: Partial fix - led to v5.3.6 investigation
+
+### **v5.3.4 - Dual-Mode Timer Sizing and Spacing Fix**
+**Date**: 2025-09-22
+**Problem**: Dual-mode timers too large and incorrect spacing
+**Solution**: Fixed timer font-size to 5.0rem with higher CSS specificity
+**Status**: Contains workarounds for mysterious spacing gaps
 
 ### **v5.3.3 - Fuel Gauge Animation System Rebuild**
 **Date**: 2025-09-22
 **Problem**: Fuel gauge segments resetting to initial color after 60-second animation
-**Root Cause**: Missing CSS completed state rules after multiple refactors
-**Solution**:
-- Rebuilt complete CSS animation foundation in `_fuel-gauge.css`
-- Added all missing `is-complete-*`, `is-stamping-*`, `is-fading-out-*` rules
-- Implemented dynamic normal mode using `currentTimerColorClass`
-- Maintained static dual-mode color schemes (superset/partner)
+**Root Cause**: Missing CSS completed state rules after refactors
+**Solution**: Rebuilt complete animation foundation with dynamic color system
+**Status**: COMPLETE
 
 ### **v5.3.2 - Active Exercise Card Architecture Overhaul**
-**Date**: Previous session (documented in old handoff)
-**Achievements**:
-- Fixed card height shift issues with 6px slack system
-- Perfect timer state spacing (16/16/16 pattern)
-- Dual color system architecture (timer vs header colors)
-- Eliminated all `!important` flags
-- Established CEMENT comment system
+**Date**: Previous session
+**Achievements**: Fixed card height shift, established dual color system, eliminated !important flags
+**Status**: Foundation for subsequent spacing fixes
 
-## CURRENT SYSTEM ARCHITECTURE
+## CRITICAL DISCOVERIES
 
-### **Color System**
-- **Timer Colors**: `currentTimerColorClass` → Controlled by Current Focus selector
-- **Header Colors**: `currentSessionColorClass` → Controlled by Current Session selector
-- **Fuel Gauge**: Follows timer color system in normal mode, static in dual modes
-- **Skip Timers**: Always orange regardless of selectors
+### **Global CSS Reset Constraint (v5.3.6)**
+Found that `* { margin: 0; padding: 0; }` combined with component-level !important declarations prevents normal margin control, requiring architectural workarounds.
 
-### **Fuel Gauge Logic**
-**Normal Mode**: Dynamic based on Current Focus
-- `text-plan` (today) → Green segments (`--log-green`)
-- `text-deviation` (off-plan) → Yellow segments (`--text-yellow-maintenance`)
+### **CSS Import Order Dependencies (v5.3.5)**
+Import sequence in main style files affects cascade specificity, requiring careful ordering and exclusion selectors for dual-mode patterns.
 
-**Dual Modes**: Static color schemes
-- **Superset**: Left=Green, Right=Yellow
-- **Partner**: Left=Green, Right=Blue
-
-### **CSS Architecture Standards**
-- **Token System**: Global rhythm + Local exceptions
-- **Cascade Strategy**: Specificity over `!important` flags
-- **CEMENT System**: 🔒 markers protect critical architectural decisions
-- **Spacer Pattern**: Div-based spacing prevents layout shift
-
-## KNOWN ISSUES
-
-### **Active Issues**
-- **Fuel gauge normal mode**: Still showing yellow instead of dynamic colors (v5.3.3)
-
-### **Technical Debt**
-- All major architectural debt cleared in v5.3.2
-- Clean foundation established for future development
-
-## DEVELOPMENT STANDARDS REFERENCE
-
-### **File Structure**
-```
-src/
-├── features/      - UI components (.index.js, .template.js, .style.css)
-├── services/      - Business logic and state mutations
-├── styles/        - Tokenized CSS (components/, utils/, globals/)
-└── shared/        - ui.js (DOM refs) and utils.js (pure functions)
-```
-
-### **Component Pattern**
-- `feature-name.index.js` - Component logic and event handlers
-- `feature-name.template.js` - HTML generation functions
-- `feature-name.style.css` - Component-specific styles
-
-### **State Flow**
-1. User actions trigger service methods
-2. Services mutate `appState` directly
-3. `renderAll()` updates UI
-4. `persistenceService.saveState()` persists changes
-
-## VERSION HISTORY
-
-- **v5.3.3**: Fuel gauge animation system rebuild (current)
-- **v5.3.2**: Active exercise card architecture overhaul
-- **v5.3.1**: Previous iterations (details in git history)
-- **v5.3.0**: Foundation version restored for spacing
+### **CEMENT System Established (v5.3.2)**
+Implemented 🔒 markers to protect critical architectural decisions that solve specific bugs or timing issues.

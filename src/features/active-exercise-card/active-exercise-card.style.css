@@ -1,38 +1,41 @@
 /* ==========================================================================
    ACTIVE EXERCISE CARD - MAIN ENTRY POINT
-   
-   Architecture: Component-based with local and global dependencies
-   - Global: Card foundations, headers, buttons, dual-mode patterns
-   - Local: 100px selector, timer states, CEMENTED spacing values
-   
+
+   CEMENT: Central workout interface with timer and action controls
+   - Timer display with dynamic color system
+   - Action buttons for logging and skipping sets
+   - Fuel gauge progress indicator integration
+   - Responsive layout with anti-shift mechanics
+
+   Architecture: Component-based with clean dependencies
    Component Structure:
-   ├── .header.css       - CEMENTED 16/7/7 spacing (DO NOT MODIFY)
-   ├── .selector.css     - 100px height exception for anti-shift
-   ├── .inputs.css       - Weight/reps input grid
-   ├── .fuel-gauge.css   - Positioning only (styles in global)
-   ├── .action-area.css  - Prompts, buttons, timer container
-   ├── .state-inactive.css - "Begin Exercise" state
-   ├── .state-active.css   - "Resting For" timer state
-   ├── .state-dual.css     - Superset/Partner adjustments
-   └── .animations.css     - Local glow effects
+   ├── .header.css - Exercise title and current session info
+   ├── .selector.css - 100px height exception for layout stability
+   ├── .inputs.css - Weight and reps input controls
+   ├── .fuel-gauge.css - Progress indicator positioning
+   ├── .action-area.css - Prompts, buttons, and timer container
+   ├── .state-inactive.css - "Begin Exercise" prompt state
+   ├── .state-active.css - "Resting For" timer state
+   └── .animations.css - Glow and interaction effects
+
+   Dependencies: Card foundations, buttons, action groups
+   Used by: Main workout interface
    ========================================================================== */
 
-/* Global dependencies - shared patterns */
-@import url("../../styles/components/_card-headers.css");        /* Headers base */
-@import url("../../styles/components/_card-foundations.css");    /* Padding/borders */
-@import url("../../styles/components/_action-button-groups.css"); /* Button layouts */
-@import url("../../styles/components/_dual-mode-patterns.css");   /* Superset/Partner */
+/* Global dependencies */
+@import url("../../styles/components/_card-headers.css");
+@import url("../../styles/components/_card-foundations.css");
+@import url("../../styles/components/_action-button-groups.css");
 
-/* Local component files - card-specific styles */
-@import url("./active-exercise-card.header.css");       /* CEMENT: 16/7/7 spacing */
-@import url("./active-exercise-card.selector.css");     /* 100px anti-shift */
-@import url("./active-exercise-card.inputs.css");       /* Input grid */
-@import url("./active-exercise-card.fuel-gauge.css");   /* Local positioning */
-@import url("./active-exercise-card.action-area.css");  /* Shared action area */
-@import url("./active-exercise-card.state-inactive.css"); /* Prompt state */
-@import url("./active-exercise-card.state-active.css");   /* Timer state */
-@import url("./active-exercise-card.state-dual.css");     /* Dual modes */
-@import url("./active-exercise-card.animations.css");     /* Glow effects */
+/* Local component files */
+@import url("./active-exercise-card.header.css");
+@import url("./active-exercise-card.selector.css");
+@import url("./active-exercise-card.inputs.css");
+@import url("./active-exercise-card.fuel-gauge.css");
+@import url("./active-exercise-card.action-area.css");
+@import url("./active-exercise-card.state-inactive.css");
+@import url("./active-exercise-card.state-active.css");
+@import url("./active-exercise-card.animations.css");
 
 
 /* === LOCAL TOKENS === */

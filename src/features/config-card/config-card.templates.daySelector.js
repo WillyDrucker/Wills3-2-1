@@ -12,9 +12,9 @@ export function getDaySelectorHTML(isAnySetLogged) {
     summaryHtml = `<div class="selector-content"><div class="item-main-line flex-line-container"><span class="flex-priority">Partner:&nbsp;</span><span class="flex-priority data-highlight text-plan">${partner.user1Name}</span><span class="flex-priority text-on-surface-medium">&nbsp;&amp;&nbsp;</span><span class="truncate-text data-highlight text-primary">${partner.user2Name}</span></div></div>`;
   } else {
     const { currentDayName } = session;
-    const colorClass =
-      currentDayName === appState.todayDayName ? "text-plan" : "text-deviation";
     const dayInfo = appState.weeklyPlan[currentDayName];
+    // Today = green (text-plan), Any other day = olive (text-deviation)
+    const colorClass = currentDayName === appState.todayDayName ? "text-plan" : "text-deviation";
     const display =
       dayInfo.title === "Rest"
         ? dayInfo.title
@@ -44,8 +44,8 @@ export function getDaySelectorHTML(isAnySetLogged) {
     )
     .map((day) => {
       const workout = appState.weeklyPlan[day];
-      const colorClass =
-        day === appState.todayDayName ? "text-plan" : "text-deviation";
+      // Today = green (text-plan), Any other day = olive (text-deviation)
+      const colorClass = day === appState.todayDayName ? "text-plan" : "text-deviation";
       const display =
         workout.title === "Rest"
           ? workout.title
