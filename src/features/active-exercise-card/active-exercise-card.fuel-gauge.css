@@ -24,3 +24,183 @@
   gap: var(--space-m);
   height: var(--control-height);
 }
+
+/* === NORMAL WORKOUT FUEL GAUGE WITH OVERLAY === */
+.fuel-gauge-with-overlay {
+  position: relative;
+  width: 100%;
+}
+
+.fuel-gauge-with-overlay .fuel-gauge-container {
+  width: 100%;
+}
+
+.action-prompt-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  text-align: center;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.action-prompt-overlay .action-prompt-text {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--on-surface-light);
+  margin: 0;
+  padding: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.5px;
+}
+
+.action-prompt-overlay .action-prompt-text.is-glowing {
+  animation: textGlow 2s ease-in-out infinite;
+}
+
+.resting-label-overlay {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--on-surface-light);
+  margin: 0;
+  padding: 0;
+  letter-spacing: 0.5px;
+}
+
+/* === MINUTES REMAINING LINE === */
+.minutes-remaining-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.minutes-remaining-line .card-header-dynamic-text {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.2;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* === RESTING FOR LABEL === */
+.resting-for-label {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.resting-label-text {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--on-surface-medium);
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.resting-for-label p {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* === RECOVERING TEXT === */
+.recovering-text {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--primary-blue-dark);
+  margin: 0;
+  padding: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.5px;
+  animation: recovering-progression 60s linear infinite;
+}
+
+/* 🔒 CEMENT: Recovering text animation matches fuel gauge segment progression
+   Blue-based color transitions synchronized with 60s fuel gauge timing */
+@keyframes recovering-progression {
+  0% {
+    /* 0s - Start: Dark blue (like segment start) */
+    color: var(--primary-blue-dark);
+    transform: scale(1);
+  }
+  20% {
+    /* 12s - Segment 1 completion: Brightening */
+    color: #0066cc;
+    transform: scale(1.02);
+  }
+  20.1% {
+    /* Brief flash (stamp effect) */
+    color: #66ccff;
+    transform: scale(1.05);
+  }
+  21% {
+    /* Return to progression */
+    color: #0066cc;
+    transform: scale(1);
+  }
+  40% {
+    /* 24s - Segment 2 completion: Brighter blue */
+    color: #0080ff;
+    transform: scale(1.02);
+  }
+  40.1% {
+    /* Brief flash */
+    color: #80ddff;
+    transform: scale(1.05);
+  }
+  41% {
+    /* Return */
+    color: #0080ff;
+    transform: scale(1);
+  }
+  60% {
+    /* 36s - Segment 3 completion: Light blue */
+    color: var(--primary-blue);
+    transform: scale(1.02);
+  }
+  60.1% {
+    /* Brief flash */
+    color: #99eeff;
+    transform: scale(1.05);
+  }
+  61% {
+    /* Return */
+    color: var(--primary-blue);
+    transform: scale(1);
+  }
+  80% {
+    /* 48s - Segment 4 completion: Very light blue */
+    color: var(--primary-blue-light);
+    transform: scale(1.02);
+  }
+  80.1% {
+    /* Brief flash */
+    color: #ccf7ff;
+    transform: scale(1.05);
+  }
+  81% {
+    /* Return */
+    color: var(--primary-blue-light);
+    transform: scale(1);
+  }
+  95% {
+    /* 57s - Final segment near completion: Brightest */
+    color: #ffffff;
+    transform: scale(1.03);
+  }
+  96.67% {
+    /* 58s - Peak brightness */
+    color: #ffffff;
+    transform: scale(1.05);
+  }
+  100% {
+    /* 60s - Return to start for loop */
+    color: var(--primary-blue-dark);
+    transform: scale(1);
+  }
+}

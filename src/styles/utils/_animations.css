@@ -44,23 +44,19 @@
   0% {
     color: var(--surface-dark);
     text-shadow: none;
-    transform: scale(1);
   }
   70% {
     color: var(--on-surface-light);
     text-shadow: 0 0 8px var(--primary-blue), 0 0 15px var(--primary-blue);
-    transform: scale(1.02);
   }
   95% {
     color: var(--on-surface-light);
     text-shadow: 0 0 15px var(--primary-blue), 0 0 25px var(--primary-blue),
       0 0 40px var(--primary-blue);
-    transform: scale(1.05);
   }
   100% {
     color: var(--on-surface-light);
     text-shadow: 0 0 10px var(--primary-blue), 0 0 3px #fff;
-    transform: scale(1);
   }
 }
 

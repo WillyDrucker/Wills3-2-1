@@ -21,6 +21,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  line-height: 1; /* 🔒 CEMENT: Prevents text shifting when timer is active */
 }
 
 .action-button[disabled] {

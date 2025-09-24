@@ -1,8 +1,15 @@
 /* ==========================================================================
    WORKOUT LOG - ITEMS
-   
-   Individual log item cards with 50px height
-   Two-line layout with exercise name and details
+
+   🔒 CEMENT: Critical 9px/8px/9px spacing system for 50px log cards
+   - Line 1 (exercise/timestamp): 9px from top border
+   - Line spacing: 8px between lines
+   - Line 2 (details/results): 9px from bottom border
+   - Border states: 7px/8px/7px compensated spacing when border active
+
+   Architecture: Absolute positioning for precise control
+   Dependencies: workout-log.states.css for border compensation
+   Used by: Workout log display system
    ========================================================================== */
 
 /* === LOG ITEM CONTAINER === */
@@ -31,25 +38,36 @@
   background-color: var(--background-dark);
   border: var(--card-border-width) solid transparent;
   border-radius: var(--border-radius);
-  min-height: var(--control-height); /* 50px */
-  padding: 0 12px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  gap: 0;
+  height: var(--selector-height); /* Tokenized: 50px */
+  padding: 0 12px; /* 🔒 CEMENT: Specific padding for log items */
+  position: relative;
+  box-sizing: border-box;
+  contain: layout style;
+
+  /* 🔒 CEMENT: Token system for 9px/8px/9px spacing control */
+  --log-spacing-top: 9px;
+  --log-spacing-middle: 8px;
+  --log-spacing-bottom: 9px;
 }
 
-/* Square bottom corners when edit panel open */
+/* === EDIT PANEL OPEN STATE === */
 .workout-log-item-container[open] > summary > .workout-log-item {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   border-color: var(--primary-blue);
-  padding: 0 12px;
+
+  /* 🔒 CEMENT: Border compensation maintains visual 9px/8px/9px */
+  --log-spacing-top: 7px; /* 🔒 CEMENT: Compensates for 2px border */
+  --log-spacing-middle: 8px;
+  --log-spacing-bottom: 7px; /* 🔒 CEMENT: Compensates for 2px border */
 }
 
 /* === CONTENT LAYOUT === */
 .log-item-line-1,
 .log-item-line-2 {
+  position: absolute;
+  left: 12px; /* Matches parent padding */
+  right: 12px; /* Matches parent padding */
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -58,14 +76,19 @@
   line-height: 1;
 }
 
-/* Fine-tune vertical position */
+/* 🔒 CEMENT: Absolute positioning for precise 9px/8px/9px spacing
+   With 1rem text at 600 weight, these positions achieve the target rhythm */
 .log-item-line-1 {
-  margin-top: 1px;
+  top: 6px; /* 🔒 CEMENT: Creates 9px visual spacing from top */
+}
+
+.log-item-line-2 {
+  top: 26px; /* 🔒 CEMENT: 8px gap between lines, 9px to bottom */
 }
 
 /* === TYPOGRAPHY === */
 .log-item-exercise-name {
-  font-size: var(--font-size-body-m);
+  font-size: 1rem;
   font-weight: 600;
   flex-grow: 1;
   flex-shrink: 1;
@@ -73,7 +96,7 @@
 }
 
 .log-item-timestamp {
-  font-size: var(--font-size-body-m);
+  font-size: 1rem; /* Standardized to 1rem */
   font-weight: 600;
   flex-shrink: 0;
 }
@@ -84,12 +107,15 @@
 }
 
 .log-item-details-content {
+  font-size: 1rem; /* Standardized to 1rem */
+  font-weight: 600;
   color: var(--on-surface-medium);
 }
 
 .log-item-separator {
-  color: var(--on-surface-medium);
+  font-size: 1rem; /* Standardized to 1rem */
   font-weight: 600;
+  color: var(--on-surface-medium);
 }
 
 /* === RESULTS DISPLAY === */
@@ -102,24 +128,26 @@
 
 .log-item-results-value,
 .log-item-set-info-value {
-  font-size: var(--font-size-body-m);
+  font-size: 1rem; /* Standardized to 1rem */
   font-weight: 600;
   color: var(--on-surface-light);
 }
 
 .log-item-superset-part.text-primary {
+  font-size: 1rem; /* Standardized to 1rem */
+  font-weight: 600;
   color: var(--primary-blue);
 }
 
 .log-item-results-unit,
 .log-item-set-info-label {
-  font-size: var(--font-size-body-m);
+  font-size: 1rem; /* Standardized to 1rem */
   font-weight: 600;
   color: var(--on-surface-medium);
 }
 
 .log-item-skipped-text {
-  font-size: var(--font-size-body-m);
+  font-size: 1rem; /* Standardized to 1rem */
   font-weight: 600;
   color: var(--text-orange-deviation);
 }

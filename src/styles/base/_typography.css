@@ -6,6 +6,7 @@ h1 {
   font-size: var(--font-size-h1);
   font-weight: 700;
   line-height: 1; /* Collapse the line-box to remove extra vertical space */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 h2 {
@@ -14,4 +15,5 @@ h2 {
   font-weight: 600;
   margin: 0; /* CEMENTED: Explicitly neutralize default margin for robust layout control. */
   text-align: left;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }

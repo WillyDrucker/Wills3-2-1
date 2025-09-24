@@ -25,25 +25,36 @@ export function renderActiveCardHeader() {
   const headerContainer = document.getElementById("active-card-header");
   if (!headerContainer) return;
 
+  const isDualMode = appState.superset.isActive || appState.partner.isActive;
   const remaining = appState.session.workoutTimeRemaining;
   const durationUnit = pluralize(remaining, "Minute", "Minutes");
   const durationText = `${remaining} ${durationUnit} Remaining`;
   const completionTime = calculateCompletionTime(remaining);
 
-  // CEMENTED: carry the session color class on the entire second header line
-  // so minute-tick re-renders cannot drop color even if a child span class is missed.
+  // 🔒 CEMENT: Only render minutes remaining for dual-mode
+  // Normal workouts show minutes in separate location
   const toneClass = appState.session.currentSessionColorClass || "";
 
-  headerContainer.innerHTML = `
-    <div class="card-header-line">
-        <h2 class="card-header"><span class="truncate-text">${appState.session.activeCardHeaderMessage}</span></h2>
-        <span class="card-header-clock">${appState.ui.currentTime}</span>
-    </div>
-    <div class="card-header-line ${toneClass}">
-        <span class="card-header-dynamic-text truncate-text ${toneClass}">${durationText}</span>
-        <span class="card-header-dynamic-text ${toneClass}">${completionTime}</span>
-    </div>
-  `;
+  if (isDualMode) {
+    headerContainer.innerHTML = `
+      <div class="card-header-line">
+          <h2 class="card-header"><span class="truncate-text">${appState.session.activeCardHeaderMessage}</span></h2>
+          <span class="card-header-clock">${appState.ui.currentTime}</span>
+      </div>
+      <div class="card-header-line ${toneClass}">
+          <span class="card-header-dynamic-text truncate-text ${toneClass}">${durationText}</span>
+          <span class="card-header-dynamic-text ${toneClass}">${completionTime}</span>
+      </div>
+    `;
+  } else {
+    // Normal workouts only update clock in header
+    headerContainer.innerHTML = `
+      <div class="card-header-line">
+          <h2 class="card-header"><span class="truncate-text">${appState.session.activeCardHeaderMessage}</span></h2>
+          <span class="card-header-clock">${appState.ui.currentTime}</span>
+      </div>
+    `;
+  }
 }
 
 export function renderActiveExerciseCard() {

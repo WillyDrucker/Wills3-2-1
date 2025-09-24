@@ -4,13 +4,13 @@ import { formatTime12Hour } from "utils";
 
 let _renderActiveCardHeader = null;
 
-// The heart of the real-time clock. Updates state and triggers a targeted re-render.
+// 🔒 CEMENT: Updates clock display on 60-second intervals
+// Reduces battery usage and prevents UI re-render issues
 function updateTime() {
   const now = new Date();
   const newTime = formatTime12Hour(now);
 
-  // CEMENTED (Performance): Only update state and re-render if the minute has changed.
-  // This provides minute-perfect accuracy without re-rendering the DOM every second.
+  // Only update state and re-render if time has changed
   if (newTime !== appState.ui.currentTime) {
     appState.ui.currentTime = newTime;
     if (_renderActiveCardHeader) {
@@ -20,14 +20,15 @@ function updateTime() {
 }
 
 /**
- * Initializes the clock service.
- * @param {object} dependencies - An object containing necessary functions.
- * @param {function} dependencies.renderActiveCardHeader - A function that only re-renders the header of the active card.
+ * Initializes the clock service with 60-second updates
+ * @param {object} dependencies - An object containing necessary functions
+ * @param {function} dependencies.renderActiveCardHeader - Re-renders only the active card header
  */
 export function initialize(dependencies) {
   _renderActiveCardHeader = dependencies.renderActiveCardHeader;
-  // Check every second to ensure the clock updates as soon as the minute changes.
-  setInterval(updateTime, 1000);
+  // Update every 60 seconds to save battery and prevent re-render issues
+  setInterval(updateTime, 60000);
   // Set the initial time immediately
   updateTime();
+  // Also update on any user interaction via renderAll()
 }

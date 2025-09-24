@@ -8,6 +8,11 @@
 /* === COMPLETED STATE === */
 .workout-log-item.log-completed {
   border-color: var(--primary-blue);
+
+  /* 🔒 CEMENT: Adjust spacing for border constraint - maintain 9px/8px/9px visual */
+  --log-spacing-top: 7px;        /* Compensate for border taking 2px */
+  --log-spacing-middle: 8px;     /* Keep middle spacing the same */
+  --log-spacing-bottom: 7px;     /* Compensate for border taking 2px */
 }
 
 /* === NEXT UP STATE === */
@@ -18,6 +23,11 @@ body.start-glow-animations .workout-log-item.is-next-up {
 /* === SKIPPED STATE === */
 .workout-log-item.log-skipped {
   border-color: var(--warning-orange);
+
+  /* 🔒 CEMENT: Adjust spacing for border constraint - maintain 9px/8px/9px visual */
+  --log-spacing-top: 7px;        /* Compensate for border taking 2px */
+  --log-spacing-middle: 8px;     /* Keep middle spacing the same */
+  --log-spacing-bottom: 7px;     /* Compensate for border taking 2px */
 }
 
 /* === UPDATING ANIMATION === */

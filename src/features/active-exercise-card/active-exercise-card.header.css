@@ -9,7 +9,6 @@
 #active-card-container #active-card-header {
   margin: 0;
   padding: 0;
-  margin-bottom: -3px; /* For 7px visual to selector */
 }
 
 /* === HEADER LINES === */
@@ -17,15 +16,15 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 16px; /* Direct value instead of CSS variable */
+  gap: var(--space-m);
   margin: 0;
   padding: 0;
   min-width: 0;
 }
 
-/* Second line: 7px spacing */
-#active-card-container .card-header-line:nth-child(2) {
-  margin-top: -3px; /* For 7px visual between lines */
+/* 🔒 CEMENT: Header lines maintain proper spacing */
+#active-card-container .card-header-line:not(:first-child) {
+  margin-top: 7px;
 }
 
 /* === TYPOGRAPHY === */
@@ -37,6 +36,7 @@
   line-height: 1;
   margin: 0;
   padding: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 #active-card-container .card-header {

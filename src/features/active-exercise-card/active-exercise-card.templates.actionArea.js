@@ -42,32 +42,24 @@ export function getActionAreaHTML() {
             </div>`;
   
   } else if (appState.rest.normal.type !== "none") {
+    // For normal workouts, rest timer centered with button below
     return `
-        <div class="action-prompt-block is-resting">
-          <div class="action-prompt-spacer-top"></div>
-          <p class="resting-label"><span class="truncate-text">Resting For:</span></p>
-          <div class="action-prompt-spacer-bottom"></div>
-        </div>
-        <div class="timer-container">
-          <p class="timer-display ${
-            appState.rest.normal.type === "log"
-              ? /* 🔒 CEMENT: Timer gets color directly from Current Focus selector value */
-                appState.session.currentTimerColorClass || appState.session.currentSessionColorClass || 'text-plan'
-              : "text-orange" /* Skip timers always orange */
-          }">${formatTime(appState.rest.normal.timeRemaining)}</p>
-        </div>
-        <div class="action-button-group">
-          <button class="action-button button-rest-skip" data-action="skipRest">Skip Rest</button>
+        <div class="rest-timer-section">
+          <div class="timer-container">
+            <p class="timer-display ${
+              appState.rest.normal.type === "log"
+                ? /* 🔒 CEMENT: Timer gets color directly from Current Focus selector value */
+                  appState.session.currentTimerColorClass || appState.session.currentSessionColorClass || 'text-plan'
+                : "text-orange" /* Skip timers always orange */
+            }">${formatTime(appState.rest.normal.timeRemaining)}</p>
+          </div>
+          <div class="rest-button-container">
+            <button class="action-button button-rest-skip" data-action="skipRest">Skip Rest</button>
+          </div>
         </div>`;
 } else {
-    const glowingClass =
-      appState.rest.normal.type === "none" ? "is-glowing" : "";
+    // For normal workouts, action buttons appear below inputs
     return `
-        <div class="action-prompt-block is-prompt">
-          <div class="action-prompt-spacer-top"></div>
-          <p class="action-prompt-text ${glowingClass}" data-action="scrollToActiveCard"><span class="truncate-text">${appState.session.activeCardMessage}</span></p>
-          <div class="action-prompt-spacer-bottom"></div>
-        </div>
         <div class="action-button-group">
           <button class="action-button button-log" data-action="logSet">Log Set</button>
           <button class="action-button button-skip" data-action="skipSet">Skip Set</button>

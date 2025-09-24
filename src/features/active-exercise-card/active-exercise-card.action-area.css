@@ -6,11 +6,13 @@
    ========================================================================== */
 
 /* === ACTION AREA CONTAINER === */
-/* CEMENT: Action area spacing controlled by stack layout */
+/* 🔒 CEMENT: Action area spacing controlled by stack layout */
 #active-card-container #card-action-area {
   margin: 0;
   padding: 0;
 }
+
+/* Normal workout action area spacing handled in template */
 
 /* Stack spacing override with higher specificity */
 #active-card-container #card-action-area.stack {
@@ -57,12 +59,12 @@
 }
 
 /* === ACTION BUTTONS === */
-/* CEMENT: Button group with precise margin adjustment */
+/* 🔒 CEMENT: Button group with standard spacing */
 #active-card-container .action-button-group {
   display: flex;
   flex-direction: column;
   gap: var(--space-m);
-  margin: var(--action-button-pullup) 0 0 0; /* Pull up for visual alignment */
+  margin: 0;
   padding: 0;
 }
 
@@ -85,4 +87,45 @@
   display: block;
   margin: 0;
   padding: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* === NORMAL WORKOUT REST TIMER SECTION === */
+.rest-timer-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+}
+
+.rest-timer-section .timer-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.rest-timer-section .timer-display {
+  font-size: 5.5rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.rest-button-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.rest-button-container .action-button {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
 }

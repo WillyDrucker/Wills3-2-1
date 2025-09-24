@@ -26,6 +26,7 @@
   color: var(--on-surface-medium);
   text-align: center;
   line-height: 1; /* CEMENT: Critical override of global 1.2 line-height */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 /* === ESSENTIAL INPUT CONTROL STYLES === */
@@ -67,6 +68,17 @@
   font-size: 1.25rem;
   -moz-appearance: textfield;
   appearance: none;
+}
+
+/* === SWAPPED GRID FOR NORMAL WORKOUTS === */
+#active-card-container .input-2col-grid-swapped {
+  /* CEMENT: CSS grid layout for normal workouts with swapped columns */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 16px; /* 4px row gap achieves 7px visual between labels and inputs */
+  grid-template-areas:
+    "reps-label weight-label"
+    "reps-input weight-input";
 }
 
 /* Fuel gauge spacing handled in fuel-gauge.css */

@@ -1,9 +1,11 @@
 import { appState } from "state";
 
-export function getAnchorAreaHTML() {
-  return appState.superset.isActive || appState.partner.isActive
-    ? getDualModeAnchorAreaHTML()
-    : getNormalFuelGaugeHTML();
+export function getAnchorAreaHTML(includeActionPrompt = false) {
+  if (appState.superset.isActive || appState.partner.isActive) {
+    return getDualModeAnchorAreaHTML();
+  } else {
+    return getNormalFuelGaugeHTML(includeActionPrompt);
+  }
 }
 
 function getDualModeAnchorAreaHTML() {
@@ -38,7 +40,7 @@ function getDualModeAnchorAreaHTML() {
   return `<div class="dual-fuel-gauge-container"><div class="fuel-gauge-wrapper" style="flex:1;">${leftHTML}</div><div class="fuel-gauge-wrapper" style="flex:1;">${rightHTML}</div></div>`;
 }
 
-function getNormalFuelGaugeHTML() {
+function getNormalFuelGaugeHTML(includeActionPrompt = false) {
   const restState = appState.rest.normal;
   const activeSegmentIndex =
     restState.type !== "none" ? restState.completedSegments.indexOf(false) : -1;
@@ -79,7 +81,35 @@ function getNormalFuelGaugeHTML() {
       return `<div class="${classList}" ${inlineStyle}></div>`;
     })
     .join("");
-  return `<div class="fuel-gauge-container">${segmentsHTML}</div>`;
+
+  const fuelGaugeHTML = `<div class="fuel-gauge-container">${segmentsHTML}</div>`;
+
+  if (includeActionPrompt) {
+    if (restState.type === "none") {
+      // Include action prompt overlay for normal workouts when not resting
+      const glowingClass = "is-glowing";
+      return `
+        <div class="fuel-gauge-with-overlay">
+          ${fuelGaugeHTML}
+          <div class="action-prompt-overlay">
+            <p class="action-prompt-text ${glowingClass}"><span class="truncate-text">${appState.session.activeCardMessage}</span></p>
+          </div>
+        </div>
+      `;
+    } else if (restState.type === "log") {
+      // Show "Recovering" text when actively resting from a logged set
+      return `
+        <div class="fuel-gauge-with-overlay">
+          ${fuelGaugeHTML}
+          <div class="action-prompt-overlay">
+            <p class="recovering-text"><span class="truncate-text">Recovering</span></p>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  return fuelGaugeHTML;
 }
 
 function getDualModeFuelGaugeHTML(side) {

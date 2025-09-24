@@ -6,7 +6,7 @@ import { getActionAreaHTML } from "./active-exercise-card.templates.actionArea.j
 import { getExerciseSelectorHTML } from "./active-exercise-card.templates.exerciseSelector.js";
 import * as workoutMetricsService from "services/workoutMetricsService.js";
 
-function getCardHeaderHTML() {
+function getCardHeaderHTML(isDualMode = false) {
   const remaining = appState.session.workoutTimeRemaining;
   const durationUnit = pluralize(remaining, "Minute", "Minutes");
   const durationText = `${remaining} ${durationUnit} Remaining`;
@@ -18,18 +18,30 @@ function getCardHeaderHTML() {
     This ensures both elements on the same line have identical rendering behavior
     and eliminates baseline alignment issues between different element types.
   */
-  return `
-    <div id="active-card-header" class="card-header-container" data-action="scrollToActiveCard">
-        <div class="card-header-line">
-            <span class="card-header"><span class="truncate-text">${appState.session.activeCardHeaderMessage}</span></span>
-            <span class="card-header-clock"><span class="truncate-text">${appState.ui.currentTime}</span></span>
-        </div>
-        <div class="card-header-line">
-            <span class="card-header-dynamic-text"><span class="truncate-text ${appState.session.currentSessionColorClass}">${durationText}</span></span>
-            <span class="card-header-dynamic-text"><span class="truncate-text ${appState.session.currentSessionColorClass}">${completionTime}</span></span>
-        </div>
-    </div>
-  `;
+  if (isDualMode) {
+    return `
+      <div id="active-card-header" class="card-header-container" data-action="scrollToActiveCard">
+          <div class="card-header-line">
+              <span class="card-header"><span class="truncate-text">${appState.session.activeCardHeaderMessage}</span></span>
+              <span class="card-header-clock"><span class="truncate-text">${appState.ui.currentTime}</span></span>
+          </div>
+          <div class="card-header-line">
+              <span class="card-header-dynamic-text"><span class="truncate-text ${appState.session.currentSessionColorClass}">${durationText}</span></span>
+              <span class="card-header-dynamic-text"><span class="truncate-text ${appState.session.currentSessionColorClass}">${completionTime}</span></span>
+          </div>
+      </div>
+    `;
+  } else {
+    // For normal workouts, only show the first line (minutes remaining moved to separate location)
+    return `
+      <div id="active-card-header" class="card-header-container" data-action="scrollToActiveCard">
+          <div class="card-header-line">
+              <span class="card-header"><span class="truncate-text">${appState.session.activeCardHeaderMessage}</span></span>
+              <span class="card-header-clock"><span class="truncate-text">${appState.ui.currentTime}</span></span>
+          </div>
+      </div>
+    `;
+  }
 }
 
 export function getWorkoutCardHTML(logEntry) {
@@ -60,11 +72,15 @@ export function getWorkoutCardHTML(logEntry) {
     ? "Reps (Per Hand)"
     : 'Reps (Target: <span class="text-plan">10</span>)';
 
-  return `
+  const isDualMode = appState.superset.isActive || appState.partner.isActive;
+
+  if (isDualMode) {
+    // Original layout for dual-mode
+    return `
       <div class="card ${cardGlowClass}" id="active-card-container">
         <div class="card-content-container">
 
-          ${getCardHeaderHTML()}
+          ${getCardHeaderHTML(true)}
 
           <div class="youtube-overlay-wrapper" style="margin-top: var(--youtube-overlay-spacing);">
             ${getExerciseSelectorHTML(logEntry, setsForThisExercise)}
@@ -86,6 +102,52 @@ export function getWorkoutCardHTML(logEntry) {
 
         </div>
       </div>`;
+  } else {
+    // New layout for normal workouts
+    const remaining = appState.session.workoutTimeRemaining;
+    const durationUnit = pluralize(remaining, "Minute", "Minutes");
+    const durationText = `${remaining} ${durationUnit} Remaining`;
+    const completionTime = calculateCompletionTime(remaining);
+
+    return `
+      <div class="card ${cardGlowClass}" id="active-card-container">
+        <div class="card-content-container">
+
+          ${getCardHeaderHTML()}
+
+          <div class="youtube-overlay-wrapper" style="margin-top: 0px;">
+            ${getExerciseSelectorHTML(logEntry, setsForThisExercise)}
+            ${getYouTubeOverlayButtonHTML(logEntry)}
+          </div>
+
+          <div id="card-anchor-area" class="normal-fuel-gauge-area" data-action="scrollToActiveCard" style="margin-top: 16px;">
+            ${getAnchorAreaHTML(true)}
+          </div>
+
+          <div class="input-group" style="margin-top: 15px;">
+            <div class="input-2col-grid-swapped">
+              <div class="input-label truncate-text" style="grid-area: reps-label">${repsLabel}</div>
+              <div class="input-label truncate-text" style="grid-area: weight-label">${weightLabel}</div>
+              <div style="grid-area: reps-input">${createNumberInputHTML("reps", logEntry.reps)}</div>
+              <div style="grid-area: weight-input">${createNumberInputHTML("weight", logEntry.weight)}</div>
+            </div>
+          </div>
+
+          ${appState.rest.normal.type !== "none" ?
+            `<div class="resting-for-label" style="margin-top: 11px;">
+              <p class="resting-label-text">Resting For:</p>
+            </div>` :
+            `<div class="minutes-remaining-line" style="margin-top: var(--upper-slack-spacing);">
+              <span class="card-header-dynamic-text"><span class="truncate-text ${appState.session.currentSessionColorClass}">${durationText}</span></span>
+              <span class="card-header-dynamic-text"><span class="truncate-text ${appState.session.currentSessionColorClass}">${completionTime}</span></span>
+            </div>`
+          }
+
+          <div id="card-action-area" class="stack normal-workout-action-area" style="margin-top: ${appState.rest.normal.type !== "none" ? '13px' : 'var(--lower-slack-spacing)'};">${getActionAreaHTML()}</div>
+
+        </div>
+      </div>`;
+  }
 }
 
 function getYouTubeOverlayButtonHTML(logEntry) {
