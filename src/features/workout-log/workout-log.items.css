@@ -99,6 +99,8 @@
   font-size: 1rem; /* Standardized to 1rem */
   font-weight: 600;
   flex-shrink: 0;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
 .log-item-details-left {

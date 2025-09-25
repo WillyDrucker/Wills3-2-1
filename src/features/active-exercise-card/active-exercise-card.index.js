@@ -115,7 +115,7 @@ export function handleLogSet(side = null) {
   historyService.addOrUpdateLog(targetLogEntry);
   setTimeout(() => {
     targetLogEntry.isAnimating = false;
-  }, 1700);
+  }, 1500);
 
   const hasMoreOverallPending = appState.session.workoutLog.some(
     (log) => log.status === "pending"

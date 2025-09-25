@@ -6,6 +6,26 @@
 
 ## VERSION CHANGELOG
 
+### **v6.5 - Workout Log Animation System Complete**
+**Date**: 2025-09-25
+**Problem**: v6.4 left text color animation unresolved + timestamp color shift issues
+**Final Solutions**:
+- Perfect grow/snap timing: 900ms grow + 100ms snap (optimized from 850ms/150ms)
+- Green buildup animation: 500ms to peak, 500ms fade back
+- Fixed timestamp color shift by removing duplicate `.text-skip` CSS rule
+- Eliminated blackout by using explicit color tokens instead of `inherit`
+**Technical Achievements**:
+- 🔒 CEMENTed animation timing and color system
+- Tokenized green color using `--text-green-plan`
+- Separate animations for value (white) and unit (gray) text
+- Added text rendering stability with `backface-visibility` and `antialiased`
+- Standardized documentation across all workout-log files
+**Status**: COMPLETE - 🔒 CEMENTed animation system ready for production
+
+### **v6.4 - Workout Log Animation System Overhaul**
+**Date**: 2025-09-24
+**Status**: SUPERSEDED by v6.5 - See above for final implementation
+
 ### **v6.3 - Workout Log Perfect Spacing Achievement**
 **Date**: 2025-09-24
 **Problem**: Workout log items needed precise 9px/8px/9px spacing in 50px containers

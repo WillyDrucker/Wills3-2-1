@@ -30,10 +30,8 @@ body.start-glow-animations .workout-log-item.is-next-up {
   --log-spacing-bottom: 7px;     /* Compensate for border taking 2px */
 }
 
-/* === UPDATING ANIMATION === */
-.workout-log-item.is-updating-log .log-item-results-container {
-  animation: laser-etch-update 1.7s ease-out;
-}
+/* === ANIMATION TRIGGER STATE === */
+/* 🔒 CEMENT: is-updating-log class triggers animations in workout-log.animations.css */
 
 /* === MUTED STATE (when selectors open) === */
 /* CEMENT: Preserves rounded shape while muting */

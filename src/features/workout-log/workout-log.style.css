@@ -7,9 +7,10 @@
    
    Component Structure:
    ├── .header.css     - "Today's Workout" header
-   ├── .items.css      - 50px log item cards  
+   ├── .items.css      - 50px log item cards
    ├── .edit-panel.css - Weight/reps edit controls
-   └── .states.css     - Completed/skipped/updating states
+   ├── .states.css     - Completed/skipped/updating states
+   └── .animations.css - Grow/snap and green flash animations
    ========================================================================== */
 
 /* Global dependencies */
@@ -22,26 +23,27 @@
 @import url("./workout-log.items.css");
 @import url("./workout-log.edit-panel.css");
 @import url("./workout-log.states.css");
+@import url("./workout-log.animations.css");
 
 /* === CARD FOUNDATION === */
-/* Border compensation for exact 16px visual */
+/* 🔒 CEMENT: Border compensation for exact 16px visual rhythm */
 #workout-log-card > .card-content-container {
   padding: calc(var(--card-padding-top) + 3px) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
   box-sizing: border-box;
 }
 
 /* === CONTENT CONTAINER === */
-/* 4px gaps create tight stacking between log items */
+/* 🔒 CEMENT: 4px gaps create tight stacking between log items */
 #workout-content {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xxs); /* Global: 4px */
+  gap: var(--space-xxs); /* Tokenized: 4px */
 }
 
 /* === FOOTER === */
 /* Direct 16px spacing from last log item */
 .card-footer-action {
-  margin-top: var(--space-m); /* Global: 16px */
+  margin-top: var(--space-m); /* Tokenized: 16px */
   padding: 0;
   border: none;
 }

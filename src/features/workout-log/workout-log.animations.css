@@ -1,0 +1,66 @@
+/* ==========================================================================
+   WORKOUT LOG ANIMATIONS
+
+   🔒 CEMENT: Perfect timing and color transitions for log updates
+   - Grow/snap: 900ms grow to 1.15x, 100ms snap back (optimal feel)
+   - Color flash: Green buildup over 500ms, fade back over 500ms
+   - No blackout: Uses explicit color tokens to prevent rendering artifacts
+
+   Architecture: Separate animations for value (white) and unit (gray) text
+   Dependencies: CSS color tokens from base/_variables.css
+   Used by: workout-log.index.js via .is-updating-log class
+   ========================================================================== */
+
+/* === KEYFRAME DEFINITIONS === */
+
+/* 🔒 CEMENT: Container grow and snap animation - 900ms/100ms timing */
+@keyframes workout-log-stamp {
+  0% {
+    transform: scale(1);
+  }
+  90% {  /* 🔒 CEMENT: 900ms grow phase for perfect feel */
+    transform: scale(1.15);
+  }
+  100% { /* 🔒 CEMENT: 100ms snap back for crisp finish */
+    transform: scale(1);
+  }
+}
+
+/* 🔒 CEMENT: Green buildup for value text - prevents blackout */
+@keyframes workout-log-value-flash {
+  0% { color: var(--on-surface-light); }    /* Start: white */
+  50% { color: var(--text-green-plan); }    /* Peak: tokenized green */
+  100% { color: var(--on-surface-light); }  /* End: white */
+}
+
+/* 🔒 CEMENT: Green buildup for unit text - prevents blackout */
+@keyframes workout-log-unit-flash {
+  0% { color: var(--on-surface-medium); }   /* Start: gray */
+  50% { color: var(--text-green-plan); }    /* Peak: tokenized green */
+  100% { color: var(--on-surface-medium); } /* End: gray */
+}
+
+/* === ANIMATION APPLICATION === */
+
+/* Container scaling animation */
+.workout-log-item.is-updating-log {
+  animation: workout-log-stamp 1s ease-out;
+  transform-origin: center center;
+}
+
+/* Value text color animation */
+.workout-log-item.is-updating-log .log-item-results-value {
+  animation: workout-log-value-flash 1s ease-out;
+  animation-delay: 1s; /* After grow/snap completes */
+  backface-visibility: hidden; /* Rendering stability */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Unit text color animation */
+.workout-log-item.is-updating-log .log-item-results-unit {
+  animation: workout-log-unit-flash 1s ease-out;
+  animation-delay: 1s; /* After grow/snap completes */
+  backface-visibility: hidden; /* Rendering stability */
+  -webkit-font-smoothing: antialiased;
+}
+

@@ -28,7 +28,7 @@ export function handleUpdateLog(index, newWeight, newReps) {
   historyService.addOrUpdateLog(log);
   setTimeout(() => {
     log.isAnimating = false;
-  }, 1700);
+  }, 2000);
 
   return true;
 }

@@ -4,7 +4,9 @@
       "Read(//c/Dev/Wills321/src/features/config-card/**)",
       "Bash(python:*)",
       "Bash(find:*)",
-      "Bash(ren:*)"
+      "Bash(ren:*)",
+      "Bash(claude --version)",
+      "Bash(claude doctor)"
     ],
     "deny": [],
     "ask": []

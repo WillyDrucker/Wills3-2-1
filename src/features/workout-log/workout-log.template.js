@@ -173,19 +173,19 @@ function getLogItemHTML(
                 <summary>${finalLogDisplayHtml}</summary>
                 <div class="edit-log-controls">
                   <div class="input-labels-container">
-                    <div class="input-label">${weightLabel}</div>
                     <div class="input-label">${repsLabel}</div>
+                    <div class="input-label">${weightLabel}</div>
                   </div>
                   <div class="input-controls-grid">
                     ${createNumberInputHTML(
-                      `weight-edit-${index}`,
-                      weight,
+                      `reps-edit-${index}`,
+                      reps,
                       true,
                       index
                     )}
                     ${createNumberInputHTML(
-                      `reps-edit-${index}`,
-                      reps,
+                      `weight-edit-${index}`,
+                      weight,
                       true,
                       index
                     )}

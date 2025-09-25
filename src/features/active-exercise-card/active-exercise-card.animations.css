@@ -21,5 +21,5 @@ body.start-glow-animations .action-prompt-text.is-glowing span {
 .text-deviation { color: var(--text-olive-deviation); }
 .text-warning { color: var(--text-yellow-maintenance); }
 .text-orange { color: var(--text-orange-deviation); }
-.text-skip { color: var(--text-red-skip); }
+/* Removed duplicate .text-skip - using global definition from _helpers.css */
 .text-primary { color: var(--primary-blue); }
