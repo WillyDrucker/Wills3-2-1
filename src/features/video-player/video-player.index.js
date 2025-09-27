@@ -65,6 +65,10 @@ function createPlayer(videoId) {
       controls: 1,
       rel: 0,
       modestbranding: 1,
+      enablejsapi: 1,        // Better API control
+      iv_load_policy: 3,     // Hide annotations
+      fs: 0,                 // Disable fullscreen (using custom UI)
+      vq: 'medium',          // Set quality for mobile performance
     },
     events: {
       onReady: (event) => {
@@ -141,8 +145,15 @@ function startPlayerCountdown() {
       if (step.action) {
         step.action();
       } else {
-        videoPlayer.countdownLine2 = step.value;
-        renderVideoPlayer();
+        // Optimize: Update DOM directly instead of full re-render
+        const countdownTimer = document.querySelector('.countdown-timer');
+        if (countdownTimer) {
+          countdownTimer.textContent = step.value;
+        } else {
+          // Fallback to full render if element not found
+          videoPlayer.countdownLine2 = step.value;
+          renderVideoPlayer();
+        }
       }
     }, accumulatedDelay);
     videoPlayer.countdownTimerIds.push(timerId);

@@ -23,6 +23,9 @@ import { appState } from "state";
 import { formatTime } from "utils";
 import * as workoutService from "services/workoutService.js";
 
+/* === ANIMATION STATE TRACKING === */
+// 🔒 CEMENT: Animation progress tracking prevents re-triggering during re-renders
+
 /* === INITIALIZATION === */
 let renderers = {};
 export function initialize(rendererCallbacks) {
@@ -242,16 +245,35 @@ function _handleCompletion(restState, options = {}) {
     if (options.wasSkipped) {
       log.restWasSkipped = true;
       log.skippedRestValue = restState.timeRemaining;
-      // Only trigger animation if it hasn't already been triggered for this specific skip
-      // Check that this is actually the rest timer that was skipped by verifying the cycle ID
-      if (!log.isSkipAnimating && !log.skipAnimationPlayed) {
+      // 🔒 CEMENT: Skip animation with progress preservation and defensive state cleanup
+      // Prevents dual-mode skip animation re-triggering during renderAll() operations
+      // Uses timestamp tracking and cycle ID isolation for robust state management
+      const now = Date.now();
+      const lastSkipTime = log.lastSkipAnimationTime || 0;
+      const timeSinceLastSkip = now - lastSkipTime;
+
+      // 🔒 CEMENT: Defensive cleanup prevents corrupted animation state
+      // 5-second timeout catches stale flags that weren't properly cleared
+      if (log.isSkipAnimating && timeSinceLastSkip > 5000) {
+        log.isSkipAnimating = false;
+        log.lastSkipAnimationTime = null;
+        log.skipAnimationCycleId = null;
+      }
+
+      // 🔒 CEMENT: 3-second cooldown prevents rapid re-triggering in dual-mode
+      // Essential for maintaining animation integrity during concurrent timer operations
+      if (!log.isSkipAnimating && timeSinceLastSkip > 3000) {
         log.isSkipAnimating = true;
-        log.skipAnimationPlayed = true;
+        log.lastSkipAnimationTime = now; // Track animation start time for progress preservation
         log.skipAnimationCycleId = restState.triggeringCycleId; // Track which timer skip triggered this
+
         setTimeout(() => {
-          // Only clear animation if it was triggered by this specific cycle
+          // 🔒 CEMENT: Only clear animation if triggered by this specific cycle
+          // Prevents cross-contamination between dual-mode timer completions
           if (log.skipAnimationCycleId === restState.triggeringCycleId) {
             log.isSkipAnimating = false;
+            log.lastSkipAnimationTime = null; // Clear tracking after animation completes
+            log.skipAnimationCycleId = null; // Clear cycle tracking
           }
         }, 2000);
       }

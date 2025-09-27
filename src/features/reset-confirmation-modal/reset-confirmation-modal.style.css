@@ -1,9 +1,17 @@
 /* ==========================================================================
    RESET CONFIRMATION MODAL - MAIN ENTRY POINT
-   
+
+   🔒 CEMENT: Text shadow and 13px margin for visual 16px spacing rhythm
+   🔒 CEMENT: Font metrics compensation essential for precise layout control
+
    Architecture: Minimal modal with header and buttons
-   - Global: All patterns (modals, headers, buttons)
-   - Local: None needed - fully uses global patterns
+   Component Structure:
+   ├── Modal header with text shadow and compensation spacing
+   ├── Action button group using global patterns
+   └── Tokenized spacing for 16px visual rhythm
+
+   - Global: Modal container, card headers, action button groups
+   - Local: Header text shadow and margin compensation only
    ========================================================================== */
 
 /* reset-confirmation-modal.style.css */
@@ -17,6 +25,7 @@
   line-height: 1;
   color: var(--on-surface-light);
   text-align: center;
+  text-shadow: var(--text-shadow-subtle);
   margin: 0;
   padding: 0;
   /* Direct to buttons - no bottom margin */
@@ -25,5 +34,5 @@
 #reset-confirmation-modal-container .superset-modal-actions {
   display: flex;
   gap: var(--space-m);        /* Global: 16px */
-  margin-top: var(--space-m); /* Global: 16px from header */
+  margin-top: 13px;           /* Adjusted for 16px visual spacing (font metrics compensation) */
 }

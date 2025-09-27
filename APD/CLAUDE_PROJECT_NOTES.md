@@ -6,6 +6,29 @@
 
 ## VERSION CHANGELOG
 
+### **v6.9 - Comprehensive Animation Re-Triggering Bug Fixed**
+**Date**: 2025-09-27
+**Problem**: Animation re-triggering bugs in dual-mode workouts where rapid timer starts/skips caused animations to restart from beginning, plus results text incorrectly turning red and stale animation state
+**Solution**: Implemented element-specific animation progress preservation with defensive state cleanup
+**Key Achievements**:
+- Added `animationStartTime` tracking to all log animations (grow-shrink and color flash)
+- Applied animation delays to specific elements instead of container to prevent cascade issues
+- Skip animation delays only affect timestamp, log animation delays only affect results/container
+- Added defensive state cleanup to prevent corrupted animation flags (5-second stale detection)
+- Separate animation style variables prevent overwriting when both animations active
+**Technical Discoveries**:
+- `renderAll()` during timer operations recreates DOM elements, restarting CSS animations
+- Animation delays on container affected ALL child animations unintentionally
+- Animation style overwriting occurred when both skip and log animations were active
+- Defensive cleanup essential for preventing persistent animation flags on specific log entries
+- Element-specific delays provide proper animation isolation
+**Files Modified**:
+- `active-exercise-card.index.js` - Added defensive cleanup and animationStartTime tracking
+- `workout-log.index.js` - Added defensive cleanup and animationStartTime tracking
+- `workout-log.template.js` - Element-specific animation delays, separate style variables
+- `timerService.js` - Enhanced defensive cleanup and state management
+**Status**: COMPLETE - All animations properly isolated with element-specific progress preservation
+
 ### **v6.8 - Timer Shadows and Dual-Mode Logic Fixes Complete**
 **Date**: 2025-09-27
 **Problem**: Timer shadows not visible, skip animation retriggering on dual timers, dual-mode completion stuck with unbalanced exercises, skip actions bypassing alternating rules

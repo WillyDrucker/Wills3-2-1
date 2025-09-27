@@ -36,6 +36,14 @@ details#exercise-selector.is-muted > summary .selector-content {
   opacity: 1;
 }
 
+/* 🔒 CEMENT: One-selector-to-rule-them-all override for exercise selector muting behavior
+   High-specificity rule ensures exercise selector fully mutes when another selector opens
+   Essential for maintaining consistent muting behavior across all selector states */
+body.is-selector-open details#exercise-selector.is-muted > summary .selector-content {
+  opacity: 0.2;
+  filter: brightness(0.5) saturate(0.5);
+}
+
 /* This class mutes ONLY the content, leaving the border and interaction active. */
 summary.is-content-muted .selector-content {
   opacity: 0.2;

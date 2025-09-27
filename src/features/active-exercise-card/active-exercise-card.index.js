@@ -143,10 +143,22 @@ export function handleLogSet(side = null) {
 
   targetLogEntry.status = "completed";
   targetLogEntry.timestamp = formatTimestamp(new Date());
+  // 🔒 CEMENT: Defensive cleanup prevents corrupted animation state
+  // 5-second timeout catches stale flags that weren't properly cleared
+  const now = Date.now();
+  if (targetLogEntry.isAnimating && targetLogEntry.animationStartTime && (now - targetLogEntry.animationStartTime) > 5000) {
+    targetLogEntry.isAnimating = false;
+    targetLogEntry.animationStartTime = null;
+  }
+
+  // 🔒 CEMENT: Animation state tracking with timestamp for progress preservation
+  // Essential for preventing re-triggering during dual-mode renderAll() operations
   targetLogEntry.isAnimating = true;
+  targetLogEntry.animationStartTime = now; // Track when animation started for progress calculation
   historyService.addOrUpdateLog(targetLogEntry);
   setTimeout(() => {
     targetLogEntry.isAnimating = false;
+    targetLogEntry.animationStartTime = null; // Clear tracking after animation completes
   }, 1500);
 
   const hasMoreOverallPending = appState.session.workoutLog.some(
@@ -195,7 +207,8 @@ export function handleSkipSet(side = null) {
   if (appState.superset.isActive || appState.partner.isActive) {
     if (!side) return;
 
-    // Validate that skipping is allowed according to alternating rules
+    // 🔒 CEMENT: Skip actions follow same alternating pattern as log actions
+    // Essential for consistent dual-mode workout progression logic
     if (!canLogDualModeSide(side)) return;
 
     targetIndex = appState.session.workoutLog.findIndex(

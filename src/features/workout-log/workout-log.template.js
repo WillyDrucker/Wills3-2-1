@@ -83,26 +83,45 @@ function getLogItemHTML(
     itemClass += " log-skipped";
     containerClass += " is-skipped-item";
   }
+  // 🔒 CEMENT: Animation progress preservation applied to specific elements, not container
+  // Prevents animation re-triggering when renderAll() recreates DOM elements during dual-mode operations
+  // Separate delay variables prevent log and skip animations from overwriting each other's styles
+  let logAnimationDelay = "";
+  let skipAnimationDelay = "";
+
   if (log.isAnimating) {
     itemClass += " is-updating-log";
+    // 🔒 CEMENT: Preserve log animation progress during re-renders
+    // Applied to specific elements prevents container-level cascade affecting all children
+    if (log.animationStartTime) {
+      const elapsed = Date.now() - log.animationStartTime;
+      logAnimationDelay = ` style="animation-delay: -${elapsed}ms;"`;
+    }
   }
+
   if (log.isSkipAnimating) {
     itemClass += " is-skip-animating";
+    // 🔒 CEMENT: Preserve skip animation progress during re-renders
+    // Element-specific delays essential for dual-mode timer animation isolation
+    if (log.lastSkipAnimationTime) {
+      const elapsed = Date.now() - log.lastSkipAnimationTime;
+      skipAnimationDelay = ` style="animation-delay: -${elapsed}ms;"`;
+    }
   }
 
   let resultsHtml = "";
   if (status === "completed") {
     const repsUnit = isDumbbellExercise(exercise) ? " (ea.)" : "";
     resultsHtml = `<div class="log-item-results-container">
-        <span class="log-item-results-value">${weight}</span>
-        <span class="log-item-results-unit">&nbsp;${pluralize(
+        <span class="log-item-results-value"${logAnimationDelay}>${weight}</span>
+        <span class="log-item-results-unit"${logAnimationDelay}>&nbsp;${pluralize(
           weight,
           "lb",
           "lbs"
         )}</span>
-        <span class="log-item-results-unit">&nbsp;x&nbsp;</span>
-        <span class="log-item-results-value">${reps}</span>
-        <span class="log-item-results-unit">&nbsp;${pluralize(
+        <span class="log-item-results-unit"${logAnimationDelay}>&nbsp;x&nbsp;</span>
+        <span class="log-item-results-value"${logAnimationDelay}>${reps}</span>
+        <span class="log-item-results-unit"${logAnimationDelay}>&nbsp;${pluralize(
           reps,
           "rep",
           "reps"
@@ -143,7 +162,7 @@ function getLogItemHTML(
 
   const timestampClass = log.restWasSkipped ? "text-skip" : "";
   const timestampHtml = timestamp
-    ? `<span class="log-item-timestamp ${timestampClass}">${timestamp}</span>`
+    ? `<span class="log-item-timestamp ${timestampClass}"${skipAnimationDelay}>${timestamp}</span>`
     : "";
   /*
     CEMENTED (v5.0.6 - Final Architecture):
@@ -152,7 +171,7 @@ function getLogItemHTML(
     allows the two .log-item-line-* children to be perfectly centered by the
     `justify-content` property in the CSS. This structure should not be made more complex.
   */
-  const finalLogDisplayHtml = `<div class="${itemClass}">
+  const finalLogDisplayHtml = `<div class="${itemClass}"${logAnimationDelay}>
     <div class="log-item-line-1">
         <span class="log-item-exercise-name ${exerciseColorClass} truncate-text">${exercise.exercise_name}</span>
         ${timestampHtml}

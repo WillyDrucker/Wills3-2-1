@@ -21,6 +21,7 @@
   justify-content: center;
   align-items: center;
   transition: opacity 0.3s ease;
+  will-change: opacity;  /* Performance hint for hardware acceleration */
 }
 
 /* Hidden state */
@@ -53,7 +54,7 @@
   background-color: #000;
   border-radius: var(--border-radius);  /* Global: 8px */
   overflow: hidden;
-  box-shadow: 0 0 20px rgba(0, 153, 255, 0.5);  /* Blue glow */
+  box-shadow: 0 0 8px rgba(0, 153, 255, 0.3);  /* Reduced glow for mobile performance */
   height: 85vh;
   max-width: 95vw;
   aspect-ratio: 9 / 16;  /* Vertical video */
@@ -69,6 +70,7 @@
   top: 0;
   left: 0;
   z-index: 2;  /* Above wrapper background */
+  transform: translateZ(0);  /* Force hardware acceleration */
 }
 
 /* === COUNTDOWN OVERLAY === */

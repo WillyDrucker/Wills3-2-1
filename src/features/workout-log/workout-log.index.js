@@ -24,10 +24,22 @@ export function handleUpdateLog(index, newWeight, newReps) {
     log.status = "completed";
   }
 
+  // 🔒 CEMENT: Defensive cleanup prevents corrupted animation state
+  // 5-second timeout catches stale flags that weren't properly cleared
+  const now = Date.now();
+  if (log.isAnimating && log.animationStartTime && (now - log.animationStartTime) > 5000) {
+    log.isAnimating = false;
+    log.animationStartTime = null;
+  }
+
+  // 🔒 CEMENT: Animation state tracking with timestamp for progress preservation
+  // Essential for preventing re-triggering during dual-mode renderAll() operations
   log.isAnimating = true;
+  log.animationStartTime = now; // Track when animation started for progress calculation
   historyService.addOrUpdateLog(log);
   setTimeout(() => {
     log.isAnimating = false;
+    log.animationStartTime = null; // Clear tracking after animation completes
   }, 2000);
 
   return true;
