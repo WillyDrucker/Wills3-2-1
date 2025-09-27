@@ -86,6 +86,9 @@ function getLogItemHTML(
   if (log.isAnimating) {
     itemClass += " is-updating-log";
   }
+  if (log.isSkipAnimating) {
+    itemClass += " is-skip-animating";
+  }
 
   let resultsHtml = "";
   if (status === "completed") {

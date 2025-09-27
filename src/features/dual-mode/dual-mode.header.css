@@ -1,0 +1,73 @@
+/* ==========================================================================
+   DUAL-MODE HEADER
+
+   Purpose: Header layout for dual-mode workouts (superset/partner)
+   Maintains two-line header structure showing workout time remaining
+
+   Dependencies: Active-exercise card header foundations
+   Used by: Dual-mode active card during superset/partner workouts
+   ========================================================================== */
+
+/* === DUAL-MODE HEADER CONTAINER === */
+#active-card-container.is-dual-mode #active-card-header {
+  margin: 0;
+  padding: 0;
+}
+
+/* === DUAL-MODE HEADER LINES === */
+#active-card-container.is-dual-mode .card-header-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-m);
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+/* === DUAL-MODE TYPOGRAPHY === */
+#active-card-container.is-dual-mode .card-header,
+#active-card-container.is-dual-mode .card-header-clock {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 1.0);
+}
+
+#active-card-container.is-dual-mode .card-header {
+  color: var(--on-surface-light);
+}
+
+/* === DUAL-MODE COLOR STATES === */
+#active-card-container.is-dual-mode .card-header-line .card-header-dynamic-text.text-plan,
+#active-card-container.is-dual-mode .card-header-line .card-header-clock.text-plan {
+  color: var(--text-green-plan);
+}
+
+#active-card-container.is-dual-mode .card-header-line .card-header-dynamic-text.text-deviation,
+#active-card-container.is-dual-mode .card-header-line .card-header-clock.text-deviation {
+  color: var(--text-olive-deviation);
+}
+
+#active-card-container.is-dual-mode .card-header-line .card-header-dynamic-text.text-warning,
+#active-card-container.is-dual-mode .card-header-line .card-header-clock.text-warning {
+  color: var(--text-yellow-maintenance);
+}
+
+/* Clock color inheritance */
+#active-card-container.is-dual-mode .card-header-clock {
+  color: inherit;
+}
+
+/* === DUAL-MODE SPAN ALIGNMENT === */
+#active-card-container.is-dual-mode .card-header span,
+#active-card-container.is-dual-mode .card-header-clock span,
+#active-card-container.is-dual-mode .card-header-dynamic-text span {
+  line-height: inherit;
+  vertical-align: baseline;
+  display: inline;
+  margin: 0;
+  padding: 0;
+}

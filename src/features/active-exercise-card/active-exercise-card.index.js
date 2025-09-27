@@ -1,3 +1,24 @@
+/* ==========================================================================
+   ACTIVE EXERCISE CARD - MAIN CONTROLLER
+
+   Controls the current exercise display including inputs, timers, and actions.
+   Handles both normal and dual-mode (superset/partner) workout progression.
+
+   🔒 CEMENT: Skip and log actions follow same alternating pattern in dual-mode
+   🔒 CEMENT: Number input validation prevents zero weights/reps
+   🔒 CEMENT: Header message logic preserves "Next Exercise Up" flow clarity
+
+   Architecture: Unified controller for normal and dual-mode workouts
+   Component Structure:
+   ├── Exercise logging and skipping with validation
+   ├── Number input handling and flash error feedback
+   ├── Rest timer management and completion
+   └── Exercise swapping and template rendering
+
+   Dependencies: appState, workoutService, timerService, historyService
+   Used by: Main render cycle, user action handling
+   ========================================================================== */
+
 import { appState } from "state";
 import { ui } from "ui";
 import { getActiveExerciseCardTemplate } from "./active-exercise-card.template.js";
@@ -9,12 +30,14 @@ import {
   handleSupersetRestCompletion,
 } from "services/timerService.js";
 import * as workoutService from "services/workoutService.js";
+import { canLogDualModeSide } from "services/workoutService.js";
 import * as youtubeService from "services/youtubeService.js";
 import * as historyService from "services/historyService.js";
 import { programConfig } from "config";
 import { initializeNumberInputHandlers } from "./active-exercise-card.numberInputHandler.js";
 import * as selectorService from "services/selectorService.js";
 
+/* === HEADER RENDERING === */
 /**
  * CEMENTED: Targeted Header Renderer
  * This function is designed to be called rapidly by the clock service.
@@ -36,31 +59,39 @@ export function renderActiveCardHeader() {
   const toneClass = appState.session.currentSessionColorClass || "";
 
   if (isDualMode) {
+    // Dual-mode: Update header with just title and clock
     headerContainer.innerHTML = `
       <div class="card-header-line">
-          <h2 class="card-header"><span class="truncate-text">${appState.session.activeCardHeaderMessage}</span></h2>
+          <span class="card-header"><span class="truncate-text">${appState.session.activeCardHeaderMessage}</span></span>
           <span class="card-header-clock">${appState.ui.currentTime}</span>
       </div>
-      <div class="card-header-line ${toneClass}">
-          <span class="card-header-dynamic-text truncate-text ${toneClass}">${durationText}</span>
-          <span class="card-header-dynamic-text ${toneClass}">${completionTime}</span>
-      </div>
     `;
+
+    // Update minutes remaining line separately (if it exists and not resting)
+    const minutesRemainingLine = document.querySelector('.minutes-remaining-line');
+    if (minutesRemainingLine) {
+      minutesRemainingLine.innerHTML = `
+        <span class="card-header-dynamic-text"><span class="truncate-text ${toneClass}">${durationText}</span></span>
+        <span class="card-header-dynamic-text"><span class="truncate-text ${toneClass}">${completionTime}</span></span>
+      `;
+    }
   } else {
     // Normal workouts only update clock in header
     headerContainer.innerHTML = `
       <div class="card-header-line">
-          <h2 class="card-header"><span class="truncate-text">${appState.session.activeCardHeaderMessage}</span></h2>
+          <span class="card-header"><span class="truncate-text">${appState.session.activeCardHeaderMessage}</span></span>
           <span class="card-header-clock">${appState.ui.currentTime}</span>
       </div>
     `;
   }
 }
 
+/* === FULL CARD RENDERING === */
 export function renderActiveExerciseCard() {
   ui.mainContent.innerHTML = getActiveExerciseCardTemplate();
 }
 
+/* === INPUT VALIDATION === */
 function flashInputError(inputId) {
   const buttons = document.querySelectorAll(
     `button[data-input-id="${inputId}"]`
@@ -71,6 +102,7 @@ function flashInputError(inputId) {
   });
 }
 
+/* === USER ACTIONS === */
 export function handleNumberInputChange(inputId, value) {
   const cleanValue = Math.max(0, Math.min(999, parseFloat(value) || 0));
   const logEntry =
@@ -162,6 +194,10 @@ export function handleSkipSet(side = null) {
 
   if (appState.superset.isActive || appState.partner.isActive) {
     if (!side) return;
+
+    // Validate that skipping is allowed according to alternating rules
+    if (!canLogDualModeSide(side)) return;
+
     targetIndex = appState.session.workoutLog.findIndex(
       (log) => log.status === "pending" && log.supersetSide === side
     );
@@ -228,6 +264,7 @@ export function handleSkipRest(side = null) {
   }
 }
 
+/* === EXERCISE SWAPPING === */
 export function handleExerciseSwap(newExerciseOrder) {
   const logIndex = appState.session.currentLogIndex;
   const currentLogEntry = appState.session.workoutLog[logIndex];

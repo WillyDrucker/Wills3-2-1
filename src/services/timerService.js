@@ -1,14 +1,38 @@
+/* ==========================================================================
+   TIMER SERVICE - REST TIMER MANAGEMENT
+
+   Handles rest timers for both normal and dual-mode (superset/partner) workouts.
+   Manages timer state, animations, and completion handling with tab visibility sync.
+
+   🔒 CEMENT: Timer completion triggers skip animation only once per exercise
+   🔒 CEMENT: Dual-mode timers isolated by cycle ID to prevent cross-contamination
+   🔒 CEMENT: "Next Exercise Up" header logic preserves user flow clarity
+
+   Architecture: Unified timer functions for normal and dual-mode
+   Component Structure:
+   ├── Timer creation and interval management
+   ├── Visibility change handling for tab resume
+   ├── Completion handling with animation triggers
+   └── Recovering animation synchronization
+
+   Dependencies: appState, workoutService, formatTime utility
+   Used by: Active exercise card actions, workout progression
+   ========================================================================== */
+
 import { appState } from "state";
 import { formatTime } from "utils";
 import * as workoutService from "services/workoutService.js";
 
+/* === INITIALIZATION === */
 let renderers = {};
 export function initialize(rendererCallbacks) {
   renderers = rendererCallbacks;
 }
 
+/* === VISIBILITY CHANGE HANDLING === */
 let visibilityChangeHandler = null;
 
+/* === TAB VISIBILITY SYNC === */
 function handleTimerVisibilityChange() {
   if (document.visibilityState !== "visible") return;
 
@@ -38,9 +62,45 @@ function handleTimerVisibilityChange() {
 
   if (appState.ui.currentPage === "workout") {
     renderers.renderAll();
+    // Re-sync recovering animations after re-rendering
+    resyncRecoveringAnimations();
   }
 }
 
+function resyncRecoveringAnimations() {
+  // Find all recovering text elements (both normal and dual-mode)
+  const recoveringElements = document.querySelectorAll('.recovering-text, .dual-mode-recovering-text');
+
+  recoveringElements.forEach(element => {
+    // Calculate how long the rest timer has been running
+    const normalRest = appState.rest.normal;
+    const supersetLeft = appState.rest.superset.left;
+    const supersetRight = appState.rest.superset.right;
+
+    let elapsedSeconds = 0;
+
+    // Find which timer is active and get elapsed time
+    if (normalRest.type === "log" && normalRest.startTime) {
+      elapsedSeconds = Math.floor((Date.now() - normalRest.startTime) / 1000);
+    } else if (supersetLeft.type === "log" && supersetLeft.startTime) {
+      elapsedSeconds = Math.floor((Date.now() - supersetLeft.startTime) / 1000);
+    } else if (supersetRight.type === "log" && supersetRight.startTime) {
+      elapsedSeconds = Math.floor((Date.now() - supersetRight.startTime) / 1000);
+    }
+
+    if (elapsedSeconds > 0) {
+      // Set negative animation delay to resume from current position
+      const animationDelay = -elapsedSeconds + 's';
+      element.style.animationDelay = animationDelay;
+      // Force animation restart by removing and re-adding the animation
+      element.style.animation = 'none';
+      element.offsetHeight; // Trigger reflow
+      element.style.animation = `recovering-progression 60s linear infinite ${animationDelay}`;
+    }
+  });
+}
+
+/* === TIMER INTERVAL MANAGEMENT === */
 function _createTimerInterval(restState, side = null) {
   let lastMinutesElapsed = Math.floor((300 - restState.timeRemaining) / 60);
 
@@ -107,6 +167,7 @@ function _createTimerInterval(restState, side = null) {
   }, 1000);
 }
 
+/* === TIMER STARTUP === */
 function _startTimer(restState, type, side = null) {
   if (restState.timerId) clearInterval(restState.timerId);
 
@@ -160,6 +221,7 @@ function _startTimer(restState, type, side = null) {
   _createTimerInterval(restState, side);
 }
 
+/* === TIMER COMPLETION HANDLING === */
 function _handleCompletion(restState, options = {}) {
   const cycleId = restState.triggeringCycleId;
   if (restState.type === "none" && !options.wasSkipped) return;
@@ -180,6 +242,19 @@ function _handleCompletion(restState, options = {}) {
     if (options.wasSkipped) {
       log.restWasSkipped = true;
       log.skippedRestValue = restState.timeRemaining;
+      // Only trigger animation if it hasn't already been triggered for this specific skip
+      // Check that this is actually the rest timer that was skipped by verifying the cycle ID
+      if (!log.isSkipAnimating && !log.skipAnimationPlayed) {
+        log.isSkipAnimating = true;
+        log.skipAnimationPlayed = true;
+        log.skipAnimationCycleId = restState.triggeringCycleId; // Track which timer skip triggered this
+        setTimeout(() => {
+          // Only clear animation if it was triggered by this specific cycle
+          if (log.skipAnimationCycleId === restState.triggeringCycleId) {
+            log.isSkipAnimating = false;
+          }
+        }, 2000);
+      }
     }
   }
 
@@ -220,6 +295,7 @@ function _handleCompletion(restState, options = {}) {
   }, 4000);
 }
 
+/* === PUBLIC API === */
 export function startNormalRestTimer(type) {
   _startTimer(appState.rest.normal, type);
 }
@@ -236,6 +312,7 @@ export function handleSupersetRestCompletion(side, options = {}) {
   _handleCompletion(appState.rest.superset[side], options);
 }
 
+/* === STATE RESTORATION === */
 export function resumeTimersFromState() {
   const resume = (restState, side = null) => {
     if (restState.type === "none" || !restState.startTime) return;

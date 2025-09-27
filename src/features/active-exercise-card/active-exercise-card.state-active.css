@@ -43,9 +43,10 @@
 #active-card-container .timer-display {
   font-size: 5.5rem;
   font-weight: 700;
-  line-height: var(--active-timer-line-height);
+  line-height: var(--timer-line-height);
   /* Color set by template class (currentSessionColorClass) */
   text-align: center;
+  text-shadow: var(--text-shadow-subtle);
   display: block;
   margin: 0;
   padding: 0;

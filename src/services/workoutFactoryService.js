@@ -54,6 +54,9 @@ export function generateWorkoutLog(
         skippedRestValue: null,
         supersetSide: null,
         isAnimating: false,
+        isSkipAnimating: false,
+        skipAnimationPlayed: false,
+        skipAnimationCycleId: null,
         userName: null,
         userColorClass: null,
       });

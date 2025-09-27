@@ -39,7 +39,7 @@
 /* === FUEL GAUGE SPACING === */
 /* 🔒 CEMENT: !important required - global reset forces override */
 #active-card-container .action-prompt-block.is-resting.is-dual-mode {
-  margin: 8px 0 0 0 !important; /* 8px + base = 16px visual */
+  margin: -1px 0 0 0 !important; /* -1px for exact 16px visual spacing from inputs */
   padding: 0;
   width: 100%;
   text-align: center;
@@ -50,6 +50,39 @@
   padding: 0;
   line-height: 1.25; /* Standard line-height for clean spacing */
   font-size: var(--font-size-h2); /* Restore to 1.25rem */
+}
+
+/* === MINUTES REMAINING LINE SPACING === */
+/* 🔒 CEMENT: Dual-mode minutes remaining line spacing override */
+#active-card-container.is-dual-mode .minutes-remaining-line {
+  margin-top: 11px !important; /* 11px margin to achieve 16px visual from inputs */
+  margin-bottom: 0;
+  padding: 0;
+}
+
+/* === ACTION AREA SPACING FOR DUAL MODE === */
+/* 🔒 CEMENT: Ensure 16px from minutes remaining line to action buttons */
+#active-card-container.is-dual-mode #card-action-area.dual-workout-action-area {
+  margin-top: 12px !important; /* 12px margin to achieve 16px visual from minutes line */
+}
+
+/* === ACTION PROMPT TEXT STYLING === */
+/* 🔒 CEMENT: Dual-mode "Begin Exercise - Log Results" text styling */
+#active-card-container .action-prompt-block.is-dual-mode .action-prompt-text {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--primary-blue-dark);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+/* === DUAL-MODE INACTIVE STATE SPACING === */
+/* 🔒 CEMENT: Prevents 7px shift between inactive and active states */
+#active-card-container.is-dual-mode .minutes-remaining-line.dual-mode-inactive-slack {
+  margin-top: 14px !important; /* 14px CSS for 19px visual spacing above */
+  margin-bottom: 4px !important; /* 4px for 20px visual spacing below */
 }
 
 /* === BUTTON ALIGNMENT === */

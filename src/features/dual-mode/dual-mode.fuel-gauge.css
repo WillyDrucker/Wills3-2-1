@@ -1,0 +1,126 @@
+/* ==========================================================================
+   DUAL-MODE FUEL GAUGE
+
+   Purpose: Dual fuel gauge layout for superset/partner workouts
+   Positioned below selector, above inputs in new layout
+
+   🔒 CEMENT: Dual gauge layout uses flexbox for equal distribution
+
+   Dependencies: Fuel gauge component foundations
+   Used by: Dual-mode active card during superset/partner workouts
+   ========================================================================== */
+
+/* === DUAL-MODE FUEL GAUGE POSITIONING === */
+#active-card-container.is-dual-mode .dual-fuel-gauge-area {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+}
+
+/* === DUAL FUEL GAUGE CONTAINER === */
+/* 🔒 CEMENT: Flexbox layout for equal gauge distribution */
+#active-card-container.is-dual-mode .dual-fuel-gauge-container {
+  display: flex;
+  gap: var(--space-m); /* 16px gap between gauges */
+  height: var(--control-height);
+  margin: 0;
+  padding: 0;
+}
+
+#active-card-container.is-dual-mode .fuel-gauge-wrapper {
+  flex: 1;
+  min-width: 0; /* Allows equal flex distribution */
+}
+
+/* === DUAL-MODE MINUTES REMAINING LINE === */
+#active-card-container.is-dual-mode .minutes-remaining-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+#active-card-container.is-dual-mode .minutes-remaining-line .card-header-dynamic-text {
+  font-size: 1.25rem; /* User requested 1.25rem */
+  font-weight: 500;
+  line-height: 1.2;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* === DUAL-MODE RESTING TEXT === */
+#active-card-container.is-dual-mode .action-prompt-block.is-resting {
+  margin: -1px 0 0 0; /* -1px for exact 16px visual spacing from inputs */
+  padding: 0;
+  width: 100%;
+  text-align: center;
+}
+
+#active-card-container.is-dual-mode .resting-label {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--on-surface-medium);
+  margin: 0;
+  padding: 0;
+  line-height: 1.25;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* === DUAL-MODE FUEL GAUGE OVERLAY SETUP === */
+/* 🔒 CEMENT: Create overlay container within fuel gauge area for action prompt */
+#active-card-container.is-dual-mode .dual-fuel-gauge-area {
+  position: relative;
+}
+
+/* Position action prompt overlay over fuel gauges */
+#active-card-container.is-dual-mode .dual-fuel-gauge-area .action-prompt-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  z-index: 2;
+  text-align: center;
+  pointer-events: none; /* Allow interaction with fuel gauges */
+}
+
+#active-card-container.is-dual-mode .dual-fuel-gauge-area .action-prompt-overlay .action-prompt-text {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--primary-blue-dark);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  margin: 0;
+  padding: 0;
+  pointer-events: auto; /* Re-enable for text interaction */
+}
+
+/* === DUAL-MODE RECOVERING TEXT OVERLAYS === */
+/* Individual fuel gauge overlays for "Recovering" text */
+#active-card-container.is-dual-mode .dual-mode-recovering-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  z-index: 2;
+  text-align: center;
+  pointer-events: none; /* Allow interaction with fuel gauges */
+}
+
+#active-card-container.is-dual-mode .dual-mode-recovering-text {
+  font-size: 1.25rem; /* Match "Begin Exercise - Log Results" */
+  font-weight: 600;
+  color: var(--primary-blue-dark);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  margin: 0;
+  padding: 0;
+  letter-spacing: 0.5px;
+  animation: recovering-progression 60s linear infinite;
+  animation-fill-mode: forwards;
+  pointer-events: auto; /* Re-enable for text interaction */
+}
+
+/* Ensure fuel gauge with overlay has relative positioning */
+#active-card-container.is-dual-mode .fuel-gauge-with-overlay {
+  position: relative;
+}

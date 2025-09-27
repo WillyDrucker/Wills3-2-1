@@ -1,3 +1,24 @@
+/* ==========================================================================
+   WORKOUT SERVICE - CORE WORKOUT LOGIC
+
+   Manages workout progression, completion state, and dual-mode exercise alternation.
+   Handles current exercise tracking and workout completion detection.
+
+   🔒 CEMENT: Dual-mode alternating pattern prevents more than 1 exercise ahead
+   🔒 CEMENT: Unbalanced exercise counts allow consecutive completion when one side done
+   🔒 CEMENT: Current exercise header logic maintains user flow clarity
+
+   Architecture: Stateful workout progression with dual-mode awareness
+   Component Structure:
+   ├── Exercise retrieval and workout building
+   ├── Current state recalculation after changes
+   ├── Dual-mode completion logic for unbalanced sides
+   └── Active card message management
+
+   Dependencies: appState, programConfig, workoutMetrics, timerLedger
+   Used by: Timer service, active exercise card, workout progression
+   ========================================================================== */
+
 import { appState } from "state";
 import { programConfig, colorCodeMap, muscleGroupSortOrder } from "config";
 import * as youtubeService from "services/youtubeService.js";
@@ -5,6 +26,7 @@ import * as timerLedgerService from "services/timerLedgerService.js";
 import * as workoutMetricsService from "services/workoutMetricsService.js";
 import { scrollToElement } from "utils";
 
+/* === EXERCISE RETRIEVAL === */
 export function getActiveWorkout(dayName) {
   const currentPlan = programConfig[appState.session.currentWorkoutPlanName];
   if (!currentPlan) return [];
@@ -37,6 +59,7 @@ export function getActiveWorkout(dayName) {
   );
 }
 
+/* === WEEKLY PLAN BUILDING === */
 export function buildWeeklyPlan() {
   const plan = {};
   const daysOfWeek = [
@@ -69,6 +92,7 @@ export function buildWeeklyPlan() {
   appState.weeklyPlan = plan;
 }
 
+/* === WORKOUT TIME CALCULATIONS === */
 export function updateWorkoutTimeRemaining() {
   const { session, superset, partner, rest } = appState;
   let baselineDuration, bonusMinutes;
@@ -133,6 +157,7 @@ export function resetExerciseForMuscleGroup(muscleGroup, day) {
   });
 }
 
+/* === COMPLETION STATE MANAGEMENT === */
 export function updateWorkoutCompletionState() {
   const wasAlreadyComplete = appState.session.isWorkoutComplete;
 
@@ -155,11 +180,111 @@ export function updateWorkoutCompletionState() {
   }
 }
 
+/* === DUAL-MODE EXERCISE PROGRESSION === */
+function findNextDualModeExercise() {
+  const workoutLog = appState.session.workoutLog;
+  const currentIndex = appState.session.currentLogIndex;
+
+  // Get pending exercises for each side
+  const pendingLeft = workoutLog.filter(log =>
+    log.status === "pending" && log.supersetSide === "left"
+  );
+  const pendingRight = workoutLog.filter(log =>
+    log.status === "pending" && log.supersetSide === "right"
+  );
+
+  // If one side is complete, allow consecutive exercises on the other side
+  if (pendingLeft.length === 0 && pendingRight.length > 0) {
+    return workoutLog.findIndex(log =>
+      log.status === "pending" && log.supersetSide === "right"
+    );
+  }
+
+  if (pendingRight.length === 0 && pendingLeft.length > 0) {
+    return workoutLog.findIndex(log =>
+      log.status === "pending" && log.supersetSide === "left"
+    );
+  }
+
+  // If both sides have pending exercises, follow alternating pattern
+  if (pendingLeft.length > 0 && pendingRight.length > 0) {
+    const currentLog = workoutLog[currentIndex];
+    const completedLeft = workoutLog.filter(log =>
+      log.supersetSide === "left" && log.status !== "pending"
+    ).length;
+    const completedRight = workoutLog.filter(log =>
+      log.supersetSide === "right" && log.status !== "pending"
+    ).length;
+
+    // Prevent getting more than 1 exercise ahead on either side
+    const leftAhead = completedLeft - completedRight;
+    const rightAhead = completedRight - completedLeft;
+
+    if (leftAhead >= 1) {
+      // Left is ahead, force right next
+      return workoutLog.findIndex(log =>
+        log.status === "pending" && log.supersetSide === "right"
+      );
+    } else if (rightAhead >= 1) {
+      // Right is ahead, force left next
+      return workoutLog.findIndex(log =>
+        log.status === "pending" && log.supersetSide === "left"
+      );
+    }
+  }
+
+  // Default to first pending exercise
+  return workoutLog.findIndex(log => log.status === "pending");
+}
+
+export function canLogDualModeSide(side) {
+  const workoutLog = appState.session.workoutLog;
+
+  // Get pending exercises for each side
+  const pendingLeft = workoutLog.filter(log =>
+    log.status === "pending" && log.supersetSide === "left"
+  );
+  const pendingRight = workoutLog.filter(log =>
+    log.status === "pending" && log.supersetSide === "right"
+  );
+
+  // If this side has no pending exercises, can't log
+  const pendingThisSide = side === "left" ? pendingLeft : pendingRight;
+  if (pendingThisSide.length === 0) return false;
+
+  // If other side is complete, always allow this side
+  const otherSide = side === "left" ? "right" : "left";
+  const pendingOtherSide = otherSide === "left" ? pendingLeft : pendingRight;
+  if (pendingOtherSide.length === 0) return true;
+
+  // If both sides have pending exercises, check alternating pattern
+  const completedLeft = workoutLog.filter(log =>
+    log.supersetSide === "left" && log.status !== "pending"
+  ).length;
+  const completedRight = workoutLog.filter(log =>
+    log.supersetSide === "right" && log.status !== "pending"
+  ).length;
+
+  // Allow if this side is behind or equal
+  if (side === "left") {
+    return completedLeft <= completedRight;
+  } else {
+    return completedRight <= completedLeft;
+  }
+}
+
 export function recalculateCurrentStateAfterLogChange(options = {}) {
   const oldIndex = appState.session.currentLogIndex;
-  const newCurrentIndex = appState.session.workoutLog.findIndex(
-    (log) => log.status === "pending"
-  );
+
+  // For dual-mode workouts, find next exercise considering unbalanced sides
+  let newCurrentIndex;
+  if (appState.superset.isActive || appState.partner.isActive) {
+    newCurrentIndex = findNextDualModeExercise();
+  } else {
+    newCurrentIndex = appState.session.workoutLog.findIndex(
+      (log) => log.status === "pending"
+    );
+  }
 
   if (newCurrentIndex === -1 && appState.session.workoutLog.length > 0) {
     updateWorkoutCompletionState();

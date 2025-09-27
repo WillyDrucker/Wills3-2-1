@@ -14,6 +14,7 @@
 
 import { appState } from "state";
 import { formatTime } from "utils";
+import { canLogDualModeSide } from "services/workoutService.js";
 
 export function getActionAreaHTML() {
   if (appState.superset.isActive || appState.partner.isActive) {
@@ -26,11 +27,7 @@ export function getActionAreaHTML() {
       ? `<div class="action-prompt-block is-resting is-dual-mode">
           <p class="resting-label"><span class="truncate-text">Resting For:</span></p>
         </div>`
-      : `<div class="action-prompt-block is-prompt is-dual-mode">
-          <div class="action-prompt-spacer-top"></div>
-          <p class="action-prompt-text ${promptGlowClass}"><span class="truncate-text">${appState.session.activeCardMessage}</span></p>
-          <div class="action-prompt-spacer-bottom"></div>
-        </div>`;
+      : ``; // Action prompt now handled in fuel gauge overlay
 
     const left = getDualModeSideActionHTML("left");
     const right = getDualModeSideActionHTML("right");
@@ -102,18 +99,10 @@ function getDualModeSideActionHTML(side) {
     const hasPendingSets = appState.session.workoutLog.some(
       (log) => log.status === "pending" && log.supersetSide === side
     );
-    const completedLeft = appState.session.workoutLog.filter(
-      (log) => log.supersetSide === "left" && log.status !== "pending"
-    ).length;
-    const completedRight = appState.session.workoutLog.filter(
-      (log) => log.supersetSide === "right" && log.status !== "pending"
-    ).length;
-    let isLogDisabled =
-      !hasPendingSets ||
-      (side === "left" && completedLeft > completedRight) ||
-      (side === "right" && completedRight > completedLeft);
 
-    let isSkipDisabled = !hasPendingSets;
+    // Use new logic that handles unbalanced exercise counts for both buttons
+    let isLogDisabled = !canLogDualModeSide(side);
+    let isSkipDisabled = !canLogDualModeSide(side);
 
     return `<div class="action-button-group">
               <button class="action-button button-log" data-action="logSet" data-side="${side}" ${

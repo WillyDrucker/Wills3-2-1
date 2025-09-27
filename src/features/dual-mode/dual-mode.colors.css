@@ -19,14 +19,17 @@
 /* Static colors via template-assigned classes */
 .timer-display.text-plan {
   color: var(--text-green-plan);
+  text-shadow: var(--text-shadow-subtle);
 }
 
 .timer-display.text-warning {
   color: var(--text-yellow-maintenance);
+  text-shadow: var(--text-shadow-subtle);
 }
 
 .timer-display.text-primary {
   color: var(--primary-blue);
+  text-shadow: var(--text-shadow-subtle);
 }
 
 /* === BUTTON STATES === */

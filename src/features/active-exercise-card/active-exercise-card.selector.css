@@ -38,11 +38,13 @@
   font-size: var(--font-size-h2);
   font-weight: 600;
   margin-bottom: 2px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 #exercise-selector .item-sub-line {
   font-size: var(--font-size-body-m);
   line-height: 1.1;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 #exercise-selector .flex-separator {

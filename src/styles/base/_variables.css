@@ -104,6 +104,10 @@
   --text-orange-deviation: #ffb74d;   /* Major deviation */
   --text-red-skip: #b30000;           /* Skipped */
   
+  /* === SHADOWS === */
+  /* CEMENT: Consistent text shadow system */
+  --text-shadow-subtle: 0 2px 4px rgba(0, 0, 0, 0.8);
+
   /* === COMPONENT EXCEPTIONS === */
   /* CEMENT: Only two exceptions in entire app */
   

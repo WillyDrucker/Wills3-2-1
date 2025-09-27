@@ -67,6 +67,7 @@
   margin: 0;
   padding: 0;
   letter-spacing: 0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 /* === MINUTES REMAINING LINE === */
@@ -118,89 +119,22 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
   letter-spacing: 0.5px;
   animation: recovering-progression 60s linear infinite;
+  animation-fill-mode: forwards;
 }
 
-/* 🔒 CEMENT: Recovering text animation matches fuel gauge segment progression
-   Blue-based color transitions synchronized with 60s fuel gauge timing */
+/* 🔒 CEMENT: Simplified recovering text animation - smooth progression
+   Linear transition from very dark blue to standard blue, then build to white */
 @keyframes recovering-progression {
   0% {
-    /* 0s - Start: Dark blue (like segment start) */
-    color: var(--primary-blue-dark);
-    transform: scale(1);
+    /* 0s - Start: Much darker blue (3% lightness) */
+    color: #000510;
   }
-  20% {
-    /* 12s - Segment 1 completion: Brightening */
-    color: #0066cc;
-    transform: scale(1.02);
-  }
-  20.1% {
-    /* Brief flash (stamp effect) */
-    color: #66ccff;
-    transform: scale(1.05);
-  }
-  21% {
-    /* Return to progression */
-    color: #0066cc;
-    transform: scale(1);
-  }
-  40% {
-    /* 24s - Segment 2 completion: Brighter blue */
-    color: #0080ff;
-    transform: scale(1.02);
-  }
-  40.1% {
-    /* Brief flash */
-    color: #80ddff;
-    transform: scale(1.05);
-  }
-  41% {
-    /* Return */
-    color: #0080ff;
-    transform: scale(1);
-  }
-  60% {
-    /* 36s - Segment 3 completion: Light blue */
+  91.67% {
+    /* 55s - Standard blue reached */
     color: var(--primary-blue);
-    transform: scale(1.02);
-  }
-  60.1% {
-    /* Brief flash */
-    color: #99eeff;
-    transform: scale(1.05);
-  }
-  61% {
-    /* Return */
-    color: var(--primary-blue);
-    transform: scale(1);
-  }
-  80% {
-    /* 48s - Segment 4 completion: Very light blue */
-    color: var(--primary-blue-light);
-    transform: scale(1.02);
-  }
-  80.1% {
-    /* Brief flash */
-    color: #ccf7ff;
-    transform: scale(1.05);
-  }
-  81% {
-    /* Return */
-    color: var(--primary-blue-light);
-    transform: scale(1);
-  }
-  95% {
-    /* 57s - Final segment near completion: Brightest */
-    color: #ffffff;
-    transform: scale(1.03);
-  }
-  96.67% {
-    /* 58s - Peak brightness */
-    color: #ffffff;
-    transform: scale(1.05);
   }
   100% {
-    /* 60s - Return to start for loop */
-    color: var(--primary-blue-dark);
-    transform: scale(1);
+    /* 60s - Build up to bright white */
+    color: #ffffff;
   }
 }

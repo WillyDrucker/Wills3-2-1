@@ -23,6 +23,7 @@
   font-weight: 700;
   line-height: 0.7; /* 🔒 CEMENT: Required for compact spacing */
   text-align: center;
+  text-shadow: var(--text-shadow-subtle);
   display: block;
   margin: 0;
   padding: 0;
@@ -44,5 +45,6 @@
 
 /* === DUAL TIMER LINE HEIGHT === */
 .dual-action-area-container .timer-display {
-  line-height: var(--active-timer-line-height);
+  line-height: var(--timer-line-height);
+  text-shadow: var(--text-shadow-subtle);
 }

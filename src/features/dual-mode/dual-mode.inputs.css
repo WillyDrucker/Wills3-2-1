@@ -1,0 +1,75 @@
+/* ==========================================================================
+   DUAL-MODE INPUTS
+
+   Purpose: Input controls layout for dual-mode workouts
+   Maintains original weight/reps order for dual-mode consistency
+
+   Dependencies: Active-exercise card input foundations
+   Used by: Dual-mode active card during superset/partner workouts
+   ========================================================================== */
+
+/* === DUAL-MODE INPUT GROUP === */
+#active-card-container.is-dual-mode .input-group {
+  margin-top: 6px;    /* Matches active-exercise card spacing */
+  margin-bottom: 0;
+  padding: 0;
+}
+
+/* === DUAL-MODE GRID LAYOUT === */
+#active-card-container.is-dual-mode .input-2col-grid-swapped {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 16px; /* 4px row gap for 7px visual spacing */
+  grid-template-areas:
+    "reps-label weight-label"
+    "reps-input weight-input";
+}
+
+/* === DUAL-MODE INPUT LABELS === */
+#active-card-container.is-dual-mode .input-label {
+  font-weight: 500;
+  color: var(--on-surface-medium);
+  text-align: center;
+  line-height: 1; /* Override global line-height */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* === DUAL-MODE INPUT CONTROLS === */
+#active-card-container.is-dual-mode .number-input-container {
+  display: flex;
+  align-items: center;
+  height: var(--control-height);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  flex-grow: 1;
+  border: 1px solid var(--on-surface-disabled);
+  margin: 0;
+}
+
+#active-card-container.is-dual-mode .number-input-container button {
+  background-color: var(--background-dark);
+  color: var(--on-surface-light);
+  border: none;
+  width: 50px;
+  flex-shrink: 0;
+  height: 100%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#active-card-container.is-dual-mode .number-input-container input {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  background-color: var(--background-dark);
+  color: var(--on-surface-light);
+  border: none;
+  border-left: 1px solid var(--on-surface-disabled);
+  border-right: 1px solid var(--on-surface-disabled);
+  font-size: 1.25rem;
+  -moz-appearance: textfield;
+  appearance: none;
+}

@@ -75,30 +75,49 @@ export function getWorkoutCardHTML(logEntry) {
   const isDualMode = appState.superset.isActive || appState.partner.isActive;
 
   if (isDualMode) {
-    // Original layout for dual-mode
+    // Updated layout for dual-mode to match normal mode structure
+    const remaining = appState.session.workoutTimeRemaining;
+    const durationUnit = pluralize(remaining, "Minute", "Minutes");
+    const durationText = `${remaining} ${durationUnit} Remaining`;
+    const completionTime = calculateCompletionTime(remaining);
+
+    const isDualModeResting =
+      appState.rest.superset.left.type !== "none" ||
+      appState.rest.superset.right.type !== "none";
+
     return `
-      <div class="card ${cardGlowClass}" id="active-card-container">
+      <div class="card ${cardGlowClass} is-dual-mode" id="active-card-container">
         <div class="card-content-container">
 
-          ${getCardHeaderHTML(true)}
+          ${getCardHeaderHTML()}
 
-          <div class="youtube-overlay-wrapper" style="margin-top: var(--youtube-overlay-spacing);">
+          <div class="youtube-overlay-wrapper" style="margin-top: 0px;">
             ${getExerciseSelectorHTML(logEntry, setsForThisExercise)}
             ${getYouTubeOverlayButtonHTML(logEntry)}
           </div>
 
-          <div class="input-group">
-            <div class="input-2col-grid">
-              <div class="input-label truncate-text" style="grid-area: weight-label">${weightLabel}</div>
+          <div id="card-anchor-area" class="dual-fuel-gauge-area" data-action="scrollToActiveCard" style="margin-top: 16px;">
+            ${getAnchorAreaHTML()}
+          </div>
+
+          <div class="input-group" style="margin-top: 15px;">
+            <div class="input-2col-grid-swapped">
               <div class="input-label truncate-text" style="grid-area: reps-label">${repsLabel}</div>
-              <div style="grid-area: weight-input">${createNumberInputHTML("weight", logEntry.weight)}</div>
+              <div class="input-label truncate-text" style="grid-area: weight-label">${weightLabel}</div>
               <div style="grid-area: reps-input">${createNumberInputHTML("reps", logEntry.reps)}</div>
+              <div style="grid-area: weight-input">${createNumberInputHTML("weight", logEntry.weight)}</div>
             </div>
           </div>
 
-          <div id="card-anchor-area" data-action="scrollToActiveCard">${getAnchorAreaHTML()}</div>
+          ${isDualModeResting ?
+            `` :
+            `<div class="minutes-remaining-line dual-mode-inactive-slack" style="margin-top: var(--upper-slack-spacing);">
+              <span class="card-header-dynamic-text"><span class="truncate-text ${appState.session.currentSessionColorClass}">${durationText}</span></span>
+              <span class="card-header-dynamic-text"><span class="truncate-text ${appState.session.currentSessionColorClass}">${completionTime}</span></span>
+            </div>`
+          }
 
-          <div id="card-action-area" class="stack">${getActionAreaHTML()}</div>
+          <div id="card-action-area" class="stack dual-workout-action-area" style="margin-top: ${isDualModeResting ? 'var(--upper-slack-spacing)' : 'var(--lower-slack-spacing)'};">${getActionAreaHTML()}</div>
 
         </div>
       </div>`;

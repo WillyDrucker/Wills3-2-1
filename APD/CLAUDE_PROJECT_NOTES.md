@@ -6,6 +6,74 @@
 
 ## VERSION CHANGELOG
 
+### **v6.8 - Timer Shadows and Dual-Mode Logic Fixes Complete**
+**Date**: 2025-09-27
+**Problem**: Timer shadows not visible, skip animation retriggering on dual timers, dual-mode completion stuck with unbalanced exercises, skip actions bypassing alternating rules
+**Solution**: Comprehensive timer service and dual-mode logic improvements
+**Key Achievements**:
+- Fixed timer drop shadows across all components using tokenized `--text-shadow-subtle`
+- Resolved skip animation retriggering by adding cycle ID isolation between dual-mode timers
+- Implemented unbalanced exercise count handling - allows consecutive completion when one side finished
+- Applied alternating pattern rules to skip actions (same as log actions)
+- Cleaned up all CSS files removing !important flags and adding proper documentation
+**Technical Discoveries**:
+- Line-height: 0.7 constraint required different shadow approach than expected
+- Dual-mode timer completion needed cycle ID tracking to prevent animation cross-contamination
+- Skip and log actions must follow identical validation logic for consistent user experience
+- Tokenized shadow system provides consistency across all timer displays
+**Files Modified**:
+- `timerService.js` - Added cycle ID tracking, section headers, removed inline styles
+- `workoutService.js` - Added findNextDualModeExercise() and canLogDualModeSide() functions
+- `active-exercise-card.index.js` - Added skip validation and documentation headers
+- `dual-mode.colors.css`, `dual-mode.active-card.css` - Tokenized shadows
+- `active-exercise-card.action-area.css`, `active-exercise-card.state-active.css` - Cleaned shadows
+- `workoutFactoryService.js` - Added skipAnimationCycleId field
+- `_variables.css` - Added --text-shadow-subtle token
+**Status**: COMPLETE - Timer shadows visible, dual-mode logic robust for unbalanced workouts
+
+### **v6.7 - Dual-Mode Layout Precision Spacing Complete**
+**Date**: 2025-09-26
+**Problem**: Dual-mode layout had imprecise spacing and duplicate/legacy code after v6.6 harmonization
+**Solution**: Fine-tuned spacing measurements and cleaned up code architecture
+**Key Achievements**:
+- Fixed header to selector spacing (3px → 7px visual) by using template inline style override
+- Repositioned action prompt overlay from selector to fuel gauges using template integration
+- Achieved perfect 16px visual rhythm for Minutes Remaining (11px CSS → 16px visual above, 12px CSS → 16px visual below)
+- Removed duplicate "Begin Exercise - Log Results" text by cleaning action area template
+- Cleaned up legacy minutes remaining code from header section - flattened architecture
+**Technical Discoveries**:
+- Template inline styles override CSS specificity - critical for precise spacing control
+- Visual spacing consistently differs 3-4px from CSS values due to font metrics and line-height
+- Action prompt overlay must be positioned within fuel gauge template for proper centering
+- Global CSS reset requires `!important` flags for margin control in dual-mode
+**Files Modified**:
+- Template files: workoutCard.js, fuelGauge.js, actionArea.js - structural improvements
+- CSS files: dual-mode.header.css, dual-mode.fuel-gauge.css, dual-mode.spacing.css - precision spacing
+**Status**: COMPLETE - 🔒 CEMENTed precision spacing ready for production
+
+### **v6.6 - Dual-Mode Layout Harmonization Complete**
+**Date**: 2025-09-25
+**Problem**: Dual-mode (superset/partner) layout didn't match updated normal active-exercise card structure
+**Solution**: Comprehensive layout update to harmonize with normal mode changes
+**Key Achievements**:
+- Fuel gauges moved directly below exercise selector (from original position)
+- Minutes Remaining line moved above Log Set buttons (matching normal mode)
+- Input selectors repositioned below fuel gauge (new layout order)
+- Weight/Reps positions swapped: Reps left, Weight right (consistency with normal mode)
+- Single-line header maintained for dual-mode (different from normal mode's two-line)
+**Technical Architecture**:
+- Created component-based CSS file structure: header, selector, inputs, fuel-gauge
+- Preserved critical CSS table layout for positioning stability (🔒 CEMENT)
+- Maintained 100px selector height exception to prevent layout shifts
+- Applied tokenized spacing variables for 16px rhythm consistency
+- Updated HTML template structure in `active-exercise-card.templates.workoutCard.js`
+**Files Created**:
+- `dual-mode.header.css` - Single-line header styling
+- `dual-mode.selector.css` - Exercise selector with height exception
+- `dual-mode.inputs.css` - Swapped input grid layout
+- `dual-mode.fuel-gauge.css` - Dual gauge positioning and spacing
+**Status**: COMPLETE - Layout harmonized while preserving dual-mode stability
+
 ### **v6.5 - Workout Log Animation System Complete**
 **Date**: 2025-09-25
 **Problem**: v6.4 left text color animation unresolved + timestamp color shift issues

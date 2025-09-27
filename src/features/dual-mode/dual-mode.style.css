@@ -7,12 +7,16 @@
    - Timer: 5.0rem with line-height: 0.7 for compact display
    - 16px visual gaps via transparent borders
 
-   Architecture: CSS table with fixed columns
+   Architecture: Component-based with clean dependencies
    Component Structure:
-   ├── Table layout with 50% column distribution
-   ├── Transparent borders create visual gaps
-   ├── Higher specificity timer overrides
-   └── Static color assignments per mode
+   ├── .header.css - Two-line header with workout time remaining
+   ├── .selector.css - 100px height exception for layout stability
+   ├── .inputs.css - Weight and reps input controls
+   ├── .fuel-gauge.css - Dual gauge positioning and spacing
+   ├── .layout.css - CSS table with 50% column distribution
+   ├── .spacing.css - Precision spacing overrides
+   ├── .colors.css - Static color assignments per mode
+   └── .active-card.css - Timer and button overrides
 
    Dependencies: Global button groups, active-card foundations
    Used by: Active card during superset/partner workouts
@@ -21,7 +25,11 @@
 /* Global dependencies */
 @import url("../../styles/components/_action-button-groups.css");
 
-/* Local component files */
+/* Local component files - ordered by layout hierarchy */
+@import url("./dual-mode.header.css");
+@import url("./dual-mode.selector.css");
+@import url("./dual-mode.inputs.css");
+@import url("./dual-mode.fuel-gauge.css");
 @import url("./dual-mode.layout.css");
 @import url("./dual-mode.spacing.css");
 @import url("./dual-mode.colors.css");

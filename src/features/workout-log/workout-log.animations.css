@@ -64,3 +64,20 @@
   -webkit-font-smoothing: antialiased;
 }
 
+/* === TIMESTAMP SKIP ANIMATION === */
+
+/* 🔒 CEMENT: Timestamp fade to red when rest is skipped */
+@keyframes timestamp-fade-to-skip {
+  0% {
+    color: inherit; /* Start with default color */
+  }
+  100% {
+    color: var(--text-red-skip); /* Fade to red */
+  }
+}
+
+/* Apply fade animation to timestamp when rest is skipped */
+.workout-log-item.is-skip-animating .log-item-timestamp.text-skip {
+  animation: timestamp-fade-to-skip 500ms ease-out forwards;
+}
+

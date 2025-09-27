@@ -37,7 +37,22 @@ function getDualModeAnchorAreaHTML() {
       : hasPendingRight
       ? inactiveGauge
       : "";
-  return `<div class="dual-fuel-gauge-container"><div class="fuel-gauge-wrapper" style="flex:1;">${leftHTML}</div><div class="fuel-gauge-wrapper" style="flex:1;">${rightHTML}</div></div>`;
+  // Check if we should show action prompt overlay
+  const isAnySideResting =
+    appState.rest.superset.left.type !== "none" ||
+    appState.rest.superset.right.type !== "none";
+
+  const overlayHTML = !isAnySideResting
+    ? `<div class="action-prompt-overlay">
+        <p class="action-prompt-text is-glowing"><span class="truncate-text">${appState.session.activeCardMessage}</span></p>
+      </div>`
+    : '';
+
+  return `<div class="dual-fuel-gauge-container">
+    <div class="fuel-gauge-wrapper" style="flex:1;">${leftHTML}</div>
+    <div class="fuel-gauge-wrapper" style="flex:1;">${rightHTML}</div>
+    ${overlayHTML}
+  </div>`;
 }
 
 function getNormalFuelGaugeHTML(includeActionPrompt = false) {
@@ -158,5 +173,20 @@ function getDualModeFuelGaugeHTML(side) {
       return `<div class="${classList}" ${inlineStyle}></div>`;
     })
     .join("");
-  return `<div class="fuel-gauge-container">${segmentsHTML}</div>`;
+
+  const fuelGaugeHTML = `<div class="fuel-gauge-container">${segmentsHTML}</div>`;
+
+  // Add "Recovering" overlay for log rest states (like normal mode)
+  if (restState.type === "log") {
+    return `
+      <div class="fuel-gauge-with-overlay">
+        ${fuelGaugeHTML}
+        <div class="dual-mode-recovering-overlay">
+          <p class="dual-mode-recovering-text"><span class="truncate-text">Recovering</span></p>
+        </div>
+      </div>
+    `;
+  }
+
+  return fuelGaugeHTML;
 }

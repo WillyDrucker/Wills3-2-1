@@ -1,0 +1,75 @@
+/* ==========================================================================
+   DUAL-MODE SELECTOR
+
+   Purpose: Exercise selector styling for dual-mode workouts
+   Maintains 100px height exception for layout stability
+
+   Dependencies: Active-exercise card selector foundations
+   Used by: Dual-mode active card during superset/partner workouts
+   ========================================================================== */
+
+/* === DUAL-MODE SELECTOR CONTAINER === */
+#active-card-container.is-dual-mode #exercise-selector {
+  margin: 0;
+}
+
+/* === DUAL-MODE YOUTUBE OVERLAY WRAPPER === */
+#active-card-container.is-dual-mode .youtube-overlay-wrapper {
+  position: relative;
+  margin-top: 15px; /* 15px margin to achieve 7px visual spacing */
+  padding: 0;
+}
+
+/* === DUAL-MODE 100px HEIGHT EXCEPTION === */
+#active-card-container.is-dual-mode #exercise-selector.app-selector > summary {
+  height: var(--selector-height);     /* 100px exception */
+  min-height: var(--selector-height);
+  padding: var(--selector-padding-v) var(--selector-padding-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* === DUAL-MODE SELECTOR CONTENT === */
+#active-card-container.is-dual-mode #exercise-selector .selector-content {
+  font-weight: 500;
+  width: 100%;
+}
+
+#active-card-container.is-dual-mode #exercise-selector .item-main-line {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+#active-card-container.is-dual-mode #exercise-selector .item-sub-line {
+  font-size: var(--font-size-body-m);
+  line-height: 1.1;
+}
+
+#active-card-container.is-dual-mode #exercise-selector .flex-separator {
+  margin: 0 var(--space-xxs);
+  font-weight: 600;
+}
+
+/* === DUAL-MODE YOUTUBE OVERLAY === */
+#active-card-container.is-dual-mode .youtube-overlay-button {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+}
+
+/* === DUAL-MODE MUTED STATE === */
+#active-card-container.is-dual-mode .is-muted {
+  pointer-events: none;
+}
+
+#active-card-container.is-dual-mode .is-muted > summary {
+  background-color: var(--background-dark);
+  box-shadow: inset 0 0 0 2px var(--primary-blue-dark);
+}
+
+#active-card-container.is-dual-mode .is-muted > summary .selector-content {
+  opacity: 0.2;
+}
