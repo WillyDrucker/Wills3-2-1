@@ -1,24 +1,45 @@
 /* ==========================================================================
-   APP HEADER - MAIN STYLES
-   
-   Architecture: Three-column grid layout
-   - Global: Typography tokens, spacing tokens
-   - Local: Grid layout, icon buttons
-   
-   Structure: [Home Icon] [App Title] [Menu Icon]
+   APP HEADER - GLOBAL NAVIGATION
+
+   CEMENT: Font metric compensation essential for precise 16px visual spacing
+   Architecture: Three-column grid with centered title and navigation icons
+
+   Component Structure:
+   ├── Grid container with fixed icon columns (40px each)
+   ├── Flexible center column for title text (2.5rem/40px font)
+   ├── Home icon button (hidden on home page)
+   └── Hamburger menu button (always visible)
+
+   Dependencies: Global typography tokens, spacing system, state management
+   - Global: --space-s (7px gap), --font-size-h1 (2.5rem), color tokens
+   - Local: 40px icon sizing, font metric compensation (10px margins)
+   - State: appState.ui.currentPage for home icon visibility
+
+   Used by: main.js (global render), all application pages
    ========================================================================== */
 
 /* === HEADER LAYOUT === */
-/* Three-column grid for robust alignment */
+/* 🔒 CEMENT: Three-column grid ensures consistent icon/title alignment across all screen sizes */
 .app-header {
   display: grid;
-  grid-template-columns: 40px 1fr 40px; /* Icon | Title | Icon */
+  grid-template-columns: 40px 1fr 40px; /* Fixed icon columns | Flexible title | Fixed icon columns */
   align-items: center;
-  gap: var(--space-s);        /* Global: 7px */
-  margin-top: var(--space-m);  /* Global: 16px */
-  margin-bottom: var(--space-m);
+  gap: var(--space-s);        /* Global: 7px spacing between elements */
+  margin-top: 10px;   /* 🔒 CEMENT: Font metric compensation - 10px CSS + 6px ascender = 16px visual */
+  margin-bottom: 10px; /* 🔒 CEMENT: Font metric compensation - 10px CSS + 6px descender = 16px visual */
   padding: 0;
 }
+
+/* 🔒 CEMENT: Font Metric Compensation System
+   2.5rem (40px) title font creates ~6px additional visual space due to:
+   - Font ascenders extending above the character baseline
+   - Font descenders extending below the character baseline
+
+   Solution: Reduce CSS margins from 16px to 10px
+   Result: 10px CSS + 6px font metrics = 16px visual spacing
+
+   This follows the established pattern used throughout the application
+   for precise visual spacing control (see: card headers, selectors). */
 
 /* === APP TITLE === */
 /* Centered title with proper semantics */

@@ -6,7 +6,10 @@
       "Bash(find:*)",
       "Bash(ren:*)",
       "Bash(claude --version)",
-      "Bash(claude doctor)"
+      "Bash(claude doctor)",
+      "Bash(powershell:*)",
+      "Bash(dir:*)",
+      "Bash(timeout:*)"
     ],
     "deny": [],
     "ask": []

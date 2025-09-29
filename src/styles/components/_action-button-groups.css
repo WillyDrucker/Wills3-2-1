@@ -72,8 +72,8 @@
 
 .youtube-overlay-button {
   position: absolute;
-  bottom: 8px;
-  right: 8px;
+  bottom: 4px; /* Standard 4px from border edge */
+  right: 4px;
   width: 48px;
   height: 27px;
   z-index: 5;

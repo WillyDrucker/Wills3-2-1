@@ -69,5 +69,6 @@
 /* Make app content inert when modal open */
 html.is-modal-open .app-container {
   pointer-events: none;
-  /* filter: blur(2px); - Removed for mobile performance */
+  /* 🔒 CEMENT: filter: blur(2px) removed for mobile performance optimization
+     Blur effects cause significant lag on Android devices during video playback */
 }

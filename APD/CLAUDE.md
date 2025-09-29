@@ -45,3 +45,17 @@ src/
 **Component Pattern**: Each feature has index.js (logic), template.js (HTML), style.css (styles)
 
 **State Flow**: User action → Service method → `appState` mutation → `renderAll()` → `persistenceService.saveState()`
+
+## Notification System
+
+**Beep Notifications**: Claude will play a notification beep to signal completion of planning or implementation phases. This helps with multi-project workflow management.
+
+**Beep Command**: `powershell -Command "[System.Console]::Beep(800, 500)"` - 800Hz frequency, 500ms duration
+
+**Volume Note**: Windows Console.Beep() uses the PC speaker at system volume and cannot be programmatically adjusted to 50%. Volume is controlled by system settings only.
+
+**When Used**:
+- End of planning mode (last checklist item before ExitPlanMode)
+- End of implementation (last solution checklist item completed)
+
+**Status**: PERMANENT FEATURE - Always use beep notifications for workflow completion signals

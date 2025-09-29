@@ -83,11 +83,11 @@
     transform: scale(1);
   }
   41.6% {
-    background-color: #dfff80; /* Light olive flash */
+    background-color: var(--text-olive-deviation); /* Light olive flash */
     transform: scale(1.1);
   }
   83.2% {
-    background-color: #dfff80;
+    background-color: var(--text-olive-deviation);
     transform: scale(1.1);
   }
   100% {
@@ -211,14 +211,14 @@
     box-shadow: none;
   }
   12.5% {
-    background-color: #dfff80; /* Light olive flash */
+    background-color: var(--text-olive-deviation); /* Light olive flash */
     transform: scale(1.15);
-    box-shadow: 0 0 8px #dfff80;
+    box-shadow: 0 0 8px var(--text-olive-deviation);
   }
   25% {
-    background-color: #dfff80;
+    background-color: var(--text-olive-deviation);
     transform: scale(1.15);
-    box-shadow: 0 0 8px #dfff80;
+    box-shadow: 0 0 8px var(--text-olive-deviation);
   }
   30% {
     background-color: var(--text-olive-deviation);

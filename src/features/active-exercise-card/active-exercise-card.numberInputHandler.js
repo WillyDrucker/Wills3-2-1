@@ -21,10 +21,16 @@ export function initializeNumberInputHandlers(onInputChange) {
     const direction = target.dataset.action;
     const isWeightInput = target.dataset.inputId.startsWith("weight");
 
-    const currentLogEntry =
-      appState.session.workoutLog[appState.session.currentLogIndex];
+    // 🔒 CEMENT: Exercise type detection for correct increment rules
+    // Critical fix: Use logged exercise type, not current active exercise type
+    // - If editing a logged set (logIndex provided), use that specific log entry's exercise
+    // - If using main inputs (logIndex null), use current active exercise
+    // This ensures dumbbell sets always use dumbbell increments regardless of workout progression
+    const relevantLogEntry = logIndex !== null
+      ? appState.session.workoutLog[logIndex]
+      : appState.session.workoutLog[appState.session.currentLogIndex];
     const isDumbbell =
-      currentLogEntry && isDumbbellExercise(currentLogEntry.exercise);
+      relevantLogEntry && isDumbbellExercise(relevantLogEntry.exercise);
 
     const updateValue = () => {
       const input = document.getElementById(`${target.dataset.inputId}-input`);

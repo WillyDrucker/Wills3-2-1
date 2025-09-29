@@ -56,7 +56,7 @@
 }
 
 .options-list li {
-  padding: 10px 16px;
+  padding: 8px 16px;  /* Reduce top/bottom padding from 10px to 8px for better fit */
   cursor: pointer;
   border-radius: var(--border-radius);
   text-align: center;
@@ -123,7 +123,42 @@
   padding: 4px 0;
 }
 
-/* === ITEM LINES === */
+/* === DROPDOWN ITEM LAYOUT === */
+.options-list li .selector-content {
+  display: block; /* Simple block layout, not flex */
+  width: 100%;
+}
+
+/* === DROPDOWN TEXT LINES === */
+.options-list li .item-main-line,
+.options-list li .item-sub-line {
+  display: block;
+  text-align: center;
+  width: 100%;
+  line-height: 1.2;  /* Prevent text clipping */
+}
+
+.options-list li .item-main-line {
+  margin-bottom: 6px; /* Slightly reduce from 8px to fit better in 46px space */
+}
+
+.options-list li .item-sub-line {
+  margin-top: 0;
+}
+
+/* === DROPDOWN FLEX OVERRIDE === */
+/* Override global flex display for dropdown items to ensure proper stacking */
+.options-list li .flex-line-container {
+  display: block;  /* Override global flex display */
+  text-align: center;  /* Maintain centering with text-align instead */
+}
+
+/* === DROPDOWN HYPHEN SPACING === */
+.options-list li .flex-separator {
+  margin: 0 2px; /* Reduce from 4px to 2px for tighter spacing */
+}
+
+/* === ITEM LINES (GLOBAL) === */
 .item-main-line {
   font-size: inherit;
 }

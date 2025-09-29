@@ -6,6 +6,83 @@
 
 ## VERSION CHANGELOG
 
+### **v6.13 - Development Standards Application and Documentation Complete**
+**Date**: 2025-09-29
+**Problem**: Selector files needed development standards application - tokenization, proper documentation, CEMENT critical architecture, and removal of technical debt
+**Solution**: Comprehensive rewrite applying all 5 development standards with proper architectural documentation
+**Key Achievements**:
+- Applied full tokenization using global design tokens (var(--selector-height), var(--selector-padding-h), etc.)
+- Added comprehensive CEMENT documentation protecting critical 10/10/8/8 spacing architecture
+- Established proper header structure with dependencies and usage documentation
+- Removed all historical version references and technical debt comments
+- Synchronized dual-mode selector to prevent spacing drift from active-exercise
+- Applied semantic naming and consistent code organization
+- Fixed dropdown height regression: Changed from var(--selector-height) to var(--control-height) to avoid 100px scope override
+**Technical Architecture Cemented**:
+- 🔒 CEMENT: 10/10/8/8 spacing pattern using absolute positioning with mathematical precision
+- 🔒 CEMENT: Ellipsis color inheritance via text-overflow property ownership on colored elements
+- 🔒 CEMENT: Vertical-align: top requirement for inline-block/inline element alignment
+- 🔒 CEMENT: Dual-mode synchronization prevents spacing drift between workout modes
+**Technical Discoveries**:
+- CSS variable scope overrides: Local --selector-height override (100px) affected dropdown items that should be 50px
+- Tokenization requires awareness of component-scoped variable overrides to avoid unintended cascading effects
+**Files Modified**:
+- `active-exercise-card.selector.css` - Complete rewrite with standards application
+- `dual-mode.selector.css` - Complete rewrite with synchronized architecture
+- `CLAUDE_PROJECT_NOTES.md` - Updated with v6.13 documentation
+- `CLAUDE_SESSION_HANDOFF.md` - Condensed and focused on current state
+**Status**: COMPLETE - Clean, documented, tokenized code following all development standards
+
+### **v6.12 - Current Exercise Selector Truncation and Alignment System Complete**
+**Date**: 2025-09-29
+**Problem**: Current Exercise selector had truncation ellipsis color and label alignment issues
+**Solution**: Implemented ellipsis color inheritance solution and vertical alignment fixes
+**Key Achievements**:
+- Fixed ellipsis color inheritance by applying text-overflow to colored elements
+- Resolved label/value misalignment using vertical-align: top for inline-block elements
+- Applied truncation to both 100px main selector and 50px dropdown items
+- Synchronized dual-mode selector with active-exercise for consistency
+**Status**: COMPLETE - Perfect truncation and alignment in both workout modes
+
+### **v6.11 - Current Exercise Selector Spacing Refinement Complete**
+**Date**: 2025-09-28
+**Problem**: Current Exercise selector spacing pattern needed adjustment from 12/12/7/7 to 10/10/8/8 for improved visual rhythm
+**Solution**: Updated absolute positioning values with mathematical font metric compensation
+**Key Achievements**:
+- Exercise name spacing: Reduced from 12px to 10px visual gap from top
+- Equipment line spacing: Reduced from 12px to 10px visual gap from exercise name
+- Setup line spacing: Increased from 7px to 8px visual gap from equipment line
+- Set line spacing: Increased from 7px to 8px visual gap from setup line
+- Updated CEMENT documentation to reflect 10/10/8/8 pattern
+**Files Modified**:
+- `active-exercise-card.selector.css` - Updated positioning values and documentation
+**Status**: COMPLETE - Refined spacing pattern implemented with mathematical precision
+
+### **v6.10 - Comprehensive System Optimizations Complete**
+**Date**: 2025-09-27
+**Problem**: Multiple system issues including font inconsistencies, mobile video lag, edit log increment bugs, imprecise spacing, and code standards compliance
+**Solution**: Comprehensive optimization and standardization across all affected systems
+**Key Achievements**:
+- Verified font size standardization (1.0rem/1.25rem) throughout entire application
+- Optimized YouTube video player for mobile performance (eliminated Android lag)
+- Fixed edit log selector increment rules to use correct exercise type detection
+- Achieved precision spacing in Current Exercise selector (12px/12px/7px/7px)
+- Applied CLAUDE_STANDARDS.md to all modified files with proper documentation
+**Technical Discoveries**:
+- Font standardization was already complete from previous sessions
+- Mobile video lag caused by blur filter and heavy visual effects on modal background
+- Edit log increment rules used current exercise instead of logged exercise type
+- Exercise selector spacing required absolute positioning with global style overrides
+- CSS cascade conflicts required specific overrides due to global selector styles
+**Files Modified**:
+- `active-exercise-card.selector.css` - Precision spacing system with absolute positioning
+- `active-exercise-card.templates.exerciseSelector.js` - Added line targeting classes
+- `active-exercise-card.numberInputHandler.js` - Fixed exercise type detection logic
+- `video-player.style.css` - Mobile performance optimizations and hardware acceleration
+- `video-player.index.js` - YouTube API optimization and direct DOM manipulation
+- `_modals.css` - Removed performance-heavy blur filter
+**Status**: COMPLETE - System fully optimized and standardized for production
+
 ### **v6.9 - Comprehensive Animation Re-Triggering Bug Fixed**
 **Date**: 2025-09-27
 **Problem**: Animation re-triggering bugs in dual-mode workouts where rapid timer starts/skips caused animations to restart from beginning, plus results text incorrectly turning red and stale animation state

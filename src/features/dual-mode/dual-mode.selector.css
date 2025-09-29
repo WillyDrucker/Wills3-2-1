@@ -1,73 +1,233 @@
 /* ==========================================================================
    DUAL-MODE SELECTOR
 
-   Purpose: Exercise selector styling for dual-mode workouts
-   Maintains 100px height exception for layout stability
+   🔒 CEMENT: Synchronized spacing and truncation with active-exercise selector
+   - Maintains identical 10/10/8/8 spacing pattern as active-exercise
+   - Identical truncation behavior and ellipsis color inheritance
+   - Prevents spacing drift between workout modes
 
-   Dependencies: Active-exercise card selector foundations
+   Dependencies:
+   - Global: var(--selector-height), var(--selector-padding-h), color tokens
+   - Local: Active-exercise selector foundations, dual-mode container scope
+
    Used by: Dual-mode active card during superset/partner workouts
    ========================================================================== */
 
-/* === DUAL-MODE SELECTOR CONTAINER === */
+/* === DUAL-MODE CONTAINER === */
 #active-card-container.is-dual-mode #exercise-selector {
   margin: 0;
 }
 
-/* === DUAL-MODE YOUTUBE OVERLAY WRAPPER === */
+/* === YOUTUBE OVERLAY WRAPPER === */
 #active-card-container.is-dual-mode .youtube-overlay-wrapper {
   position: relative;
-  margin-top: 15px; /* 15px margin to achieve 7px visual spacing */
+  margin-top: 15px; /* 7px visual spacing with font metrics */
   padding: 0;
 }
 
-/* === DUAL-MODE 100px HEIGHT EXCEPTION === */
+/* === HEIGHT EXCEPTION === */
+/* 🔒 CEMENT: Matches active-exercise - no vertical padding prevents 30px gap */
 #active-card-container.is-dual-mode #exercise-selector.app-selector > summary {
-  height: var(--selector-height);     /* 100px exception */
+  height: var(--selector-height);
   min-height: var(--selector-height);
-  padding: var(--selector-padding-v) var(--selector-padding-h);
+  padding: 0 var(--selector-padding-h);
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
 }
 
-/* === DUAL-MODE SELECTOR CONTENT === */
+/* === SELECTOR CONTENT === */
 #active-card-container.is-dual-mode #exercise-selector .selector-content {
-  font-weight: 500;
+  position: relative;
   width: 100%;
+  height: 100%;
 }
 
-#active-card-container.is-dual-mode #exercise-selector .item-main-line {
+/* === ABSOLUTE POSITIONING === */
+/* 🔒 CEMENT: Synchronized 10/10/8/8 spacing with active-exercise selector */
+#active-card-container.is-dual-mode #exercise-selector > summary .item-main-line {
+  position: absolute;
+  top: 9px; /* 10px visual from top border */
+  left: 0;
+  right: 0;
+  padding: 0 var(--selector-padding-h);
+  box-sizing: border-box;
+  display: block;
+  text-align: center;
   font-size: var(--font-size-h2);
   font-weight: 600;
-  margin-bottom: 2px;
+  line-height: 1;
+  text-shadow: var(--text-shadow-subtle);
+  white-space: nowrap;
+  overflow: hidden;
 }
 
-#active-card-container.is-dual-mode #exercise-selector .item-sub-line {
+#active-card-container.is-dual-mode #exercise-selector > summary .item-sub-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: 0 var(--selector-padding-h);
+  box-sizing: border-box;
+  display: block;
+  text-align: center;
   font-size: var(--font-size-body-m);
-  line-height: 1.1;
-}
-
-#active-card-container.is-dual-mode #exercise-selector .flex-separator {
-  margin: 0 var(--space-xxs);
   font-weight: 600;
+  line-height: 1;
+  text-shadow: var(--text-shadow-subtle);
+  white-space: nowrap;
+  overflow: hidden;
 }
 
-/* === DUAL-MODE YOUTUBE OVERLAY === */
+/* === PRECISE LINE POSITIONING === */
+/* 🔒 CEMENT: Identical to active-exercise for consistency */
+#active-card-container.is-dual-mode #exercise-selector > summary .equipment-line {
+  top: 35px; /* 10px visual gap from exercise name */
+}
+
+#active-card-container.is-dual-mode #exercise-selector > summary .setup-line {
+  top: 55px; /* 8px visual gap from equipment */
+}
+
+#active-card-container.is-dual-mode #exercise-selector > summary .set-line {
+  top: 75px; /* 8px visual gap from setup */
+}
+
+/* === TRUNCATION SYSTEM === */
+/* Matches active-exercise truncation implementation */
+#active-card-container.is-dual-mode #exercise-selector > summary .selector-value-wrapper {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: top;
+}
+
+/* Main line gets full width */
+#active-card-container.is-dual-mode #exercise-selector > summary .item-main-line .selector-value-wrapper {
+  max-width: 100%;
+}
+
+/* Sub-lines leave room for labels */
+#active-card-container.is-dual-mode #exercise-selector > summary .item-sub-line .selector-value-wrapper {
+  max-width: calc(100% - 80px);
+}
+
+/* Truncate text elements */
+#active-card-container.is-dual-mode #exercise-selector > summary .item-main-line .truncate-text {
+  display: inline-block;
+  max-width: 100%;
+}
+
+#active-card-container.is-dual-mode #exercise-selector > summary .item-sub-line .truncate-text {
+  display: inline-block;
+  max-width: calc(100% - 80px);
+}
+
+/* === SEMANTIC CLASSES === */
+/* UI labels - Consistent with active-exercise */
+#active-card-container.is-dual-mode #exercise-selector .selector-ui-label {
+  display: inline;
+  color: var(--on-surface-medium);
+  font-weight: 500;
+  white-space: nowrap;
+  vertical-align: top;
+}
+
+/* === SEPARATORS === */
+#active-card-container.is-dual-mode #exercise-selector .flex-separator {
+  margin: 0;
+  font-weight: 600;
+  display: inline;
+  color: var(--on-surface-medium);
+}
+
+/* === DROPDOWN TRUNCATION === */
+/* Absolute positioning for precise spacing */
+#active-card-container.is-dual-mode #exercise-selector .options-list li {
+  position: relative;
+  display: block;
+  padding: 0;
+  min-height: var(--control-height); /* Use control-height (50px) not selector-height due to local 100px override */
+  box-sizing: border-box;
+}
+
+/* Exercise name line in dropdown */
+#active-card-container.is-dual-mode #exercise-selector .options-list li .item-main-line {
+  position: absolute;
+  top: 1px; /* 6px visual from top with font ascender */
+  left: 0;
+  right: 0;
+  display: block;
+  text-align: center;
+  margin: 0;
+  padding: 0 var(--selector-padding-h);
+  line-height: 1.2;
+  overflow: hidden;
+}
+
+/* Equipment line in dropdown */
+#active-card-container.is-dual-mode #exercise-selector .options-list li .item-sub-line {
+  position: absolute;
+  top: 24px; /* 7px visual gap from exercise name */
+  left: 0;
+  right: 0;
+  display: block;
+  text-align: center;
+  margin: 0;
+  padding: 0 var(--selector-padding-h);
+  line-height: 1.2;
+  overflow: hidden;
+}
+
+/* Dropdown value wrapper truncation */
+#active-card-container.is-dual-mode #exercise-selector .options-list li .selector-value-wrapper {
+  display: inline-block;
+  vertical-align: top;
+  max-width: calc(100% - 90px); /* Account for Equipment label */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Exercise name gets full width in dropdown */
+#active-card-container.is-dual-mode #exercise-selector .options-list li .item-main-line .selector-value-wrapper {
+  max-width: 100%;
+}
+
+/* Dropdown truncate-text */
+#active-card-container.is-dual-mode #exercise-selector .options-list li .truncate-text {
+  display: inline-block;
+  vertical-align: top;
+}
+
+/* Dropdown UI labels */
+#active-card-container.is-dual-mode #exercise-selector .options-list li .item-main-line .selector-ui-label {
+  display: none; /* Hide from exercise name line */
+}
+
+#active-card-container.is-dual-mode #exercise-selector .options-list li .item-sub-line .selector-ui-label {
+  display: inline;
+  color: var(--on-surface-medium);
+  font-weight: 500;
+  vertical-align: top;
+}
+
+/* === YOUTUBE OVERLAY === */
 #active-card-container.is-dual-mode .youtube-overlay-button {
   position: absolute;
-  bottom: 6px;
-  right: 6px;
+  bottom: var(--space-xxs);
+  right: var(--space-xxs);
 }
 
-/* === DUAL-MODE MUTED STATE === */
+/* === MUTED STATE === */
 #active-card-container.is-dual-mode .is-muted {
   pointer-events: none;
 }
 
 #active-card-container.is-dual-mode .is-muted > summary {
   background-color: var(--background-dark);
-  box-shadow: inset 0 0 0 2px var(--primary-blue-dark);
+  box-shadow: inset 0 0 0 var(--card-border-width) var(--primary-blue-dark);
 }
 
 #active-card-container.is-dual-mode .is-muted > summary .selector-content {
