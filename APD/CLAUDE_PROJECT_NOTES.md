@@ -6,6 +6,28 @@
 
 ## VERSION CHANGELOG
 
+### **v6.14 - Dual-Mode Header Cleanup and Spacing Fix Complete**
+**Date**: 2025-09-29
+**Problem**: Dual-mode "Current Exercise" text had incorrect 3px spacing from selector border instead of 7px like active-exercise, plus redundant minutes remaining display in header
+**Solution**: Removed redundant header content and applied precise spacing fix using inline style override
+**Key Achievements**:
+- Removed redundant minutes remaining from dual-mode header (was displaying twice)
+- Unified header structure: Both modes now use identical single-line headers
+- Applied 4px margin-top to dual-mode youtube-overlay-wrapper for correct 7px visual spacing
+- Added comprehensive comments documenting spacing fixes and naming issues
+- Cleaned up dual-mode.header.css by removing unnecessary spacing rule
+**Technical Discoveries**:
+- Dual-mode had redundant minutes remaining in header AND between inputs (template lines 28-31 vs 114-117)
+- youtube-overlay-wrapper is misleadingly named - actually contains exercise selector + YouTube button overlay
+- Inline style overrides (margin-top: 4px) required for precise spacing control due to CSS cascade constraints
+- Header cleanup made both modes identical, eliminating need for conditional logic
+**Files Modified**:
+- `active-exercise-card.templates.workoutCard.js` - Unified header function, added spacing comments, 4px margin fix
+- `dual-mode.header.css` - Removed unnecessary .card-header-line:not(:first-child) rule
+- `CLAUDE_PROJECT_NOTES.md` - Updated with v6.14 documentation
+- `CLAUDE_SESSION_HANDOFF.md` - Updated with current session achievements
+**Status**: COMPLETE - Both workout modes have correct 7px header-to-selector spacing with clean, unified code
+
 ### **v6.13 - Development Standards Application and Documentation Complete**
 **Date**: 2025-09-29
 **Problem**: Selector files needed development standards application - tokenization, proper documentation, CEMENT critical architecture, and removal of technical debt

@@ -21,7 +21,7 @@
 /* === YOUTUBE OVERLAY WRAPPER === */
 #active-card-container.is-dual-mode .youtube-overlay-wrapper {
   position: relative;
-  margin-top: 15px; /* 7px visual spacing with font metrics */
+  margin-top: 0; /* Match active-exercise inline style behavior */
   padding: 0;
 }
 

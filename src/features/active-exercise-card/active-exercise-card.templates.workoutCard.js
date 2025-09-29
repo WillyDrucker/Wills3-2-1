@@ -6,42 +6,25 @@ import { getActionAreaHTML } from "./active-exercise-card.templates.actionArea.j
 import { getExerciseSelectorHTML } from "./active-exercise-card.templates.exerciseSelector.js";
 import * as workoutMetricsService from "services/workoutMetricsService.js";
 
-function getCardHeaderHTML(isDualMode = false) {
-  const remaining = appState.session.workoutTimeRemaining;
-  const durationUnit = pluralize(remaining, "Minute", "Minutes");
-  const durationText = `${remaining} ${durationUnit} Remaining`;
-  const completionTime = calculateCompletionTime(remaining);
-
+function getCardHeaderHTML() {
   /*
     ALIGNMENT FIX (v5.2.1):
     Changed h2 to span for consistent element types.
     This ensures both elements on the same line have identical rendering behavior
     and eliminates baseline alignment issues between different element types.
+
+    CLEANUP (v6.14): Removed dual-mode condition - both modes now use single header line.
+    Minutes remaining moved to separate location in both modes for consistency.
+    This fixed spacing issues caused by redundant second header line in dual-mode.
   */
-  if (isDualMode) {
-    return `
-      <div id="active-card-header" class="card-header-container" data-action="scrollToActiveCard">
-          <div class="card-header-line">
-              <span class="card-header"><span class="truncate-text">${appState.session.activeCardHeaderMessage}</span></span>
-              <span class="card-header-clock"><span class="truncate-text">${appState.ui.currentTime}</span></span>
-          </div>
-          <div class="card-header-line">
-              <span class="card-header-dynamic-text"><span class="truncate-text ${appState.session.currentSessionColorClass}">${durationText}</span></span>
-              <span class="card-header-dynamic-text"><span class="truncate-text ${appState.session.currentSessionColorClass}">${completionTime}</span></span>
-          </div>
-      </div>
-    `;
-  } else {
-    // For normal workouts, only show the first line (minutes remaining moved to separate location)
-    return `
-      <div id="active-card-header" class="card-header-container" data-action="scrollToActiveCard">
-          <div class="card-header-line">
-              <span class="card-header"><span class="truncate-text">${appState.session.activeCardHeaderMessage}</span></span>
-              <span class="card-header-clock"><span class="truncate-text">${appState.ui.currentTime}</span></span>
-          </div>
-      </div>
-    `;
-  }
+  return `
+    <div id="active-card-header" class="card-header-container" data-action="scrollToActiveCard">
+        <div class="card-header-line">
+            <span class="card-header"><span class="truncate-text">${appState.session.activeCardHeaderMessage}</span></span>
+            <span class="card-header-clock"><span class="truncate-text">${appState.ui.currentTime}</span></span>
+        </div>
+    </div>
+  `;
 }
 
 export function getWorkoutCardHTML(logEntry) {
@@ -91,7 +74,9 @@ export function getWorkoutCardHTML(logEntry) {
 
           ${getCardHeaderHTML()}
 
-          <div class="youtube-overlay-wrapper" style="margin-top: 0px;">
+          <!-- SPACING FIX (v6.14): 4px margin achieves 7px visual gap from header to selector -->
+          <!-- NOTE: youtube-overlay-wrapper is misleadingly named - contains selector + YouTube button -->
+          <div class="youtube-overlay-wrapper" style="margin-top: 4px;">
             ${getExerciseSelectorHTML(logEntry, setsForThisExercise)}
             ${getYouTubeOverlayButtonHTML(logEntry)}
           </div>

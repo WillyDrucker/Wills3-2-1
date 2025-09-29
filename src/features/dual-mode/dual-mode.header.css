@@ -25,6 +25,7 @@
   min-width: 0;
 }
 
+
 /* === DUAL-MODE TYPOGRAPHY === */
 #active-card-container.is-dual-mode .card-header,
 #active-card-container.is-dual-mode .card-header-clock {
