@@ -2,19 +2,27 @@
    DUAL-MODE HEADER
 
    Purpose: Header layout for dual-mode workouts (superset/partner)
-   Maintains two-line header structure showing workout time remaining
+            Two-line header with exercise title, real-time clock, and
+            workout duration information with responsive truncation
 
-   Dependencies: Active-exercise card header foundations
+   CEMENT: Flexbox layout with truncation enables responsive text overflow
+           Text elements shrink with ellipsis, clocks remain stationary
+
+   Dependencies:
+     Parent: active-exercise-card.header.css (base header structure)
+     Global: _variables.css (spacing tokens, colors)
+
    Used by: Dual-mode active card during superset/partner workouts
    ========================================================================== */
 
-/* === DUAL-MODE HEADER CONTAINER === */
+/* === HEADER CONTAINER === */
 #active-card-container.is-dual-mode #active-card-header {
   margin: 0;
   padding: 0;
 }
 
-/* === DUAL-MODE HEADER LINES === */
+/* === HEADER LAYOUT === */
+/* CEMENT: Flex layout with min-width enables child truncation */
 #active-card-container.is-dual-mode .card-header-line {
   display: flex;
   align-items: baseline;
@@ -25,8 +33,7 @@
   min-width: 0;
 }
 
-
-/* === DUAL-MODE TYPOGRAPHY === */
+/* === TYPOGRAPHY === */
 #active-card-container.is-dual-mode .card-header,
 #active-card-container.is-dual-mode .card-header-clock {
   font-size: 1.25rem;
@@ -37,32 +44,58 @@
   text-shadow: 0 3px 8px rgba(0, 0, 0, 1.0);
 }
 
+/* === TRUNCATION SYSTEM === */
+/* CEMENT: Text elements truncate, clocks stay stationary */
+
+/* Header text - truncates with ellipsis */
 #active-card-container.is-dual-mode .card-header {
   color: var(--on-surface-light);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* === DUAL-MODE COLOR STATES === */
+/* Clock display - never truncates */
+#active-card-container.is-dual-mode .card-header-clock {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Dynamic text (duration, completion time) - truncates with ellipsis */
+#active-card-container.is-dual-mode .card-header-dynamic-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* === COLOR STATES === */
+/* Today's workout */
 #active-card-container.is-dual-mode .card-header-line .card-header-dynamic-text.text-plan,
 #active-card-container.is-dual-mode .card-header-line .card-header-clock.text-plan {
   color: var(--text-green-plan);
 }
 
+/* Different day workout */
 #active-card-container.is-dual-mode .card-header-line .card-header-dynamic-text.text-deviation,
 #active-card-container.is-dual-mode .card-header-line .card-header-clock.text-deviation {
   color: var(--text-olive-deviation);
 }
 
+/* Warning/maintenance state */
 #active-card-container.is-dual-mode .card-header-line .card-header-dynamic-text.text-warning,
 #active-card-container.is-dual-mode .card-header-line .card-header-clock.text-warning {
   color: var(--text-yellow-maintenance);
 }
 
-/* Clock color inheritance */
+/* Clock inherits parent color if not explicitly set */
 #active-card-container.is-dual-mode .card-header-clock {
   color: inherit;
 }
 
-/* === DUAL-MODE SPAN ALIGNMENT === */
+/* === SPAN ALIGNMENT === */
+/* Ensure inline spans maintain baseline alignment */
 #active-card-container.is-dual-mode .card-header span,
 #active-card-container.is-dual-mode .card-header-clock span,
 #active-card-container.is-dual-mode .card-header-dynamic-text span {

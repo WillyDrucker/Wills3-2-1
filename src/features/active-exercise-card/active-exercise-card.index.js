@@ -62,7 +62,7 @@ export function renderActiveCardHeader() {
     // Dual-mode: Update header with just title and clock
     headerContainer.innerHTML = `
       <div class="card-header-line">
-          <span class="card-header"><span class="truncate-text">${appState.session.activeCardHeaderMessage}</span></span>
+          <span class="card-header">${appState.session.activeCardHeaderMessage}</span>
           <span class="card-header-clock">${appState.ui.currentTime}</span>
       </div>
     `;
@@ -71,15 +71,15 @@ export function renderActiveCardHeader() {
     const minutesRemainingLine = document.querySelector('.minutes-remaining-line');
     if (minutesRemainingLine) {
       minutesRemainingLine.innerHTML = `
-        <span class="card-header-dynamic-text"><span class="truncate-text ${toneClass}">${durationText}</span></span>
-        <span class="card-header-dynamic-text"><span class="truncate-text ${toneClass}">${completionTime}</span></span>
+        <span class="card-header-dynamic-text ${toneClass}">${durationText}</span>
+        <span class="card-header-dynamic-text ${toneClass}">${completionTime}</span>
       `;
     }
   } else {
     // Normal workouts only update clock in header
     headerContainer.innerHTML = `
       <div class="card-header-line">
-          <span class="card-header"><span class="truncate-text">${appState.session.activeCardHeaderMessage}</span></span>
+          <span class="card-header">${appState.session.activeCardHeaderMessage}</span>
           <span class="card-header-clock">${appState.ui.currentTime}</span>
       </div>
     `;

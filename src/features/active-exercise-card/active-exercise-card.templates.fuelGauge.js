@@ -44,7 +44,7 @@ function getDualModeAnchorAreaHTML() {
 
   const overlayHTML = !isAnySideResting
     ? `<div class="action-prompt-overlay">
-        <p class="action-prompt-text is-glowing"><span class="truncate-text">${appState.session.activeCardMessage}</span></p>
+        <p class="action-prompt-text is-glowing">${appState.session.activeCardMessage}</p>
       </div>`
     : '';
 
@@ -107,7 +107,7 @@ function getNormalFuelGaugeHTML(includeActionPrompt = false) {
         <div class="fuel-gauge-with-overlay">
           ${fuelGaugeHTML}
           <div class="action-prompt-overlay">
-            <p class="action-prompt-text ${glowingClass}"><span class="truncate-text">${appState.session.activeCardMessage}</span></p>
+            <p class="action-prompt-text ${glowingClass}">${appState.session.activeCardMessage}</p>
           </div>
         </div>
       `;
@@ -117,7 +117,7 @@ function getNormalFuelGaugeHTML(includeActionPrompt = false) {
         <div class="fuel-gauge-with-overlay">
           ${fuelGaugeHTML}
           <div class="action-prompt-overlay">
-            <p class="recovering-text"><span class="truncate-text">Recovering</span></p>
+            <p class="recovering-text">Recovering</p>
           </div>
         </div>
       `;
@@ -182,7 +182,7 @@ function getDualModeFuelGaugeHTML(side) {
       <div class="fuel-gauge-with-overlay">
         ${fuelGaugeHTML}
         <div class="dual-mode-recovering-overlay">
-          <p class="dual-mode-recovering-text"><span class="truncate-text">Recovering</span></p>
+          <p class="dual-mode-recovering-text">Recovering</p>
         </div>
       </div>
     `;

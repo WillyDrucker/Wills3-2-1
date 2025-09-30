@@ -25,7 +25,7 @@ export function getActionAreaHTML() {
 
     const topContent = isAnySideResting
       ? `<div class="action-prompt-block is-resting is-dual-mode">
-          <p class="resting-label"><span class="truncate-text">Resting For:</span></p>
+          <p class="resting-label">Resting For:</p>
         </div>`
       : ``; // Action prompt now handled in fuel gauge overlay
 

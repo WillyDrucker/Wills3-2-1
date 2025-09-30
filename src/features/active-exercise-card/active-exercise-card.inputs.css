@@ -1,36 +1,60 @@
 /* ==========================================================================
    ACTIVE EXERCISE CARD - INPUTS
 
-   CEMENT: Precise 7px/7px spacing around input labels achieved
-   Critical solution: Override global line-height + precise grid gap
+   Purpose: Weight and reps input controls with responsive label truncation
+            Grid layout provides precise spacing for visual rhythm
+
+   CEMENT: Grid gap and line-height produce exact 7px visual spacing
+           Truncation system prevents label overflow on narrow viewports
+
+   Dependencies:
+     Global: _inputs.css (base input styles)
+             _variables.css (spacing tokens, control height)
+
+   Used by: Active card during exercise logging
    ========================================================================== */
 
+/* === INPUT GROUP === */
 #active-card-container .input-group {
-  margin-top: 6px;    /* CEMENT: Precise spacing - achieves 7px visual above W character */
+  margin-top: 6px;
   margin-bottom: 0;
   padding: 0;
 }
 
+/* === GRID LAYOUT === */
+/* CEMENT: Grid gap creates exact 7px visual spacing */
 #active-card-container .input-2col-grid {
-  /* CEMENT: CSS grid layout for precise control */
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4px 16px; /* CEMENT: 4px row gap achieves 7px visual below W character */
+  gap: 4px 16px;
   grid-template-areas:
     "weight-label reps-label"
     "weight-input reps-input";
 }
 
+/* === INPUT LABELS === */
+/* CEMENT: Truncation ensures labels remain visible at narrow widths */
 #active-card-container .input-label {
   font-weight: 500;
   color: var(--on-surface-medium);
   text-align: center;
-  line-height: 1; /* CEMENT: Critical override of global 1.2 line-height */
+  line-height: 1;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* === ESSENTIAL INPUT CONTROL STYLES === */
-/* Styles for number input controls */
+/* Prevent nested spans from breaking truncation */
+#active-card-container .input-label span {
+  display: inline;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: inherit;
+}
+
+/* === INPUT CONTROLS === */
 #active-card-container .number-input-container {
   display: flex;
   align-items: center;
@@ -39,7 +63,7 @@
   overflow: hidden;
   flex-grow: 1;
   border: 1px solid var(--on-surface-disabled);
-  margin: 0; /* No margins on input controls */
+  margin: 0;
 }
 
 #active-card-container .number-input-container button {
@@ -71,14 +95,12 @@
 }
 
 /* === SWAPPED GRID FOR NORMAL WORKOUTS === */
+/* CEMENT: Reps before weight matches normal workout flow */
 #active-card-container .input-2col-grid-swapped {
-  /* CEMENT: CSS grid layout for normal workouts with swapped columns */
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4px 16px; /* 4px row gap achieves 7px visual between labels and inputs */
+  gap: 4px 16px;
   grid-template-areas:
     "reps-label weight-label"
     "reps-input weight-input";
 }
-
-/* Fuel gauge spacing handled in fuel-gauge.css */

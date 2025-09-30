@@ -1,8 +1,17 @@
 /* ==========================================================================
-   ACTIVE EXERCISE CARD - HEADER (FLATTENED)
+   ACTIVE EXERCISE CARD - HEADER
 
-   SINGLE SOURCE OF TRUTH: All header spacing controlled here
-   Target: 16/7/7 spacing
+   Purpose: Two-line header with exercise title, real-time clock, and
+            workout duration information with responsive truncation
+
+   CEMENT: Flexbox layout with truncation enables responsive text overflow
+           Text elements shrink with ellipsis, clocks remain stationary
+
+   Dependencies:
+     Global: _card-headers.css (base typography)
+             _variables.css (spacing tokens, colors)
+
+   Used by: Active card in normal and dual-mode workouts
    ========================================================================== */
 
 /* === HEADER CONTAINER === */
@@ -11,7 +20,8 @@
   padding: 0;
 }
 
-/* === HEADER LINES === */
+/* === HEADER LAYOUT === */
+/* CEMENT: Flex layout with min-width enables child truncation */
 #active-card-container .card-header-line {
   display: flex;
   align-items: baseline;
@@ -22,16 +32,16 @@
   min-width: 0;
 }
 
-/* 🔒 CEMENT: Header lines maintain proper spacing */
+/* Spacing between header lines */
 #active-card-container .card-header-line:not(:first-child) {
-  margin-top: 7px;
+  margin-top: var(--space-s);
 }
 
 /* === TYPOGRAPHY === */
 #active-card-container .card-header,
 #active-card-container .card-header-clock,
 #active-card-container .card-header-dynamic-text {
-  font-size: 1.25rem; /* Direct value */
+  font-size: 1.25rem;
   font-weight: 600;
   line-height: 1;
   margin: 0;
@@ -39,32 +49,58 @@
   text-shadow: 0 3px 8px rgba(0, 0, 0, 1.0);
 }
 
+/* === TRUNCATION SYSTEM === */
+/* CEMENT: Text elements truncate, clocks stay stationary */
+
+/* Header text - truncates with ellipsis */
 #active-card-container .card-header {
   color: var(--on-surface-light);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Clock display - never truncates */
+#active-card-container .card-header-clock {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Dynamic text (duration, completion time) - truncates with ellipsis */
+#active-card-container .card-header-dynamic-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* === COLOR STATES === */
+/* Today's workout */
 #active-card-container .card-header-line.text-plan .card-header-dynamic-text,
 #active-card-container .card-header-line.text-plan .card-header-clock {
   color: var(--text-green-plan);
 }
 
+/* Different day workout */
 #active-card-container .card-header-line.text-deviation .card-header-dynamic-text,
 #active-card-container .card-header-line.text-deviation .card-header-clock {
   color: var(--text-olive-deviation);
 }
 
+/* Warning/maintenance state */
 #active-card-container .card-header-line.text-warning .card-header-dynamic-text,
 #active-card-container .card-header-line.text-warning .card-header-clock {
   color: var(--text-yellow-maintenance);
 }
 
-/* Fallback */
+/* Clock inherits parent color if not explicitly set */
 #active-card-container .card-header-clock {
   color: inherit;
 }
 
 /* === SPAN ALIGNMENT === */
+/* Ensure inline spans maintain baseline alignment */
 #active-card-container .card-header span,
 #active-card-container .card-header-clock span,
 #active-card-container .card-header-dynamic-text span {

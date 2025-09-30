@@ -1,8 +1,18 @@
 /* ==========================================================================
-   SELECTORS - GLOBAL DROPDOWN STYLES
-   
-   Base selector (details/summary) patterns
-   Standard height: 50px, Exception: active-card uses 100px
+   GLOBAL SELECTORS
+
+   Purpose: Base dropdown selector (details/summary) patterns with responsive
+            truncation for display values and menu items
+            Standard height: 50px (100px for active-card)
+
+   CEMENT: Truncation system allows color-matched ellipsis on child spans
+           Parent provides overflow context, colored spans handle ellipsis
+           Prevents white ellipsis on colored dropdown values
+
+   Dependencies:
+     Global: _variables.css (font-size-h2, control-height, border-radius, colors)
+
+   Used by: config-card, active-card, workout-log, my-data, dual-mode
    ========================================================================== */
 
 /* === BASE SELECTOR === */
@@ -10,7 +20,7 @@
   position: relative;
   font-size: var(--font-size-h2);
   font-weight: 600;
-  margin: 0 !important; /* Override browser defaults */
+  margin: 0;
 }
 
 .app-selector:last-child {
@@ -56,7 +66,7 @@
 }
 
 .options-list li {
-  padding: 8px 16px;  /* Reduce top/bottom padding from 10px to 8px for better fit */
+  padding: 8px 16px;
   cursor: pointer;
   border-radius: var(--border-radius);
   text-align: center;
@@ -107,6 +117,7 @@
 }
 
 /* === SELECTOR CONTENT === */
+/* CEMENT: Truncation for responsive display values */
 .selector-content {
   display: flex;
   flex-direction: column;
@@ -116,6 +127,23 @@
   overflow: hidden;
   font-weight: 500;
   color: var(--on-surface-medium);
+  min-width: 0;
+}
+
+/* Direct text children in selector-content */
+.selector-content > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Prevent nested spans from breaking truncation */
+.selector-content > span span {
+  display: inline;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: inherit;
 }
 
 .selector-content.multi-line {
@@ -125,37 +153,60 @@
 
 /* === DROPDOWN ITEM LAYOUT === */
 .options-list li .selector-content {
-  display: block; /* Simple block layout, not flex */
+  display: block;
   width: 100%;
 }
 
 /* === DROPDOWN TEXT LINES === */
+/* CEMENT: Parent provides overflow context, colored child spans handle ellipsis */
 .options-list li .item-main-line,
 .options-list li .item-sub-line {
   display: block;
   text-align: center;
   width: 100%;
-  line-height: 1.2;  /* Prevent text clipping */
+  line-height: 1.2;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .options-list li .item-main-line {
-  margin-bottom: 6px; /* Slightly reduce from 8px to fit better in 46px space */
+  margin-bottom: 6px;
 }
 
 .options-list li .item-sub-line {
   margin-top: 0;
 }
 
+/* Truncating spans with color-matched ellipsis */
+.options-list li .item-main-line > span.truncate-text,
+.options-list li .item-sub-line > span.truncate-text {
+  display: inline-block;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+/* Non-truncating spans stay inline */
+.options-list li .item-main-line > span:not(.truncate-text),
+.options-list li .item-sub-line > span:not(.truncate-text) {
+  display: inline;
+  white-space: nowrap;
+}
+
 /* === DROPDOWN FLEX OVERRIDE === */
-/* Override global flex display for dropdown items to ensure proper stacking */
+/* Override global flex display for proper stacking */
 .options-list li .flex-line-container {
-  display: block;  /* Override global flex display */
-  text-align: center;  /* Maintain centering with text-align instead */
+  display: block;
+  text-align: center;
 }
 
 /* === DROPDOWN HYPHEN SPACING === */
 .options-list li .flex-separator {
-  margin: 0 2px; /* Reduce from 4px to 2px for tighter spacing */
+  margin: 0 2px;
 }
 
 /* === ITEM LINES (GLOBAL) === */

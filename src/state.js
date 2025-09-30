@@ -1,3 +1,5 @@
+import { formatTime12Hour } from "utils";
+
 export function getInitialAppState() {
   return {
     // Static data and overall app status
@@ -20,10 +22,10 @@ export function getInitialAppState() {
         supersetRight: { index: null, weight: 0, reps: 10 },
       },
       activeCardMessage: "Begin Exercise - Log Results",
-      activeCardHeaderMessage: "Current Exercise", // CEMENTED FIX: New state property for the header.
+      activeCardHeaderMessage: "Current Exercise",
       currentExerciseColorClass: "text-plan",
-      currentSessionColorClass: "text-plan", /* 🔒 CEMENT: Controls header colors (Minutes Remaining, clock) */
-      currentTimerColorClass: "text-plan", /* 🔒 CEMENT: Controls timer colors, separate from headers */
+      currentSessionColorClass: "text-plan", // CEMENT: Controls header colors (Minutes Remaining, clock)
+      currentTimerColorClass: "text-plan", // CEMENT: Controls timer colors, separate from headers
       workoutTimeRemaining: 0,
       playCompletionAnimation: false,
     },
@@ -93,7 +95,7 @@ export function getInitialAppState() {
 
     // State controlling the UI that isn't part of a session
     ui: {
-      currentTime: "0:00 AM", // Real-time clock display
+      currentTime: formatTime12Hour(new Date()), // Real-time clock display - initialized immediately
       currentPage: "home", // Can be 'home', 'workout', or 'myData'
       isFullscreen: false,
       activeModal: null, // CEMENTED: 'superset', 'partner', 'reset', etc.

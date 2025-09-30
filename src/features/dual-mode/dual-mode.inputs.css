@@ -1,40 +1,62 @@
 /* ==========================================================================
    DUAL-MODE INPUTS
 
-   Purpose: Input controls layout for dual-mode workouts
-   Maintains original weight/reps order for dual-mode consistency
+   Purpose: Weight and reps input controls with responsive label truncation
+            Maintains reps-first order for dual-mode workout consistency
+            Grid layout provides precise spacing for visual rhythm
 
-   Dependencies: Active-exercise card input foundations
+   CEMENT: Grid gap and line-height produce exact 7px visual spacing
+           Truncation system prevents label overflow on narrow viewports
+
+   Dependencies:
+     Parent: active-exercise-card.inputs.css (base input structure)
+     Global: _inputs.css (base input styles)
+             _variables.css (spacing tokens, control height)
+
    Used by: Dual-mode active card during superset/partner workouts
    ========================================================================== */
 
-/* === DUAL-MODE INPUT GROUP === */
+/* === INPUT GROUP === */
 #active-card-container.is-dual-mode .input-group {
-  margin-top: 6px;    /* Matches active-exercise card spacing */
+  margin-top: 6px;
   margin-bottom: 0;
   padding: 0;
 }
 
-/* === DUAL-MODE GRID LAYOUT === */
+/* === GRID LAYOUT === */
+/* CEMENT: Grid gap creates exact 7px visual spacing */
 #active-card-container.is-dual-mode .input-2col-grid-swapped {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4px 16px; /* 4px row gap for 7px visual spacing */
+  gap: 4px 16px;
   grid-template-areas:
     "reps-label weight-label"
     "reps-input weight-input";
 }
 
-/* === DUAL-MODE INPUT LABELS === */
+/* === INPUT LABELS === */
+/* CEMENT: Truncation ensures labels remain visible at narrow widths */
 #active-card-container.is-dual-mode .input-label {
   font-weight: 500;
   color: var(--on-surface-medium);
   text-align: center;
-  line-height: 1; /* Override global line-height */
+  line-height: 1;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* === DUAL-MODE INPUT CONTROLS === */
+/* Prevent nested spans from breaking truncation */
+#active-card-container.is-dual-mode .input-label span {
+  display: inline;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: inherit;
+}
+
+/* === INPUT CONTROLS === */
 #active-card-container.is-dual-mode .number-input-container {
   display: flex;
   align-items: center;

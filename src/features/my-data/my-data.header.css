@@ -1,8 +1,16 @@
 /* ==========================================================================
    MY DATA - HEADER WITH WEEK NAVIGATION
-   
-   History card header with week range selector and navigation controls
-   Uses semantic class selectors for maintainable cascade
+
+   Purpose: History card header with week range selector and navigation controls
+            Responsive truncation for week range display at narrow viewports
+
+   CEMENT: Truncation enables responsive week range text overflow
+           Week title uses position adjustment to compensate for font bearing
+
+   Dependencies:
+     Global: _variables.css (font-size-h2, space-s, colors, history-header-left)
+
+   Used by: My Data header
    ========================================================================== */
 
 /* === HISTORY WEEK HEADER === */
@@ -11,7 +19,7 @@
   align-items: center;
   justify-content: space-between;
   height: var(--font-size-h2);
-  margin-bottom: var(--space-s); /* 7px spacing to selector below */
+  margin-bottom: var(--space-s);
 }
 
 /* === WEEK TITLE === */
@@ -23,10 +31,11 @@
   margin: 0;
   padding: 0;
   position: relative;
-  left: var(--history-header-left); /* Compensates for font bearing */
+  left: var(--history-header-left);
 }
 
 /* === WEEK RANGE TEXT === */
+/* CEMENT: Truncation for responsive week range display */
 .week-range-text {
   font-size: var(--font-size-h2);
   font-weight: 600;
@@ -36,6 +45,11 @@
   padding: 0;
   display: inline-block;
   vertical-align: middle;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* === WEEK NAVIGATOR === */

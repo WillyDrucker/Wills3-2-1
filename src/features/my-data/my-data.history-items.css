@@ -1,27 +1,59 @@
 /* ==========================================================================
    MY DATA - HISTORY ITEMS
-   
-   Exercise blocks and set rows for workout history
-   Structural styles only - spacing handled in main file due to cascade
+
+   Purpose: Exercise blocks and set rows for workout history display
+            Shows exercise names and set details with responsive truncation
+            Structural styles only - spacing controlled in main file
+
+   CEMENT: Left side (set info) truncates, right side (results) stays stationary
+           Flex layout with truncation enables responsive text overflow
+
+   Dependencies:
+     Parent: my-data.style.css (main spacing and layout)
+     Global: _variables.css (spacing tokens, colors)
+
+   Used by: My Data history view
    ========================================================================== */
 
 /* === EXERCISE NAMES === */
+/* CEMENT: Truncation for responsive exercise name display */
 .history-exercise-name {
   font-weight: 600;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* === SET ROWS === */
 .history-set-row {
   display: flex;
   align-items: baseline;
+  min-width: 0;
 }
 
 /* === SET ROW ALIGNMENT === */
+/* CEMENT: Left side truncates, right side stays stationary */
 .history-set-left {
   margin-left: 100px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
 }
 
 .history-set-right {
   margin-left: auto;
   text-align: right;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Prevent nested spans from breaking truncation */
+.history-set-left span {
+  display: inline;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: inherit;
 }

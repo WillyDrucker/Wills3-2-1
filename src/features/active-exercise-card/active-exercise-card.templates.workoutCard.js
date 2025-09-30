@@ -20,8 +20,8 @@ function getCardHeaderHTML() {
   return `
     <div id="active-card-header" class="card-header-container" data-action="scrollToActiveCard">
         <div class="card-header-line">
-            <span class="card-header"><span class="truncate-text">${appState.session.activeCardHeaderMessage}</span></span>
-            <span class="card-header-clock"><span class="truncate-text">${appState.ui.currentTime}</span></span>
+            <span class="card-header">${appState.session.activeCardHeaderMessage}</span>
+            <span class="card-header-clock">${appState.ui.currentTime}</span>
         </div>
     </div>
   `;
@@ -87,8 +87,8 @@ export function getWorkoutCardHTML(logEntry) {
 
           <div class="input-group" style="margin-top: 15px;">
             <div class="input-2col-grid-swapped">
-              <div class="input-label truncate-text" style="grid-area: reps-label">${repsLabel}</div>
-              <div class="input-label truncate-text" style="grid-area: weight-label">${weightLabel}</div>
+              <div class="input-label" style="grid-area: reps-label">${repsLabel}</div>
+              <div class="input-label" style="grid-area: weight-label">${weightLabel}</div>
               <div style="grid-area: reps-input">${createNumberInputHTML("reps", logEntry.reps)}</div>
               <div style="grid-area: weight-input">${createNumberInputHTML("weight", logEntry.weight)}</div>
             </div>
@@ -97,8 +97,8 @@ export function getWorkoutCardHTML(logEntry) {
           ${isDualModeResting ?
             `` :
             `<div class="minutes-remaining-line dual-mode-inactive-slack" style="margin-top: var(--upper-slack-spacing);">
-              <span class="card-header-dynamic-text"><span class="truncate-text ${appState.session.currentSessionColorClass}">${durationText}</span></span>
-              <span class="card-header-dynamic-text"><span class="truncate-text ${appState.session.currentSessionColorClass}">${completionTime}</span></span>
+              <span class="card-header-dynamic-text ${appState.session.currentSessionColorClass}">${durationText}</span>
+              <span class="card-header-dynamic-text ${appState.session.currentSessionColorClass}">${completionTime}</span>
             </div>`
           }
 
@@ -130,8 +130,8 @@ export function getWorkoutCardHTML(logEntry) {
 
           <div class="input-group" style="margin-top: 15px;">
             <div class="input-2col-grid-swapped">
-              <div class="input-label truncate-text" style="grid-area: reps-label">${repsLabel}</div>
-              <div class="input-label truncate-text" style="grid-area: weight-label">${weightLabel}</div>
+              <div class="input-label" style="grid-area: reps-label">${repsLabel}</div>
+              <div class="input-label" style="grid-area: weight-label">${weightLabel}</div>
               <div style="grid-area: reps-input">${createNumberInputHTML("reps", logEntry.reps)}</div>
               <div style="grid-area: weight-input">${createNumberInputHTML("weight", logEntry.weight)}</div>
             </div>
@@ -142,8 +142,8 @@ export function getWorkoutCardHTML(logEntry) {
               <p class="resting-label-text">Resting For:</p>
             </div>` :
             `<div class="minutes-remaining-line" style="margin-top: var(--upper-slack-spacing);">
-              <span class="card-header-dynamic-text"><span class="truncate-text ${appState.session.currentSessionColorClass}">${durationText}</span></span>
-              <span class="card-header-dynamic-text"><span class="truncate-text ${appState.session.currentSessionColorClass}">${completionTime}</span></span>
+              <span class="card-header-dynamic-text ${appState.session.currentSessionColorClass}">${durationText}</span>
+              <span class="card-header-dynamic-text ${appState.session.currentSessionColorClass}">${completionTime}</span>
             </div>`
           }
 

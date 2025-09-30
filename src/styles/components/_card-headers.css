@@ -1,17 +1,23 @@
 /* ==========================================================================
-   GLOBAL CARD HEADERS - UNIFIED SYSTEM
-   
-   CEMENT: Universal header pattern achieving 16px/7px rhythm
-   - All card headers use this base pattern
-   - 11px top padding + font metrics = 16px visual to header
-   - 4px margin-bottom + descender = 7px visual to content
-   - Component-specific overrides go in local files
-   
+   GLOBAL CARD HEADERS
+
+   Purpose: Universal header system for all cards with responsive truncation
+            Provides base styles for single and multi-line headers with
+            consistent typography and spacing
+
+   CEMENT: Universal header pattern achieving 16px/7px visual rhythm
+           All card headers use this base pattern
+           Component-specific spacing overrides go in local files
+           Truncation enables responsive text overflow at narrow viewports
+
+   Dependencies:
+     Global: _variables.css (font-size-h2, header-margin-bottom, colors)
+
    Used by: config-card, active-card, workout-log, my-data, home-page, results-card
    ========================================================================== */
 
 /* === BASE CARD HEADER === */
-/* Universal header styling for ALL cards in the app */
+/* CEMENT: Universal header styling for all cards with truncation support */
 .card-header,
 .card .card-header,
 #workout-log-card .card-header,
@@ -25,13 +31,16 @@
   color: var(--on-surface-light);
   margin: 0;
   padding: 0;
-  margin-bottom: var(--header-margin-bottom); /* 4px + descender = 7px visual */
+  margin-bottom: var(--header-margin-bottom);
   text-align: left;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* === DYNAMIC HEADER TEXT === */
-/* For headers that update with state changes (active card timer, etc) */
+/* For headers that update with state changes */
 .card-header-dynamic-text {
   font-size: var(--font-size-h2);
   font-weight: 600;
@@ -43,7 +52,7 @@
 }
 
 /* === HEADER WITH CLOCK === */
-/* Active card specific - clock on right side */
+/* Real-time clock display */
 .card-header-clock {
   font-size: var(--font-size-h2);
   font-weight: 600;
@@ -55,26 +64,27 @@
 }
 
 /* === MULTI-LINE HEADER CONTAINER === */
-/* For cards with two-line headers (active card) */
+/* For cards with two-line headers */
 .card-header-container {
   display: flex;
   flex-direction: column;
-  gap: 0; /* Spacing controlled via margins */
+  gap: 0;
   margin: 0;
   padding: 0;
 }
-
-/* .card-header-line rules removed - component specific */
 
 /* === SPECIAL CASES === */
 
 /* History card title positioning adjustment */
 #workout-history-card .card-title {
   position: relative;
-  left: var(--history-header-left); /* Font bearing adjustment */
+  left: var(--history-header-left);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* Modal headers need centering */
+/* Modal headers centered */
 .superset-modal-content .card-header,
 .modal-content .card-header {
   text-align: center;
@@ -83,11 +93,11 @@
 /* Modal headers after other elements */
 .superset-modal-content .card-header.with-header,
 .modal-content .card-header.with-header {
-  margin-top: var(--modal-section-spacing); /* 13px = 16px visual */
+  margin-top: var(--modal-section-spacing);
 }
 
-/* === COLOR PRESERVATION === */
-/* Dynamic header color states - removed !important flags */
+/* === COLOR STATES === */
+/* Today's workout */
 .card-header-line.text-plan .card-header-dynamic-text,
 .card-header-line.text-plan .card-header-clock,
 .text-plan .card-header-dynamic-text,
@@ -95,6 +105,7 @@
   color: var(--text-green-plan);
 }
 
+/* Different day workout */
 .card-header-line.text-deviation .card-header-dynamic-text,
 .card-header-line.text-deviation .card-header-clock,
 .text-deviation .card-header-dynamic-text,
@@ -102,6 +113,7 @@
   color: var(--text-olive-deviation);
 }
 
+/* Warning/maintenance state */
 .card-header-line.text-warning .card-header-dynamic-text,
 .card-header-line.text-warning .card-header-clock,
 .text-warning .card-header-dynamic-text,

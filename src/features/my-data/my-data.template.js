@@ -9,8 +9,7 @@ function getHistorySelectorHTML() {
 
   const summaryHtml = `<div class="selector-content history-selector-content">
     <div class="item-main-line truncate-text">
-      <span class="text-on-surface-medium">My </span>
-      <span class="data-highlight text-plan">${selectedTab}</span>
+      <span class="text-on-surface-medium">My&nbsp;</span><span class="data-highlight text-plan">${selectedTab}</span>
     </div>
   </div>`;
 
@@ -21,8 +20,7 @@ function getHistorySelectorHTML() {
       (opt) => `<li data-history-tab="${opt}" class="history-selector-option">
         <div class="selector-content">
           <div class="item-main-line truncate-text">
-            <span class="text-on-surface-medium">My </span>
-            <span class="data-highlight text-plan">${opt}</span>
+            <span class="text-on-surface-medium">My&nbsp;</span><span class="data-highlight text-plan">${opt}</span>
           </div>
         </div>
       </li>`
@@ -43,9 +41,9 @@ export function getMyDataPageTemplate() {
   if (selectedTab === "Workouts") {
     logContentHtml = getWorkoutCalendarHTML();
   } else if (selectedTab === "Conditioning") {
-    logContentHtml = `<div class="card my-data-card conditioning-card"><div class="card-content-container"><div class="card-header conditioning-header"><span class="truncate-text">Conditioning Logs</span></div><p class="no-history-text conditioning-empty-text">Your conditioning logs will appear here.</p></div></div>`;
+    logContentHtml = `<div class="card my-data-card conditioning-card"><div class="card-content-container"><div class="card-header conditioning-header">Conditioning Logs</div><p class="no-history-text conditioning-empty-text">Your conditioning logs will appear here.</p></div></div>`;
   } else if (selectedTab === "Stretching") {
-    logContentHtml = `<div class="card my-data-card stretching-card"><div class="card-content-container"><div class="card-header stretching-header"><span class="truncate-text">Stretching Logs</span></div><p class="no-history-text stretching-empty-text">Your stretching logs will appear here.</p></div></div>`;
+    logContentHtml = `<div class="card my-data-card stretching-card"><div class="card-content-container"><div class="card-header stretching-header">Stretching Logs</div><p class="no-history-text stretching-empty-text">Your stretching logs will appear here.</p></div></div>`;
   }
 
   const weekRange = getWeekRange(weekOffset);

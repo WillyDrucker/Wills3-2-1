@@ -1,22 +1,54 @@
 /* ==========================================================================
    MY DATA - CALENDAR VIEW
-   
-   Seven-day calendar layout with workout sessions
-   Day headers and placeholder text
+
+   Purpose: Seven-day calendar layout with workout sessions
+            Day headers show bodypart/date with responsive truncation
+            Placeholder text for rest days
+
+   CEMENT: Day/bodypart truncates, date stays stationary
+           Flex layout with truncation enables responsive text overflow
+
+   Dependencies:
+     Parent: my-data.style.css (main spacing and layout)
+     Global: _variables.css (spacing tokens, colors)
+
+   Used by: My Data calendar view
    ========================================================================== */
 
 /* === DAY HEADERS === */
+/* CEMENT: Day/bodypart truncates, date stays stationary */
 .history-day-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-weight: 600;
-  /* Spacing handled in main file due to reset cascade */
+  min-width: 0;
+  gap: var(--space-m);
+}
+
+.history-day-header .day-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.history-day-header .date-text {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Prevent nested spans from breaking truncation */
+.history-day-header .day-name span {
+  display: inline;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: inherit;
 }
 
 /* === PLACEHOLDER TEXT === */
 .history-placeholder-text {
   color: var(--on-surface-medium);
   font-style: italic;
-  /* Spacing handled in main file due to reset cascade */
 }

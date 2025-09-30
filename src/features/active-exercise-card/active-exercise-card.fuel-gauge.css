@@ -1,10 +1,21 @@
 /* ==========================================================================
-   ACTIVE EXERCISE CARD - FUEL GAUGE (RESTORED TO WORKING v5.3.0)
+   ACTIVE EXERCISE CARD - FUEL GAUGE
 
-   Target: 16px spacing from inputs to fuel gauge
-   Solution: Simple margin approach that worked originally
+   Purpose: Visual 5-segment timer display with action prompt overlays
+            Shows rest/recovery progress with color-coded animations
+
+   CEMENT: Overlay positioning uses absolute centering for precise alignment
+           Truncation ensures prompts remain visible at narrow viewports
+
+   Dependencies:
+     Global: _variables.css (spacing, control height, colors)
+             _animations.css (recovering-progression animation)
+     Local: fuel gauge segment styles (separate component)
+
+   Used by: Active card during rest periods and exercise transitions
    ========================================================================== */
 
+/* === FUEL GAUGE POSITIONING === */
 #active-card-container .input-group + #card-anchor-area {
   position: relative;
   z-index: 1;
@@ -13,19 +24,23 @@
   padding: 0;
 }
 
+/* === FUEL GAUGE CONTAINERS === */
+/* Single gauge for normal workouts */
 .fuel-gauge-container {
   display: flex;
   gap: var(--fuel-gauge-gap);
   height: var(--control-height);
 }
 
+/* Dual gauge for superset/partner workouts */
 .dual-fuel-gauge-container {
   display: flex;
   gap: var(--space-m);
   height: var(--control-height);
 }
 
-/* === NORMAL WORKOUT FUEL GAUGE WITH OVERLAY === */
+/* === OVERLAY SYSTEM === */
+/* CEMENT: Overlay container for action prompts during rest periods */
 .fuel-gauge-with-overlay {
   position: relative;
   width: 100%;
@@ -35,6 +50,7 @@
   width: 100%;
 }
 
+/* Centered overlay for action prompts */
 .action-prompt-overlay {
   position: absolute;
   top: 50%;
@@ -46,36 +62,49 @@
   z-index: 10;
 }
 
+/* === ACTION PROMPT TEXT === */
+/* CEMENT: Truncation prevents overflow while maintaining readability */
 .action-prompt-overlay .action-prompt-text {
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--on-surface-light);
   margin: 0;
-  padding: 0;
+  padding: 0 var(--card-padding-sides);
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
   letter-spacing: 0.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .action-prompt-overlay .action-prompt-text.is-glowing {
   animation: textGlow 2s ease-in-out infinite;
 }
 
+/* === RESTING LABELS === */
+/* Overlay label for resting state */
 .resting-label-overlay {
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--on-surface-light);
   margin: 0;
-  padding: 0;
+  padding: 0 var(--card-padding-sides);
   letter-spacing: 0.5px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* === MINUTES REMAINING LINE === */
+/* CEMENT: Left side (text) truncates, right side (clock) stays stationary */
 .minutes-remaining-line {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  gap: var(--space-m);
+  min-width: 0;
 }
 
 .minutes-remaining-line .card-header-dynamic-text {
@@ -83,6 +112,15 @@
   font-weight: 500;
   line-height: 1.2;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Clock (right side) never truncates */
+.minutes-remaining-line .card-header-dynamic-text:last-child {
+  flex-shrink: 0;
 }
 
 /* === RESTING FOR LABEL === */
@@ -98,18 +136,22 @@
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--on-surface-medium);
-  margin: 0 !important;
-  padding: 0 !important;
+  margin: 0;
+  padding: 0 var(--card-padding-sides);
   text-align: center;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .resting-for-label p {
-  margin: 0 !important;
-  padding: 0 !important;
+  margin: 0;
+  padding: 0;
 }
 
 /* === RECOVERING TEXT === */
+/* CEMENT: Animated color progression from dark blue to white over 60 seconds */
 .recovering-text {
   font-size: 1.25rem;
   font-weight: 600;
@@ -122,19 +164,15 @@
   animation-fill-mode: forwards;
 }
 
-/* 🔒 CEMENT: Simplified recovering text animation - smooth progression
-   Linear transition from very dark blue to standard blue, then build to white */
+/* Smooth color progression for recovery timer */
 @keyframes recovering-progression {
   0% {
-    /* 0s - Start: Much darker blue (3% lightness) */
     color: #000510;
   }
   91.67% {
-    /* 55s - Standard blue reached */
     color: var(--primary-blue);
   }
   100% {
-    /* 60s - Build up to bright white */
     color: #ffffff;
   }
 }

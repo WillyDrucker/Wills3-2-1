@@ -1,8 +1,17 @@
 /* ==========================================================================
-   INPUTS - GLOBAL NUMBER INPUT STYLES
-   
-   Shared number input controls with increment/decrement buttons
-   Two-column grid layout for weight/reps
+   GLOBAL INPUTS
+
+   Purpose: Shared number input controls with increment/decrement buttons
+            Two-column grid layout for weight/reps with responsive labels
+            Used across active card, workout log, and dual-mode workouts
+
+   CEMENT: Truncation system ensures labels remain visible at narrow widths
+           Nested span handling prevents color-coded values from breaking layout
+
+   Dependencies:
+     Global: _variables.css (control-height, border-radius, spacing, colors)
+
+   Used by: active-exercise-card, workout-log, dual-mode, config-card
    ========================================================================== */
 
 /* === NUMBER INPUT CONTAINER === */
@@ -86,6 +95,7 @@ input::-webkit-inner-spin-button {
 }
 
 /* === INPUT LABELS === */
+/* CEMENT: Truncation ensures labels remain visible at narrow widths */
 .input-label {
   flex: 1;
   font-size: var(--font-size-body-m);
@@ -95,6 +105,18 @@ input::-webkit-inner-spin-button {
   margin: 0;
   line-height: var(--lh-normal);
   padding: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Prevent nested spans from breaking truncation */
+.input-label span {
+  display: inline;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: inherit;
 }
 
 /* Labels container */

@@ -6,6 +6,42 @@
 
 ## VERSION CHANGELOG
 
+### **v6.15 - CLAUDE Standards Application Complete**
+**Date**: 2025-09-29
+**Problem**: All truncation-modified files needed CLAUDE coding standards application - comprehensive headers, CEMENT documentation, removal of version references and !important flags
+**Solution**: Systematic application of all 5 CLAUDE development standards across 14 files
+**Key Achievements**:
+- Applied comprehensive file headers with Purpose, CEMENT notes, Dependencies, Used by sections
+- Removed all version references and historical comments (FLATTENED, RESTORED TO WORKING, CEMENTED FIX, etc.)
+- Eliminated !important flags from _card-headers.css and _selectors.css
+- Standardized CEMENT comment format (removed emoji 🔒, using `// CEMENT:` or `/* CEMENT: */`)
+- Enhanced all file headers with clear purpose statements and dependency documentation
+- Organized all files with clear section headers (`/* === SECTION === */`)
+- Added concise, forward-looking inline comments throughout
+- Documented all critical truncation patterns with CEMENT notes
+**Technical Documentation**:
+- 🔒 CEMENT: Truncation pattern - Text elements truncate, stationary elements (clocks, dates, results) use flex-shrink: 0
+- 🔒 CEMENT: Ellipsis color inheritance - Apply text-overflow to colored element, not wrapper
+- 🔒 CEMENT: Nested span handling - Child spans use display: inline to prevent breaking parent truncation
+- 🔒 CEMENT: Selector dropdown color matching - Parent provides overflow context, colored child spans handle ellipsis
+**Files Modified** (14 total):
+- **Active Exercise Card**: header.css, fuel-gauge.css, inputs.css, animations.css
+- **Dual-Mode**: header.css, fuel-gauge.css, inputs.css
+- **Global Styles**: _card-headers.css, _inputs.css, _selectors.css
+- **My-Data**: history-items.css, calendar.css, header.css
+- **State**: state.js (CEMENT comment format standardization)
+**Standards Applied**:
+✅ No !important flags
+✅ Token-based CSS (var(--space-m), var(--control-height), etc.)
+✅ Semantic naming
+✅ No version numbers or historical references
+✅ Comprehensive file headers with Purpose/CEMENT/Dependencies/Used by
+✅ Clear section headers
+✅ CEMENT critical patterns
+✅ Concise, forward-looking comments
+✅ Consistent CEMENT format without emoji
+**Status**: COMPLETE - All truncation-related files follow CLAUDE coding standards with comprehensive documentation
+
 ### **v6.14 - Dual-Mode Header Cleanup and Spacing Fix Complete**
 **Date**: 2025-09-29
 **Problem**: Dual-mode "Current Exercise" text had incorrect 3px spacing from selector border instead of 7px like active-exercise, plus redundant minutes remaining display in header

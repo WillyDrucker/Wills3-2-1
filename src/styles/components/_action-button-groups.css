@@ -112,6 +112,7 @@
 }
 
 /* Glowing prompt animation */
-body.start-glow-animations .action-prompt-text.is-glowing span {
+/* 🔒 CEMENT: Animation applied directly to text element so ellipsis inherits animated color */
+body.start-glow-animations .action-prompt-text.is-glowing {
   animation: text-glow 4s ease-in-out infinite;
 }
