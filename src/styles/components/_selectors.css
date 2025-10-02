@@ -82,10 +82,6 @@
   margin-bottom: 4px;
 }
 
-.options-list li:hover {
-  background-color: var(--surface-dark);
-}
-
 /* === NOTE ITEMS === */
 .options-list li.is-note {
   border: none;
@@ -97,10 +93,6 @@
   height: auto;
   font-weight: 500;
   font-size: 1rem;
-}
-
-.options-list li.is-note:hover {
-  background-color: transparent;
 }
 
 /* === COLORED BORDERS === */

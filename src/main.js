@@ -16,7 +16,7 @@ import { renderVideoPlayer } from "features/video-player/video-player.index.js";
 import { renderSupersetModal } from "features/superset-modal/superset-modal.index.js";
 import { renderPartnerModal } from "features/partner-modal/partner-modal.index.js";
 import { renderWorkoutLog } from "features/workout-log/workout-log.index.js";
-import { renderConfigCard } from "features/config-card/config-card.index.js";
+import { renderConfigHeader, renderSessionDisplay } from "features/config-header/config-header.index.js";
 import {
   renderActiveExerciseCard,
   initializeActiveCardEventListeners,
@@ -37,6 +37,45 @@ function updateActiveWorkoutAndLog() {
   }
   workoutService.recalculateCurrentStateAfterLogChange();
   renderAll();
+  persistenceService.saveState();
+}
+
+// 🔒 CEMENT: Preserve logged sets when changing session type
+// Ultra-targeted update to preserve animations
+function updateActiveWorkoutPreservingLogs() {
+  const oldLogLength = appState.session.workoutLog?.length || 0;
+
+  if (appState.partner.isActive) {
+    // Partner mode: regenerate (session changes not supported in partner mode)
+    appState.session.workoutLog =
+      workoutFactoryService.generatePartnerWorkoutLog();
+  } else if (appState.superset.isActive) {
+    // Superset mode: regenerate (session changes not supported in superset mode)
+    appState.session.workoutLog =
+      workoutFactoryService.generateSupersetWorkoutLog();
+  } else {
+    // Normal mode: preserve logged sets
+    appState.session.workoutLog = workoutFactoryService.updateWorkoutLogForSessionChange(
+      appState.session.workoutLog
+    );
+  }
+  workoutService.recalculateCurrentStateAfterLogChange();
+  workoutService.updateWorkoutTimeRemaining(); // Update time based on new set count
+
+  const newLogLength = appState.session.workoutLog?.length || 0;
+
+  // 🔒 CEMENT: Minimal render to preserve animations and config-header state
+  // Always use targeted updates to preserve config-header expanded state
+  if (oldLogLength !== newLogLength) {
+    // Workout structure changed - need to update active card and log
+    renderActiveExerciseCard();
+    renderWorkoutLog();
+  }
+
+  // Always update session display (works whether expanded or collapsed)
+  // This updates both the icon bar button and expanded session text
+  renderSessionDisplay();
+
   persistenceService.saveState();
 }
 
@@ -61,7 +100,7 @@ function renderAll() {
     if (appState.session.isWorkoutComplete) {
       renderWorkoutResultsCard();
     } else {
-      renderConfigCard();
+      renderConfigHeader();
       renderActiveExerciseCard();
     }
     renderWorkoutLog();
@@ -71,10 +110,6 @@ function renderAll() {
   renderSupersetModal();
   renderPartnerModal();
   renderVideoPlayer();
-  if (appState.ui.scrollAfterRender.target === "active-card") {
-    scrollService.scrollToActiveCard();
-    appState.ui.scrollAfterRender.target = null;
-  }
   if (appState.session.playCompletionAnimation) {
     appState.session.playCompletionAnimation = false;
   }
@@ -96,9 +131,10 @@ document.addEventListener("DOMContentLoaded", () => {
   appInitializerService.initialize({
     renderAll,
     updateActiveWorkoutAndLog,
+    updateActiveWorkoutPreservingLogs,
     renderError,
     initializeActiveCardEventListeners,
-    renderConfigCard,
+    renderConfigHeader,
     renderActiveExerciseCard,
   });
 });

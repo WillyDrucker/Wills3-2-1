@@ -48,42 +48,14 @@ export function renderActiveCardHeader() {
   const headerContainer = document.getElementById("active-card-header");
   if (!headerContainer) return;
 
-  const isDualMode = appState.superset.isActive || appState.partner.isActive;
-  const remaining = appState.session.workoutTimeRemaining;
-  const durationUnit = pluralize(remaining, "Minute", "Minutes");
-  const durationText = `${remaining} ${durationUnit} Remaining`;
-  const completionTime = calculateCompletionTime(remaining);
-
-  // 🔒 CEMENT: Only render minutes remaining for dual-mode
-  // Normal workouts show minutes in separate location
-  const toneClass = appState.session.currentSessionColorClass || "";
-
-  if (isDualMode) {
-    // Dual-mode: Update header with just title and clock
-    headerContainer.innerHTML = `
-      <div class="card-header-line">
-          <span class="card-header">${appState.session.activeCardHeaderMessage}</span>
-          <span class="card-header-clock">${appState.ui.currentTime}</span>
-      </div>
-    `;
-
-    // Update minutes remaining line separately (if it exists and not resting)
-    const minutesRemainingLine = document.querySelector('.minutes-remaining-line');
-    if (minutesRemainingLine) {
-      minutesRemainingLine.innerHTML = `
-        <span class="card-header-dynamic-text ${toneClass}">${durationText}</span>
-        <span class="card-header-dynamic-text ${toneClass}">${completionTime}</span>
-      `;
-    }
-  } else {
-    // Normal workouts only update clock in header
-    headerContainer.innerHTML = `
-      <div class="card-header-line">
-          <span class="card-header">${appState.session.activeCardHeaderMessage}</span>
-          <span class="card-header-clock">${appState.ui.currentTime}</span>
-      </div>
-    `;
-  }
+  // CLEANUP (v6.16): Clock removed from active card header
+  // Clock now only appears in config-header to avoid duplication
+  // CLEANUP (v6.19): Workout focus removed - body part now shown in config-header icon bar
+  headerContainer.innerHTML = `
+    <div class="card-header-line">
+      <h2 class="card-header">${appState.session.activeCardHeaderMessage}</h2>
+    </div>
+  `;
 }
 
 /* === FULL CARD RENDERING === */

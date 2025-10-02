@@ -75,7 +75,7 @@ export function getTimeSelectorHTML(isAnySetLogged) {
     .join("");
   const isSelectorDisabled = isAnySetLogged;
   return createSelectorHTML(
-    "time-selector-details",
+    "config-modal-time-selector",
     summaryHtml,
     optionsHtml,
     isSelectorDisabled

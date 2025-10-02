@@ -3,6 +3,7 @@ import * as focusTrapService from "lib/focusTrap.js";
 import * as selectorService from "services/selectorService.js";
 
 let _renderAll = null;
+let modalStack = []; // Track modal stack for nested modals
 
 export function initialize(renderAll) {
   _renderAll = renderAll;
@@ -14,12 +15,21 @@ export function initialize(renderAll) {
  * It centralizes all necessary state changes, UI updates, and accessibility
  * features (focus trapping).
  * @param {string} modalName - The name of the modal to open (e.g., 'superset').
+ * @param {boolean} allowStacking - If true, allows opening modal on top of existing modal
  */
-export function open(modalName) {
-  if (appState.ui.activeModal) return; // Prevent opening a modal on top of another
+export function open(modalName, allowStacking = false) {
+  // If stacking is not allowed and there's already a modal, prevent opening
+  if (!allowStacking && appState.ui.activeModal) return;
+
+  // If stacking is allowed, push current modal to stack
+  if (allowStacking && appState.ui.activeModal) {
+    modalStack.push(appState.ui.activeModal);
+  }
 
   selectorService.closeAll();
-  appState.ui.modal.elementToFocusOnClose = document.activeElement;
+  if (modalStack.length === 0) {
+    appState.ui.modal.elementToFocusOnClose = document.activeElement;
+  }
   appState.ui.activeModal = modalName;
   document.documentElement.classList.add("is-modal-open");
 
@@ -40,10 +50,31 @@ export function open(modalName) {
  * CEMENTED
  * The definitive function for closing any active generic modal. It centralizes
  * all teardown logic, including state changes, UI updates, and focus restoration.
+ * If there are stacked modals, returns to the previous modal in the stack.
  */
 export function close() {
   if (!appState.ui.activeModal) return;
 
+  // If there are stacked modals, pop the previous modal and reopen it
+  if (modalStack.length > 0) {
+    const previousModal = modalStack.pop();
+    appState.ui.activeModal = previousModal;
+
+    _renderAll();
+
+    // Reactivate focus trap for previous modal
+    requestAnimationFrame(() => {
+      const modalContent = document.querySelector(
+        `[data-modal-name="${previousModal}"] .superset-modal-content`
+      );
+      if (modalContent) {
+        focusTrapService.activate(modalContent);
+      }
+    });
+    return;
+  }
+
+  // No stacked modals, fully close
   appState.ui.activeModal = null;
   document.documentElement.classList.remove("is-modal-open");
 

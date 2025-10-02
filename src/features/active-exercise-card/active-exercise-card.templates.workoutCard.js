@@ -1,28 +1,28 @@
 import { appState } from "state";
-import { isDumbbellExercise, calculateCompletionTime, pluralize } from "utils";
+import { isDumbbellExercise } from "utils";
 import { createNumberInputHTML } from "ui";
 import { getAnchorAreaHTML } from "./active-exercise-card.templates.fuelGauge.js";
 import { getActionAreaHTML } from "./active-exercise-card.templates.actionArea.js";
 import { getExerciseSelectorHTML } from "./active-exercise-card.templates.exerciseSelector.js";
 import * as workoutMetricsService from "services/workoutMetricsService.js";
 
-function getCardHeaderHTML() {
+function getCardHeaderHTML(logEntry = null) {
   /*
-    ALIGNMENT FIX (v5.2.1):
-    Changed h2 to span for consistent element types.
-    This ensures both elements on the same line have identical rendering behavior
-    and eliminates baseline alignment issues between different element types.
-
     CLEANUP (v6.14): Removed dual-mode condition - both modes now use single header line.
     Minutes remaining moved to separate location in both modes for consistency.
     This fixed spacing issues caused by redundant second header line in dual-mode.
+
+    CLEANUP (v6.16): Removed clock - moved to config-header to avoid duplication.
+    Clock now appears once in Current Setup header instead of Current Exercise header.
+
+    CLEANUP (v6.19): Removed body part (push/pull) display - body part now shown in config-header icon bar.
   */
+
   return `
-    <div id="active-card-header" class="card-header-container" data-action="scrollToActiveCard">
-        <div class="card-header-line">
-            <span class="card-header">${appState.session.activeCardHeaderMessage}</span>
-            <span class="card-header-clock">${appState.ui.currentTime}</span>
-        </div>
+    <div id="active-card-header" class="card-header-container">
+      <div class="card-header-line">
+        <h2 class="card-header">${appState.session.activeCardHeaderMessage}</h2>
+      </div>
     </div>
   `;
 }
@@ -59,11 +59,6 @@ export function getWorkoutCardHTML(logEntry) {
 
   if (isDualMode) {
     // Updated layout for dual-mode to match normal mode structure
-    const remaining = appState.session.workoutTimeRemaining;
-    const durationUnit = pluralize(remaining, "Minute", "Minutes");
-    const durationText = `${remaining} ${durationUnit} Remaining`;
-    const completionTime = calculateCompletionTime(remaining);
-
     const isDualModeResting =
       appState.rest.superset.left.type !== "none" ||
       appState.rest.superset.right.type !== "none";
@@ -72,7 +67,7 @@ export function getWorkoutCardHTML(logEntry) {
       <div class="card ${cardGlowClass} is-dual-mode" id="active-card-container">
         <div class="card-content-container">
 
-          ${getCardHeaderHTML()}
+          ${getCardHeaderHTML(logEntry)}
 
           <!-- SPACING FIX (v6.14): 4px margin achieves 7px visual gap from header to selector -->
           <!-- NOTE: youtube-overlay-wrapper is misleadingly named - contains selector + YouTube button -->
@@ -81,7 +76,7 @@ export function getWorkoutCardHTML(logEntry) {
             ${getYouTubeOverlayButtonHTML(logEntry)}
           </div>
 
-          <div id="card-anchor-area" class="dual-fuel-gauge-area" data-action="scrollToActiveCard" style="margin-top: 16px;">
+          <div id="card-anchor-area" class="dual-fuel-gauge-area" style="margin-top: 16px;">
             ${getAnchorAreaHTML()}
           </div>
 
@@ -96,35 +91,29 @@ export function getWorkoutCardHTML(logEntry) {
 
           ${isDualModeResting ?
             `` :
-            `<div class="minutes-remaining-line dual-mode-inactive-slack" style="margin-top: var(--upper-slack-spacing);">
-              <span class="card-header-dynamic-text ${appState.session.currentSessionColorClass}">${durationText}</span>
-              <span class="card-header-dynamic-text ${appState.session.currentSessionColorClass}">${completionTime}</span>
+            `<div class="begin-log-text-line dual-mode-inactive-slack" style="margin-top: var(--dual-upper-slack-spacing);">
+              <p class="begin-log-text">Begin Exercise - Log Results</p>
             </div>`
           }
 
-          <div id="card-action-area" class="stack dual-workout-action-area" style="margin-top: ${isDualModeResting ? 'var(--upper-slack-spacing)' : 'var(--lower-slack-spacing)'};">${getActionAreaHTML()}</div>
+          <div id="card-action-area" class="stack dual-workout-action-area" style="margin-top: ${isDualModeResting ? 'var(--dual-upper-slack-spacing)' : 'var(--dual-lower-slack-spacing)'};">${getActionAreaHTML()}</div>
 
         </div>
       </div>`;
   } else {
     // New layout for normal workouts
-    const remaining = appState.session.workoutTimeRemaining;
-    const durationUnit = pluralize(remaining, "Minute", "Minutes");
-    const durationText = `${remaining} ${durationUnit} Remaining`;
-    const completionTime = calculateCompletionTime(remaining);
-
     return `
       <div class="card ${cardGlowClass}" id="active-card-container">
         <div class="card-content-container">
 
-          ${getCardHeaderHTML()}
+          ${getCardHeaderHTML(logEntry)}
 
           <div class="youtube-overlay-wrapper" style="margin-top: 0px;">
             ${getExerciseSelectorHTML(logEntry, setsForThisExercise)}
             ${getYouTubeOverlayButtonHTML(logEntry)}
           </div>
 
-          <div id="card-anchor-area" class="normal-fuel-gauge-area" data-action="scrollToActiveCard" style="margin-top: 16px;">
+          <div id="card-anchor-area" class="normal-fuel-gauge-area" style="margin-top: 16px;">
             ${getAnchorAreaHTML(true)}
           </div>
 
@@ -141,9 +130,8 @@ export function getWorkoutCardHTML(logEntry) {
             `<div class="resting-for-label" style="margin-top: 11px;">
               <p class="resting-label-text">Resting For:</p>
             </div>` :
-            `<div class="minutes-remaining-line" style="margin-top: var(--upper-slack-spacing);">
-              <span class="card-header-dynamic-text ${appState.session.currentSessionColorClass}">${durationText}</span>
-              <span class="card-header-dynamic-text ${appState.session.currentSessionColorClass}">${completionTime}</span>
+            `<div class="begin-log-text-line" style="margin-top: var(--upper-slack-spacing);">
+              <p class="begin-log-text">Begin Exercise - Log Results</p>
             </div>`
           }
 

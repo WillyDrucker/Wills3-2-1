@@ -18,10 +18,6 @@
   scroll-margin-top: var(--space-m);
 }
 
-.workout-log-item-container.is-next-up-clickable {
-  cursor: pointer;
-}
-
 /* Remove default details/summary styling */
 .workout-log-item-container summary {
   display: block;

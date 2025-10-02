@@ -7,9 +7,27 @@ export function handleSelectorOpening(detailsElement) {
     const logItem = detailsElement.closest(".workout-log-item-container");
 
     if (configCard) {
-      scrollToElement(configCard, { block: "start" });
+      // Config card: only scroll if selector menu would overflow viewport
+      const optionsList = detailsElement.querySelector(".options-list");
+      if (optionsList) {
+        const menuRect = optionsList.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        if (menuRect.bottom > viewportHeight) {
+          const scrollAmount = menuRect.bottom - viewportHeight + 16;
+          window.scrollBy({ top: scrollAmount, behavior: "smooth" });
+        }
+      }
     } else if (activeCard) {
-      scrollToElement(activeCard, { block: "start" });
+      // Active card: only scroll if selector menu would overflow viewport
+      const optionsList = detailsElement.querySelector(".options-list");
+      if (optionsList) {
+        const menuRect = optionsList.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        if (menuRect.bottom > viewportHeight) {
+          const scrollAmount = menuRect.bottom - viewportHeight + 16;
+          window.scrollBy({ top: scrollAmount, behavior: "smooth" });
+        }
+      }
     } else if (logItem) {
       const editControls = logItem.querySelector(".edit-log-controls");
       if (editControls) {

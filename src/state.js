@@ -98,6 +98,7 @@ export function getInitialAppState() {
       currentTime: formatTime12Hour(new Date()), // Real-time clock display - initialized immediately
       currentPage: "home", // Can be 'home', 'workout', or 'myData'
       isFullscreen: false,
+      isConfigHeaderExpanded: false, // CEMENT: Controls collapsed/expanded state of config-header
       activeModal: null, // CEMENTED: 'superset', 'partner', 'reset', etc.
       modal: {
         elementToFocusOnClose: null,

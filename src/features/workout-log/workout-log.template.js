@@ -9,7 +9,7 @@ export function getWorkoutLogTemplate() {
   const { isFullscreen } = appState.ui;
 
   if (workoutLog.length === 0) {
-    return `<div class="card" id="workout-log-card"><div class="card-content-container"><h2 class="card-header" data-action="scrollToWorkoutLog">Today's Workout</h2><div id="workout-content" class="workout-items"><p style="color: var(--on-surface-medium); text-align: center; padding: 20px 0;">Your workout log will appear here.</p></div></div></div>`;
+    return `<div class="card" id="workout-log-card"><div class="card-content-container"><h2 class="card-header" data-action="scrollToActiveCard">Today's Workout</h2><div id="workout-content" class="workout-items"><p style="color: var(--on-surface-medium); text-align: center; padding: 20px 0;">Your workout log will appear here.</p></div></div></div>`;
   }
 
   const setsInWorkout =
@@ -31,10 +31,13 @@ export function getWorkoutLogTemplate() {
 
   const buttonText = isFullscreen ? "Exit Full Screen" : "Enter Full Screen";
 
-  const headerHtml = `<h2 class="card-header" id="workout-log-header" data-action="scrollToWorkoutLog">Today's Workout</h2>`;
+  const headerHtml = `<h2 class="card-header" id="workout-log-header" data-action="scrollToActiveCard">Today's Workout</h2>`;
+
+  const hasGlowAnimation = workoutLog.some((log, idx) => idx === currentLogIndex && !isWorkoutComplete);
+  const cardAction = hasGlowAnimation ? ' data-action="scrollToActiveCard"' : '';
 
   return `
-    <div class="card" id="workout-log-card">
+    <div class="card" id="workout-log-card"${cardAction}>
       <div class="card-content-container">
         ${headerHtml}
         <div id="workout-content" class="workout-items">${logItemsHtml}</div>
@@ -77,7 +80,6 @@ function getLogItemHTML(
   if (status === "completed") itemClass += " log-completed";
   if (isNextUp) {
     itemClass += " is-next-up";
-    containerClass += " is-next-up-clickable";
   }
   if (status === "skipped") {
     itemClass += " log-skipped";

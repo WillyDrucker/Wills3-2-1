@@ -41,6 +41,7 @@
 @import url("../features/video-player/video-player.style.css");
 
 /* Modals */
+@import url("../features/config-modal/config-modal.style.css");
 @import url("../features/superset-modal/superset-modal.style.css");
 @import url("../features/partner-modal/partner-modal.style.css");
 @import url("../features/reset-confirmation-modal/reset-confirmation-modal.style.css");
@@ -50,7 +51,7 @@
 @import url("../features/my-data/my-data.style.css");
 
 /* Cards */
-@import url("../features/config-card/config-card.style.css");
+@import url("../features/config-header/config-header.style.css");
 @import url("../features/active-exercise-card/active-exercise-card.style.css");
 @import url("../features/workout-results-card/workout-results-card.style.css");
 @import url("../features/workout-log/workout-log.style.css");

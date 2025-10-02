@@ -11,12 +11,13 @@ import * as fullscreen from "lib/fullscreen.js";
 import { renderSideNav } from "features/side-nav/side-nav.index.js";
 import * as clockService from "services/clockService.js";
 import { renderActiveCardHeader } from "features/active-exercise-card/active-exercise-card.index.js";
+import { renderConfigHeaderLine } from "features/config-header/config-header.index.js";
 
 function initializeTimerService(dependencies) {
   timerService.initialize({
     renderAll: dependencies.renderAll,
     renderActiveExerciseCard: dependencies.renderActiveExerciseCard,
-    renderConfigCard: dependencies.renderConfigCard,
+    renderConfigHeader: dependencies.renderConfigHeader,
   });
 }
 
@@ -56,6 +57,7 @@ export async function initialize(dependencies) {
   const {
     renderAll,
     updateActiveWorkoutAndLog,
+    updateActiveWorkoutPreservingLogs,
     renderError,
     initializeActiveCardEventListeners,
   } = dependencies;
@@ -65,7 +67,7 @@ export async function initialize(dependencies) {
   initializeTimerService(dependencies);
   modalService.initialize(renderAll);
   fullscreen.initialize(renderSideNav);
-  clockService.initialize({ renderActiveCardHeader });
+  clockService.initialize({ renderActiveCardHeader, renderConfigHeaderLine });
   document.addEventListener(
     "fullscreenchange",
     fullscreen.handleFullScreenChange
@@ -125,6 +127,7 @@ export async function initialize(dependencies) {
   actionService.initialize({
     renderAll,
     updateActiveWorkoutAndLog,
+    updateActiveWorkoutPreservingLogs,
     resetSessionAndLogs: boundReset,
   });
 

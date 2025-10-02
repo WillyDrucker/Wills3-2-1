@@ -37,21 +37,9 @@ function getDualModeAnchorAreaHTML() {
       : hasPendingRight
       ? inactiveGauge
       : "";
-  // Check if we should show action prompt overlay
-  const isAnySideResting =
-    appState.rest.superset.left.type !== "none" ||
-    appState.rest.superset.right.type !== "none";
-
-  const overlayHTML = !isAnySideResting
-    ? `<div class="action-prompt-overlay">
-        <p class="action-prompt-text is-glowing">${appState.session.activeCardMessage}</p>
-      </div>`
-    : '';
-
   return `<div class="dual-fuel-gauge-container">
     <div class="fuel-gauge-wrapper" style="flex:1;">${leftHTML}</div>
     <div class="fuel-gauge-wrapper" style="flex:1;">${rightHTML}</div>
-    ${overlayHTML}
   </div>`;
 }
 
@@ -100,18 +88,7 @@ function getNormalFuelGaugeHTML(includeActionPrompt = false) {
   const fuelGaugeHTML = `<div class="fuel-gauge-container">${segmentsHTML}</div>`;
 
   if (includeActionPrompt) {
-    if (restState.type === "none") {
-      // Include action prompt overlay for normal workouts when not resting
-      const glowingClass = "is-glowing";
-      return `
-        <div class="fuel-gauge-with-overlay">
-          ${fuelGaugeHTML}
-          <div class="action-prompt-overlay">
-            <p class="action-prompt-text ${glowingClass}">${appState.session.activeCardMessage}</p>
-          </div>
-        </div>
-      `;
-    } else if (restState.type === "log") {
+    if (restState.type === "log") {
       // Show "Recovering" text when actively resting from a logged set
       return `
         <div class="fuel-gauge-with-overlay">

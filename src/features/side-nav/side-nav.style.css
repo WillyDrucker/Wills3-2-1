@@ -92,11 +92,6 @@ html.is-side-nav-open .side-nav-content {
   border-radius: var(--border-radius);  /* Global: 8px */
 }
 
-/* Hover state */
-.side-nav-content li:hover {
-  background-color: var(--surface-dark-accent);  /* Global: accent color */
-}
-
 /* === ICONS === */
 .side-nav-icon {
   width: 24px;

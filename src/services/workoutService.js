@@ -173,7 +173,6 @@ export function updateWorkoutCompletionState() {
     if (!wasAlreadyComplete && appState.session.workoutLog.length > 0) {
       appState.session.isWorkoutComplete = true;
       appState.session.playCompletionAnimation = true;
-      appState.ui.scrollAfterRender.target = "active-card";
     }
   } else {
     appState.session.isWorkoutComplete = false;

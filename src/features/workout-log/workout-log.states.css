@@ -20,6 +20,11 @@ body.start-glow-animations .workout-log-item.is-next-up {
   animation: glow-border 4s ease-in-out infinite;
 }
 
+/* Make workout log card clickable during glow animation */
+#workout-log-card[data-action="scrollToActiveCard"] {
+  cursor: pointer;
+}
+
 /* === SKIPPED STATE === */
 .workout-log-item.log-skipped {
   border-color: var(--warning-orange);

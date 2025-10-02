@@ -6,6 +6,8 @@ import * as persistenceService from "services/persistenceService.js";
 import * as workoutService from "services/workoutService.js";
 import * as modalService from "services/modalService.js";
 import { getNextWorkoutDay } from "utils";
+import { canCycleToSession } from "utils/sessionValidation.js";
+import { renderConfigHeader, notifyConfigHeaderToggled } from "features/config-header/config-header.index.js";
 
 // Feature Handlers
 import {
@@ -39,13 +41,21 @@ import {
   handleDayChange,
   handlePlanChange,
   handleTimeChange,
-} from "features/config-card/config-card.index.js";
+  saveConfigState,
+  restoreConfigState,
+  clearConfigState,
+  resetToDefaults,
+} from "features/config-modal/config-modal.index.js";
 import {
   handleLogSet,
   handleSkipSet,
   handleSkipRest,
   handleExerciseSwap,
 } from "features/active-exercise-card/active-exercise-card.index.js";
+import {
+  cycleNextSession,
+  cyclePreviousSession,
+} from "features/config-header/config-header.index.js";
 import { toggleFullScreen } from "lib/fullscreen.js";
 
 let coreActions = {};
@@ -115,9 +125,13 @@ export function initialize(dependencies) {
           previousWeek: handlePreviousWeek,
           nextWeek: handleNextWeek,
           clearHistory: handleClearHistory,
-          scrollToActiveCard: scrollService.scrollToActiveCard,
-          scrollToWorkoutLog: scrollService.scrollToWorkoutLog,
-          scrollToConfigCard: scrollService.scrollToConfigCard,
+          scrollToTop: () => window.scrollTo({ top: 0, behavior: 'smooth' }),
+          scrollToActiveCard: () => {
+            const activeCardElement = document.getElementById('active-exercise-card') || document.getElementById('dual-mode-card');
+            if (activeCardElement) {
+              activeCardElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          },
           openSupersetModal: () => {
             let initialDay1 = appState.session.currentDayName;
             if (appState.weeklyPlan[initialDay1]?.title === "Rest") {
@@ -126,7 +140,9 @@ export function initialize(dependencies) {
             appState.ui.supersetModal.selection.day1 = initialDay1;
             appState.ui.supersetModal.selection.day2 =
               getNextWorkoutDay(initialDay1);
-            modalService.open("superset");
+            // Allow stacking if config modal is open
+            const allowStacking = appState.ui.activeModal === "config";
+            modalService.open("superset", allowStacking);
           },
           openPartnerMode: () => {
             let initialDay = appState.session.currentDayName;
@@ -135,7 +151,30 @@ export function initialize(dependencies) {
             }
             appState.partner.user1Day = initialDay;
             appState.partner.user2Day = initialDay;
-            modalService.open("partner");
+            // Allow stacking if config modal is open
+            const allowStacking = appState.ui.activeModal === "config";
+            modalService.open("partner", allowStacking);
+          },
+          resetToDefaults: () => {
+            resetToDefaults();
+            coreActions.updateActiveWorkoutAndLog();
+            coreActions.renderAll();
+          },
+          cycleNextSession: () => {
+            cycleNextSession();
+            coreActions.updateActiveWorkoutPreservingLogs(); // Preserve logged sets + targeted render
+            persistenceService.saveState();
+          },
+          cyclePreviousSession: () => {
+            cyclePreviousSession();
+            coreActions.updateActiveWorkoutPreservingLogs(); // Preserve logged sets + targeted render
+            persistenceService.saveState();
+          },
+          toggleConfigHeader: () => {
+            appState.ui.isConfigHeaderExpanded = !appState.ui.isConfigHeaderExpanded;
+            notifyConfigHeaderToggled(); // Prevent click-outside from triggering immediately
+            renderConfigHeader(); // Targeted render to avoid animation resets
+            persistenceService.saveState();
           },
           openResetConfirmationModal: () => modalService.open("reset"),
           setNormalMode: () => {
@@ -247,9 +286,11 @@ export function initialize(dependencies) {
           coreActions.updateActiveWorkoutAndLog();
         }
         if (time) {
-          handleTimeChange(time);
-          coreActions.updateActiveWorkoutAndLog();
-          coreActions.renderAll(); // Ensure timer color updates immediately
+          // 🔒 CEMENT: Validate before cycling to prevent removing logged sets
+          if (canCycleToSession(time)) {
+            handleTimeChange(time);
+            coreActions.updateActiveWorkoutPreservingLogs(); // Preserve logged sets + targeted render
+          }
         }
         if (exerciseSwap) {
           handleExerciseSwap(exerciseSwap);
@@ -269,11 +310,6 @@ export function initialize(dependencies) {
         return;
       }
 
-      const nextUpTarget = target.closest(".is-next-up-clickable");
-      if (nextUpTarget) {
-        scrollService.scrollToActiveCard();
-        return;
-      }
       if (
         !target.closest(
           "details, .side-nav-content, .superset-modal-content, .video-content-wrapper"

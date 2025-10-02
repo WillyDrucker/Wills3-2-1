@@ -22,6 +22,12 @@
 @import url("../../styles/components/_action-button-groups.css");
 @import url("../../styles/components/_modals.css");
 
+/* === MODAL CONTAINER === */
+/* Remove transition for instant appearance */
+#partner-modal-container {
+  transition: none !important;
+}
+
 /* === MODAL SPACING === */
 /* Standard card padding from global patterns */
 #partner-modal-container .card {

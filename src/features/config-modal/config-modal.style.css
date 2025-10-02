@@ -1,0 +1,125 @@
+/* ==========================================================================
+   CONFIG MODAL - Full configuration in modal window
+
+   CEMENT: Modal-based config with all plan/focus/session options
+   Purpose: Full configuration interface accessed from config-header
+   Dependencies: Modal system, card foundations, selectors
+   Used by: Modal system when config modal is active
+   ========================================================================== */
+
+/* Global dependencies */
+@import url("../../styles/components/_card-headers.css");
+@import url("../../styles/components/_card-foundations.css");
+@import url("../../styles/components/_selectors.css");
+@import url("../../styles/components/_modals.css");
+
+/* === MODAL CONTAINER === */
+/* Remove transition for instant appearance */
+#config-modal-container {
+  transition: none !important;
+}
+
+/* Remove any double-backdrop issues by ensuring config modal fully hides when not active */
+
+/* === MODAL CARD === */
+#config-modal {
+  border: var(--card-border-width) solid transparent;
+  /* CEMENT: Match standard modal width - 390px viewport minus 10px margins on each side */
+  width: calc(390px - (var(--app-side-margin) * 2));
+  max-width: 100%;
+  /* CEMENT: Remove padding from outer card element - padding applied to inner container only */
+  padding: 0 !important;
+}
+
+/* Modal card padding */
+#config-modal .card-content-container {
+  /* CEMENT: Override to achieve 16px visual padding on all sides
+     Standard card padding uses font compensation, but modal needs uniform spacing
+     Higher specificity required to override global card foundations */
+  padding: 16px !important;
+  box-sizing: border-box;
+}
+
+/* === HEADERS === */
+#config-modal .card-header {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--on-surface-light);
+  margin: 0;
+  padding: 0;
+  margin-bottom: 4px; /* 4px + 3px descender = 7px visual gap to selector */
+  margin-top: -5px; /* Compensate for font ascender to achieve 16px visual from top */
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+/* === CONFIG GROUPS === */
+/* 16px rhythm between sections */
+#config-modal .config-group {
+  margin: 0;
+  padding: 0;
+  margin-bottom: 16px; /* Direct 16px between sections */
+}
+
+#config-modal .config-group:first-of-type .card-header {
+  margin-top: -5px; /* First header: compensate ascender for 16px visual from card top */
+}
+
+#config-modal .config-group:not(:first-of-type) .card-header {
+  margin-top: -3px; /* Subsequent headers: compensate for 16px visual between sections */
+}
+
+#config-modal .config-group:last-of-type {
+  margin-bottom: 0; /* No bottom margin on last section before buttons */
+}
+
+/* === MULTI-LINE SELECTORS === */
+/* Two-line content with centered text */
+#config-modal .selector-content.multi-line {
+  display: block;
+  text-align: center;
+  padding: var(--selector-multiline-padding-top) 0 var(--selector-multiline-padding-bottom) 0;
+  line-height: var(--selector-multiline-line-height);
+}
+
+#config-modal .selector-content.multi-line span {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+#config-modal .selector-content.multi-line span:first-child {
+  margin-bottom: var(--selector-multiline-line-gap);
+}
+
+/* === BALANCED TEXT === */
+#config-modal .selector-content.balanced-text {
+  display: block;
+  text-align: center;
+  padding: var(--selector-multiline-padding-top) 0 var(--selector-multiline-padding-bottom) 0;
+  line-height: var(--selector-multiline-line-height);
+}
+
+#config-modal .selector-content.balanced-text span {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+#config-modal .selector-content.balanced-text span:first-child {
+  margin-bottom: var(--selector-multiline-line-gap);
+}
+
+/* === MODAL ACTIONS === */
+.config-modal-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-m);
+  margin-top: var(--space-m);
+  margin-bottom: 0; /* No extra bottom margin needed */
+}
+
+.config-modal-actions .action-button {
+  flex: 1;
+  min-width: 0; /* Allow buttons to shrink if needed */
+}

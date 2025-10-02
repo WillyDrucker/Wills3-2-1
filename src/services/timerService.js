@@ -129,7 +129,7 @@ function _createTimerInterval(restState, side = null) {
       workoutService.updateWorkoutTimeRemaining();
 
       if (appState.ui.currentPage === "workout") {
-        renderers.renderConfigCard();
+        renderers.renderConfigHeader();
 
         if (currentMinutesElapsed > 0 && currentMinutesElapsed <= 5) {
           const segmentIndex = currentMinutesElapsed - 1;
@@ -160,7 +160,7 @@ function _createTimerInterval(restState, side = null) {
       appState.superset.bonusMinutes--;
       if (appState.ui.currentPage === "workout") {
         workoutService.updateWorkoutTimeRemaining();
-        renderers.renderConfigCard();
+        renderers.renderConfigHeader();
       }
     }
 

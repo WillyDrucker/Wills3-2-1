@@ -149,3 +149,52 @@ export function generatePartnerWorkoutLog() {
   }
   return finalLog;
 }
+
+// 🔒 CEMENT: Preserve logged sets when updating workout session type
+export function updateWorkoutLogForSessionChange(existingLog) {
+  if (!existingLog || existingLog.length === 0) {
+    return generateWorkoutLog();
+  }
+
+  // Generate new log with current session type
+  const sessionType = timeOptions.find(
+    (t) => t.name === appState.session.currentTimeOptionName
+  )?.type;
+
+  const newLog = generateWorkoutLog(true, sessionType);
+
+  // Merge: Keep logged/skipped sets from existing log, add any new pending sets
+  const mergedLog = [];
+
+  // First, add all logged/skipped sets from existing log that still exist in new log
+  existingLog.forEach((oldEntry) => {
+    if (oldEntry.status !== "pending") {
+      // Check if this exercise/set combination exists in the new log
+      const matchInNewLog = newLog.find(
+        (newEntry) =>
+          newEntry.exercise.exercise_name === oldEntry.exercise.exercise_name &&
+          newEntry.setNumber === oldEntry.setNumber
+      );
+
+      if (matchInNewLog) {
+        // Keep the old logged entry with its data
+        mergedLog.push(oldEntry);
+      }
+    }
+  });
+
+  // Then add all pending sets from new log that aren't already in merged log
+  newLog.forEach((newEntry) => {
+    const alreadyMerged = mergedLog.find(
+      (merged) =>
+        merged.exercise.exercise_name === newEntry.exercise.exercise_name &&
+        merged.setNumber === newEntry.setNumber
+    );
+
+    if (!alreadyMerged) {
+      mergedLog.push(newEntry);
+    }
+  });
+
+  return _renumberSetsInLog(mergedLog);
+}

@@ -23,7 +23,7 @@ export const workoutPlans = [
 ];
 
 export const timeOptions = [
-  { name: "Recommended:", type: "Recommended", colorClass: "text-plan" },
+  { name: "Standard:", type: "Recommended", colorClass: "text-plan" },
   { name: "Express:", type: "Express", colorClass: "text-deviation" },
   { name: "Maintenance:", type: "Maintenance", colorClass: "text-warning" },
 ];

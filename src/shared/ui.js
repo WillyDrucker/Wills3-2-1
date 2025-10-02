@@ -11,6 +11,7 @@ export const ui = {
   ),
   partnerModalContainer: document.getElementById("partner-modal-container"),
   sideNavContainer: document.getElementById("side-nav-container"),
+  configModalContainer: document.getElementById("config-modal-container"),
   resetConfirmationModalContainer: document.getElementById(
     "reset-confirmation-modal-container"
   ),

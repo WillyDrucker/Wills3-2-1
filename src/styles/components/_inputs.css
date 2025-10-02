@@ -42,10 +42,6 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
-.number-input-container button:hover {
-  background-color: #333;
-}
-
 /* Decrement symbol positioning fix */
 .decrement-button-symbol {
   position: relative;

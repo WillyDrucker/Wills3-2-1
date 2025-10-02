@@ -61,17 +61,7 @@
   width: 40px;
   height: 40px;
   border-radius: var(--border-radius);  /* Global: 8px */
-  transition: background-color 0.2s ease-in-out;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-}
-
-/* Hover state */
-.header-icon-button:hover {
-  background-color: color-mix(
-    in srgb,
-    var(--on-surface-light) 10%,
-    transparent
-  );
 }
 
 /* Icon sizing */

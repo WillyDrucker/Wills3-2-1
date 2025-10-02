@@ -39,7 +39,7 @@
 /* === FUEL GAUGE SPACING === */
 /* 🔒 CEMENT: !important required - global reset forces override */
 #active-card-container .action-prompt-block.is-resting.is-dual-mode {
-  margin: -1px 0 0 0 !important; /* -1px for exact 16px visual spacing from inputs */
+  margin: -3px 0 0 0 !important; /* -3px for exact 16px visual spacing from inputs */
   padding: 0;
   width: 100%;
   text-align: center;
@@ -61,10 +61,8 @@
 }
 
 /* === ACTION AREA SPACING FOR DUAL MODE === */
-/* 🔒 CEMENT: Ensure 16px from minutes remaining line to action buttons */
-#active-card-container.is-dual-mode #card-action-area.dual-workout-action-area {
-  margin-top: 12px !important; /* 12px margin to achieve 16px visual from minutes line */
-}
+/* 🔒 CEMENT: Spacing from begin-exercise text to action buttons - handled by inline style var(--dual-lower-slack-spacing) */
+/* Removed hardcoded override to allow dynamic spacing tokens */
 
 /* === ACTION PROMPT TEXT STYLING === */
 /* 🔒 CEMENT: Dual-mode "Begin Exercise - Log Results" text styling */

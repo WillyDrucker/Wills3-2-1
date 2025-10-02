@@ -32,6 +32,12 @@
   min-width: 0;
 }
 
+/* Single-line header (used when only header text present) */
+#active-card-container #active-card-header.card-header-container {
+  margin: 0;
+  padding: 0;
+}
+
 /* Spacing between header lines */
 #active-card-container .card-header-line:not(:first-child) {
   margin-top: var(--space-s);
@@ -40,6 +46,7 @@
 /* === TYPOGRAPHY === */
 #active-card-container .card-header,
 #active-card-container .card-header-clock,
+#active-card-container .card-header-workout-focus,
 #active-card-container .card-header-dynamic-text {
   font-size: 1.25rem;
   font-weight: 600;
@@ -65,6 +72,13 @@
 #active-card-container .card-header-clock {
   flex-shrink: 0;
   white-space: nowrap;
+}
+
+/* Workout focus display - never truncates, right-aligned like clock */
+#active-card-container .card-header-workout-focus {
+  flex-shrink: 0;
+  white-space: nowrap;
+  /* Color applied via data-highlight class: text-plan or text-deviation */
 }
 
 /* Dynamic text (duration, completion time) - truncates with ellipsis */
@@ -109,4 +123,32 @@
   display: inline;
   margin: 0;
   padding: 0;
+}
+
+/* === BEGIN EXERCISE - LOG RESULTS LINE === */
+/* Centered single line of instruction text */
+.begin-log-text-line {
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+/* Text styling matching original action-prompt-text */
+.begin-log-text {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.2; /* Default line-height to accommodate descenders */
+  margin: 0;
+  padding: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.5px;
+  color: var(--on-surface-light);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Glowing animation when card is active */
+body.start-glow-animations .begin-log-text {
+  animation: text-glow 4s ease-in-out infinite;
 }

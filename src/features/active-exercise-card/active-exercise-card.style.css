@@ -54,8 +54,12 @@
 
   /* Slack spacing: Visual breathing room */
   --slack-spacing: 23px;           /* Space before action buttons */
-  --upper-slack-spacing: 19px;     /* Space below input selectors to achieve 22px visual */
-  --lower-slack-spacing: 21px;     /* Space before action buttons to achieve 23px visual */
+  --upper-slack-spacing: 17px;     /* Space below input selectors to achieve 22px visual (compensates for line-height 1.2) */
+  --lower-slack-spacing: 19px;     /* Space before action buttons to achieve 23px visual (compensates for line-height 1.2) */
+
+  /* Dual-mode slack spacing: Tighter spacing for dual-mode layout */
+  --dual-upper-slack-spacing: 14px; /* Space below input selectors to achieve 19px visual (compensates for line-height 1.2 + font metrics) */
+  --dual-lower-slack-spacing: 16px; /* Space before action buttons to achieve 20px visual (compensates for line-height 1.2 - font metrics) */
 
   /* States: Inactive/active spacing with spacer divs */
   --inactive-slack-top: 14px;      /* 🔒 CEMENT: Static slack prevents card height shift */

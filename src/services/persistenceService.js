@@ -25,6 +25,7 @@ function getPersistableState(fullState) {
     user: fullState.user,
     ui: {
       currentPage: fullState.ui.currentPage,
+      isConfigHeaderExpanded: fullState.ui.isConfigHeaderExpanded,
     },
   };
 }
