@@ -7,7 +7,7 @@ import * as workoutService from "services/workoutService.js";
 import * as modalService from "services/modalService.js";
 import { getNextWorkoutDay } from "utils";
 import { canCycleToSession } from "utils/sessionValidation.js";
-import { renderConfigHeader, notifyConfigHeaderToggled } from "features/config-header/config-header.index.js";
+import { renderConfigHeader, renderSessionDisplay, notifyConfigHeaderToggled } from "features/config-header/config-header.index.js";
 
 // Feature Handlers
 import {
@@ -140,6 +140,12 @@ export function initialize(dependencies) {
             appState.ui.supersetModal.selection.day1 = initialDay1;
             appState.ui.supersetModal.selection.day2 =
               getNextWorkoutDay(initialDay1);
+            // Remember if config header was expanded before opening modal
+            appState.ui.wasConfigHeaderExpandedBeforeModal = appState.ui.isConfigHeaderExpanded;
+            // Lock config header to keep it open while modal is displayed
+            if (appState.ui.isConfigHeaderExpanded) {
+              appState.ui.configHeaderLocked = true;
+            }
             // Allow stacking if config modal is open
             const allowStacking = appState.ui.activeModal === "config";
             modalService.open("superset", allowStacking);
@@ -151,6 +157,12 @@ export function initialize(dependencies) {
             }
             appState.partner.user1Day = initialDay;
             appState.partner.user2Day = initialDay;
+            // Remember if config header was expanded before opening modal
+            appState.ui.wasConfigHeaderExpandedBeforeModal = appState.ui.isConfigHeaderExpanded;
+            // Lock config header to keep it open while modal is displayed
+            if (appState.ui.isConfigHeaderExpanded) {
+              appState.ui.configHeaderLocked = true;
+            }
             // Allow stacking if config modal is open
             const allowStacking = appState.ui.activeModal === "config";
             modalService.open("partner", allowStacking);
@@ -162,15 +174,19 @@ export function initialize(dependencies) {
           },
           cycleNextSession: () => {
             cycleNextSession();
-            coreActions.updateActiveWorkoutPreservingLogs(); // Preserve logged sets + targeted render
-            persistenceService.saveState();
+            coreActions.updateActiveWorkoutPreservingLogs(); // Update workout log for new session + recalculate time
           },
           cyclePreviousSession: () => {
             cyclePreviousSession();
-            coreActions.updateActiveWorkoutPreservingLogs(); // Preserve logged sets + targeted render
-            persistenceService.saveState();
+            coreActions.updateActiveWorkoutPreservingLogs(); // Update workout log for new session + recalculate time
           },
           toggleConfigHeader: () => {
+            // One-selector rule: Don't allow toggle if external selector is open
+            const openSelector = document.querySelector("details[open]");
+            if (openSelector && !openSelector.closest("#config-header")) {
+              return; // Block toggle - external selector is open
+            }
+
             appState.ui.isConfigHeaderExpanded = !appState.ui.isConfigHeaderExpanded;
             notifyConfigHeaderToggled(); // Prevent click-outside from triggering immediately
             renderConfigHeader(); // Targeted render to avoid animation resets
@@ -221,15 +237,67 @@ export function initialize(dependencies) {
             persistenceService.saveState();
           },
           cancelLog: selectorService.closeAll,
-          closeSupersetModal: () => modalService.close(),
+          closeSupersetModal: () => {
+            // Unlock config header
+            appState.ui.configHeaderLocked = false;
+
+            // Restore config header state when canceling (user didn't make changes)
+            const shouldRestore = appState.ui.wasConfigHeaderExpandedBeforeModal;
+            if (shouldRestore) {
+              appState.ui.isConfigHeaderExpanded = true;
+              appState.ui.wasConfigHeaderExpandedBeforeModal = false;
+            }
+
+            modalService.close();
+
+            // Re-render after modal closes if we need to restore
+            if (shouldRestore) {
+              // Use setTimeout to ensure modal close rendering completes first
+              setTimeout(() => {
+                renderConfigHeader();
+                persistenceService.saveState();
+              }, 0);
+            }
+          },
           confirmSuperset: () => {
             handleConfirmSuperset();
             coreActions.updateActiveWorkoutAndLog();
+            // Unlock config header AFTER everything settles
+            setTimeout(() => {
+              appState.ui.configHeaderLocked = false;
+              persistenceService.saveState();
+            }, 0);
           },
-          closePartnerModal: () => modalService.close(),
+          closePartnerModal: () => {
+            // Unlock config header
+            appState.ui.configHeaderLocked = false;
+
+            // Restore config header state when canceling (user didn't make changes)
+            const shouldRestore = appState.ui.wasConfigHeaderExpandedBeforeModal;
+            if (shouldRestore) {
+              appState.ui.isConfigHeaderExpanded = true;
+              appState.ui.wasConfigHeaderExpandedBeforeModal = false;
+            }
+
+            modalService.close();
+
+            // Re-render after modal closes if we need to restore
+            if (shouldRestore) {
+              // Use setTimeout to ensure modal close rendering completes first
+              setTimeout(() => {
+                renderConfigHeader();
+                persistenceService.saveState();
+              }, 0);
+            }
+          },
           confirmPartnerWorkout: () => {
             handleConfirmPartnerWorkout();
             coreActions.updateActiveWorkoutAndLog();
+            // Unlock config header AFTER everything settles
+            setTimeout(() => {
+              appState.ui.configHeaderLocked = false;
+              persistenceService.saveState();
+            }, 0);
           },
           closeResetConfirmationModal: () => modalService.close(),
           confirmReset: () => {
@@ -254,6 +322,9 @@ export function initialize(dependencies) {
         )
           return;
 
+        // Prevent event from bubbling to document-level click handlers
+        event.stopPropagation();
+
         const { day, plan, time, exerciseSwap, historyTab } =
           listItemTarget.dataset;
 
@@ -277,13 +348,33 @@ export function initialize(dependencies) {
               parentDetails.id === "superset-selector-1" ? "day1" : "day2";
             handleSupersetSelection(selectorId, day);
           } else {
+            // Lock config header to prevent collapsing during operation
+            const wasExpanded = appState.ui.isConfigHeaderExpanded;
+
+            if (wasExpanded) {
+              appState.ui.configHeaderLocked = true;
+              appState.ui.isConfigHeaderExpanded = true;
+            }
+
             handleDayChange(day);
-            coreActions.updateActiveWorkoutAndLog();
+            coreActions.updateActiveWorkoutAndLog(); // This calls renderAll()
+
+            // Note: Unlock happens after selector closing at the end of this handler
+            // This ensures the lock is active during the entire operation
           }
         }
         if (plan) {
+          // Lock config header to prevent collapsing during operation
+          const wasExpanded = appState.ui.isConfigHeaderExpanded;
+          if (wasExpanded) {
+            appState.ui.configHeaderLocked = true;
+            appState.ui.isConfigHeaderExpanded = true; // Ensure expanded BEFORE renderAll
+          }
+
           handlePlanChange(plan);
-          coreActions.updateActiveWorkoutAndLog();
+          coreActions.updateActiveWorkoutAndLog(); // This calls renderAll()
+
+          // Note: Unlock happens after selector closing at the end of this handler
         }
         if (time) {
           // 🔒 CEMENT: Validate before cycling to prevent removing logged sets
@@ -293,11 +384,31 @@ export function initialize(dependencies) {
           }
         }
         if (exerciseSwap) {
+          // Lock config header to prevent collapsing during operation
+          const wasExpanded = appState.ui.isConfigHeaderExpanded;
+          if (wasExpanded) {
+            appState.ui.configHeaderLocked = true;
+            appState.ui.isConfigHeaderExpanded = true; // Ensure expanded BEFORE renderAll
+          }
+
           handleExerciseSwap(exerciseSwap);
-          coreActions.renderAll();
+          coreActions.renderAll(); // This calls renderAll()
+
+          // Note: Unlock happens after selector closing at the end of this handler
+        }
+        // If config header is expanded, don't close its internal selectors
+        if (appState.ui.isConfigHeaderExpanded) {
+          selectorService.closeAllExceptConfigHeader();
+        } else {
+          selectorService.closeAll();
+        }
+
+        // Unlock config header after all operations complete
+        if (appState.ui.configHeaderLocked) {
+          appState.ui.configHeaderLocked = false;
           persistenceService.saveState();
         }
-        selectorService.closeAll();
+
         return;
       }
 

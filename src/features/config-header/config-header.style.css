@@ -16,10 +16,15 @@
 #config-header {
   margin: 0 0 var(--space-m) 0; /* 16px bottom visual */
   border: var(--card-border-width) solid var(--primary-blue); /* Always blue border */
-  transition: border-radius 0.3s ease;
+  transition: border-radius 0.3s ease, border-color 0.3s ease;
   position: relative;
   z-index: 100; /* Above other cards when expanded */
   box-shadow: none; /* Remove any inherited shadow */
+}
+
+/* Mute config header border when external selector is open */
+body.is-selector-open #config-header:not(:has(details[open])) {
+  border-color: var(--primary-blue-dark);
 }
 
 /* Blue border when expanded - square bottom corners to connect with dropdown */
@@ -76,21 +81,17 @@
   border: none;
   border-radius: var(--border-radius);
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .config-action-button.cancel-button {
-  background: var(--background-dark);
+  background: var(--on-surface-disabled); /* Solid informational gray */
   color: var(--on-surface-light);
-  box-shadow: inset 0 0 0 2px var(--on-surface-disabled),
-              0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .config-action-button.reset-button {
-  background: var(--background-dark);
-  color: var(--text-red-skip);
-  box-shadow: inset 0 0 0 2px var(--text-red-skip),
-              0 2px 6px rgba(0, 0, 0, 0.3);
+  background: var(--skip-red); /* Solid red background */
+  color: #000000; /* Pure black text */
 }
 
 /* === HEADER === */
@@ -272,7 +273,7 @@
   gap: 7px; /* 7px between all items */
   margin-top: 0;
   padding: 0;
-  font-size: 1rem;
+  font-size: 1rem; /* Base size for icon bar, overridden by specific buttons */
   min-height: 50px;
 }
 
@@ -294,22 +295,37 @@
 }
 
 .icon-bar-item.icon-plan-wide .plan-text {
-  font-size: var(--font-size-h2); /* 1.25rem - matches Current Plan selector */
-  font-weight: 600; /* Matches app-selector base weight */
   line-height: 1;
   text-align: center;
+}
+
+/* 🔒 CEMENT: Plan Quick Button stack - matches Superset Mode selector spacing */
+/* Rhythm: 7px top + 24px text (20px × 1.2) + (-3px margin = 7px gap) + 24px text + 9px bottom = 61px */
+.plan-quick-button-stack {
+  display: flex;
+  flex-direction: column;
+  padding: var(--selector-multiline-padding-top) 0 var(--selector-multiline-padding-bottom) 0; /* 7px 0 9px 0 */
+  line-height: var(--selector-multiline-line-height); /* 1.2 */
+  text-align: center;
+}
+
+.plan-quick-button-stack > span {
+  font-family: "Roboto", sans-serif; /* Explicit Roboto font */
+  font-size: 1.25rem; /* Explicit 1.25rem */
+  font-weight: 500; /* Weight 500 as requested */
+  line-height: inherit; /* 1.2 from parent */
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  /* Color derived from nested spans (inline styles and data-highlight text-plan) */
 }
 
-/* Ensure nested spans display inline and inherit text properties */
-.icon-bar-item.icon-plan-wide .plan-text > span {
-  display: inline;
-  font-size: inherit;
-  font-weight: inherit;
-  line-height: inherit;
+.plan-quick-button-stack > span:first-child {
+  margin-bottom: var(--selector-multiline-line-gap); /* -3px creates 7px visual gap */
+}
+
+.plan-quick-button-muted {
+  color: var(--on-surface-medium);
 }
 
 /* Display icon buttons - blue borders, icon only */
@@ -357,20 +373,32 @@
 }
 
 .icon-bar-item.icon-session-wide .session-text {
-  font-size: var(--font-size-h2); /* 1.25rem - matches plan button */
-  font-weight: 600;
-  line-height: 1;
   text-align: center;
+}
+
+/* 🔒 CEMENT: Session Quick Button stack - matches Plan Quick Button spacing */
+/* Rhythm: 7px top + 24px text (20px × 1.2) + (-3px margin = 7px gap) + 24px text + 9px bottom = 61px */
+.session-quick-button-stack {
+  display: flex;
+  flex-direction: column;
+  padding: var(--selector-multiline-padding-top) 0 var(--selector-multiline-padding-bottom) 0; /* 7px 0 9px 0 */
+  line-height: var(--selector-multiline-line-height); /* 1.2 */
+  text-align: center;
+}
+
+.session-quick-button-stack > span {
+  font-family: "Roboto", sans-serif; /* Explicit Roboto font */
+  font-size: 1.25rem; /* Explicit 1.25rem */
+  font-weight: 500; /* Weight 500 to match # Mins text */
+  line-height: inherit; /* 1.2 from parent */
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.icon-bar-item.icon-session-wide .session-text .session-number {
-  /* Color derived from dynamic class (e.g., text-plan, text-deviation, text-warning) */
-  font-size: inherit;
-  font-weight: inherit;
-  line-height: inherit;
+.session-quick-button-stack > span:first-child {
+  margin-bottom: var(--selector-multiline-line-gap); /* -3px creates 7px visual gap */
 }
 
 /* Expand button - gray border, aligned right */

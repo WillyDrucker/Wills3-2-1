@@ -12,7 +12,7 @@ export function getInitialAppState() {
       id: Date.now(), // Unique ID for the current workout session
       currentWorkoutPlanName: "Will's 3-2-1:",
       currentDayName: "Sunday",
-      currentTimeOptionName: "Recommended:",
+      currentTimeOptionName: "Standard:",
       currentLogIndex: 0,
       workoutLog: [],
       isWorkoutComplete: false,
@@ -99,6 +99,8 @@ export function getInitialAppState() {
       currentPage: "home", // Can be 'home', 'workout', or 'myData'
       isFullscreen: false,
       isConfigHeaderExpanded: false, // CEMENT: Controls collapsed/expanded state of config-header
+      configHeaderLocked: false, // Prevents config header from collapsing during selector operations
+      wasConfigHeaderExpandedBeforeModal: false, // Tracks if config header was expanded before modal opened
       activeModal: null, // CEMENTED: 'superset', 'partner', 'reset', etc.
       modal: {
         elementToFocusOnClose: null,

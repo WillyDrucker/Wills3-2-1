@@ -6,6 +6,127 @@
 
 ## VERSION CHANGELOG
 
+### **v6.23 - Config Dropdown & Selector Muting Improvements**
+**Date**: 2025-10-03
+**Problem**: Config dropdown closing on Superset/Partner confirmation, one-selector-to-rule-them-all not fully enforced, selector muting inconsistent
+**Solution**: Fixed unlock timing with setTimeout, implemented bidirectional selector blocking, enhanced visual muting consistency
+**Key Achievements**:
+- **Modal confirmation fix**: Config dropdown stays open when confirming Superset/Partner modes (setTimeout unlock after re-render)
+- **Bidirectional selector blocking**: Config dropdown blocks external selectors AND external selectors block config dropdown
+- **Visual muting consistency**: Exercise selector always fully muted when other selectors open, config border mutes to dark blue
+- **One-selector enforcement**: Implemented complete mutual exclusivity between config dropdown and all external selectors
+**Root Causes Identified**:
+- **Dropdown closing on confirm**: Unlock was happening before re-render completed, click-outside was firing
+- **Incomplete blocking**: Only prevented config→external, not external→config
+- **Visual inconsistency**: Exercise selector had special opacity rules that weren't overridden when other selectors opened
+**Technical Architecture**:
+- Confirm flow: handleConfirm() → updateActiveWorkoutAndLog() → setTimeout(0) → unlock (ensures all renders complete)
+- Bidirectional blocking: selectorService.toggle() checks both directions (config→external, external→config)
+- Visual muting: CSS !important rules force exercise selector muting regardless of .is-muted class state
+- Config border muting: `body.is-selector-open #config-header:not(:has(details[open]))` dims border when external selector open
+**Files Modified**:
+- `src/services/actionService.js` - setTimeout unlock in confirmSuperset/confirmPartnerWorkout, bidirectional blocking in toggleConfigHeader
+- `src/services/selectorService.js` - Added config dropdown check to prevent external selector opening
+- `src/features/config-header/config-header.style.css` - Border muting when external selector open
+- `src/features/active-exercise-card/active-exercise-card.selector.css` - Forced muting rules with !important
+**Technical Discoveries**:
+- setTimeout(0) critical for ensuring unlock happens after ALL render cycles complete
+- Bidirectional blocking requires checks in both directions (toggle handler AND action handler)
+- CSS !important necessary to override special-case opacity rules for exercise selector
+- Visual muting state independent of business logic muting (.is-muted class)
+**Status**: IN PROGRESS - Core functionality complete, additional selector muting edge cases identified for next session
+
+### **v6.22 - Config Dropdown Persistence & Dynamic Icons**
+**Date**: 2025-10-03
+**Problem**: Config dropdown closes when selecting items from "Current Focus" selector, Focus Quick Button needs dynamic icons for dual modes
+**Solution**: Fixed event bubbling issue with stopPropagation, added dynamic muscle group icons, enhanced button styling
+**Key Achievements**:
+- **Config dropdown persistence**: Fixed dropdown closing on day/plan/exercise swap selections using event.stopPropagation()
+- **Dynamic Focus icons**: Muscle group icons update based on current/next exercise in Superset/Partner modes
+- **Button styling**: Cancel button (solid gray) and Reset Settings button (solid red with black text)
+- **Reset menu cleanup**: Removed "Reset Settings - Clear Logs" from selector, kept Reset Settings button
+- **Modal state preservation**: Config dropdown stays open when Superset/Partner modes are confirmed or cancelled
+- **Dual-mode clear bug**: Fixed exercise duplication when clearing logged sets in dual modes
+- **Hamburger menu z-index**: Fixed config card not muting when side nav opens
+**Root Causes Identified**:
+- **Dropdown closing**: Click event was bubbling to document-level `handleClickOutside()` after list item handler completed and unlocked
+- **Exercise duplication**: `resetExerciseForMuscleGroup()` wasn't respecting `supersetSide` parameter, replaced exercises across both sides
+- **Modal closing dropdown**: No state restoration on modal confirm/cancel
+**Technical Architecture**:
+- Event flow: List item click → handler runs → selector closes → unlock → event.stopPropagation() prevents bubbling to handleClickOutside()
+- Lock mechanism: `configHeaderLocked` flag prevents click-outside from closing during operations
+- State restoration: `wasConfigHeaderExpandedBeforeModal` tracks state before opening Superset/Partner modals
+- Dynamic icons: `renderFocusDisplay()` updates icon based on `currentLogIndex` or next pending exercise in dual modes
+- Muscle group icons: PNG images at `/icons/muscle-groups/` (arms, chest, back, legs, shoulders)
+**Files Modified**:
+- `src/services/actionService.js` - Added event.stopPropagation() in list item handler, modal state tracking, extensive debug logging
+- `src/services/workoutService.js` - Fixed resetExerciseForMuscleGroup() to respect supersetSide parameter
+- `src/services/selectorService.js` - Added closeAllExceptConfigHeader() function
+- `src/features/config-header/config-header.index.js` - Added renderFocusDisplay(), configHeaderLocked checks, notifyConfigHeaderToggled()
+- `src/features/config-header/config-header.template.js` - Updated getMuscleGroupIcon() for dual-mode dynamic icons, removed Reset menu item
+- `src/features/config-header/config-header.style.css` - Button styling (Cancel: gray/white, Reset: red/black)
+- `src/features/workout-log/workout-log.index.js` - Pass supersetSide to resetExerciseForMuscleGroup()
+- `src/features/superset-modal/superset-modal.index.js` - State restoration before modalService.close()
+- `src/features/partner-modal/partner-modal.index.js` - State restoration before modalService.close()
+- `src/features/side-nav/side-nav.style.css` - Z-index fix for config card muting
+- `src/state.js` - Added wasConfigHeaderExpandedBeforeModal and configHeaderLocked flags
+- `src/main.js` - Added renderFocusDisplay() call in updateActiveWorkoutPreservingLogs()
+**Debugging Journey**:
+1. First attempt: State restoration after renderAll() - FAILED (timing issue)
+2. Second attempt: Setting state BEFORE renderAll() - FAILED
+3. Third attempt: Lock mechanism - FAILED (event still bubbling)
+4. Fourth attempt: Centralized unlock timing - FAILED
+5. Fifth attempt: closeAllExceptConfigHeader() - FAILED
+6. Debug logging revealed: State TRUE after unlock, FALSE on render - event bubbling to handleClickOutside()
+7. Final solution: event.stopPropagation() in list item handler
+**Technical Discoveries**:
+- Event bubbling continues after handler completes - must explicitly stop propagation
+- Lock mechanism alone insufficient if event still bubbles to document level
+- Debug logging critical for identifying state change timing
+- Modal state preservation requires tracking before modal opens (not after)
+- Dual-mode side tracking critical for exercise reset/swap operations
+- PNG muscle group icons provide better visual clarity than emoji
+**Status**: COMPLETE - Config dropdown persists correctly, dynamic icons working, all styling complete, dual-mode clear bug fixed
+
+### **v6.21 - Session Cycling Bug Fixes & Session Stack Enhancement**
+**Date**: 2025-10-02
+**Problem**: Critical session cycling double-click bug after Reset, animations restarting on session changes, Plan Quick Button font/spacing issues
+**Solution**: Fixed state/config name mismatch, prevented unnecessary re-renders, corrected font inheritance, added stacked "Remain" text to Session Quick Button
+**Key Achievements**:
+- **Session cycling fixed**: Corrected `state.js` initial session name "Recommended:" → "Standard:" (matches config.js v6.17 rename)
+- **Animation preservation**: Modified `updateActiveWorkoutPreservingLogs()` to skip active card/log re-render for normal session cycling (only re-render for dual-mode changes)
+- **Plan Quick Button styling**: Fixed font-size inheritance (1rem → 1.25rem), added explicit Roboto font, weight 500, proper 7px/-3px/9px spacing
+- **Session Quick Button stack**: Added "Remain" text stacked under "# Mins" with matching font/color/spacing
+- **First-click reliability**: Session cycling works on first click after Reset/page load
+- **4-second pulse preserved**: Exercise card border glow and button animations no longer restart on session cycling
+**Root Causes Identified**:
+- **Double-click bug**: State/config name mismatch from incomplete v6.17 migration ("Recommended:" vs "Standard:")
+- **Animation restart**: Workout log length change triggered full re-render of active card (line 69-73 in main.js)
+- **Font size issue**: `.icon-bar` 1rem font-size inherited by child buttons, overriding intended 1.25rem
+**Technical Architecture**:
+- Session cycling flow: `cycleNextSession()` → `handleTimeChange()` → `updateActiveWorkoutPreservingLogs()` → setTimeout(50ms) → `renderSessionDisplay()`
+- Stack layout pattern: Padding 7px/9px top/bottom, first span margin-bottom -3px (7px visual gap), line-height 1.2
+- Render condition: `if (oldLogLength !== newLogLength && (appState.superset.isActive || appState.partner.isActive))` preserves animations
+- Font cascade fix: Set font-size on `.icon-bar-item.icon-plan-wide` to override parent `.icon-bar`
+**Files Modified**:
+- `src/state.js` - Fixed initial currentTimeOptionName (Recommended → Standard)
+- `src/main.js` - Modified re-render condition, changed RAF to setTimeout(50)
+- `src/features/config-header/config-header.template.js` - Added `getSessionTimeText()` helper, removed inline styles from Plan Quick Button
+- `src/features/config-header/config-header.style.css` - Added `.session-quick-button-stack` CSS, fixed Plan Quick Button font inheritance
+- `src/features/config-header/config-header.index.js` - Updated `renderSessionDisplay()` to handle stacked spans, updated comments (Recommended → Standard)
+- `src/services/actionService.js` - Calls `updateActiveWorkoutPreservingLogs()` for session cycling (not just `updateWorkoutTimeRemaining()`)
+**Debugging Discoveries**:
+- Console logging revealed state was "Recommended:" but config expected "Standard:"
+- First click cycled Recommended→Standard (appeared as no-op), second click Standard→Express (worked correctly)
+- Animation restart traced to workout log length comparison triggering active card re-render
+- Font size issue traced to CSS specificity: parent `.icon-bar` 1rem inherited by all children
+**Technical Discoveries**:
+- State/config consistency critical after config renames - must update all references
+- Conditional re-renders must check mode context to preserve animations
+- CSS font-size inheritance from parent containers can override child declarations
+- Stack layout using negative margins (-3px) creates consistent visual gaps with line-height 1.2
+**Status**: COMPLETE - All session cycling issues resolved, animations preserved, fonts corrected, stack feature added
+
 ### **v6.20 - Config-Header Dropdown Redesign**
 **Date**: 2025-10-01
 **Problem**: Config-header needed complete UX redesign as giant selector dropdown instead of expand/collapse card, with proper spacing, alignment, and interaction behavior

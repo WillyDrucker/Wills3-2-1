@@ -16,7 +16,7 @@ import { renderVideoPlayer } from "features/video-player/video-player.index.js";
 import { renderSupersetModal } from "features/superset-modal/superset-modal.index.js";
 import { renderPartnerModal } from "features/partner-modal/partner-modal.index.js";
 import { renderWorkoutLog } from "features/workout-log/workout-log.index.js";
-import { renderConfigHeader, renderSessionDisplay } from "features/config-header/config-header.index.js";
+import { renderConfigHeader, renderSessionDisplay, renderFocusDisplay } from "features/config-header/config-header.index.js";
 import {
   renderActiveExerciseCard,
   initializeActiveCardEventListeners,
@@ -65,16 +65,22 @@ function updateActiveWorkoutPreservingLogs() {
   const newLogLength = appState.session.workoutLog?.length || 0;
 
   // 🔒 CEMENT: Minimal render to preserve animations and config-header state
-  // Always use targeted updates to preserve config-header expanded state
-  if (oldLogLength !== newLogLength) {
-    // Workout structure changed - need to update active card and log
+  // DO NOT re-render active card/log when session cycling - it restarts animations
+  // Only re-render if the workout structure actually changed (e.g., mode switch)
+  // Session cycling only needs to update the session display (handled below)
+  if (oldLogLength !== newLogLength && (appState.superset.isActive || appState.partner.isActive)) {
+    // Only re-render for dual-mode structure changes, not session cycling
     renderActiveExerciseCard();
     renderWorkoutLog();
   }
 
   // Always update session display (works whether expanded or collapsed)
   // This updates both the icon bar button and expanded session text
-  renderSessionDisplay();
+  // Use setTimeout with longer delay to ensure DOM is ready on first open
+  setTimeout(() => {
+    renderSessionDisplay();
+    renderFocusDisplay(); // Update focus icon for dual-mode exercise cycling
+  }, 50);
 
   persistenceService.saveState();
 }

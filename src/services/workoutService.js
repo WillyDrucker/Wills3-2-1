@@ -130,7 +130,7 @@ export function updateWorkoutTimeRemaining() {
   );
 }
 
-export function resetExerciseForMuscleGroup(muscleGroup, day) {
+export function resetExerciseForMuscleGroup(muscleGroup, day, supersetSide = null) {
   const currentPlan = programConfig[appState.session.currentWorkoutPlanName];
   const orderKey = currentPlan.orderKey;
 
@@ -144,15 +144,38 @@ export function resetExerciseForMuscleGroup(muscleGroup, day) {
 
   if (!defaultExercise) return;
   const finalExerciseData = youtubeService.getExerciseWithLink(defaultExercise);
+
+  // 🔒 CEMENT: In dual mode, find exercise matching both muscle group AND side
+  // Prevents cross-contamination between left/right side exercises
   const currentExerciseInLog = appState.session.workoutLog.find(
-    (log) => log.exercise.muscle_group === muscleGroup
+    (log) => {
+      const muscleGroupMatches = log.exercise.muscle_group === muscleGroup;
+      // In dual mode, also match the side
+      if (appState.superset.isActive || appState.partner.isActive) {
+        return muscleGroupMatches && log.supersetSide === supersetSide;
+      }
+      return muscleGroupMatches;
+    }
   );
+
   if (!currentExerciseInLog) return;
   const oldExerciseName = currentExerciseInLog.exercise.exercise_name;
 
+  // 🔒 CEMENT: Only update exercises on the same side in dual mode
+  // Prevents replacing exercises on both sides when clearing one side
   appState.session.workoutLog.forEach((log) => {
-    if (log.exercise.exercise_name === oldExerciseName) {
-      log.exercise = finalExerciseData;
+    const nameMatches = log.exercise.exercise_name === oldExerciseName;
+
+    // In dual mode, only update logs on the same side
+    if (appState.superset.isActive || appState.partner.isActive) {
+      if (nameMatches && log.supersetSide === supersetSide) {
+        log.exercise = finalExerciseData;
+      }
+    } else {
+      // Normal mode - update all matching exercises
+      if (nameMatches) {
+        log.exercise = finalExerciseData;
+      }
     }
   });
 }

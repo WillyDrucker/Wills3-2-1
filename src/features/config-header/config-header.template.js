@@ -26,19 +26,35 @@ function getSessionIcon() {
   return "🎯"; // Standard
 }
 
-// Helper: Get muscle group icon based on workout title
+// Helper: Get muscle group icon based on current exercise bodypart
 function getMuscleGroupIcon() {
   const { superset, partner, session } = appState;
 
-  // For normal mode, get current day's muscle group
   let muscleGroup = "";
-  if (!superset.isActive && !partner.isActive) {
+
+  // For dual modes (superset/partner), use current exercise's bodypart
+  if (superset.isActive || partner.isActive) {
+    const currentLog = session.workoutLog[session.currentLogIndex];
+    if (currentLog) {
+      // Current exercise available - use its bodypart
+      const dayInfo = appState.weeklyPlan[currentLog.exercise.day];
+      muscleGroup = dayInfo?.title || currentLog.exercise.body_part || "";
+    } else {
+      // No current exercise (both timers active/waiting) - find next pending exercise
+      const nextPendingLog = session.workoutLog.find(log => log.status === "pending");
+      if (nextPendingLog) {
+        const dayInfo = appState.weeklyPlan[nextPendingLog.exercise.day];
+        muscleGroup = dayInfo?.title || nextPendingLog.exercise.body_part || "";
+      }
+    }
+  } else {
+    // For normal mode, get current day's muscle group
     const dayInfo = appState.weeklyPlan[session.currentDayName];
     muscleGroup = dayInfo?.title || "";
   }
 
   // Image-based icons for different muscle groups
-  const iconSize = "20"; // 20px to match previous SVG sizing
+  const iconSize = "45"; // 45px to fill button container
 
   // Arms - flexed bicep
   if (muscleGroup.toLowerCase().includes("arm")) {
@@ -77,27 +93,31 @@ function getAbbreviatedPlanText() {
     const day1Info = appState.weeklyPlan[superset.day1];
     const day2Info = appState.weeklyPlan[superset.day2];
     // Stacked layout: day1 on top (green), day2 below (yellow)
-    return `<div style="display: flex; flex-direction: column; gap: 6px; line-height: 1;"><span class="data-highlight text-plan">${day1Info.title}</span><span class="data-highlight text-warning">${day2Info.title}</span></div>`;
+    return `<div class="plan-quick-button-stack"><span class="data-highlight text-plan">${day1Info.title}</span><span class="data-highlight text-warning">${day2Info.title}</span></div>`;
   } else if (partner.isActive) {
     // Stacked layout: user1 on top (green), user2 below (blue)
-    return `<div style="display: flex; flex-direction: column; gap: 6px; line-height: 1;"><span class="data-highlight text-plan">${partner.user1Name}</span><span class="data-highlight text-primary">${partner.user2Name}</span></div>`;
+    return `<div class="plan-quick-button-stack"><span class="data-highlight text-plan">${partner.user1Name}</span><span class="data-highlight text-primary">${partner.user2Name}</span></div>`;
   } else {
-    // Normal mode: Abbreviated duration (e.g., "15 Weeks" becomes "15 Wks")
+    // Normal mode: "3-2-1" (gray) on top, duration (green) below
     const currentPlan = workoutPlans.find((p) => p.name === session.currentWorkoutPlanName) || workoutPlans[0];
     const durationParts = currentPlan.duration.split(' ');
     const durationNumber = durationParts[0];
     // Abbreviate "Weeks" to "Wks"
     const durationUnit = durationParts[1] ? durationParts[1].replace('Weeks', 'Wks').replace('weeks', 'Wks') : '';
-    return `<span class="data-highlight text-plan">${durationNumber} ${durationUnit}</span>`;
+    return `<div class="plan-quick-button-stack"><span class="plan-quick-button-muted">3-2-1</span><span class="data-highlight text-plan">${durationNumber} ${durationUnit}</span></div>`;
   }
+}
+
+// Helper: Get session time text for Session Quick Button
+function getSessionTimeText() {
+  const { session } = appState;
+  const timeMinutes = appState.session.workoutTimeRemaining;
+  // Stacked layout: minutes on top (colored), "Remain" below (same color)
+  return `<div class="session-quick-button-stack"><span class="${session.currentSessionColorClass}">${timeMinutes} Mins</span><span class="${session.currentSessionColorClass}">Remain</span></div>`;
 }
 
 // Collapsed state template - minimal icon bar
 function getCollapsedTemplate() {
-  const { session } = appState;
-  const currentTime = timeOptions.find((t) => t.name === session.currentTimeOptionName) || timeOptions[0];
-  const timeMinutes = appState.session.workoutTimeRemaining;
-
   return `
     <div class="card" id="config-header">
       <div class="card-content-container">
@@ -114,7 +134,7 @@ function getCollapsedTemplate() {
               ${getMuscleGroupIcon()}
             </button>
             <button class="icon-bar-item icon-session-wide" data-action="toggleConfigHeader" aria-label="Session Minutes">
-              <span class="session-text ${session.currentSessionColorClass}">${timeMinutes} Mins</span>
+              <span class="session-text">${getSessionTimeText()}</span>
             </button>
           </div>
         </div>
@@ -159,11 +179,6 @@ function getExpandedTemplate() {
     `<li class="${isModeChangeDisabled ? "is-muted" : ""}" data-action="openPartnerMode"><div class="selector-content multi-line balanced-text"><span class="truncate-text">Partner Mode:</span><span class="truncate-text text-primary">Two People, Same Workout</span></div></li>`
   );
 
-  // Option: Reset
-  options.push(
-    `<li class="has-colored-border border-red" data-action="openResetConfirmationModal"><div class="selector-content"><span class="truncate-text text-skip">Reset Settings - Clear Logs</span></div></li>`
-  );
-
   // Current Session display
   const currentTime = timeOptions.find((t) => t.name === session.currentTimeOptionName) || timeOptions[0];
   const timeMinutes = appState.session.workoutTimeRemaining;
@@ -189,7 +204,7 @@ function getExpandedTemplate() {
               ${getMuscleGroupIcon()}
             </button>
             <button class="icon-bar-item icon-session-wide" data-action="toggleConfigHeader" aria-label="Session Minutes">
-              <span class="session-text ${session.currentSessionColorClass}">${timeMinutes} Mins</span>
+              <span class="session-text">${getSessionTimeText()}</span>
             </button>
           </div>
           <div class="config-header-expanded-content">

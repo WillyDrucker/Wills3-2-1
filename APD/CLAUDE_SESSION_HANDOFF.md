@@ -1,230 +1,172 @@
 # CLAUDE SESSION HANDOFF
 
-**Date**: 2025-10-01
-**Status**: COMPLETE - Config-Header Dropdown Redesign
-**Version**: v6.20
-
-## CURRENT SESSION ACHIEVEMENTS (2025-10-01)
-
-### CONFIG-HEADER DROPDOWN REDESIGN (v6.20) ✅ COMPLETE
-
-**Achievement**: Complete UX redesign of config-header as giant selector dropdown overlay with flexible icon bar, stacked dual-mode text, and proper spacing/interaction behavior
-
-**Problems Solved**:
-1. Config-header dropdown needed to overlay instead of pushing content down
-2. Icon bar buttons needed flexible sizing (Plan and Session span available space)
-3. Reset button removed from icon bar, moved to dropdown footer
-4. Session button needed to show "XX Mins" format with full text
-5. Dual-mode text needed stacking (bodyparts or names) instead of abbreviation
-6. Dropdown alignment and background color mismatches
-7. Layout shift (2px down) when opening dropdown
-8. Bodypart (push/pull) reappearing in active-exercise card after clock updates
-9. Session cycling buttons required two clicks on first open
-10. Session cycling buttons closed dropdown when clicked
-11. Partner mode selector not opening (action name mismatch)
-12. Spacing inconsistencies throughout dropdown (not 16px visual)
-
-**Core Implementation Complete**:
-- ✅ **Dropdown overlay**: Absolute positioned dropdown overlays on active-exercise card
-- ✅ **Icon bar redesign**: Plan (flex 1) | Bodypart (50px) | Session (flex 1)
-- ✅ **Reset removed**: Reset button removed from icon bar, added to footer
-- ✅ **Session extended**: "37 Mins" format with colored text matching session type
-- ✅ **Dual-mode stacking**: Bodyparts/names stacked with 6px gap in Plan Quick Button
-- ✅ **Cancel/Reset footer**: Bottom buttons with 16px spacing between
-- ✅ **Seamless connection**: Blue border always visible, squared corners, matching backgrounds
-- ✅ **No layout shift**: Margin compensation prevents 2px shift on expand
-- ✅ **Session cycling**: Works on first click, dropdown stays open
-- ✅ **Bodypart removed**: Completely removed from active-exercise card header
-- ✅ **Spacing fixed**: All elements have proper 16px visual spacing
-- ✅ **Partner mode fixed**: Action name corrected to openPartnerMode
-
-**Files Modified** (6 files):
-- `src/features/config-header/config-header.template.js` - Removed reset, extended session, stacked dual-mode, wrapped expanded content, fixed partner action
-- `src/features/config-header/config-header.style.css` - Absolute positioning, flexible widths, blue border always visible, spacing fixes
-- `src/features/config-header/config-header.index.js` - Click-outside improvements, setTimeout flag clearing, renderSessionDisplay updates icon bar
-- `src/features/active-exercise-card/active-exercise-card.templates.workoutCard.js` - Removed workout focus completely
-- `src/features/active-exercise-card/active-exercise-card.index.js` - Removed workout focus from renderActiveCardHeader
-- `src/main.js` - Removed renderConfigHeader from updateActiveWorkoutPreservingLogs
-
-**Technical Discoveries**:
-- Absolute positioned dropdown requires `top: 100%` and negative left/right offsets for alignment
-- Blue border must always be visible (not transparent) to prevent 2px layout shift
-- Margin compensation `calc(var(--space-m) - 2px)` when expanded prevents shift
-- Click-outside handler with `setTimeout(() => ignoreNextOutsideClick = false, 0)` clears flag after render
-- Click-outside must check for buttons/selectors inside card and return early
-- Session cycling must use `renderSessionDisplay()` not `renderConfigHeader()` to preserve dropdown state
-- Flexible icon bar buttons with `flex: 1` adapt to available space
-
-**Status**: COMPLETE - Config-header dropdown fully functional with proper spacing, no layout shifts, session cycling working
-
-## NEXT SESSION PRIORITIES
-
-### HIGH PRIORITY - Icon Bar Enhancements
-
-1. **Create remaining muscle group icons** (CRITICAL):
-   - ⬜ chest.png (500×500px, transparent background)
-   - ⬜ back.png (500×500px, transparent background)
-   - ⬜ legs.png (500×500px, transparent background)
-   - ⬜ shoulders.png (500×500px, transparent background)
-   - Export from GIMP with "Save background color" UNCHECKED
-   - Save to `/icons/muscle-groups/` at root level
-   - Status: arms.png ✅ complete, 4 more needed
-
-2. **Plan Quick Button improvements**:
-   - Current implementation shows stacked text for Superset/Partner modes (6px gap)
-   - Verify stacking renders correctly on different screen sizes
-   - Consider font size adjustments if text overflows
-
-3. **Session Quick Button improvements**:
-   - Current implementation shows "37 Mins" with colored number
-   - Verify text fits within flex container on different session types
-   - Test color visibility for all session types (Standard/Express/Maintenance)
-
-### MEDIUM PRIORITY - Config-Modal Business Logic Cleanup
-
-4. **Relocate config-modal business logic**:
-   - Functions still needed: handleTimeChange, handleDayChange, handlePlanChange, resetToDefaults
-   - Currently in: `src/features/config-modal/config-modal.index.js`
-   - Options: Move to configService.js, move to config-header.index.js, or rename folder
-   - These functions are actively used by config-header component
-
-5. **Config-card folder cleanup**:
-   - Verify if config-card files still referenced anywhere
-   - Remove entire `src/features/config-card/` folder if no longer needed
-   - Update any remaining imports
-
-### LOW PRIORITY - Testing & Polish
-
-6. **Test dropdown behavior**:
-   - Verify dropdown doesn't overflow viewport on mobile
-   - Test selector menus (Current Plan, Current Focus) open/close correctly
-   - Test session cycling in all modes (Normal, Superset, Partner)
-   - Verify click-outside closes dropdown properly
-
-7. **Accessibility improvements**:
-   - Add proper ARIA labels for icon bar buttons
-   - Add keyboard navigation for dropdown
-   - Test screen reader compatibility
-
-8. **Performance testing**:
-   - Verify no memory leaks from click-outside handler
-   - Test dropdown open/close performance
-   - Verify renderSessionDisplay updates don't cause jank
-
-## TECHNICAL STATE
-
-### Config-Header Architecture (v6.20)
-
-**Icon Bar Structure**:
-```html
-<div class="icon-bar">
-  <button class="icon-bar-item icon-plan-wide" data-action="toggleConfigHeader">
-    <!-- Normal: "15 Wks" -->
-    <!-- Superset: Stacked "Chest" / "Back" with 6px gap -->
-    <!-- Partner: Stacked "Will" / "Guest" with 6px gap -->
-  </button>
-  <button class="icon-bar-item icon-display" data-action="toggleConfigHeader">
-    <img src="/icons/muscle-groups/arms.png" /> <!-- 20×20px, only arms.png exists -->
-  </button>
-  <button class="icon-bar-item icon-session-wide" data-action="toggleConfigHeader">
-    <span class="session-text text-plan">37 Mins</span> <!-- Color changes by session -->
-  </button>
-</div>
-```
-
-**Dropdown Structure**:
-```html
-<div class="config-header-expanded-content">
-  <!-- Absolute positioned, top: 100%, overlays below card -->
-
-  <!-- Current Plan selector (margin-top: -1px for 16px visual) -->
-  <div style="margin-top: -1px;">
-    <h2>Current Plan</h2>
-    <details class="app-selector">...</details>
-  </div>
-
-  <!-- Current Focus selector (margin-top: 13px for 16px visual) -->
-  <div style="margin-top: 13px;">
-    <h2>Current Focus</h2>
-    <details class="app-selector">...</details>
-  </div>
-
-  <!-- Session cycling (margin-top: 16px) -->
-  <div class="current-session-display">
-    <button class="session-chevron-left">◀</button>
-    <div class="current-session-text">Standard: 37 Mins</div>
-    <button class="session-chevron-right">▶</button>
-  </div>
-
-  <!-- Footer buttons (margin-top: 16px, gap: 16px, padding-bottom: 16px) -->
-  <div class="config-header-actions">
-    <button class="cancel-button">Cancel</button>
-    <button class="reset-button">Reset Settings</button>
-  </div>
-</div>
-```
-
-**State Management**:
-- `appState.ui.isConfigHeaderExpanded` (boolean) - Controls collapsed/expanded state
-- Defaults to `false` (collapsed) for maximum screen space
-- Persisted to localStorage across sessions
-- Toggle via `data-action="toggleConfigHeader"` on any icon bar button
-- Blue border always visible (prevents layout shift)
-- Margin compensation when expanded: `calc(var(--space-m) - 2px)`
-
-**Click-Outside Handler**:
-- Attached once on first render
-- `ignoreNextOutsideClick` flag prevents immediate close on toggle
-- Flag cleared via `setTimeout(() => { ignoreNextOutsideClick = false }, 0)` after render
-- Handler returns early for clicks on buttons/selectors inside card
-- Closes dropdown only if clicking outside config-header card
-
-**Session Cycling**:
-- Chevron buttons use `data-action="cyclePreviousSession"` and `data-action="cycleNextSession"`
-- Actions call `cycleNextSession()` / `cyclePreviousSession()` from config-header.index.js
-- These call `handleTimeChange()` which updates state
-- `updateActiveWorkoutPreservingLogs()` in main.js preserves logged sets
-- Always calls `renderSessionDisplay()` (NOT `renderConfigHeader()`) to preserve dropdown state
-- `renderSessionDisplay()` updates both icon bar button and expanded session text via textContent
-
-**Dual-Mode Text Stacking**:
-- Superset: Bodypart1 (green) stacked on top, Bodypart2 (yellow) below
-- Partner: User1Name (green) stacked on top, User2Name (blue) below
-- Both use: `<div style="display: flex; flex-direction: column; gap: 6px; line-height: 1;">`
-- Follows 6/7/7 rhythm pattern used in selector menu items
-
-**Spacing Pattern** (all 16px visual):
-- Current Setup header: 13px padding-top + 2px border + 1px font = 16px visual
-- Current Plan header: -1px margin-top (compensates for icon bar gap)
-- Current Focus header: 13px margin-top
-- Session cycling: 16px margin-top
-- Footer buttons: 16px margin-top, 16px gap between, 16px padding-bottom
-
-## ISSUES RESOLVED
-
-### Completed This Session (v6.20)
-1. ✅ **Dropdown overlay** - Config-header dropdown overlays on active-exercise card
-2. ✅ **Icon bar flexible sizing** - Plan and Session buttons use flex: 1
-3. ✅ **Reset button removed** - Moved to dropdown footer
-4. ✅ **Session button extended** - Shows "37 Mins" with colored text
-5. ✅ **Dual-mode stacking** - Bodyparts/names stacked in Plan Quick Button
-6. ✅ **Dropdown alignment** - Left/right borders align perfectly with card
-7. ✅ **Background color match** - Dropdown uses var(--surface-dark) matching card
-8. ✅ **Layout shift fix** - Margin compensation prevents 2px shift
-9. ✅ **Bodypart removal** - Completely removed from active-exercise card
-10. ✅ **Double-click fix** - setTimeout clears ignore flag after render
-11. ✅ **Session cycling stays open** - Removed renderConfigHeader from update
-12. ✅ **Partner mode fix** - Corrected action name to openPartnerMode
-13. ✅ **Spacing fixes** - All elements have proper 16px visual spacing
-
-## KNOWN ISSUES
-
-### To Address Next Session
-1. ⬜ **Muscle group icons incomplete** - Only arms.png exists, need 4 more
-2. ⬜ **Icon bar font sizing** - May need adjustment for stacked dual-mode text
-3. ⬜ **Config-modal business logic** - Still in config-modal folder, needs relocation
-4. ⬜ **Config-card folder** - May be unused, needs verification and cleanup
+**Date**: 2025-10-03
+**Status**: 🔄 IN PROGRESS - Core Complete, Edge Cases Remain
+**Version**: v6.23 (PARTIAL)
 
 ---
 
-**Session Notes**: Major UX redesign session transforming config-header from expand/collapse card to dropdown selector overlay. Multiple iterations on spacing, alignment, and interaction behavior. All core functionality working, ready for icon completion and cleanup tasks.
+## ✅ SESSION ACHIEVEMENTS
+
+### **1. Config Dropdown Persistence on Modal Confirmation - FIXED**
+**Problem**: Config dropdown was closing when confirming Superset/Partner mode (after modal opened and user clicked "Superset!" or "Partner Up!" button).
+
+**Root Cause**: Unlock was happening before `updateActiveWorkoutAndLog()` re-render completed, allowing click-outside handler to close dropdown.
+
+**Solution**:
+```javascript
+confirmSuperset: () => {
+  handleConfirmSuperset();
+  coreActions.updateActiveWorkoutAndLog();
+  // Unlock AFTER everything settles
+  setTimeout(() => {
+    appState.ui.configHeaderLocked = false;
+    persistenceService.saveState();
+  }, 0);
+}
+```
+
+**Files Modified**:
+- `src/services/actionService.js` - setTimeout(0) unlock in confirmSuperset/confirmPartnerWorkout
+
+### **2. Bidirectional Selector Blocking - IMPLEMENTED**
+**Problem**: Config dropdown blocked external selectors from opening, but external selectors didn't block config dropdown.
+
+**Solution**: Added check in both directions:
+- `selectorService.toggle()` - Checks if config dropdown is open before allowing external selectors
+- `toggleConfigHeader()` - Checks if external selector is open before allowing toggle
+
+**Files Modified**:
+- `src/services/actionService.js` - Added external selector check in toggleConfigHeader
+- `src/services/selectorService.js` - Added config dropdown check in toggle()
+
+### **3. Visual Muting Consistency - ENHANCED**
+**Problem**: Exercise selector wasn't fully muting when edit log selectors were open (opacity was staying at 1.0 instead of 0.2).
+
+**Solution**: Added CSS !important rules to force muting regardless of .is-muted class state:
+```css
+body.is-selector-open details#exercise-selector:not([open]) > summary {
+  background-color: var(--background-dark) !important;
+  box-shadow: inset 0 0 0 var(--card-border-width) var(--primary-blue-dark) !important;
+}
+body.is-selector-open details#exercise-selector:not([open]) > summary .selector-content {
+  filter: brightness(0.5) saturate(0.5) !important;
+  opacity: 0.2 !important;
+}
+```
+
+**Files Modified**:
+- `src/features/active-exercise-card/active-exercise-card.selector.css` - Forced muting rules
+
+### **4. Config Border Muting - ADDED**
+**Problem**: Config dropdown border stayed bright blue when external selectors were open, inconsistent with other muting behavior.
+
+**Solution**: Added border color transition to dark blue:
+```css
+body.is-selector-open #config-header:not(:has(details[open])) {
+  border-color: var(--primary-blue-dark);
+}
+```
+
+**Files Modified**:
+- `src/features/config-header/config-header.style.css` - Border muting rule
+
+---
+
+## 🔄 KNOWN ISSUES (Next Session Priorities)
+
+### **Selector Muting Edge Cases**
+Based on user testing, additional edge cases identified:
+
+1. **Exercise selector partial muting inconsistency**:
+   - After first muscle_group logged (1 of 3, 2 of 3, 3 of 3), exercise selector becomes available again
+   - Opening edit log selector should fully mute exercise selector (currently doesn't)
+   - Fuel gauge segment animation completing triggers re-render that fixes muting (timing issue)
+   - Closing/reopening edit log selector loses muting again
+
+2. **General muting audit needed**:
+   - Review all selector muting states across the application
+   - Ensure one-selector-to-rule-them-all applies universally
+   - Check for other re-render timing issues affecting muting state
+
+### **Technical Debt**
+- Re-render timing affecting muting state (fuel gauge animation example)
+- Muting determined at template generation time, not reactive to "is another selector open" state
+- CSS !important used as workaround for specificity conflicts (should audit and resolve root cause)
+
+---
+
+## FILES MODIFIED THIS SESSION
+
+**JavaScript**:
+- `src/services/actionService.js` - setTimeout unlock, bidirectional blocking in toggleConfigHeader
+- `src/services/selectorService.js` - Config dropdown check in toggle()
+- `src/features/superset-modal/superset-modal.index.js` - Removed early unlock (moved to actionService)
+- `src/features/partner-modal/partner-modal.index.js` - Removed early unlock (moved to actionService)
+
+**CSS**:
+- `src/features/config-header/config-header.style.css` - Border muting when external selector open
+- `src/features/active-exercise-card/active-exercise-card.selector.css` - Forced muting rules with !important
+
+---
+
+## TECHNICAL DETAILS
+
+**setTimeout(0) Pattern for Unlock**:
+```
+Modal confirm → handleConfirm() → close modal → updateActiveWorkoutAndLog() → renderAll()
+→ Queue microtask: setTimeout(0) → unlock → Next event loop tick → Safe to handle clicks
+```
+
+**Bidirectional Blocking Flow**:
+```
+Direction 1: Config dropdown open → User clicks external selector → selectorService.toggle()
+→ Check: isConfigDropdownOpen? → Yes → return (blocked) ✓
+
+Direction 2: External selector open → User clicks config toggle → toggleConfigHeader()
+→ Check: openSelector && !inside config? → Yes → return (blocked) ✓
+```
+
+**Visual Muting Hierarchy**:
+1. Business logic muting: `.is-muted` class (based on logged sets, etc.)
+2. Global selector muting: `body.is-selector-open` (when any selector open)
+3. Forced overrides: `!important` rules for edge cases
+
+---
+
+## PREVIOUS SESSION ACHIEVEMENTS (v6.22)
+
+✅ Config dropdown persistence on day/plan/exercise selection (event.stopPropagation)
+✅ Dynamic Focus Quick Button icons for dual modes
+✅ Button styling (Cancel/Reset solid colors)
+✅ Reset menu cleanup
+✅ Modal state preservation
+✅ Dual-mode clear bug fix
+✅ Hamburger menu z-index fix
+
+---
+
+## NEXT SESSION TASKS
+
+**Priority 1 - Selector Muting Edge Cases**:
+1. Fix exercise selector muting when edit log selector opens (after muscle group progressed)
+2. Investigate re-render timing affecting muting state
+3. Audit all selector muting states for consistency
+
+**Priority 2 - Technical Cleanup**:
+1. Review CSS specificity conflicts requiring !important
+2. Consider making muting reactive to selector state instead of template-time determination
+3. Document final muting rules in CEMENT system
+
+**Priority 3 - Testing**:
+1. Test all selector combinations for proper muting
+2. Verify one-selector-to-rule-them-all across entire application
+3. Check edge cases: modals, side nav, video player, etc.
+
+---
+
+**Session Notes**: This session focused on completing config dropdown persistence and implementing bidirectional selector blocking. Core functionality is complete - config dropdown stays open when selecting items and confirming modes, and selectors properly block each other. However, user testing revealed edge cases with exercise selector muting that need investigation. The issue appears to be related to re-render timing and how muting state is determined (template generation vs reactive state). The fuel gauge animation triggering a re-render that "fixes" the muting is a clue that the muting logic needs to be more reactive to current selector state.
+
+**User Feedback**: "We're making good progress on this. There's a lot more to address with the selector muting/disabling logic and getting it all right" - indicates more edge cases to discover and fix in next session.
+
+**Command Note**: User asked about `claude --continue` - explained it automatically resumes most recent session in current directory with full context, no manual saving needed.

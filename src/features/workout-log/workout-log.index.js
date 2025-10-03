@@ -92,14 +92,29 @@ export function handleClearSet(index) {
     sessionLogToUpdate.reps = 10;
   }
 
+  // 🔒 CEMENT: In dual mode, check if any sets remain completed on THIS SIDE only
+  // Prevents resetting exercises when clearing one side but other side still has completed sets
   const remainingCompleted = appState.session.workoutLog.some(
-    (log) =>
-      log.exercise.muscle_group === muscleGroupToReset &&
-      log.status === "completed"
+    (log) => {
+      const muscleGroupMatches = log.exercise.muscle_group === muscleGroupToReset;
+      const statusMatches = log.status === "completed";
+
+      // In dual mode, only count completed sets on the same side
+      if (appState.superset.isActive || appState.partner.isActive) {
+        return muscleGroupMatches && statusMatches && log.supersetSide === logToClear.supersetSide;
+      }
+
+      return muscleGroupMatches && statusMatches;
+    }
   );
 
   if (!remainingCompleted) {
-    workoutService.resetExerciseForMuscleGroup(muscleGroupToReset, dayForReset);
+    // Pass the superset side to ensure we only reset exercises on this side
+    workoutService.resetExerciseForMuscleGroup(
+      muscleGroupToReset,
+      dayForReset,
+      logToClear.supersetSide
+    );
   }
 
   workoutService.recalculateCurrentStateAfterLogChange({ shouldScroll: true });

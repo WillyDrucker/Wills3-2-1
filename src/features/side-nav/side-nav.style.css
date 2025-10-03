@@ -32,6 +32,12 @@ html.is-side-nav-open {
   overflow: hidden;
 }
 
+/* Ensure backdrop covers app content including config header */
+html.is-side-nav-open .app-container {
+  position: relative;
+  z-index: 1;
+}
+
 /* === BACKDROP === */
 /* Semi-transparent overlay */
 .side-nav-backdrop {

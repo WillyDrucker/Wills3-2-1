@@ -58,7 +58,17 @@ export function handleConfirmSuperset() {
   );
 
   workoutService.recalculateCurrentStateAfterLogChange();
+
+  // Restore config header expanded state from before modal opened
+  const shouldRestoreExpandedState = appState.ui.wasConfigHeaderExpandedBeforeModal;
+  if (shouldRestoreExpandedState) {
+    appState.ui.isConfigHeaderExpanded = true;
+    appState.ui.wasConfigHeaderExpandedBeforeModal = false;
+  }
+
   modalService.close();
+
+  // Note: Unlock happens AFTER updateActiveWorkoutAndLog() in actionService
 }
 
 export function renderSupersetModal() {
