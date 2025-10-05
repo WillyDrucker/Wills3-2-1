@@ -1,0 +1,173 @@
+/* ==========================================================================
+   ACTIVE EXERCISE CARD - Exercise Selector Summary (Closed State)
+
+   CEMENT: Absolute positioning architecture for mathematical precision
+   - Four-line layout: Exercise name, Equipment, Setup, Set info
+   - Spacing: 10px/10px/8px/8px visual gaps (font metrics compensated)
+   - Color-matched ellipsis via text-overflow ownership on wrapper elements
+   - Vertical-align: top required for inline-block/inline alignment
+   - 100px height exception prevents layout shift between exercise states
+
+   Architecture: Multi-line selector with absolute positioning
+   - Standard selectors: 50px (control-height)
+   - Exercise selector: 100px (selector-height override)
+   - Line 1 (top: 9px): Exercise name at 10px visual from border
+   - Line 2 (top: 35px): Equipment at 10px visual gap
+   - Line 3 (top: 55px): Setup at 8px visual gap
+   - Line 4 (top: 75px): Set info at 8px visual gap
+
+   Dependencies:
+   Global: _variables.css (font-size-h2, font-size-body-m, on-surface-medium, text-shadow-subtle)
+   Global: _selectors.css (base selector styles, open state box-shadow)
+   Local: active-exercise-card.style.css (--selector-height 100px, --selector-padding-h 16px)
+
+   Used by: Active card exercise selector closed state, displaying current exercise details
+   ========================================================================== */
+
+/* === SELECTOR CONTAINER === */
+#exercise-selector {
+  margin: 0;
+}
+
+.youtube-overlay-wrapper {
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+/* === HEIGHT EXCEPTION === */
+/* CEMENT: 100px height prevents layout shift between exercise states */
+#exercise-selector.app-selector > summary {
+  height: var(--selector-height); /* Local override: 100px */
+  min-height: var(--selector-height);
+  padding: 0 var(--selector-padding-h); /* Local: 16px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* === SELECTOR CONTENT === */
+#exercise-selector .selector-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* === ABSOLUTE POSITIONING === */
+/* CEMENT: Mathematical precision for 10px/10px/8px/8px visual spacing */
+/* Font ascender/descender compensation built into top values */
+#exercise-selector > summary .item-main-line {
+  position: absolute;
+  top: 9px; /* Compensates for font ascender, achieves 10px visual from border */
+  left: 0;
+  right: 0;
+  padding: 0 var(--selector-padding-h);
+  box-sizing: border-box;
+  display: block;
+  text-align: center;
+  font-size: var(--font-size-h2); /* Global: 1.25rem */
+  font-weight: 600;
+  line-height: 1;
+  text-shadow: var(--text-shadow-subtle); /* Global */
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+}
+
+#exercise-selector > summary .item-sub-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: 0 var(--selector-padding-h);
+  box-sizing: border-box;
+  display: block;
+  text-align: center;
+  font-size: var(--font-size-body-m); /* Global: 1rem */
+  font-weight: 600;
+  line-height: 1;
+  text-shadow: var(--text-shadow-subtle);
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* === PRECISE LINE POSITIONING === */
+/* CEMENT: Top values account for font metrics to achieve exact visual spacing */
+#exercise-selector > summary .equipment-line {
+  top: 35px; /* 10px visual gap from exercise name (includes font metrics) */
+}
+
+#exercise-selector > summary .setup-line {
+  top: 55px; /* 8px visual gap from equipment */
+}
+
+#exercise-selector > summary .set-line {
+  top: 75px; /* 8px visual gap from setup */
+}
+
+/* === CASCADE OVERRIDES === */
+#exercise-selector .item-sub-line + .item-sub-line {
+  margin-top: 0; /* Override global 4px margin - absolute positioning handles spacing */
+}
+
+/* === SEMANTIC CLASSES === */
+/* CEMENT: UI labels separated from data values for clear semantic structure */
+#exercise-selector .selector-ui-label {
+  display: inline;
+  color: var(--on-surface-medium); /* Global: informational gray */
+  font-weight: 500;
+  white-space: nowrap;
+  vertical-align: top;
+}
+
+#exercise-selector .selector-data-value {
+  display: inline;
+}
+
+#exercise-selector .selector-value-wrapper {
+  display: inline;
+}
+
+/* === TRUNCATION SYSTEM === */
+/* CEMENT: Ellipsis color inheritance - wrapper owns text-overflow, inherits child color */
+#exercise-selector > summary .selector-value-wrapper {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: top;
+}
+
+#exercise-selector > summary .item-main-line .selector-value-wrapper {
+  max-width: 100%;
+}
+
+#exercise-selector > summary .item-sub-line .selector-value-wrapper {
+  max-width: calc(100% - 80px); /* Preserve space for UI labels */
+}
+
+#exercise-selector .truncate-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: top;
+}
+
+#exercise-selector > summary .item-main-line .truncate-text {
+  display: inline-block;
+  max-width: 100%;
+}
+
+#exercise-selector > summary .item-sub-line .truncate-text {
+  display: inline-block;
+  max-width: calc(100% - 80px);
+}
+
+/* === SEPARATORS === */
+#exercise-selector .flex-separator {
+  margin: 0;
+  font-weight: 600;
+  display: inline;
+  color: var(--on-surface-medium);
+}

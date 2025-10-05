@@ -1,18 +1,20 @@
 /* ==========================================================================
-   DUAL-MODE COLORS - Timer and Visual States
+   DUAL-MODE COLORS
 
-   🔒 CEMENT: Static color assignments for dual-mode timers
-   - Superset: Left=Green, Right=Yellow
-   - Partner: Left=Green, Right=Blue
-   - Skip timers: Always Orange
+   CEMENT: Static color assignments for dual-mode timers
+   - Superset: Left=Green (plan), Right=Yellow (maintenance)
+   - Partner: Left=Green (plan), Right=Blue (primary)
+   - Skip timers: Always Orange (warning)
+   - Color assignments never change based on state
 
-   Architecture: Timer text colors only
-   Component Structure:
-   ├── Timer color classes
-   └── Button disabled states
+   Architecture: Template-assigned color classes for timer displays
+   - Timer text colors only, no background colors
+   - Button disabled states use reduced opacity
 
-   Dependencies: Global color tokens
-   Used by: Dual-mode timer displays
+   Dependencies:
+   Global: _variables.css (--text-green-plan, --text-yellow-maintenance, --primary-blue, --text-orange-warning)
+
+   Used by: Dual-mode timer displays and action buttons
    ========================================================================== */
 
 /* === TIMER COLOR CODING === */
@@ -30,6 +32,24 @@
 .timer-display.text-primary {
   color: var(--primary-blue);
   text-shadow: var(--text-shadow-subtle);
+}
+
+/* === LOG SET BUTTON COLORS === */
+/* 🔒 CEMENT: Log Set buttons match timer/fuel gauge colors for visual consistency */
+/* Static color scheme: Superset Left=Green/Right=Yellow | Partner Left=Green/Right=Blue */
+.dual-action-area-container .action-button.button-log.text-plan {
+  background: var(--log-green); /* Green for left side (both modes) */
+  color: var(--text-on-action-color); /* Black text */
+}
+
+.dual-action-area-container .action-button.button-log.text-warning {
+  background: var(--text-yellow-maintenance); /* Yellow for superset right side */
+  color: var(--text-on-action-color); /* Black text */
+}
+
+.dual-action-area-container .action-button.button-log.text-primary {
+  background: var(--primary-blue); /* Blue for partner right side */
+  color: var(--text-on-action-color); /* Black text */
 }
 
 /* === BUTTON STATES === */

@@ -7,8 +7,9 @@
    - Prevents spacing drift between workout modes
 
    Dependencies:
-   - Global: var(--selector-height), var(--selector-padding-h), color tokens
-   - Local: Active-exercise selector foundations, dual-mode container scope
+   Global: _variables.css (colors, typography, muting tokens)
+   Local: active-exercise-card.style.css (--selector-height: 100px, --selector-padding-h: 16px)
+   Parent: active-exercise-card.selector.summary.css (base selector structure)
 
    Used by: Dual-mode active card during superset/partner workouts
    ========================================================================== */

@@ -10,10 +10,9 @@
            Truncation ensures prompts remain visible at narrow viewports
 
    Dependencies:
-     Parent: active-exercise-card.fuel-gauge.css (base fuel gauge structure)
-     Global: _variables.css (spacing, control height, colors)
-             _animations.css (recovering-progression animation)
-     Component: fuel-gauge segments
+   Global: _variables.css (spacing, control-height, colors)
+   Global: _animations.css (recovering-progression animation)
+   Parent: active-exercise-card.fuel-gauge.css (base fuel gauge structure)
 
    Used by: Dual-mode active card during superset/partner workouts
    ========================================================================== */

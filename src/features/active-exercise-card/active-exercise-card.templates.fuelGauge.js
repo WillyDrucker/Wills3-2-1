@@ -1,5 +1,15 @@
 import { appState } from "state";
 
+/* ==========================================================================
+   ACTIVE EXERCISE CARD - Fuel Gauge Template
+
+   Generates fuel gauge animations for rest timers.
+   Handles both normal and dual-mode (superset/partner) displays.
+
+   Dependencies: appState
+   Used by: workoutCard template
+   ========================================================================== */
+
 export function getAnchorAreaHTML(includeActionPrompt = false) {
   if (appState.superset.isActive || appState.partner.isActive) {
     return getDualModeAnchorAreaHTML();
@@ -51,8 +61,7 @@ function getNormalFuelGaugeHTML(includeActionPrompt = false) {
     ? restState.finalAnimationType
     : restState.type;
 
-  // 🔒 CEMENT: Fuel gauge gets color directly from Current Focus selector value
-  // Both timer and fuel gauge independently use currentTimerColorClass
+  /* 🔒 CEMENT: Fuel gauge color from Current Focus selector (currentTimerColorClass) */
   const colorSuffix = typeForColor === "log"
     ? appState.session.currentTimerColorClass
     : "skip";

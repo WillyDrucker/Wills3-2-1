@@ -198,3 +198,123 @@ export function updateWorkoutLogForSessionChange(existingLog) {
 
   return _renumberSetsInLog(mergedLog);
 }
+
+// 🔒 CEMENT: Preserve logged sets when updating superset session type
+export function updateSupersetWorkoutLogForSessionChange(existingLog) {
+  if (!existingLog || existingLog.length === 0) {
+    return generateSupersetWorkoutLog();
+  }
+
+  // Generate new superset log with current session type
+  const sessionType = timeOptions.find(
+    (t) => t.name === appState.session.currentTimeOptionName
+  )?.type;
+
+  let log1 = generateWorkoutLog(true, sessionType, appState.superset.day1);
+  let log2 = generateWorkoutLog(true, sessionType, appState.superset.day2);
+
+  log1.forEach((log) => (log.supersetSide = "left"));
+  log2.forEach((log) => (log.supersetSide = "right"));
+
+  // Merge existing logged sets from both sides
+  const mergedLog1 = _mergeExistingWithNew(
+    existingLog.filter(e => e.supersetSide === "left"),
+    log1
+  );
+  const mergedLog2 = _mergeExistingWithNew(
+    existingLog.filter(e => e.supersetSide === "right"),
+    log2
+  );
+
+  // Interleave the two logs (same pattern as generateSupersetWorkoutLog)
+  const finalLog = [];
+  const maxLength = Math.max(mergedLog1.length, mergedLog2.length);
+  for (let i = 0; i < maxLength; i++) {
+    if (mergedLog1[i]) finalLog.push(mergedLog1[i]);
+    if (mergedLog2[i]) finalLog.push(mergedLog2[i]);
+  }
+
+  return finalLog;
+}
+
+// 🔒 CEMENT: Preserve logged sets when updating partner session type
+export function updatePartnerWorkoutLogForSessionChange(existingLog) {
+  if (!existingLog || existingLog.length === 0) {
+    return generatePartnerWorkoutLog();
+  }
+
+  // Generate new partner log with current session type
+  const { partner, session } = appState;
+  const sessionType = timeOptions.find(
+    (t) => t.name === session.currentTimeOptionName
+  )?.type;
+
+  let log1 = generateWorkoutLog(true, sessionType, partner.user1Day);
+  let log2 = generateWorkoutLog(true, sessionType, partner.user2Day);
+
+  log1.forEach((log) => {
+    log.supersetSide = "left";
+    log.userName = partner.user1Name;
+    log.userColorClass = "text-plan";
+  });
+  log2.forEach((log) => {
+    log.supersetSide = "right";
+    log.userName = partner.user2Name;
+    log.userColorClass = "text-primary";
+  });
+
+  // Merge existing logged sets from both users
+  const mergedLog1 = _mergeExistingWithNew(
+    existingLog.filter(e => e.supersetSide === "left"),
+    log1
+  );
+  const mergedLog2 = _mergeExistingWithNew(
+    existingLog.filter(e => e.supersetSide === "right"),
+    log2
+  );
+
+  // Interleave the two logs (same pattern as generatePartnerWorkoutLog)
+  const finalLog = [];
+  const maxLength = Math.max(mergedLog1.length, mergedLog2.length);
+  for (let i = 0; i < maxLength; i++) {
+    if (mergedLog1[i]) finalLog.push(mergedLog1[i]);
+    if (mergedLog2[i]) finalLog.push(mergedLog2[i]);
+  }
+
+  return finalLog;
+}
+
+// Helper function to merge existing logged sets with new workout structure
+function _mergeExistingWithNew(existingLog, newLog) {
+  const mergedLog = [];
+
+  // First, add all logged/skipped sets from existing log that still exist in new log
+  existingLog.forEach((oldEntry) => {
+    if (oldEntry.status !== "pending") {
+      const matchInNewLog = newLog.find(
+        (newEntry) =>
+          newEntry.exercise.exercise_name === oldEntry.exercise.exercise_name &&
+          newEntry.setNumber === oldEntry.setNumber
+      );
+
+      if (matchInNewLog) {
+        mergedLog.push(oldEntry);
+      }
+    }
+  });
+
+  // Then add all pending sets from new log that aren't already in merged log
+  newLog.forEach((newEntry) => {
+    const alreadyMerged = mergedLog.find(
+      (merged) =>
+        merged.exercise.exercise_name === newEntry.exercise.exercise_name &&
+        merged.setNumber === newEntry.setNumber
+    );
+
+    if (!alreadyMerged) {
+      mergedLog.push(newEntry);
+    }
+  });
+
+  return _renumberSetsInLog(mergedLog);
+}

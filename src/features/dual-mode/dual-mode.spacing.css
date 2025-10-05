@@ -1,18 +1,21 @@
 /* ==========================================================================
    DUAL-MODE SPACING - Precision Layout Control
 
-   🔒 CEMENT: Critical spacing overrides for global CSS reset constraints
+   🔒 CEMENT: Critical spacing overrides adjusted for 4.5rem timer height
    - Global reset forces !important flags for margin control
    - Transform positioning bypasses margin constraints
-   - Maintains 16px visual rhythm throughout
+   - All spacing tokenized in active-exercise-card.style.css
 
-   Spacing Architecture:
-   ├── Stack gap reset with manual margins
-   ├── Fuel gauge to "Resting For:" (16px visual)
-   ├── "Resting For:" to dual grid (16px visual)
-   └── "Log Set" button alignment (23px from "Resting For:")
+   Spacing Architecture (adjusted for 4.5rem timer):
+   ├── Fuel gauge to "Resting For:" (16px visual via --dual-resting-margin-top: 0px)
+   ├── "Resting For:" to dual grid (17px visual via --dual-grid-margin-top: 12px)
+   ├── Inactive "Begin Exercise" spacing (17px/18px via --dual-upper/lower-slack-spacing)
+   └── "Log Set" button alignment (18px via --dual-logset-transform-y: 1px)
 
-   Dependencies: Active card foundations, global resets
+   Dependencies:
+   Global: _variables.css (spacing tokens)
+   Local: active-exercise-card.style.css (dual-mode spacing tokens: --dual-resting-margin-top, --dual-grid-margin-top, --dual-upper/lower-slack-spacing, --dual-logset-transform-y)
+
    Used by: Dual-mode active states
    ========================================================================== */
 
@@ -24,9 +27,9 @@
 }
 
 /* === DUAL-ACTION GRID SPACING === */
-/* 🔒 CEMENT: Precise spacing from "Resting For:" to dual grid */
+/* 🔒 CEMENT: Precise spacing from "Resting For:" to dual grid - uses token */
 #active-card-container.card .action-prompt-block.is-resting.is-dual-mode + .dual-action-area-container {
-  margin-top: 11px; /* Achieves 16px visual spacing */
+  margin-top: var(--dual-grid-margin-top); /* Token: 12px achieves 17px visual spacing */
 }
 
 /* === FLATTENED STRUCTURE RESETS === */
@@ -37,9 +40,9 @@
 }
 
 /* === FUEL GAUGE SPACING === */
-/* 🔒 CEMENT: !important required - global reset forces override */
+/* 🔒 CEMENT: !important required - global reset forces override - uses token */
 #active-card-container .action-prompt-block.is-resting.is-dual-mode {
-  margin: -3px 0 0 0 !important; /* -3px for exact 16px visual spacing from inputs */
+  margin: var(--dual-resting-margin-top) 0 0 0 !important; /* Token: 0px achieves 16px visual from inputs */
   padding: 0;
   width: 100%;
   text-align: center;
@@ -77,15 +80,15 @@
 }
 
 /* === DUAL-MODE INACTIVE STATE SPACING === */
-/* 🔒 CEMENT: Prevents 7px shift between inactive and active states */
+/* 🔒 CEMENT: Prevents shift between inactive and active states - uses tokens */
 #active-card-container.is-dual-mode .minutes-remaining-line.dual-mode-inactive-slack {
-  margin-top: 14px !important; /* 14px CSS for 19px visual spacing above */
-  margin-bottom: 4px !important; /* 4px for 20px visual spacing below */
+  margin-top: var(--dual-inactive-margin-top) !important; /* Token: 11px achieves 16px visual above */
+  margin-bottom: var(--dual-inactive-margin-bottom) !important; /* Token: 2px achieves 17px visual below */
 }
 
 /* === BUTTON ALIGNMENT === */
-/* 🔒 CEMENT: Transform bypasses global -1px margin constraint */
+/* 🔒 CEMENT: Transform bypasses global -1px margin constraint - uses token */
 .dual-action-area-container:has(.timer-and-skip-container)
   .action-area-cell:not(:has(.timer-and-skip-container)) .action-button-group {
-  transform: translateY(7px); /* 23px from "Resting For:" baseline */
+  transform: translateY(var(--dual-logset-transform-y)); /* Token: 1px achieves 18px from "Resting For:" */
 }

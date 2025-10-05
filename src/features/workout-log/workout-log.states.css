@@ -1,59 +1,71 @@
 /* ==========================================================================
-   WORKOUT LOG - STATES
-   
-   Visual states for log items (completed, skipped, next-up, updating)
-   Muted states when selectors are open
+   WORKOUT LOG - State styles
+
+   CEMENT: Precise border compensation maintains 9px/8px/9px visual spacing
+   - Base state: Transparent border, 9px/8px/9px padding
+   - Active states (completed/skipped): 2px colored border, 7px/8px/7px padding
+   - Math: 7px padding + 2px border = 9px visual (maintains consistency)
+
+   CEMENT: Rounded shape preservation during muting
+   - Direct .workout-log-item styling (not summary) preserves border-radius
+   - Prevents squaring effect from generic selector muting
+   - High specificity naturally overrides all log item states
+
+   States: Completed (blue border), Skipped (orange border), Next-up (glowing)
+   Muting: Applied when external selector opens (config or exercise group)
+
+   Dependencies:
+   Global: _variables.css (colors, border-radius, card-border-width)
+   Local: --log-spacing-top, --log-spacing-middle, --log-spacing-bottom tokens
    ========================================================================== */
 
 /* === COMPLETED STATE === */
+/* CEMENT: Blue border indicates logged set, padding compensates for 2px border */
 .workout-log-item.log-completed {
   border-color: var(--primary-blue);
-
-  /* 🔒 CEMENT: Adjust spacing for border constraint - maintain 9px/8px/9px visual */
-  --log-spacing-top: 7px;        /* Compensate for border taking 2px */
-  --log-spacing-middle: 8px;     /* Keep middle spacing the same */
-  --log-spacing-bottom: 7px;     /* Compensate for border taking 2px */
+  --log-spacing-top: 7px;        /* 7px + 2px border = 9px visual */
+  --log-spacing-middle: 8px;     /* Unchanged */
+  --log-spacing-bottom: 7px;     /* 7px + 2px border = 9px visual */
 }
 
 /* === NEXT UP STATE === */
+/* CEMENT: Glow animation enabled via body class, 4-second infinite pulse */
 body.start-glow-animations .workout-log-item.is-next-up {
   animation: glow-border 4s ease-in-out infinite;
 }
 
-/* Make workout log card clickable during glow animation */
-#workout-log-card[data-action="scrollToActiveCard"] {
+/* Clickable cursor for glowing log item */
+#workout-log-card[data-action="scrollToTop"],
+.workout-log-item-container[data-action="scrollToTop"] {
   cursor: pointer;
 }
 
 /* === SKIPPED STATE === */
+/* CEMENT: Orange border indicates skipped set, padding compensates for 2px border */
 .workout-log-item.log-skipped {
   border-color: var(--warning-orange);
-
-  /* 🔒 CEMENT: Adjust spacing for border constraint - maintain 9px/8px/9px visual */
-  --log-spacing-top: 7px;        /* Compensate for border taking 2px */
-  --log-spacing-middle: 8px;     /* Keep middle spacing the same */
-  --log-spacing-bottom: 7px;     /* Compensate for border taking 2px */
+  --log-spacing-top: 7px;
+  --log-spacing-middle: 8px;
+  --log-spacing-bottom: 7px;
 }
 
-/* === ANIMATION TRIGGER STATE === */
-/* 🔒 CEMENT: is-updating-log class triggers animations in workout-log.animations.css */
-
-/* === MUTED STATE (when selectors open) === */
-/* CEMENT: Preserves rounded shape while muting */
+/* === MUTED STATE === */
+/* CEMENT: Rounded shape preservation - style .workout-log-item directly, not summary */
+/* High specificity naturally overrides completed/skipped/pending states */
 body.is-selector-open
   .workout-log-item-container:not([open])
   > summary
   > .workout-log-item {
-  border-color: var(--primary-blue-dark) !important;
-  box-shadow: none !important;
-  background-color: var(--background-dark) !important;
-  border-radius: var(--border-radius) !important;
+  border-color: var(--primary-blue-dark); /* Global muting token */
+  box-shadow: none;
+  background-color: var(--background-dark);
+  border-radius: var(--border-radius);
 }
 
-/* Prevent generic selector muting */
+/* Prevent generic selector muting from applying to summary */
 body.is-selector-open
   .workout-log-item-container:not([open])
   > summary {
-  box-shadow: none !important;
-  background-color: transparent !important;
+  box-shadow: none;
+  background-color: transparent;
 }

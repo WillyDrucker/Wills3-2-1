@@ -11,13 +11,13 @@ import * as fullscreen from "lib/fullscreen.js";
 import { renderSideNav } from "features/side-nav/side-nav.index.js";
 import * as clockService from "services/clockService.js";
 import { renderActiveCardHeader } from "features/active-exercise-card/active-exercise-card.index.js";
-import { renderConfigHeaderLine } from "features/config-header/config-header.index.js";
+import { renderConfigHeaderLine } from "features/config-card/config-card.header.index.js";
 
 function initializeTimerService(dependencies) {
   timerService.initialize({
     renderAll: dependencies.renderAll,
     renderActiveExerciseCard: dependencies.renderActiveExerciseCard,
-    renderConfigHeader: dependencies.renderConfigHeader,
+    renderConfigHeaderLine: dependencies.renderConfigHeaderLine,
   });
 }
 

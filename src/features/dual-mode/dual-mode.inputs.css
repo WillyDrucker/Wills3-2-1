@@ -9,9 +9,9 @@
            Truncation system prevents label overflow on narrow viewports
 
    Dependencies:
-     Parent: active-exercise-card.inputs.css (base input structure)
-     Global: _inputs.css (base input styles)
-             _variables.css (spacing tokens, control height)
+   Global: _variables.css (spacing tokens, control-height)
+   Global: _inputs.css (base input styles)
+   Parent: active-exercise-card.inputs.css (base input structure)
 
    Used by: Dual-mode active card during superset/partner workouts
    ========================================================================== */

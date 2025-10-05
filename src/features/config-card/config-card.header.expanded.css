@@ -1,0 +1,178 @@
+/* ==========================================================================
+   CONFIG HEADER - Expanded dropdown content
+
+   CEMENT: Absolute-positioned dropdown with full configuration controls
+   - Extends card downward without affecting layout flow
+   - Contains Plan/Focus selectors and Session cycling
+   - Action buttons: Cancel, Reset, Let's Go!
+
+   Architecture: Expanded overlay below icon bar
+   - Current Plan selector (multi-line, mode options)
+   - Current Focus selector (day selection)
+   - Current Session display (chevron cycling)
+   - Three action buttons at bottom
+
+   Dependencies:
+   Global: _variables.css (spacing, colors, typography, control-height)
+   ========================================================================== */
+
+/* === EXPANDED DROPDOWN OVERLAY === */
+/* CEMENT: Absolute positioning extends card downward without affecting layout flow */
+#config-header:has(.config-header-group.expanded) {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-bottom: calc(var(--space-m) - 2px); /* Compensate for 2px border shift */
+}
+
+.config-header-expanded-content {
+  position: absolute;
+  top: 100%;
+  left: calc(-1 * var(--card-border-width));
+  right: calc(-1 * var(--card-border-width));
+  background: var(--surface-dark);
+  border: var(--card-border-width) solid var(--primary-blue);
+  border-top: none;
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+  padding: 0 var(--card-padding-sides) var(--space-m) var(--card-padding-sides); /* Global: 16px bottom */
+  box-shadow: none;
+  z-index: 100;
+}
+
+/* === ACTION BUTTONS === */
+.config-header-actions {
+  display: flex;
+  gap: var(--space-m); /* Global: 16px between buttons */
+  margin-top: var(--space-m);
+  margin-bottom: 0;
+}
+
+/* CEMENT: Button heights match control height token for consistency */
+.config-action-button {
+  flex: 1;
+  height: var(--control-height); /* Global: 50px */
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.config-action-button.cancel-button {
+  background: var(--on-surface-disabled);
+  color: var(--on-surface-light);
+}
+
+.config-action-button.confirm-button {
+  background: var(--log-green);
+  color: #000000;
+}
+
+.config-action-button.reset-button {
+  background: var(--skip-red);
+  color: #000000;
+}
+
+/* === CURRENT SESSION DISPLAY === */
+/* CEMENT: Chevron navigation for session cycling */
+.current-session-display {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: var(--space-m); /* Global: 16px below Current Focus selector */
+  margin-bottom: 2px; /* 2px + 14px card padding = 16px visual */
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  min-height: 32px;
+}
+
+/* CEMENT: 50x32 chevron buttons match input selector styling */
+.session-chevron {
+  position: absolute;
+  width: 50px;
+  height: 32px;
+  min-width: 50px;
+  min-height: 32px;
+  padding: 0;
+  margin: 0;
+  background: var(--background-dark);
+  box-shadow: inset 0 0 0 1px var(--on-surface-disabled),
+              0 2px 6px rgba(0, 0, 0, 0.3);
+  border: none;
+  border-radius: var(--border-radius);
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.session-chevron-left {
+  left: 0;
+}
+
+.session-chevron-right {
+  right: 0;
+}
+
+.session-chevron:disabled,
+.session-chevron.is-disabled {
+  box-shadow: inset 0 0 0 1px var(--on-surface-disabled),
+              0 2px 6px rgba(0, 0, 0, 0.3);
+  color: var(--on-surface-medium);
+  cursor: default;
+  opacity: 0.5;
+}
+
+.current-session-text {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+.current-session-text .session-label {
+  color: var(--on-surface-medium);
+  font-weight: 500;
+}
+
+.current-session-text .session-value {
+  font-weight: 600;
+}
+
+/* === MULTI-LINE SELECTORS === */
+/* CEMENT: Compressed two-line layout fits 50px height constraint */
+#config-header .selector-content.multi-line {
+  display: block;
+  text-align: center;
+  padding: var(--selector-multiline-padding-top) 0 var(--selector-multiline-padding-bottom) 0; /* Global: 7px/9px */
+  line-height: var(--selector-multiline-line-height); /* Global: 1.2 */
+}
+
+#config-header .selector-content.multi-line.balanced-text > span {
+  display: block;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: var(--selector-multiline-line-height);
+}
+
+#config-header .selector-content.multi-line.balanced-text > span:first-child {
+  margin-bottom: var(--selector-multiline-line-gap); /* Global: -3px creates 7px visual */
+}
+
+#config-header .selector-content.multi-line.balanced-text > span > span {
+  display: inline;
+}
+
+#config-header .selector-content.multi-line > .item-main-line {
+  line-height: var(--selector-multiline-line-height);
+}

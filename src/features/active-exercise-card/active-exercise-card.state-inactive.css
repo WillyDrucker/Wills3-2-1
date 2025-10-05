@@ -1,13 +1,22 @@
 /* ==========================================================================
    ACTIVE EXERCISE CARD - INACTIVE STATE
 
-   🔒 CEMENT: "Begin Exercise" prompt with spacer-based height stability
-   - Spacers prevent card height shifts between states
-   - Dual-mode specific overrides for proper alignment
+   CEMENT: "Begin Exercise" prompt with spacer-based height stability
+   - Spacer divs prevent card height shifts between states (491px vs 485px)
+   - Top spacer: 14px achieves 22px visual spacing above prompt
+   - Bottom spacer: 3px achieves 19px visual spacing below prompt
+   - Dual-mode overrides adjust spacing for proper alignment
 
-   Architecture: Spacer divs for height consistency
-   Dependencies: Active card foundations
-   Used by: Inactive card state
+   Architecture: Height-stable inactive state with spacer divs
+   - Inactive spacers: 14px top / 3px bottom (6px total compensates height diff)
+   - Dual-mode spacers: 11px top / 0px bottom (adjusted for dual layout)
+   - Stack gap maintains 16px rhythm for action buttons
+
+   Dependencies:
+   Global: _variables.css (space-m for 16px stack gap)
+   Local: active-exercise-card.style.css (--inactive-slack-top, --inactive-slack-bottom tokens)
+
+   Used by: Active card "Begin Exercise" prompt state before workout starts
    ========================================================================== */
 
 /* === INACTIVE STATE SPACING === */

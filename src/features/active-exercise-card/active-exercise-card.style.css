@@ -2,15 +2,17 @@
    ACTIVE EXERCISE CARD - MAIN ENTRY POINT
 
    CEMENT: Central workout interface with timer and action controls
-   - Timer display with dynamic color system
-   - Action buttons for logging and skipping sets
-   - Fuel gauge progress indicator integration
-   - Responsive layout with anti-shift mechanics
+   - 100px exercise selector height exception (vs 50px standard)
+   - Stack layout with 16px rhythm (var(--space-m))
+   - Local spacing tokens for precise state-specific adjustments
+   - Component imports establish clean dependency hierarchy
 
-   Architecture: Component-based with clean dependencies
+   Architecture: Component-based with modular file structure
    Component Structure:
    ├── .header.css - Exercise title and current session info
-   ├── .selector.css - 100px height exception for layout stability
+   ├── .selector.summary.css - 4-line closed state (100px height)
+   ├── .selector.dropdown.css - 2-line open state items (50px height)
+   ├── .selector.muting.css - Bidirectional muting across selector groups
    ├── .inputs.css - Weight and reps input controls
    ├── .fuel-gauge.css - Progress indicator positioning
    ├── .action-area.css - Prompts, buttons, and timer container
@@ -18,8 +20,12 @@
    ├── .state-active.css - "Resting For" timer state
    └── .animations.css - Glow and interaction effects
 
-   Dependencies: Card foundations, buttons, action groups
-   Used by: Main workout interface
+   Dependencies:
+   Global: _card-headers.css, _card-foundations.css, _action-button-groups.css
+   Global: _variables.css (space-m, control-height, font sizes, colors)
+   Local: Component CSS files (header, selector, inputs, fuel-gauge, etc.)
+
+   Used by: Main workout interface for active exercise card display
    ========================================================================== */
 
 /* Global dependencies */
@@ -27,16 +33,17 @@
 @import url("../../styles/components/_card-foundations.css");
 @import url("../../styles/components/_action-button-groups.css");
 
-/* Local component files */
+/* Normal mode component files */
 @import url("./active-exercise-card.header.css");
-@import url("./active-exercise-card.selector.css");
+@import url("./active-exercise-card.selector.summary.css");
+@import url("./active-exercise-card.selector.dropdown.css");
+@import url("./active-exercise-card.selector.muting.css");
 @import url("./active-exercise-card.inputs.css");
 @import url("./active-exercise-card.fuel-gauge.css");
 @import url("./active-exercise-card.action-area.css");
 @import url("./active-exercise-card.state-inactive.css");
 @import url("./active-exercise-card.state-active.css");
 @import url("./active-exercise-card.animations.css");
-
 
 /* === LOCAL TOKENS === */
 /* Component-specific measurements that differ from global defaults */
@@ -57,9 +64,9 @@
   --upper-slack-spacing: 17px;     /* Space below input selectors to achieve 22px visual (compensates for line-height 1.2) */
   --lower-slack-spacing: 19px;     /* Space before action buttons to achieve 23px visual (compensates for line-height 1.2) */
 
-  /* Dual-mode slack spacing: Tighter spacing for dual-mode layout */
-  --dual-upper-slack-spacing: 14px; /* Space below input selectors to achieve 19px visual (compensates for line-height 1.2 + font metrics) */
-  --dual-lower-slack-spacing: 16px; /* Space before action buttons to achieve 20px visual (compensates for line-height 1.2 - font metrics) */
+  /* Dual-mode slack spacing: Tighter spacing for dual-mode layout - adjusted for 4.5rem timer */
+  --dual-upper-slack-spacing: 12px; /* Space below input selectors to achieve 17px visual (compensates for line-height 1.2 + font metrics) */
+  --dual-lower-slack-spacing: 14px; /* Space before action buttons to achieve 18px visual (compensates for line-height 1.2 - font metrics) */
 
   /* States: Inactive/active spacing with spacer divs */
   --inactive-slack-top: 14px;      /* 🔒 CEMENT: Static slack prevents card height shift */
@@ -70,8 +77,14 @@
   /* Timer: Display adjustments */
   --active-timer-line-height: 0.7; /* Large text requirement */
 
-  /* Dual-mode: Extra spacing */
-  --dual-resting-to-logset: 7px;
+  /* 🔒 CEMENT: Dual-mode spacing tokens - adjusted for 4.5rem timer height */
+  /* These tokens compensate for font metrics and line-height to achieve precise visual spacing */
+  --dual-timer-font-size: 4.5rem;              /* Dual-mode timer size (down from 5.0rem for 360px viewport) */
+  --dual-resting-margin-top: 0px;              /* "Resting For:" to inputs above (16px visual) */
+  --dual-grid-margin-top: 12px;                /* "Resting For:" to dual grid below (17px visual) */
+  --dual-inactive-margin-top: 11px;            /* Inactive "Begin Exercise" top (16px visual) */
+  --dual-inactive-margin-bottom: 2px;          /* Inactive "Begin Exercise" bottom (17px visual) */
+  --dual-logset-transform-y: 1px;              /* "Log Set" button alignment (18px from "Resting For:") */
 
   /* Fine-tuning tokens */
   --youtube-overlay-spacing: 7px;

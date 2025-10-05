@@ -1,15 +1,17 @@
 import { appState } from "state";
 import { programConfig, colorCodeMap } from "config";
 
-/*
-  CEMENTED (v5.0.6 - Architectural Fix):
-  This function now implements the definitive pattern for truncating multi-colored text.
-  - The parent (.flex-line-container) is a flexbox.
-  - The label part (.flex-priority) is rigid (flex-shrink: 0).
-  - The value part (.truncate-text) is flexible and handles the truncation.
-  This ensures the ellipsis (...) correctly inherits the color of the VALUE, not the label.
-  This also fixes the truncation order, forcing the secondary text to truncate first.
-*/
+/* ==========================================================================
+   ACTIVE EXERCISE CARD - Exercise Selector Template
+
+   Generates exercise selector dropdown with swap options.
+   Displays exercise details, equipment, setup, and set progress.
+
+   Dependencies: programConfig, colorCodeMap
+   Used by: workoutCard template
+   ========================================================================== */
+
+/* 🔒 CEMENT: Text truncation pattern ensures ellipsis inherits value color, not label color */
 function getSummaryLineHTML(
   mainText,
   secondaryText,
@@ -111,9 +113,7 @@ export function getExerciseSelectorHTML(logEntry, setsForThisExercise) {
     );
   }
 
-  // CEMENTED (Color Authority): The set count color is ALWAYS driven by the
-  // "Current Session" selector's state (`appState.session.currentSessionColorClass`).
-  // This is the single source of truth for set count color across the app.
+  /* 🔒 CEMENT: Set count color driven by Current Session selector state */
   const setInfoLine = `<div class="item-sub-line"><span class="selector-ui-label">Set: </span><span class="selector-value-wrapper truncate-text data-highlight ${appState.session.currentSessionColorClass}">${logEntry.setNumber} of ${setsForThisExercise}</span></div>`;
 
   return `

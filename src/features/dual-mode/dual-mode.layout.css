@@ -15,6 +15,11 @@
    ├── .dual-action-area-container - CSS table container
    ├── .action-area-cell - Table cells with transparent border gaps
    └── .dual-fuel-gauge-container - Fuel gauge grid layout
+
+   Dependencies:
+   Global: _variables.css (--space-m, --control-height, button padding tokens)
+
+   Used by: Dual-mode action area during superset/partner workouts
    ========================================================================== */
 
 /* === MAIN TABLE CONTAINER === */

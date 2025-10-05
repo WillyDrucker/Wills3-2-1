@@ -1,13 +1,15 @@
 /* ==========================================================================
    DUAL-MODE - MAIN ENTRY POINT
 
-   🔒 CEMENT: Dual-mode architecture for superset and partner workouts
+   CEMENT: Dual-mode architecture for superset and partner workouts
    - CSS table layout prevents content-based positioning shifts
    - Static color schemes: Superset (green/yellow), Partner (green/blue)
    - Timer: 5.0rem with line-height: 0.7 for compact display
    - 16px visual gaps via transparent borders
 
-   Architecture: Component-based with clean dependencies
+   Architecture: State-based modifiers that override normal mode styles
+   Applied when: body.superset-mode or body.partner-mode
+
    Component Structure:
    ├── .header.css - Two-line header with workout time remaining
    ├── .selector.css - 100px height exception for layout stability
@@ -16,16 +18,19 @@
    ├── .layout.css - CSS table with 50% column distribution
    ├── .spacing.css - Precision spacing overrides
    ├── .colors.css - Static color assignments per mode
-   └── .active-card.css - Timer and button overrides
+   ├── .active-card.css - Timer and button overrides
+   ├── .superset-modal.css - Superset-specific dual-mode styling
+   └── .partner-modal.css - Partner-specific dual-mode styling
 
-   Dependencies: Global button groups, active-card foundations
+   Dependencies:
+   Global: _variables.css (spacing, colors, typography, control-height)
+   Global: active-exercise-card.style.css (normal mode foundations)
+   Local: Component-specific dual-mode files
+
    Used by: Active card during superset/partner workouts
    ========================================================================== */
 
-/* Global dependencies */
-@import url("../../styles/components/_action-button-groups.css");
-
-/* Local component files - ordered by layout hierarchy */
+/* Dual-mode component files - ordered by layout hierarchy */
 @import url("./dual-mode.header.css");
 @import url("./dual-mode.selector.css");
 @import url("./dual-mode.inputs.css");
@@ -33,8 +38,8 @@
 @import url("./dual-mode.layout.css");
 @import url("./dual-mode.spacing.css");
 @import url("./dual-mode.colors.css");
-
-/* Feature integration */
 @import url("./dual-mode.active-card.css");
+
+/* Modal-specific dual-mode integration */
 @import url("./dual-mode.superset-modal.css");
 @import url("./dual-mode.partner-modal.css");

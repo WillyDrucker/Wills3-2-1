@@ -1,23 +1,41 @@
 import { appState } from "state";
 import { ui } from "ui";
 import { timeOptions } from "config";
-import { getConfigHeaderTemplate } from "./config-header.template.js";
-import { handleTimeChange } from "features/config-modal/config-modal.index.js";
+import { getConfigHeaderTemplate } from "./config-card.header.template.js";
+import { handleTimeChange } from "./config-card.index.js";
 import { canCycleToSession } from "utils/sessionValidation.js";
 import * as persistenceService from "services/persistenceService.js";
+import * as selectorService from "services/selectorService.js";
+
+/* ==========================================================================
+   CONFIG HEADER - Collapsible header logic
+
+   Handles config header rendering, click-outside behavior, session cycling,
+   and dynamic focus display updates.
+   ========================================================================== */
 
 // Click-outside handler for auto-collapsing config-header
 let ignoreNextOutsideClick = false;
 
 function handleClickOutside(event) {
+  const configHeaderCard = document.getElementById('config-header');
+  if (!configHeaderCard) return;
+
+  // If clicking on config area while external selector is open, close the external selector
+  // This allows config area clicks to dismiss external selectors without opening config dropdown
+  if (configHeaderCard.contains(event.target) && document.body.classList.contains('is-selector-open')) {
+    const openExternalSelector = document.querySelector('details[open]:not(#config-header details)');
+    if (openExternalSelector) {
+      selectorService.closeAll();
+      return; // Don't do anything else, just close the external selector
+    }
+  }
+
   // Only active when config-header is expanded
   if (!appState.ui.isConfigHeaderExpanded) return;
 
   // Don't close if locked (during selector operations)
   if (appState.ui.configHeaderLocked) return;
-
-  const configHeaderCard = document.getElementById('config-header');
-  if (!configHeaderCard) return;
 
   // Ignore if flag is set AND clicking outside the card
   // (This prevents closing on the same click that opened, but allows clicks inside)
@@ -48,6 +66,7 @@ function handleClickOutside(event) {
 // Setup click-outside listener on first render
 let clickListenerAttached = false;
 
+/* === RENDERING === */
 export function renderConfigHeader() {
   ui.configSection.innerHTML = getConfigHeaderTemplate();
 
@@ -182,15 +201,15 @@ export function renderFocusDisplay() {
   let iconHTML = "";
 
   if (muscleGroup.toLowerCase().includes("arm")) {
-    iconHTML = `<img src="/icons/muscle-groups/arms.png?v=4" alt="Arms" width="${iconSize}" height="${iconSize}" style="display: block; object-fit: contain;" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '💪');">`;
+    iconHTML = `<img src="/src/features/config-card/assets/muscle-groups/arms.png?v=4" alt="Arms" width="${iconSize}" height="${iconSize}" style="display: block; object-fit: contain;" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '💪');">`;
   } else if (muscleGroup.toLowerCase().includes("chest")) {
-    iconHTML = `<img src="/icons/muscle-groups/chest.png" alt="Chest" width="${iconSize}" height="${iconSize}" style="display: block;">`;
+    iconHTML = `<img src="/src/features/config-card/assets/muscle-groups/chest.png" alt="Chest" width="${iconSize}" height="${iconSize}" style="display: block;">`;
   } else if (muscleGroup.toLowerCase().includes("back")) {
-    iconHTML = `<img src="/icons/muscle-groups/back.png" alt="Back" width="${iconSize}" height="${iconSize}" style="display: block;">`;
+    iconHTML = `<img src="/src/features/config-card/assets/muscle-groups/back.png" alt="Back" width="${iconSize}" height="${iconSize}" style="display: block;">`;
   } else if (muscleGroup.toLowerCase().includes("leg")) {
-    iconHTML = `<img src="/icons/muscle-groups/legs.png" alt="Legs" width="${iconSize}" height="${iconSize}" style="display: block;">`;
+    iconHTML = `<img src="/src/features/config-card/assets/muscle-groups/legs.png" alt="Legs" width="${iconSize}" height="${iconSize}" style="display: block;">`;
   } else if (muscleGroup.toLowerCase().includes("shoulder")) {
-    iconHTML = `<img src="/icons/muscle-groups/shoulders.png" alt="Shoulders" width="${iconSize}" height="${iconSize}" style="display: block;">`;
+    iconHTML = `<img src="/src/features/config-card/assets/muscle-groups/shoulders.png" alt="Shoulders" width="${iconSize}" height="${iconSize}" style="display: block;">`;
   } else {
     iconHTML = `📋`;
   }
@@ -199,6 +218,7 @@ export function renderFocusDisplay() {
   focusButton.innerHTML = iconHTML;
 }
 
+/* === SESSION CYCLING === */
 // Check if next session cycling is allowed
 export function canCycleNext() {
   const currentIndex = timeOptions.findIndex((t) => t.name === appState.session.currentTimeOptionName);

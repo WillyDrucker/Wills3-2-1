@@ -1,16 +1,19 @@
 /* ==========================================================================
    DUAL-MODE HEADER
 
-   Purpose: Header layout for dual-mode workouts (superset/partner)
-            Two-line header with exercise title, real-time clock, and
-            workout duration information with responsive truncation
-
    CEMENT: Flexbox layout with truncation enables responsive text overflow
-           Text elements shrink with ellipsis, clocks remain stationary
+   - Text elements shrink with ellipsis, clocks remain stationary
+   - Two-line header shows exercise title, clock, and workout duration
+   - No vertical spacing compensation needed (dual-mode has no header margin)
+
+   Architecture: Responsive header with priority-based truncation
+   - Dynamic text (title, duration) truncates with ellipsis
+   - Static elements (clocks, focus) never truncate
+   - Flex layout with min-width: 0 enables child text truncation
 
    Dependencies:
-     Parent: active-exercise-card.header.css (base header structure)
-     Global: _variables.css (spacing tokens, colors)
+   Global: _variables.css (spacing, colors, typography)
+   Parent: active-exercise-card.header.css (base header structure)
 
    Used by: Dual-mode active card during superset/partner workouts
    ========================================================================== */

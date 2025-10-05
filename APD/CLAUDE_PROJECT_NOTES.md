@@ -6,6 +6,279 @@
 
 ## VERSION CHANGELOG
 
+### **v6.27 - Dual-Mode & Active-Exercise Documentation Standards**
+**Date**: 2025-10-04
+**Problem**: Dual-mode and active-exercise-card files lacked comprehensive documentation headers, dependency tracking, and CEMENT protection
+**Solution**: Applied complete CLAUDE documentation standards to 33 files, split oversized files for maintainability, formalized documentation pattern in CLAUDE_STANDARDS.md
+**Key Achievements**:
+- **33 files documented**: 11 dual-mode CSS + 11 active-exercise CSS + 11 active-exercise JS files
+- **Comprehensive headers**: All files received CEMENT/Architecture/Dependencies/Used by sections
+- **File splitting**: selector.css (266→3 files), actions.js (215→3 files) for better maintainability
+- **Dual-mode separation**: Maintained clean separation from active-exercise-card (11 component files)
+- **CEMENT standardization**: 🔒 emoji pattern applied to all critical areas (spacing, timing, layouts, muting)
+- **JavaScript pattern**: Established focused header format for .js files (concise vs verbose CSS headers)
+- **Standards documentation**: Updated CLAUDE_STANDARDS.md with complete CSS/JS header patterns
+**Root Causes Identified**:
+- **Missing documentation**: No file headers, dependency lists, or architectural notes in dual-mode/active-exercise files
+- **Oversized files**: selector.css (266 lines), actions.js (215 lines) mixed multiple concerns
+- **Inconsistent CEMENT**: Critical areas not protected across dual-mode and active-exercise sections
+**Technical Architecture**:
+- **Dual-mode structure**: Entry point `dual-mode.style.css` imports 11 component files (layout, spacing, colors, timers, fuel-gauge, etc.)
+- **Active-exercise structure**: Split selector into summary/dropdown/muting, split actions into log/skip/handlers
+- **Documentation hierarchy**: File header → CEMENT section → Architecture → Dependencies (Global/Parent/Local) → Used by
+- **CEMENT pattern**: One-line format with 🔒 emoji for inline comments, bullet list format for file headers
+**Files Split**:
+- `active-exercise-card.selector.css` (266 lines) → 3 files:
+  - `selector.summary.css` (144 lines): Closed state, 4-line layout, absolute positioning
+  - `selector.dropdown.css` (74 lines): Open dropdown, 50px items
+  - `selector.muting.css` (62 lines): Bidirectional muting across Exercise/Config/Log
+- `active-exercise-card.actions.js` (215 lines) → 3 files:
+  - `actions.log.js` (101 lines): handleLogSet function
+  - `actions.skip.js` (89 lines): handleSkipSet, handleSkipRest
+  - `actions.js` (60 lines): Re-exports + input/swap handlers
+**Dual-Mode Files Documented** (11 CSS):
+- `dual-mode.style.css` - Main entry point with all imports
+- `dual-mode.layout.css` - CSS table architecture (prevents 2px shift bug)
+- `dual-mode.spacing.css` - Tokenized spacing system (16-18px visual rhythm)
+- `dual-mode.colors.css` - Static color schemes (Superset green/yellow, Partner green/blue)
+- `dual-mode.header.css` - Card header with muscle group icons
+- `dual-mode.selector.css` - Exercise selector dual-mode styling
+- `dual-mode.fuel-gauge.css` - Side-by-side fuel gauge layout
+- `dual-mode.timers.css` - Side-by-side timer display (4.5rem font)
+- `dual-mode.active-card.css` - General active card dual-mode overrides
+- `dual-mode.partner-modal.css` - Partner-specific green/blue styling
+- `dual-mode.superset-modal.css` - Superset-specific green/yellow styling
+**Active-Exercise Files Documented** (22 total):
+- CSS (11): header, fuel-gauge, inputs, actions, selector.summary, selector.dropdown, selector.muting, youtube-overlay, waiting-card, selector.css (re-exports), style.css (entry)
+- JS (11): index, template, workoutCard, completionCard, exerciseSelector, actionArea, fuelGauge, numberInputHandler, actions, actions.log, actions.skip
+**Key CEMENT Areas Protected**:
+- Dual-mode: CSS table layout (prevents content-based rebalancing), 4.5rem timer font (360px viewport), spacing compensation (font metrics)
+- Active-exercise: 100px selector height (anti-layout-shift), absolute positioning (mathematical precision), animation state tracking (timestamp preservation)
+- Selectors: Bidirectional muting architecture, border-only muting exceptions, text truncation pattern
+**Documentation Pattern Established**:
+```css
+/* ==========================================================================
+   COMPONENT NAME - Purpose description
+
+   CEMENT: Critical architecture notes
+   - Key architectural decisions with bullet points
+
+   Architecture: High-level structural overview
+   - Layout patterns and positioning strategies
+
+   Dependencies:
+   Global: _variables.css (specific tokens used)
+   Parent: feature.style.css (if split component)
+   Local: --component-token (value explanation)
+
+   Used by: Components that depend on this file
+   ========================================================================== */
+```
+**CLAUDE_STANDARDS.md Updates**:
+- Added JavaScript file header pattern (concise vs CSS verbose)
+- Added JavaScript CEMENT pattern with 🔒 emoji example
+- Clarified file splitting is NOT a standard requirement (split only when logical)
+- Updated refactoring checklist for both CSS and JS files
+**Technical Discoveries**:
+- File splitting improves maintainability when concerns are logically separable (summary/dropdown/muting vs monolithic selector)
+- JavaScript headers should be concise with focus on Dependencies/Used by (vs verbose CSS with Architecture sections)
+- CEMENT markers must use 🔒 emoji consistently for visual scanning
+- "Parent:" dependency category useful for split component files referencing main entry point
+- Documentation pattern more reliable than referencing example files (config-card.style.css)
+**Status**: COMPLETE - All 33 dual-mode and active-exercise files documented to CLAUDE standards, patterns formalized in CLAUDE_STANDARDS.md
+
+### **v6.26 - CSS Standards Refactor & Confirmation Button**
+**Date**: 2025-10-04
+**Problem**: CSS files lacked consistent documentation, used ~70 !important flags, had hard-coded values instead of tokens, missing CEMENT markers on critical areas
+**Solution**: Comprehensive refactor of 6 major CSS files to enterprise-grade standards, removed all !important flags, complete tokenization, added "Let's Go!" confirmation button
+**Key Achievements**:
+- **Documentation excellence**: Comprehensive file headers with CEMENT notes, dependencies, architecture overview using config-card as reference standard
+- **!important elimination**: Removed ~70 flags across all files, replaced with natural CSS cascade using three-class specificity and :has() pseudo-class
+- **Complete tokenization**: All spacing values use global tokens (--space-m, --space-s, --space-xxs, --control-height), muting uses global tokens (--muted-background, --muted-border-color, --muted-brightness, --muted-saturation, --muted-opacity)
+- **CEMENT markers applied**: Protected all critical areas (spacing calculations, muting behavior, layout patterns, border compensation, animation preservation)
+- **"Let's Go!" button**: Green confirmation button added to config header actions (Cancel | Reset | Let's Go!)
+- **Exercise selector fix**: Border-only muting preserves current exercise visibility, full muting only when other selector opens
+- **Glowing log scroll fix**: Changed scrollToActiveCard → scrollToTop for proper jump behavior
+**Root Causes Identified**:
+- **!important overuse**: Natural cascade sufficient with proper three-class specificity (e.g., `.icon-bar-item.icon-plan-wide.is-muted`)
+- **Inconsistent documentation**: No standard format, missing dependency lists, historic comments instead of forward-looking
+- **Hard-coded values**: Spacing/sizing not tokenized, making changes difficult and inconsistent
+- **Missing CEMENT**: Critical areas not protected, increasing risk of accidental breakage
+**Technical Architecture**:
+- Three-class specificity pattern: `.component.modifier.state` naturally overrides two-class base styles
+- :has() pseudo-class provides high specificity for parent-based styling: `body:has(#config-header .config-header-group.expanded)`
+- Global muting token system: All selectors use same visual standard for consistency
+- Border-only muting pattern: Content visible when displaying active information (plan, focus, session, current exercise)
+- CEMENT documentation pattern: Critical areas marked with explanation of what must never change
+**Files Refactored**:
+- `src/features/config-header/config-header.style.css` (504 lines) - Config header dropdown overlay
+- `src/styles/components/_selectors.css` (286 lines) - Global selector base component
+- `src/features/active-exercise-card/active-exercise-card.selector.css` (311 lines) - Exercise selector with 100px height
+- `src/features/workout-log/workout-log.states.css` (72 lines) - Log item states (completed, skipped, next-up, muted)
+- `src/features/workout-log/workout-log.edit-panel.css` (138 lines) - Edit panel dropdown with bidirectional muting
+- `src/styles/utils/_helpers.css` (minor update) - Exercise selector border-only muting exception
+**Documentation Standards Established**:
+- File headers: CEMENT notes, Architecture overview, Dependencies (Global/Local), Used by
+- Section headers: `=== SECTION NAME ===` format throughout
+- Inline comments: Sparse, targeted, explain visual outcomes and token sources
+- No versioning: All historic references removed ("v5.0.6 - fixed bug" → "Border compensation achieves 9px visual")
+- CEMENT markers: Applied to spacing, muting, layouts, borders, fonts, styles, calculations
+**Key CEMENT Areas Protected**:
+- Config header always blue border (never transparent)
+- Bidirectional muting architecture (Config ↔ Exercise ↔ Log)
+- Custom top padding compensation (13px + 2px border = 16px visual)
+- Icon bar three-button layout (flexible plan, fixed 50px focus, flexible session)
+- 50px hard constraint prevents layout shift
+- Border-only muting preserves active information
+- Narrow viewport strategy (lock focus icon, compress plan/session)
+- Exercise selector 100px height (anti-layout-shift for 4 lines)
+- Absolute positioning for 10px/10px/8px/8px spacing precision
+- Font metrics compensation in top values
+- Ellipsis color inheritance via wrapper ownership
+- Log border compensation (7px + 2px border = 9px visual)
+- Rounded shape preservation (style .workout-log-item directly)
+- Exercise selector exception (border-only when business logic muted, full when selector opens)
+**Technical Discoveries**:
+- Three-class specificity naturally overrides two-class base styles without !important
+- :has() pseudo-class combines with IDs for very high specificity
+- Global muting tokens create consistent UX across all selectors
+- Border-only muting pattern preserves information visibility while showing disabled state
+- CEMENT markers essential for protecting complex solutions from accidental changes
+- Forward-looking comments more useful than historic "fixed bug in v5.2" references
+**Confirmation Button**:
+- "Let's Go!" - Green background (--log-green), black text, same size as Cancel/Reset
+- Layout: Cancel (gray) | Reset (red) | Let's Go! (green) - left to right
+- Action: `toggleConfigHeader` - closes dropdown and saves state
+- Replaces click-outside pattern with explicit confirmation
+**Testing Verified**:
+- Business logic muting (first set logged)
+- Bidirectional selector muting (Config ↔ Exercise ↔ Log)
+- Exercise selector border-only muting (content visible when business logic muted)
+- Config header Cancel/Let's Go buttons
+- Responsive layout (< 390px viewport)
+- Glowing log item scroll behavior (scrollToTop)
+**Status**: COMPLETE - All CSS files refactored to enterprise-grade standards, ~70 !important flags removed, complete tokenization, comprehensive CEMENT protection, "Let's Go!" confirmation added
+
+### **v6.25 - One-Selector-To-Rule-Them-All Complete Implementation**
+**Date**: 2025-10-04
+**Problem**: Selector muting inconsistent across groups, animation resets on dual-mode session cycling, no inter-selector muting within same group
+**Solution**: Implemented comprehensive group-based bidirectional muting system, fixed animation preservation, established consistent muting visual standard
+**Key Achievements**:
+- **Group-based selector architecture**: Three groups (Config, Exercise, Log) with complete mutual exclusivity
+- **Bidirectional muting**: All groups mute each other when any selector opens (6 directional rules)
+- **Inter-group muting**: Edit log items mute each other (only one item editable at a time)
+- **Consistent muting standard**: `brightness(0.6) saturate(0.6) opacity(0.3)` across all selectors
+- **Animation preservation**: Fixed dual-mode session cycling to never re-render (preserves 4-second glow)
+- **Config component muting**: Icon bar buttons and session chevrons fully mute when external selectors open
+**Root Causes Identified**:
+- **Animation reset**: Conditional re-render in `updateActiveWorkoutPreservingLogs()` was triggering for dual modes
+- **Inconsistent muting**: Different opacity/brightness values across selectors
+- **Missing inter-muting**: Edit log items didn't mute each other
+- **Double-compound filter**: Wildcard `*` selector applied filter to both container and children
+**Technical Architecture**:
+- Three selector groups with `getSelectorGroup()` helper function
+- Group detection: Config (config header + modals), Exercise (#exercise-selector), Log (#workout-log-card)
+- Muting matrix: 6 bidirectional rules + 1 inter-log rule = 7 total muting rules
+- Black background preserved: `background: var(--background-dark)` with muted borders
+- Targeted selectors: `.plan-quick-button-stack`, `.session-quick-button-stack`, `.icon-label` (prevents double-compounding)
+**Files Modified**:
+- `src/services/selectorService.js` - Added group detection functions, updated toggle() with group-based blocking
+- `src/services/actionService.js` - Updated toggleConfigHeader() to use group-based blocking
+- `src/features/config-header/config-header.style.css` - Added 4 muting rules (exercise→config, log→config, config→exercise, general border)
+- `src/features/workout-log/workout-log.edit-panel.css` - Added 4 muting rules (config→log, log→config, log→exercise, inter-log)
+- `src/features/active-exercise-card/active-exercise-card.selector.css` - Added 3 muting rules (general, exercise→config, exercise→log)
+- `src/main.js` - Removed conditional re-render block from updateActiveWorkoutPreservingLogs()
+**Selector Group Matrix**:
+```
+Config Group Open:
+  → Mutes Exercise Group (Current Exercise selector)
+  → Mutes Log Group (all edit log items)
+  → Internal selectors work (Current Plan, Current Focus, modals)
+
+Exercise Group Open:
+  → Mutes Config Group (icon bar buttons, session chevrons)
+  → Mutes Log Group (all edit log items)
+
+Log Group Open:
+  → Mutes Config Group (icon bar buttons, session chevrons)
+  → Mutes Exercise Group (Current Exercise selector)
+  → Mutes Other Log Items (only one editable at a time)
+```
+**Standard Muting Style** (consistent across all selectors):
+```css
+/* Border */
+box-shadow: inset 0 0 0 var(--card-border-width) var(--primary-blue-dark);
+background: var(--background-dark); /* Keep black background */
+
+/* Content */
+filter: brightness(0.6) saturate(0.6);
+opacity: 0.3;
+```
+**Technical Discoveries**:
+- Wildcard selector `*` compounds filter effect on nested elements
+- Must target specific container classes to prevent double-application
+- Session cycling function ONLY called for session changes, never mode switches
+- Config icon bar buttons have nested div/span structure requiring targeted selectors
+- Font metrics make edit log text more readable than config buttons at same opacity
+**Debugging Journey**:
+1. Initial edit log muting worked, but config stayed active
+2. Fixed by changing `#workout-log` → `#workout-log-card`
+3. Config muting too harsh (unreadable) - wildcard causing double-compound
+4. Fixed by targeting specific elements: `.plan-quick-button-stack`, `.session-quick-button-stack`, `.icon-label`
+5. Established standard muting values by making edit log 10% less muted, applying to all
+**Status**: COMPLETE - Full bidirectional group-based muting system operational, animations preserved, consistent visual style
+
+### **v6.24 - Dual-Mode Responsive Design & Session Cycling Fix**
+**Date**: 2025-10-03
+**Problem**: Dual-mode timer overflow at 360px viewport, config buttons wrapping below 390px, Log Set buttons inconsistent colors, session cycling deleting logged sets in dual modes
+**Solution**: Reduced timer font size, implemented responsive flex behavior, matched button colors to timers/fuel gauges, created preserve functions for dual modes
+**Key Achievements**:
+- **Dual-mode timer sizing**: Reduced from 5.0rem to 4.5rem to fit 360px viewport width
+- **Spacing adjustments**: Updated all dual-mode spacing tokens for new timer height (16-18px visual rhythm)
+- **Responsive config buttons**: Below 390px, focus button locks at 50px, plan/session buttons shrink evenly
+- **Log Set button colors**: Now match timer/fuel gauge colors (Superset: Green left/Yellow right, Partner: Green left/Blue right)
+- **Session cycling preservation**: Dual modes now preserve logged sets when changing session types (Standard/Express/Maintenance)
+- **Complete tokenization**: All dual-mode spacing values centralized in CSS custom properties
+**Root Causes Identified**:
+- **Timer overflow**: 5.0rem font size too large for 360px viewport, causing layout breaks
+- **Button wrapping**: Default responsive rules allowed wrapping instead of flex compression
+- **Button color mismatch**: Log Set buttons used default green instead of side-specific colors
+- **Set deletion**: `updateActiveWorkoutPreservingLogs()` regenerated entire log for dual modes instead of preserving
+**Technical Architecture**:
+- Spacing tokens in `active-exercise-card.style.css`: `--dual-timer-font-size`, `--dual-resting-margin-top`, `--dual-grid-margin-top`, etc.
+- Responsive breakpoint: `@media (max-width: 389px)` prevents wrapping, locks focus at 50px
+- Color scheme: Static classes `text-plan` (green), `text-warning` (yellow), `text-primary` (blue) applied to Log Set buttons
+- Preservation functions: `updateSupersetWorkoutLogForSessionChange()`, `updatePartnerWorkoutLogForSessionChange()` with helper `_mergeExistingWithNew()`
+**Files Modified**:
+- `src/features/dual-mode/dual-mode.active-card.css` - Timer font size tokenized (4.5rem)
+- `src/features/dual-mode/dual-mode.spacing.css` - All spacing values converted to tokens, comprehensive header rewrite
+- `src/features/dual-mode/dual-mode.colors.css` - Added Log Set button color rules matching timers
+- `src/features/active-exercise-card/active-exercise-card.style.css` - Added 7 new dual-mode spacing tokens
+- `src/features/active-exercise-card/active-exercise-card.templates.actionArea.js` - Color class logic for Log Set buttons
+- `src/features/config-header/config-header.style.css` - Responsive layout rules for narrow viewports
+- `src/services/workoutFactoryService.js` - Added dual-mode session change preserve functions
+- `src/main.js` - Updated to call preserve functions instead of regenerate
+**Spacing Token Values** (CSS → Visual):
+- `--dual-timer-font-size: 4.5rem` - Timer display (down from 5.0rem)
+- `--dual-resting-margin-top: 0px` - "Resting For:" to inputs (16px visual)
+- `--dual-grid-margin-top: 12px` - "Resting For:" to dual grid (17px visual)
+- `--dual-upper-slack-spacing: 12px` - Inactive text top (17px visual)
+- `--dual-lower-slack-spacing: 14px` - Inactive text bottom (18px visual)
+- `--dual-inactive-margin-top: 11px` - Inactive "Begin Exercise" top (16px visual)
+- `--dual-inactive-margin-bottom: 2px` - Inactive "Begin Exercise" bottom (17px visual)
+- `--dual-logset-transform-y: 1px` - "Log Set" button alignment (18px visual)
+**Technical Discoveries**:
+- Font metrics compensation: CSS values 3-5px less than visual spacing due to line-height 1.2 and font descent
+- Responsive flex strategy: Lock critical elements (focus icon), compress flexible elements (text buttons)
+- Dual-mode log structure: Left/right sides must be filtered, merged separately, then interleaved to preserve pattern
+- Color token usage: `--log-green`, `--text-yellow-maintenance`, `--primary-blue` for consistent theming
+**CLAUDE.md Standards Applied**:
+- CEMENT markers on critical spacing and color architecture
+- Token-based CSS system with comprehensive documentation
+- Semantic naming convention for dual-mode states
+- Architecture headers updated with dependencies and token references
+**Status**: COMPLETE - All dual-mode responsive issues resolved, spacing tokenized, session cycling preserves logged sets
+
 ### **v6.23 - Config Dropdown & Selector Muting Improvements**
 **Date**: 2025-10-03
 **Problem**: Config dropdown closing on Superset/Partner confirmation, one-selector-to-rule-them-all not fully enforced, selector muting inconsistent

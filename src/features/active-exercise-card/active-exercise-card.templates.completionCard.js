@@ -1,6 +1,16 @@
 import { appState } from "state";
 import * as workoutMetricsService from "services/workoutMetricsService.js";
 
+/* ==========================================================================
+   ACTIVE EXERCISE CARD - Completion Card Template
+
+   Generates workout completion card with animation and results display.
+   Shows total sets logged and provides reset option.
+
+   Dependencies: workoutMetricsService
+   Used by: Main render cycle
+   ========================================================================== */
+
 export function getCompletionCardHTML() {
   const { totalSets } = workoutMetricsService.calculateWorkoutMetrics(
     appState.session.workoutLog

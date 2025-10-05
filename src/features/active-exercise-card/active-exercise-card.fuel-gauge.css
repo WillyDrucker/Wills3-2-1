@@ -1,16 +1,21 @@
 /* ==========================================================================
-   ACTIVE EXERCISE CARD - FUEL GAUGE
-
-   Purpose: Visual 5-segment timer display with action prompt overlays
-            Shows rest/recovery progress with color-coded animations
+   ACTIVE EXERCISE CARD - Fuel Gauge
 
    CEMENT: Overlay positioning uses absolute centering for precise alignment
-           Truncation ensures prompts remain visible at narrow viewports
+   - Action prompts centered over fuel gauge during rest states
+   - Truncation ensures prompts remain visible at narrow viewports
+   - 5-segment timer display with color-coded animations
+
+   Architecture: Positioned fuel gauge with centered overlay prompts
+   - Fuel gauge container uses flexbox for equal segment distribution
+   - Absolute overlay centers prompts without affecting gauge layout
+   - Recovering animation shows progress visually
 
    Dependencies:
-     Global: _variables.css (spacing, control height, colors)
-             _animations.css (recovering-progression animation)
-     Local: fuel gauge segment styles (separate component)
+   Global: _variables.css (spacing, control-height, colors)
+   Global: _animations.css (recovering-progression animation)
+   Local: active-exercise-card.style.css (--fuel-gauge-top: 16px, --fuel-gauge-bottom: 3px)
+   Component: fuel-gauge/fuel-gauge.style.css (segment styles)
 
    Used by: Active card during rest periods and exercise transitions
    ========================================================================== */

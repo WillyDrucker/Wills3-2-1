@@ -16,10 +16,8 @@
 /* === MODAL CONTAINER === */
 /* Remove transition for instant appearance */
 #config-modal-container {
-  transition: none !important;
+  transition: none;
 }
-
-/* Remove any double-backdrop issues by ensuring config modal fully hides when not active */
 
 /* === MODAL CARD === */
 #config-modal {
@@ -28,7 +26,7 @@
   width: calc(390px - (var(--app-side-margin) * 2));
   max-width: 100%;
   /* CEMENT: Remove padding from outer card element - padding applied to inner container only */
-  padding: 0 !important;
+  padding: 0;
 }
 
 /* Modal card padding */
@@ -36,7 +34,7 @@
   /* CEMENT: Override to achieve 16px visual padding on all sides
      Standard card padding uses font compensation, but modal needs uniform spacing
      Higher specificity required to override global card foundations */
-  padding: 16px !important;
+  padding: 16px;
   box-sizing: border-box;
 }
 

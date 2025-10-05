@@ -16,7 +16,8 @@ import { renderVideoPlayer } from "features/video-player/video-player.index.js";
 import { renderSupersetModal } from "features/superset-modal/superset-modal.index.js";
 import { renderPartnerModal } from "features/partner-modal/partner-modal.index.js";
 import { renderWorkoutLog } from "features/workout-log/workout-log.index.js";
-import { renderConfigHeader, renderSessionDisplay, renderFocusDisplay } from "features/config-header/config-header.index.js";
+import { renderConfigHeader, renderConfigHeaderLine, renderSessionDisplay, renderFocusDisplay } from "features/config-card/config-card.header.index.js";
+import { renderConfigModal } from "features/config-card/config-card.modal.index.js";
 import {
   renderActiveExerciseCard,
   initializeActiveCardEventListeners,
@@ -46,13 +47,17 @@ function updateActiveWorkoutPreservingLogs() {
   const oldLogLength = appState.session.workoutLog?.length || 0;
 
   if (appState.partner.isActive) {
-    // Partner mode: regenerate (session changes not supported in partner mode)
+    // Partner mode: preserve logged sets when changing session
     appState.session.workoutLog =
-      workoutFactoryService.generatePartnerWorkoutLog();
+      workoutFactoryService.updatePartnerWorkoutLogForSessionChange(
+        appState.session.workoutLog
+      );
   } else if (appState.superset.isActive) {
-    // Superset mode: regenerate (session changes not supported in superset mode)
+    // Superset mode: preserve logged sets when changing session
     appState.session.workoutLog =
-      workoutFactoryService.generateSupersetWorkoutLog();
+      workoutFactoryService.updateSupersetWorkoutLogForSessionChange(
+        appState.session.workoutLog
+      );
   } else {
     // Normal mode: preserve logged sets
     appState.session.workoutLog = workoutFactoryService.updateWorkoutLogForSessionChange(
@@ -66,13 +71,10 @@ function updateActiveWorkoutPreservingLogs() {
 
   // 🔒 CEMENT: Minimal render to preserve animations and config-header state
   // DO NOT re-render active card/log when session cycling - it restarts animations
-  // Only re-render if the workout structure actually changed (e.g., mode switch)
-  // Session cycling only needs to update the session display (handled below)
-  if (oldLogLength !== newLogLength && (appState.superset.isActive || appState.partner.isActive)) {
-    // Only re-render for dual-mode structure changes, not session cycling
-    renderActiveExerciseCard();
-    renderWorkoutLog();
-  }
+  // Session cycling in ANY mode (normal or dual) should NOT trigger re-render
+  // This function is ONLY called for session cycling, never for mode switching
+  // Mode switching uses updateActiveWorkoutAndLog() which does full re-render
+  // Therefore: NEVER re-render here, only update session display below
 
   // Always update session display (works whether expanded or collapsed)
   // This updates both the icon bar button and expanded session text
@@ -115,6 +117,7 @@ function renderAll() {
   renderResetConfirmationModal();
   renderSupersetModal();
   renderPartnerModal();
+  renderConfigModal();
   renderVideoPlayer();
   if (appState.session.playCompletionAnimation) {
     appState.session.playCompletionAnimation = false;
@@ -141,6 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderError,
     initializeActiveCardEventListeners,
     renderConfigHeader,
+    renderConfigHeaderLine,
     renderActiveExerciseCard,
   });
 });

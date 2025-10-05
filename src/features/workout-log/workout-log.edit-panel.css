@@ -1,15 +1,33 @@
 /* ==========================================================================
-   WORKOUT LOG - EDIT PANEL
-   
-   Edit controls that appear below log items when opened
-   7px labels to inputs, 16px between inputs, 16px to buttons
+   WORKOUT LOG - Edit panel
+
+   CEMENT: Compact input layout with precise spacing
+   - Labels to inputs: 7px visual gap (4px margin + line-height compensation)
+   - Between inputs: 16px gap
+   - Inputs to buttons: 16px gap
+   - Between buttons: 16px gaps (three-column grid)
+
+   CEMENT: Bidirectional selector muting
+   - Log group mutes Config group and Exercise group when open
+   - Config/Exercise groups mute Log group when open
+   - Within Log group: one open item mutes all other items
+
+   Architecture: Absolute-positioned dropdown below log item
+   - Connects seamlessly via border-top: none
+   - Blue border except for skipped items (orange border)
+   - Three-button grid: Cancel, Clear Set, Update
+
+   Dependencies:
+   Global: _variables.css (spacing, colors, control-height, muting tokens)
+   Global: _selectors.css (base dropdown patterns)
    ========================================================================== */
 
 /* === EDIT CONTROLS PANEL === */
+/* CEMENT: Absolute positioning below log item, z-index above other content */
 .edit-log-controls {
   background: var(--background-dark);
   border: var(--card-border-width) solid var(--primary-blue);
-  border-top: none;
+  border-top: none; /* Seamless connection to log item */
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   border-bottom-left-radius: var(--border-radius);
@@ -23,37 +41,37 @@
 }
 
 /* === LABELS === */
-/* CEMENT: 7px visual from labels to inputs */
+/* CEMENT: 7px visual gap from labels to inputs */
 .edit-log-controls .input-labels-container {
   margin-top: 0;
-  margin-bottom: var(--space-xxs); /* 4px + line-height = 7px visual */
+  margin-bottom: var(--space-xxs); /* Global: 4px + line-height = 7px visual */
 }
 
 .edit-log-controls .input-label {
-  font-size: var(--font-size-body-m);
+  font-size: var(--font-size-body-m); /* Global: 1rem */
   font-weight: 600;
   line-height: 0.9;
 }
 
 /* === INPUT CONTROLS === */
-/* CEMENT: 16px between inputs, 16px to buttons */
+/* CEMENT: 16px spacing maintains app rhythm */
 .edit-log-controls .input-controls-grid {
   margin-top: 0;
-  margin-bottom: var(--space-m); /* 16px to buttons */
-  gap: var(--space-m); /* 16px between inputs */
+  margin-bottom: var(--space-m); /* Global: 16px to buttons */
+  gap: var(--space-m); /* Global: 16px between inputs */
   display: flex;
 }
 
 .edit-log-controls .number-input-container {
-  height: 40px; /* Compact height */
+  height: 40px; /* Compact 40px height */
 }
 
 /* === BUTTON GRID === */
-/* CEMENT: 16px gaps between all three buttons */
+/* CEMENT: Three equal-width buttons with 16px gaps */
 .edit-log-buttons {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: var(--space-m);
+  gap: var(--space-m); /* Global: 16px */
 }
 
 .edit-log-buttons .action-button {
@@ -63,8 +81,57 @@
 }
 
 /* === SKIPPED ITEM BORDER === */
-/* Orange border for skipped items */
+/* CEMENT: Orange border for skipped items persists across log item and edit panel */
 .workout-log-item-container.is-skipped-item[open] > summary > .workout-log-item,
 .workout-log-item-container.is-skipped-item .edit-log-controls {
   border-color: var(--warning-orange);
+}
+
+/* === BIDIRECTIONAL SELECTOR MUTING === */
+/* CEMENT: Three selector groups mute each other when one opens */
+/* High specificity from :has() and IDs naturally overrides base styles */
+
+/* Config Group → Log Group muting */
+body:has(#config-header .config-header-group.expanded) #workout-log-card details.workout-log-item-container:not([open]) > summary {
+  background-color: var(--background-dark);
+  box-shadow: inset 0 0 0 var(--card-border-width) var(--primary-blue-dark);
+  pointer-events: auto;
+}
+
+body:has(#config-header .config-header-group.expanded) #workout-log-card details.workout-log-item-container:not([open]) > summary .workout-log-item {
+  filter: brightness(var(--muted-brightness)) saturate(var(--muted-saturation)); /* Global tokens */
+  opacity: var(--muted-opacity); /* Global token */
+}
+
+/* Log Group → Config Group muting */
+body:has(#workout-log-card details.workout-log-item-container[open]) #config-header .icon-bar-expand {
+  background: var(--background-dark);
+  box-shadow: inset 0 0 0 1px var(--on-surface-disabled);
+  color: var(--on-surface-medium);
+  filter: brightness(0.5) saturate(0.5);
+  opacity: 0.2;
+}
+
+/* Log Group → Exercise Group muting */
+body:has(#workout-log-card details.workout-log-item-container[open]) details#exercise-selector:not([open]) > summary {
+  background-color: var(--background-dark);
+  box-shadow: inset 0 0 0 var(--card-border-width) var(--primary-blue-dark);
+  pointer-events: auto;
+}
+
+body:has(#workout-log-card details.workout-log-item-container[open]) details#exercise-selector:not([open]) > summary .selector-content {
+  filter: brightness(var(--muted-brightness)) saturate(var(--muted-saturation));
+  opacity: var(--muted-opacity);
+}
+
+/* CEMENT: Within Log Group - one open item mutes all other items */
+#workout-log-card:has(details.workout-log-item-container[open]) details.workout-log-item-container:not([open]) > summary {
+  background-color: var(--background-dark);
+  box-shadow: inset 0 0 0 var(--card-border-width) var(--primary-blue-dark);
+  pointer-events: auto;
+}
+
+#workout-log-card:has(details.workout-log-item-container[open]) details.workout-log-item-container:not([open]) > summary .workout-log-item {
+  filter: brightness(var(--muted-brightness)) saturate(var(--muted-saturation));
+  opacity: var(--muted-opacity);
 }

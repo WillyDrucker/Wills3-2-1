@@ -7,7 +7,7 @@ import * as workoutService from "services/workoutService.js";
 import * as modalService from "services/modalService.js";
 import { getNextWorkoutDay } from "utils";
 import { canCycleToSession } from "utils/sessionValidation.js";
-import { renderConfigHeader, renderSessionDisplay, notifyConfigHeaderToggled } from "features/config-header/config-header.index.js";
+import { renderConfigHeader, renderSessionDisplay, notifyConfigHeaderToggled } from "features/config-card/config-card.header.index.js";
 
 // Feature Handlers
 import {
@@ -45,7 +45,7 @@ import {
   restoreConfigState,
   clearConfigState,
   resetToDefaults,
-} from "features/config-modal/config-modal.index.js";
+} from "features/config-card/config-card.index.js";
 import {
   handleLogSet,
   handleSkipSet,
@@ -55,7 +55,7 @@ import {
 import {
   cycleNextSession,
   cyclePreviousSession,
-} from "features/config-header/config-header.index.js";
+} from "features/config-card/config-card.header.index.js";
 import { toggleFullScreen } from "lib/fullscreen.js";
 
 let coreActions = {};
@@ -181,15 +181,70 @@ export function initialize(dependencies) {
             coreActions.updateActiveWorkoutPreservingLogs(); // Update workout log for new session + recalculate time
           },
           toggleConfigHeader: () => {
-            // One-selector rule: Don't allow toggle if external selector is open
+            // One-selector-to-rule-them-all: Check if external selector group is open
             const openSelector = document.querySelector("details[open]");
-            if (openSelector && !openSelector.closest("#config-header")) {
-              return; // Block toggle - external selector is open
+
+            if (openSelector) {
+              // Determine if it's in a different group (exercise or log group)
+              const isInsideConfigHeader = openSelector.closest("#config-header");
+              const isInsideModal = openSelector.closest(".superset-modal-container, .config-modal-container");
+              const isInConfigGroup = isInsideConfigHeader || isInsideModal;
+
+              if (!isInConfigGroup) {
+                // External group (exercise or log) is open - close it but don't toggle config
+                selectorService.closeAll();
+                return; // Block toggle until external selector is closed
+              }
             }
 
+            const wasExpanded = appState.ui.isConfigHeaderExpanded;
             appState.ui.isConfigHeaderExpanded = !appState.ui.isConfigHeaderExpanded;
+
+            // Save snapshot when opening config header
+            if (!wasExpanded && appState.ui.isConfigHeaderExpanded) {
+              appState.ui.configHeaderSnapshot = {
+                currentDayName: appState.session.currentDayName,
+                currentTimeOptionName: appState.session.currentTimeOptionName,
+                currentSessionColorClass: appState.session.currentSessionColorClass,
+              };
+            }
+
             notifyConfigHeaderToggled(); // Prevent click-outside from triggering immediately
             renderConfigHeader(); // Targeted render to avoid animation resets
+            persistenceService.saveState();
+          },
+          cancelConfigHeaderChanges: () => {
+            // Restore snapshot values
+            if (appState.ui.configHeaderSnapshot) {
+              const snapshot = appState.ui.configHeaderSnapshot;
+              const needsRestore =
+                appState.session.currentDayName !== snapshot.currentDayName ||
+                appState.session.currentTimeOptionName !== snapshot.currentTimeOptionName;
+
+              // Close config header and clear snapshot
+              appState.ui.isConfigHeaderExpanded = false;
+              appState.ui.configHeaderSnapshot = null;
+              notifyConfigHeaderToggled();
+
+              if (needsRestore) {
+                // Restore snapshot values
+                appState.session.currentDayName = snapshot.currentDayName;
+                appState.session.currentTimeOptionName = snapshot.currentTimeOptionName;
+                appState.session.currentSessionColorClass = snapshot.currentSessionColorClass;
+
+                // Full update to regenerate workout log and active exercise card (includes renderAll)
+                coreActions.updateActiveWorkoutAndLog();
+              } else {
+                // No changes to revert, just render config header
+                renderConfigHeader();
+              }
+            } else {
+              // No snapshot, just close
+              appState.ui.isConfigHeaderExpanded = false;
+              notifyConfigHeaderToggled();
+              renderConfigHeader();
+            }
+
             persistenceService.saveState();
           },
           openResetConfirmationModal: () => modalService.open("reset"),

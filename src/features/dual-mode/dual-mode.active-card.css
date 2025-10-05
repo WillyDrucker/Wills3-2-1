@@ -2,24 +2,28 @@
    DUAL-MODE ACTIVE CARD INTEGRATION
 
    🔒 CEMENT: Active card dual-mode timer and button overrides
-   - Timer: 5.0rem with 0.7 line-height for compact display
+   - Timer: 4.5rem (tokenized) with 0.7 line-height for compact display
+   - Reduced from 5.0rem to accommodate 360px viewport width
    - Higher specificity prevents single-mode inheritance
    - Container width matches button groups for table stability
 
    Architecture: Timer and button container overrides
    Component Structure:
-   ├── Timer display sizing
+   ├── Timer display sizing (uses --dual-timer-font-size token)
    ├── Timer/skip container structure
    └── Line-height adjustments
 
-   Dependencies: Active card foundations
+   Dependencies:
+   Global: _variables.css (typography tokens)
+   Local: active-exercise-card.style.css (--dual-timer-font-size: 4.5rem)
+
    Used by: Active card during dual-mode workouts
    ========================================================================== */
 
 /* === DUAL-MODE TIMERS === */
-/* 🔒 CEMENT: Higher specificity override for dual-mode timer sizing */
+/* 🔒 CEMENT: Higher specificity override for dual-mode timer sizing - uses token */
 #active-card-container .dual-action-area-container .timer-display {
-  font-size: 5.0rem;
+  font-size: var(--dual-timer-font-size); /* Token: 4.5rem (down from 5.0rem for 360px viewport) */
   font-weight: 700;
   line-height: 0.7; /* 🔒 CEMENT: Required for compact spacing */
   text-align: center;

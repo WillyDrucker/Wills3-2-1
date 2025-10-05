@@ -1,7 +1,7 @@
 import { appState } from "state";
-import { getCurrentSetupSelectorHTML } from "./config-card.templates.currentSetup.js";
-import { getDaySelectorHTML } from "./config-card.templates.daySelector.js";
-import { getTimeSelectorHTML } from "./config-card.templates.timeSelector.js";
+import { getPlanSelectorHTML } from "./config-card.template.plan.js";
+import { getDaySelectorHTML } from "./config-card.template.day.js";
+import { getTimeSelectorHTML } from "./config-card.template.time.js";
 
 export function getConfigCardTemplate() {
   const isAnySetLogged = appState.session.workoutLog.some(
@@ -13,17 +13,17 @@ export function getConfigCardTemplate() {
       <div class="card-content-container">
         <div class="config-group">
           <h2 class="card-header">Current Setup</h2>
-          ${getCurrentSetupSelectorHTML(isAnySetLogged)}
+          ${getPlanSelectorHTML(isAnySetLogged, "workout-setup-selector-details", true)}
         </div>
 
         <div class="config-group">
           <h2 class="card-header">Current Focus</h2>
-          ${getDaySelectorHTML(isAnySetLogged)}
+          ${getDaySelectorHTML(isAnySetLogged, "day-selector-details")}
         </div>
 
         <div class="config-group">
           <h2 class="card-header">Current Session</h2>
-          ${getTimeSelectorHTML(isAnySetLogged)}
+          ${getTimeSelectorHTML(isAnySetLogged, "time-selector-details")}
         </div>
       </div>
     </div>

@@ -1,15 +1,19 @@
 /* ==========================================================================
-   ACTIVE EXERCISE CARD - HEADER
-
-   Purpose: Two-line header with exercise title, real-time clock, and
-            workout duration information with responsive truncation
+   ACTIVE EXERCISE CARD - Header
 
    CEMENT: Flexbox layout with truncation enables responsive text overflow
-           Text elements shrink with ellipsis, clocks remain stationary
+   - Text elements shrink with ellipsis, clocks remain stationary
+   - Two-line header shows exercise title, clock, and workout duration
+   - 16/7/7 spacing rhythm maintained via margin compensation
+
+   Architecture: Responsive header with priority-based truncation
+   - Dynamic text (title, duration) truncates with ellipsis
+   - Static elements (clocks, focus) never truncate
+   - Flex layout with min-width: 0 enables child text truncation
 
    Dependencies:
-     Global: _card-headers.css (base typography)
-             _variables.css (spacing tokens, colors)
+   Global: _variables.css (spacing, colors, typography)
+   Global: _card-headers.css (base header typography)
 
    Used by: Active card in normal and dual-mode workouts
    ========================================================================== */

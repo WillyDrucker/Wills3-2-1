@@ -1,8 +1,21 @@
 /* ==========================================================================
    ACTIVE EXERCISE CARD - ACTION AREA
-   
-   Action prompts, buttons, and timer display
-   Shared between inactive and active states
+
+   CEMENT: Shared action area for prompts, buttons, and timer display
+   - Stack layout with 16px gap (var(--space-m))
+   - Spacer divs prevent card height shifts between states
+   - Timer container with shadow overflow protection
+
+   Architecture: Unified action area for all card states
+   - Inactive state: "Begin Exercise" prompt with action buttons
+   - Active state: "Resting For" text with timer and skip button
+   - Rest timer: Dedicated section for normal workout rest periods
+
+   Dependencies:
+   Global: _variables.css (space-m, control-height, font sizes, text-shadow)
+   Local: active-exercise-card.style.css (slack spacing tokens)
+
+   Used by: active-exercise-card.state-inactive.css, active-exercise-card.state-active.css
    ========================================================================== */
 
 /* === ACTION AREA CONTAINER === */

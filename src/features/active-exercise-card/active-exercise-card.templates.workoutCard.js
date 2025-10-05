@@ -6,18 +6,17 @@ import { getActionAreaHTML } from "./active-exercise-card.templates.actionArea.j
 import { getExerciseSelectorHTML } from "./active-exercise-card.templates.exerciseSelector.js";
 import * as workoutMetricsService from "services/workoutMetricsService.js";
 
+/* ==========================================================================
+   ACTIVE EXERCISE CARD - Workout Card Template
+
+   Generates the main workout card HTML with inputs, selectors, and actions.
+   Handles both normal and dual-mode (superset/partner) layouts.
+
+   Dependencies: fuelGauge, actionArea, exerciseSelector templates, workoutMetricsService
+   Used by: active-exercise-card.template.js
+   ========================================================================== */
+
 function getCardHeaderHTML(logEntry = null) {
-  /*
-    CLEANUP (v6.14): Removed dual-mode condition - both modes now use single header line.
-    Minutes remaining moved to separate location in both modes for consistency.
-    This fixed spacing issues caused by redundant second header line in dual-mode.
-
-    CLEANUP (v6.16): Removed clock - moved to config-header to avoid duplication.
-    Clock now appears once in Current Setup header instead of Current Exercise header.
-
-    CLEANUP (v6.19): Removed body part (push/pull) display - body part now shown in config-header icon bar.
-  */
-
   return `
     <div id="active-card-header" class="card-header-container">
       <div class="card-header-line">
@@ -69,8 +68,6 @@ export function getWorkoutCardHTML(logEntry) {
 
           ${getCardHeaderHTML(logEntry)}
 
-          <!-- SPACING FIX (v6.14): 4px margin achieves 7px visual gap from header to selector -->
-          <!-- NOTE: youtube-overlay-wrapper is misleadingly named - contains selector + YouTube button -->
           <div class="youtube-overlay-wrapper" style="margin-top: 4px;">
             ${getExerciseSelectorHTML(logEntry, setsForThisExercise)}
             ${getYouTubeOverlayButtonHTML(logEntry)}

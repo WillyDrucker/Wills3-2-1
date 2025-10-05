@@ -10,6 +10,11 @@
    ├── Timer color overrides (left=green, right=yellow)
    ├── Fuel gauge color coordination
    └── Time deduction visual indicators
+
+   Dependencies:
+   Global: _variables.css (--text-green-plan, --text-yellow-maintenance, --log-green, --font-size-body-s, --space-xxs)
+
+   Used by: Superset modal and active card during superset workouts
    ========================================================================== */
 
 /* === SUPERSET TIMER COLORS === */

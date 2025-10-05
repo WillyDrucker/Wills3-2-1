@@ -6,7 +6,16 @@ import * as workoutMetricsService from "services/workoutMetricsService.js";
 import * as workoutFactoryService from "services/workoutFactoryService.js";
 import { canCycleToSession } from "utils/sessionValidation.js";
 
-export function getTimeSelectorHTML(isAnySetLogged) {
+/* ==========================================================================
+   CONFIG CARD - Time Selector Template (Shared)
+
+   CEMENT: Unified session selector used across all config contexts
+   Displays current session type (Standard/Express/Maintenance) with duration.
+   Calculates dynamic duration based on mode (Normal/Superset/Partner).
+   Mutes invalid options that would remove logged sets.
+   ========================================================================== */
+
+export function getTimeSelectorHTML(isAnySetLogged, selectorId = "time-selector-details") {
   const { superset, partner, session } = appState;
   const { currentTimeOptionName } = session;
   const currentTime =
@@ -75,7 +84,7 @@ export function getTimeSelectorHTML(isAnySetLogged) {
     .join("");
   const isSelectorDisabled = isAnySetLogged;
   return createSelectorHTML(
-    "time-selector-details",
+    selectorId,
     summaryHtml,
     optionsHtml,
     isSelectorDisabled

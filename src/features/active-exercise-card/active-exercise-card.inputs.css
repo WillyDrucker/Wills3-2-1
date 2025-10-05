@@ -1,15 +1,19 @@
 /* ==========================================================================
-   ACTIVE EXERCISE CARD - INPUTS
-
-   Purpose: Weight and reps input controls with responsive label truncation
-            Grid layout provides precise spacing for visual rhythm
+   ACTIVE EXERCISE CARD - Inputs
 
    CEMENT: Grid gap and line-height produce exact 7px visual spacing
-           Truncation system prevents label overflow on narrow viewports
+   - Weight-first layout for normal mode consistency
+   - Truncation system prevents label overflow on narrow viewports
+   - 16px column gap maintains visual rhythm
+
+   Architecture: Two-column grid with responsive labels
+   - Grid template areas define weight/reps order
+   - Labels truncate independently with ellipsis
+   - 4px row gap + line-height = 7px visual spacing
 
    Dependencies:
-     Global: _inputs.css (base input styles)
-             _variables.css (spacing tokens, control height)
+   Global: _variables.css (spacing, control-height, typography)
+   Global: _inputs.css (base input styles and number input handlers)
 
    Used by: Active card during exercise logging
    ========================================================================== */

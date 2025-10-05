@@ -10,6 +10,11 @@
    ├── Timer color overrides (left=green, right=blue)
    ├── Fuel gauge color coordination
    └── User identification in workout logs
+
+   Dependencies:
+   Global: _variables.css (--text-green-plan, --primary-blue, --log-green)
+
+   Used by: Partner modal and active card during partner workouts
    ========================================================================== */
 
 /* === PARTNER TIMER COLORS === */

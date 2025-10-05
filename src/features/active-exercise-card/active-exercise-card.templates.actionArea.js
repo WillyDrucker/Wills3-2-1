@@ -104,8 +104,18 @@ function getDualModeSideActionHTML(side) {
     let isLogDisabled = !canLogDualModeSide(side);
     let isSkipDisabled = !canLogDualModeSide(side);
 
+    /* 🔒 CEMENT: Log Set button colors match timer/fuel gauge colors */
+    let buttonColorClass;
+    if (appState.superset.isActive) {
+      buttonColorClass = side === "left" ? "text-plan" : "text-warning"; // Green left, Yellow right
+    } else if (appState.partner.isActive) {
+      buttonColorClass = side === "left" ? "text-plan" : "text-primary"; // Green left, Blue right
+    } else {
+      buttonColorClass = "text-plan"; // Fallback to green
+    }
+
     return `<div class="action-button-group">
-              <button class="action-button button-log" data-action="logSet" data-side="${side}" ${
+              <button class="action-button button-log ${buttonColorClass}" data-action="logSet" data-side="${side}" ${
       isLogDisabled ? "disabled" : ""
     }>Log Set</button>
               <button class="action-button button-skip" data-action="skipSet" data-side="${side}" ${

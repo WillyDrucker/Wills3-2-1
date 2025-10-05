@@ -1,0 +1,87 @@
+/* ==========================================================================
+   ACTIVE EXERCISE CARD - Exercise Selector Muting
+
+   CEMENT: Bidirectional selector muting across three selector groups
+   - Exercise group mutes Config group and Log group when open
+   - Config/Log groups mute Exercise group when open
+   - Body class .is-selector-open gates all muting behavior
+   - Preserves consistent interaction patterns across all selectors
+
+   Architecture: Cross-component muting system
+   - Exercise → Config: Mutes icon-bar-expand button
+   - Exercise → Log: Mutes workout log item summaries
+   - Config/Log → Exercise: Mutes exercise selector via body class
+   - Legacy .is-muted class preserved for backward compatibility
+
+   Dependencies:
+   Global: _variables.css (muted-brightness, muted-saturation, muted-opacity tokens)
+   Global: _variables.css (background-dark, primary-blue-dark, on-surface-disabled)
+   Global: _selectors.css (base selector muting patterns)
+
+   Used by: Active card exercise selector, config header, and workout log for mutual muting
+   ========================================================================== */
+
+/* === LEGACY MUTED STATE === */
+/* Preserved for backward compatibility */
+.is-muted {
+  pointer-events: none;
+}
+
+.is-muted > summary {
+  background-color: var(--background-dark);
+  box-shadow: inset 0 0 0 var(--card-border-width) var(--primary-blue-dark);
+}
+
+.is-muted > summary .selector-content {
+  opacity: 0.2;
+}
+
+/* === OPEN STATES === */
+body.is-selector-open details:not([open]) {
+  pointer-events: none;
+}
+
+body.is-selector-open details:not([open]) > summary {
+  background-color: var(--background-dark);
+  box-shadow: inset 0 0 0 var(--card-border-width) var(--primary-blue-dark);
+}
+
+body.is-selector-open details:not([open]) > summary .selector-content {
+  filter: brightness(0.5) saturate(0.5);
+  opacity: 0.7;
+}
+
+/* === BIDIRECTIONAL SELECTOR MUTING === */
+/* CEMENT: Three selector groups mute each other when one opens */
+
+/* Exercise Group ← Config/Log Groups muting */
+body.is-selector-open details#exercise-selector:not([open]) > summary {
+  background-color: var(--background-dark);
+  box-shadow: inset 0 0 0 var(--card-border-width) var(--primary-blue-dark);
+}
+
+body.is-selector-open details#exercise-selector:not([open]) > summary .selector-content {
+  filter: brightness(var(--muted-brightness)) saturate(var(--muted-saturation)); /* Global tokens */
+  opacity: var(--muted-opacity); /* Global token */
+}
+
+/* Exercise Group → Config Group muting */
+body:has(details#exercise-selector[open]) #config-header .icon-bar-expand {
+  background: var(--background-dark);
+  box-shadow: inset 0 0 0 1px var(--on-surface-disabled);
+  color: var(--on-surface-medium);
+  filter: brightness(0.5) saturate(0.5);
+  opacity: 0.2;
+}
+
+/* Exercise Group → Log Group muting */
+body:has(details#exercise-selector[open]) #workout-log-card details.workout-log-item-container:not([open]) > summary {
+  background-color: var(--background-dark);
+  box-shadow: inset 0 0 0 var(--card-border-width) var(--primary-blue-dark);
+  pointer-events: auto;
+}
+
+body:has(details#exercise-selector[open]) #workout-log-card details.workout-log-item-container:not([open]) > summary .workout-log-item {
+  filter: brightness(var(--muted-brightness)) saturate(var(--muted-saturation));
+  opacity: var(--muted-opacity);
+}

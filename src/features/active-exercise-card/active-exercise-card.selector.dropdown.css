@@ -1,0 +1,96 @@
+/* ==========================================================================
+   ACTIVE EXERCISE CARD - Exercise Selector Dropdown (Open State)
+
+   CEMENT: Dropdown options list with two-line layout per item
+   - 50px item height (control-height) vs 100px summary height
+   - Absolute positioning for exercise name + equipment display
+   - Line 1 (top: 1px): Exercise name at 6px visual from top
+   - Line 2 (top: 24px): Equipment at 7px visual gap from name
+
+   Architecture: Compact dropdown items with absolute positioning
+   - Summary height: 100px (selector-height for 4 lines)
+   - Dropdown items: 50px (control-height for 2 lines)
+   - Truncation system preserves space for "Equipment:" label
+   - YouTube overlay positioned at bottom-right corner
+
+   Dependencies:
+   Global: _variables.css (control-height 50px, space-xxs, on-surface-medium)
+   Global: _selectors.css (dropdown base styles, hover states)
+   Local: active-exercise-card.style.css (--selector-padding-h 16px)
+
+   Used by: Active card exercise selector dropdown for exercise selection
+   ========================================================================== */
+
+/* === DROPDOWN LAYOUT === */
+/* CEMENT: 50px dropdown items use control-height, not selector-height (100px) */
+#exercise-selector .options-list li {
+  position: relative;
+  display: block;
+  padding: 0;
+  min-height: var(--control-height); /* Global: 50px */
+  box-sizing: border-box;
+}
+
+#exercise-selector .options-list li .item-main-line {
+  position: absolute;
+  top: 1px; /* Achieves 6px visual from top with font ascender */
+  left: 0;
+  right: 0;
+  display: block;
+  text-align: center;
+  margin: 0;
+  padding: 0 var(--selector-padding-h);
+  line-height: 1.2;
+  overflow: hidden;
+}
+
+#exercise-selector .options-list li .item-sub-line {
+  position: absolute;
+  top: 24px; /* 7px visual gap from exercise name */
+  left: 0;
+  right: 0;
+  display: block;
+  text-align: center;
+  margin: 0;
+  padding: 0 var(--selector-padding-h);
+  line-height: 1.2;
+  overflow: hidden;
+}
+
+/* === DROPDOWN TRUNCATION === */
+#exercise-selector .options-list li .selector-value-wrapper {
+  display: inline-block;
+  vertical-align: top;
+  max-width: calc(100% - 90px); /* Preserve space for Equipment label */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#exercise-selector .options-list li .item-main-line .selector-value-wrapper {
+  max-width: 100%;
+}
+
+#exercise-selector .options-list li .truncate-text {
+  display: inline-block;
+  vertical-align: top;
+}
+
+#exercise-selector .options-list li .item-main-line .selector-ui-label {
+  display: none; /* Exercise name has no label */
+}
+
+#exercise-selector .options-list li .item-sub-line .selector-ui-label {
+  display: inline;
+  color: var(--on-surface-medium);
+  font-weight: 500;
+  vertical-align: top;
+}
+
+/* === YOUTUBE OVERLAY === */
+.youtube-overlay-button {
+  position: absolute;
+  bottom: var(--space-xxs); /* Global: 4px */
+  right: var(--space-xxs);
+  z-index: 10;
+}

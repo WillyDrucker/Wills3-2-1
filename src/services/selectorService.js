@@ -32,19 +32,52 @@ export function closeAllExceptConfigHeader() {
   });
 }
 
+// 🔒 CEMENT: Determine which selector group an element belongs to
+function getSelectorGroup(detailsElement) {
+  // Config Group: Config dropdown + internal selectors (Current Plan/Focus) + modal selectors
+  const isInsideConfigHeader = detailsElement.closest("#config-header");
+  const isInsideModal = detailsElement.closest(".superset-modal-container, .config-modal-container");
+  if (isInsideConfigHeader || isInsideModal) {
+    return "config";
+  }
+
+  // Exercise Group: Current Exercise selector
+  const isExerciseSelector = detailsElement.id === "exercise-selector";
+  if (isExerciseSelector) {
+    return "exercise";
+  }
+
+  // Log Group: Edit log selectors (weight/reps/notes)
+  const isInsideWorkoutLog = detailsElement.closest("#workout-log");
+  if (isInsideWorkoutLog) {
+    return "log";
+  }
+
+  return "unknown";
+}
+
+// Get the currently open selector group (if any)
+function getOpenSelectorGroup() {
+  const openSelector = document.querySelector("details[open]");
+  if (!openSelector) return null;
+  return getSelectorGroup(openSelector);
+}
+
 export function toggle(detailsElement) {
   const wasOpen = detailsElement.open;
 
-  // One-selector rule: If config dropdown is open, don't allow other selectors to open
   if (!wasOpen) {
-    const isInsideConfigHeader = detailsElement.closest("#config-header");
-    const isConfigDropdownOpen = appState.ui.isConfigHeaderExpanded;
+    // One-selector-to-rule-them-all: Only one selector GROUP at a time
+    const clickedGroup = getSelectorGroup(detailsElement);
+    const openGroup = getOpenSelectorGroup();
 
-    // Block opening if config dropdown is open AND this selector is outside config header
-    if (isConfigDropdownOpen && !isInsideConfigHeader) {
-      return; // Don't allow opening
+    if (openGroup && openGroup !== clickedGroup) {
+      // Different group is open - close it but don't open this one
+      closeAll();
+      return; // Don't allow opening yet
     }
 
+    // Same group or no group open - close all and allow toggle below
     closeAll();
   }
 

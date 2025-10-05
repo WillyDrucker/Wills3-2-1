@@ -104,6 +104,15 @@
   --text-orange-deviation: #ffb74d;   /* Major deviation */
   --text-red-skip: #b30000;           /* Skipped */
   
+  /* === SELECTOR MUTING TOKENS === */
+  /* 🔒 CEMENT: Universal muting style - consistent across all selectors */
+  /* One-selector-to-rule-them-all: Applied when selectors are disabled/muted */
+  --muted-border-color: var(--primary-blue-dark);      /* Dark blue border */
+  --muted-background: var(--background-dark);          /* Keep black background */
+  --muted-brightness: 0.6;                             /* Content brightness filter */
+  --muted-saturation: 0.6;                             /* Content saturation filter */
+  --muted-opacity: 0.3;                                /* Content opacity */
+
   /* === SHADOWS === */
   /* CEMENT: Consistent text shadow system */
   --text-shadow-subtle: 0 2px 4px rgba(0, 0, 0, 0.8);

@@ -1,16 +1,22 @@
 /* ==========================================================================
    ACTIVE EXERCISE CARD - ANIMATIONS
 
-   Purpose: Action prompt glow and border animations for visual feedback
+   CEMENT: Action prompt glow and border animations for visual feedback
+   - Text glow applied directly to text element (not wrapper)
+   - Direct animation ensures ellipsis inherits animated color
+   - Color state classes for session timing visual cues
+   - Border glow for card state transitions
 
-   CEMENT: Animation applied to text element (not wrapper) ensures ellipsis
-           inherits animated color for proper truncation display
+   Architecture: Animation system with color inheritance
+   - Text element animation: Allows ellipsis to inherit animated color
+   - Wrapper animation: Would break ellipsis color inheritance
+   - Body class gate: .start-glow-animations controls animation activation
 
    Dependencies:
-     Global: _animations.css (text-glow, border-glow keyframes)
-             _helpers.css (color classes)
+   Global: _animations.css (text-glow, border-glow keyframes)
+   Global: _variables.css (color tokens: text-green-plan, text-olive-deviation, etc.)
 
-   Used by: Active card action prompts and border states
+   Used by: Active card action prompts and border states for visual feedback
    ========================================================================== */
 
 /* === TEXT ANIMATIONS === */

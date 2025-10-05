@@ -1,0 +1,84 @@
+/* ==========================================================================
+   CONFIG HEADER - Bidirectional selector muting
+
+   CEMENT: Three selector groups mute each other when one opens
+   - Config Group (this header) ↔ Exercise Group (active card) ↔ Log Group (workout log)
+   - When any group opens, other groups mute automatically
+   - Border-only muting for icon buttons preserves active information
+
+   Architecture: High-specificity :has() selectors
+   - Exercise/Log → Config: Mutes icon bar buttons and chevrons
+   - Config → Exercise: Mutes exercise selector border and content
+
+   Dependencies:
+   Global: _variables.css (muting tokens)
+   ========================================================================== */
+
+/* === CONFIG BORDER MUTING === */
+/* CEMENT: Border mutes when external selector opens */
+body.is-selector-open #config-header:not(:has(details[open])) {
+  border-color: var(--primary-blue-dark); /* Global muting token */
+}
+
+/* === EXERCISE GROUP → CONFIG GROUP === */
+/* Icon bar buttons muted when exercise selector opens */
+body:has(details#exercise-selector[open]) #config-header .icon-bar-item {
+  background: var(--background-dark);
+  box-shadow: inset 0 0 0 2px var(--primary-blue-dark); /* Global muting token */
+  pointer-events: auto;
+}
+
+body:has(details#exercise-selector[open]) #config-header .icon-bar-item .plan-quick-button-stack,
+body:has(details#exercise-selector[open]) #config-header .icon-bar-item .session-quick-button-stack,
+body:has(details#exercise-selector[open]) #config-header .icon-bar-item .icon-label {
+  filter: brightness(var(--muted-brightness)) saturate(var(--muted-saturation)); /* Global muting tokens */
+  opacity: var(--muted-opacity);
+}
+
+/* Session chevrons muted when exercise selector opens */
+body:has(details#exercise-selector[open]) #config-header .session-chevron {
+  background: var(--background-dark);
+  box-shadow: inset 0 0 0 1px var(--on-surface-disabled);
+  color: var(--on-surface-medium);
+  filter: brightness(0.5) saturate(0.5);
+  opacity: 0.2;
+  pointer-events: auto;
+}
+
+/* === LOG GROUP → CONFIG GROUP === */
+/* Icon bar buttons muted when log item opens */
+body:has(#workout-log-card details.workout-log-item-container[open]) #config-header .icon-bar-item {
+  background: var(--background-dark);
+  box-shadow: inset 0 0 0 2px var(--primary-blue-dark);
+  pointer-events: auto;
+}
+
+body:has(#workout-log-card details.workout-log-item-container[open]) #config-header .icon-bar-item .plan-quick-button-stack,
+body:has(#workout-log-card details.workout-log-item-container[open]) #config-header .icon-bar-item .session-quick-button-stack,
+body:has(#workout-log-card details.workout-log-item-container[open]) #config-header .icon-bar-item .icon-label {
+  filter: brightness(var(--muted-brightness)) saturate(var(--muted-saturation));
+  opacity: var(--muted-opacity);
+}
+
+/* Session chevrons muted when log item opens */
+body:has(#workout-log-card details.workout-log-item-container[open]) #config-header .session-chevron {
+  background: var(--background-dark);
+  box-shadow: inset 0 0 0 1px var(--on-surface-disabled);
+  color: var(--on-surface-medium);
+  filter: brightness(0.5) saturate(0.5);
+  opacity: 0.2;
+  pointer-events: auto;
+}
+
+/* === CONFIG GROUP → EXERCISE GROUP === */
+/* Exercise selector muted when config header expands */
+body:has(#config-header .config-header-group.expanded) details#exercise-selector:not([open]) > summary {
+  background-color: var(--background-dark);
+  box-shadow: inset 0 0 0 var(--card-border-width) var(--primary-blue-dark);
+  pointer-events: auto;
+}
+
+body:has(#config-header .config-header-group.expanded) details#exercise-selector:not([open]) > summary .selector-content {
+  filter: brightness(var(--muted-brightness)) saturate(var(--muted-saturation));
+  opacity: var(--muted-opacity);
+}

@@ -1,24 +1,26 @@
 /* ==========================================================================
-   GLOBAL SELECTORS
+   GLOBAL SELECTORS - Base dropdown component
 
-   Purpose: Base dropdown selector (details/summary) patterns with responsive
-            truncation for display values and menu items
-            Standard height: 50px (100px for active-card)
+   CEMENT: Color-matched truncation architecture
+   - Parent provides overflow context, colored child spans handle ellipsis
+   - Prevents white ellipsis on colored text (e.g., data-highlight values)
+   - Bidirectional muting system applied via .is-muted class
 
-   CEMENT: Truncation system allows color-matched ellipsis on child spans
-           Parent provides overflow context, colored spans handle ellipsis
-           Prevents white ellipsis on colored dropdown values
+   Architecture: Native details/summary with custom styling
+   - Standard height: 50px (overridable in specific components)
+   - Absolute-positioned dropdown list
+   - Flexible truncation system for single/multi-line content
 
    Dependencies:
-     Global: _variables.css (font-size-h2, control-height, border-radius, colors)
+   Global: _variables.css (spacing, colors, typography, control-height, muting tokens)
 
-   Used by: config-card, active-card, workout-log, my-data, dual-mode
+   Used by: config-card, config-header, active-card, workout-log, my-data, dual-mode
    ========================================================================== */
 
 /* === BASE SELECTOR === */
 .app-selector {
   position: relative;
-  font-size: var(--font-size-h2);
+  font-size: var(--font-size-h2); /* Global: 1.25rem */
   font-weight: 600;
   margin: 0;
 }
@@ -28,11 +30,12 @@
 }
 
 /* === SUMMARY (CLOSED STATE) === */
+/* CEMENT: Blue border distinguishes selectors from buttons, black background prevents opacity issues */
 .app-selector summary {
   background-color: var(--background-dark);
   box-shadow: inset 0 0 0 2px var(--primary-blue);
   border-radius: var(--border-radius);
-  min-height: var(--control-height);
+  min-height: var(--control-height); /* Global: 50px */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -45,13 +48,14 @@
   display: none;
 }
 
-/* Square bottom corners when open */
+/* CEMENT: Square bottom corners connect to dropdown seamlessly */
 .app-selector[open] > summary {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
 
 /* === OPTIONS LIST (OPEN STATE) === */
+/* CEMENT: Absolute positioning prevents layout shift, z-index above content */
 .options-list {
   list-style: none;
   background-color: var(--background-dark);
@@ -65,6 +69,7 @@
   z-index: 100;
 }
 
+/* CEMENT: Standard 50px option height matches control height token */
 .options-list li {
   padding: 8px 16px;
   cursor: pointer;
@@ -83,6 +88,7 @@
 }
 
 /* === NOTE ITEMS === */
+/* Non-selectable informational items in dropdown */
 .options-list li.is-note {
   border: none;
   cursor: default;
@@ -96,6 +102,7 @@
 }
 
 /* === COLORED BORDERS === */
+/* Session cycling, mode selection visual indicators */
 .options-list li.has-colored-border.border-yellow {
   border-color: var(--text-yellow-maintenance);
 }
@@ -109,7 +116,7 @@
 }
 
 /* === SELECTOR CONTENT === */
-/* CEMENT: Truncation for responsive display values */
+/* CEMENT: Truncation container - flex column for multi-line, allows nested color spans */
 .selector-content {
   display: flex;
   flex-direction: column;
@@ -122,7 +129,6 @@
   min-width: 0;
 }
 
-/* Direct text children in selector-content */
 .selector-content > span {
   min-width: 0;
   overflow: hidden;
@@ -130,7 +136,6 @@
   white-space: nowrap;
 }
 
-/* Prevent nested spans from breaking truncation */
 .selector-content > span span {
   display: inline;
   overflow: visible;
@@ -150,7 +155,7 @@
 }
 
 /* === DROPDOWN TEXT LINES === */
-/* CEMENT: Parent provides overflow context, colored child spans handle ellipsis */
+/* CEMENT: Two-line layout for exercise names, days, descriptions */
 .options-list li .item-main-line,
 .options-list li .item-sub-line {
   display: block;
@@ -170,7 +175,7 @@
   margin-top: 0;
 }
 
-/* Truncating spans with color-matched ellipsis */
+/* CEMENT: Truncating spans with color-matched ellipsis */
 .options-list li .item-main-line > span.truncate-text,
 .options-list li .item-sub-line > span.truncate-text {
   display: inline-block;
@@ -182,7 +187,6 @@
   vertical-align: bottom;
 }
 
-/* Non-truncating spans stay inline */
 .options-list li .item-main-line > span:not(.truncate-text),
 .options-list li .item-sub-line > span:not(.truncate-text) {
   display: inline;
@@ -190,13 +194,11 @@
 }
 
 /* === DROPDOWN FLEX OVERRIDE === */
-/* Override global flex display for proper stacking */
 .options-list li .flex-line-container {
   display: block;
   text-align: center;
 }
 
-/* === DROPDOWN HYPHEN SPACING === */
 .options-list li .flex-separator {
   margin: 0 2px;
 }
@@ -220,6 +222,7 @@
 }
 
 /* === FLEX LAYOUTS === */
+/* Advanced truncation for complex multi-part text */
 .flex-line-container {
   display: flex;
   width: 100%;
@@ -246,4 +249,37 @@
 /* === ERROR STATE === */
 summary.is-flashing-error {
   animation: button-red-pulse 0.56s linear 3;
+}
+
+/* === BUSINESS LOGIC MUTING === */
+/* CEMENT: Applied when first set logged - prevents plan/focus changes mid-workout */
+/* Three-class specificity naturally overrides base styles */
+.app-selector.is-muted > summary,
+.app-selector.is-muted[open] > summary,
+#config-header .app-selector.is-muted > summary,
+#config-header .app-selector.is-muted[open] > summary {
+  background: var(--muted-background); /* Global token */
+  box-shadow: inset 0 0 0 2px var(--muted-border-color); /* Global token */
+  pointer-events: none;
+}
+
+.app-selector.is-muted > summary .selector-content,
+.app-selector.is-muted[open] > summary .selector-content {
+  filter: brightness(var(--muted-brightness)) saturate(var(--muted-saturation)); /* Global tokens */
+  opacity: var(--muted-opacity); /* Global token */
+}
+
+/* CEMENT: Exercise selector exception - border-only muting preserves active exercise visibility */
+/* Content stays visible so users can see current exercise even when changes disabled */
+details#exercise-selector.app-selector.is-muted > summary .selector-content,
+details#exercise-selector.app-selector.is-muted[open] > summary .selector-content {
+  filter: none;
+  opacity: 1;
+}
+
+/* CEMENT: Override exception during bidirectional muting - exercise selector fully mutes when other selector opens */
+body.is-selector-open details#exercise-selector.app-selector.is-muted > summary .selector-content,
+body.is-selector-open details#exercise-selector.app-selector.is-muted[open] > summary .selector-content {
+  filter: brightness(var(--muted-brightness)) saturate(var(--muted-saturation));
+  opacity: var(--muted-opacity);
 }

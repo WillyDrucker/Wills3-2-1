@@ -1,15 +1,23 @@
 import { appState } from "state";
 import { createSelectorHTML } from "ui";
 
-export function getDaySelectorHTML(isAnySetLogged) {
+/* ==========================================================================
+   CONFIG CARD - Day Selector Template (Shared)
+
+   CEMENT: Unified day selector used across all config contexts
+   Displays current day's workout focus with chronologically-ordered options.
+   Shows dual-mode info (Superset/Partner) when active.
+   ========================================================================== */
+
+export function getDaySelectorHTML(isAnySetLogged, selectorId = "day-selector-details") {
   const { superset, partner, session } = appState;
   let summaryHtml;
   if (superset.isActive) {
     const day1Info = appState.weeklyPlan[superset.day1];
     const day2Info = appState.weeklyPlan[superset.day2];
-    summaryHtml = `<div class="selector-content"><div class="item-main-line flex-line-container"><span class="flex-priority">Superset:&nbsp;</span><span class="flex-priority data-highlight text-plan">${day1Info.title}</span><span class="flex-priority text-on-surface-medium">&nbsp;&amp;&nbsp;</span><span class="truncate-text data-highlight text-warning">${day2Info.title}</span></div></div>`;
+    summaryHtml = `<div class="selector-content"><div class="item-main-line flex-line-container"><span class="flex-priority">Superset:&nbsp;</span><span class="flex-priority data-highlight text-plan">${day1Info.title}</span><span class="flex-priority text-on-surface-medium">&nbsp;&amp;</span><span class="truncate-text data-highlight text-warning">&nbsp;${day2Info.title}</span></div></div>`;
   } else if (partner.isActive) {
-    summaryHtml = `<div class="selector-content"><div class="item-main-line flex-line-container"><span class="flex-priority">Partner:&nbsp;</span><span class="flex-priority data-highlight text-plan">${partner.user1Name}</span><span class="flex-priority text-on-surface-medium">&nbsp;&amp;&nbsp;</span><span class="truncate-text data-highlight text-primary">${partner.user2Name}</span></div></div>`;
+    summaryHtml = `<div class="selector-content"><div class="item-main-line flex-line-container"><span class="flex-priority">Partner:&nbsp;</span><span class="flex-priority data-highlight text-plan">${partner.user1Name}</span><span class="flex-priority text-on-surface-medium">&nbsp;&amp;</span><span class="truncate-text data-highlight text-primary">&nbsp;${partner.user2Name}</span></div></div>`;
   } else {
     const { currentDayName } = session;
     const dayInfo = appState.weeklyPlan[currentDayName];
@@ -55,7 +63,7 @@ export function getDaySelectorHTML(isAnySetLogged) {
     .join("");
   const isSelectorDisabled = isAnySetLogged;
   return createSelectorHTML(
-    "config-modal-day-selector",
+    selectorId,
     summaryHtml,
     optionsHtml,
     isSelectorDisabled

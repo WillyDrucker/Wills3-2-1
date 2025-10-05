@@ -1,12 +1,16 @@
 import { appState } from "state";
 import { isDumbbellExercise } from "utils";
 
-/**
- * CEMENTED
- * This function encapsulates the entire complex logic for the press-and-hold
- * number input controls, including variable step increments and acceleration.
- * It is a self-contained, stable piece of UI interaction logic.
- */
+/* ==========================================================================
+   ACTIVE EXERCISE CARD - Number Input Handler
+
+   Handles press-and-hold number input controls with variable step increments
+   and acceleration. Applies dumbbell-specific increment rules based on weight.
+
+   Dependencies: appState, isDumbbellExercise utility
+   Used by: active-exercise-card.index.js
+   ========================================================================== */
+
 export function initializeNumberInputHandlers(onInputChange) {
   let holdTimeoutId = null;
   let holdIntervalId = null;
@@ -21,11 +25,7 @@ export function initializeNumberInputHandlers(onInputChange) {
     const direction = target.dataset.action;
     const isWeightInput = target.dataset.inputId.startsWith("weight");
 
-    // 🔒 CEMENT: Exercise type detection for correct increment rules
-    // Critical fix: Use logged exercise type, not current active exercise type
-    // - If editing a logged set (logIndex provided), use that specific log entry's exercise
-    // - If using main inputs (logIndex null), use current active exercise
-    // This ensures dumbbell sets always use dumbbell increments regardless of workout progression
+    /* 🔒 CEMENT: Use logged exercise type for correct increment rules, not current active exercise */
     const relevantLogEntry = logIndex !== null
       ? appState.session.workoutLog[logIndex]
       : appState.session.workoutLog[appState.session.currentLogIndex];
