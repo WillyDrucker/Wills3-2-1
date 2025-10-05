@@ -1,3 +1,25 @@
+/* ==========================================================================
+   VIDEO PLAYER - Business Logic
+
+   Full-screen YouTube video modal with countdown timer and mobile performance
+   optimizations. Manages YouTube IFrame API lifecycle, screen orientation,
+   focus trap, and auto-close countdown on video end.
+
+   🔒 CEMENT: Mobile performance optimizations
+   - YouTube player configured with medium quality for mobile performance
+   - Direct DOM manipulation for countdown updates (prevents re-render lag)
+   - Hardware acceleration hints in CSS for smooth video rendering
+   - Fullscreen disabled (using custom UI)
+
+   🔒 CEMENT: Screen orientation management
+   - Unlocks orientation on video open (allows landscape viewing)
+   - Locks orientation on video close (restores app orientation)
+
+   Dependencies: appState, ui, focusTrapService, screenOrientation, utils,
+                 getVideoPlayerTemplate
+   Used by: actionService (showVideo, closeVideo), main.js
+   ========================================================================== */
+
 import { appState } from "state";
 import { ui } from "ui";
 import { getVideoPlayerTemplate } from "./video-player.template.js";

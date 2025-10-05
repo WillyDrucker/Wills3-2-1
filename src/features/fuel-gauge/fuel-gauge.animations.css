@@ -1,302 +1,33 @@
 /* ==========================================================================
-   FUEL GAUGE ANIMATIONS - Keyframes and Timing
+   FUEL GAUGE - Animations Main Entry Point
 
-   CEMENT: Three-phase animation system for progress indication
-   - Fill phase: 60-second linear progress animation
-   - Stamp phase: 1.2-second completion effect with scale/color
-   - Fade-out phase: 4-second final stamp and fade sequence
+   Three-phase animation system for rest timer progress visualization. Imports
+   all animation keyframe modules for progress, completion stamps, and fadeouts.
 
-   Animation Architecture:
-   ├── Progress fill keyframes
-   ├── Stamping effect keyframes (per color)
-   └── Fade-out completion keyframes
+   🔒 CEMENT: Three-phase animation architecture
+   - Progress phase: 60-second linear fill with blue color pulse
+   - Stamp phase: 1.2-second completion effect with scale/color flash
+   - Fadeout phase: 4-second final stamp with glow and fade to dark
+
+   Architecture: Animation keyframes organized by phase
+   ├── Progress animations (60s linear pulse)
+   ├── Stamp animations (1.2s completion per color mode)
+   └── Fadeout animations (4s final stamp and fade per color mode)
+
+   Color Modes Support:
+   - Superset: Green left, Yellow right
+   - Partner: Green left, Blue right
+   - Deviation: Olive (off-plan exercises)
+   - Skip: Orange (skipped sets)
+
+   Dependencies:
+   Global: _variables.css (color tokens, timing)
+   Local: fuel-gauge.animations.progress.css, fuel-gauge.animations.stamp.css,
+          fuel-gauge.animations.fadeout.css
+
+   Used by: fuel-gauge.style.css (animation classes)
    ========================================================================== */
-@keyframes segment-color-pulse {
-  0% {
-    /* 0s */
-    background-color: var(--primary-blue-dark);
-  }
-  50% {
-    /* 30s */
-    background-color: #003d66;
-  }
-  91.67% {
-    /* 55s */
-    background-color: #80ccff;
-  }
-  95% {
-    /* 57s */
-    background-color: #ffffff;
-  }
-  96.67% {
-    /* 58s */
-    background-color: #ffffff;
-  }
-  100% {
-    /* 60s */
-    background-color: var(--primary-blue-dark);
-  }
-}
 
-/* --- Stamping Animations (Individual Segments) --- */
-@keyframes stamp-effect-log-left {
-  0% {
-    background-color: var(--surface-dark-accent);
-    transform: scale(1);
-  }
-  41.6% {
-    background-color: #33ff33;
-    transform: scale(1.1);
-  }
-  83.2% {
-    background-color: #33ff33;
-    transform: scale(1.1);
-  }
-  100% {
-    background-color: var(--log-green);
-    transform: scale(1);
-  }
-}
-@keyframes stamp-effect-log-right {
-  0% {
-    background-color: var(--surface-dark-accent);
-    transform: scale(1);
-  }
-  41.6% {
-    background-color: #ffff80;
-    transform: scale(1.1);
-  }
-  83.2% {
-    background-color: #ffff80;
-    transform: scale(1.1);
-  }
-  100% {
-    background-color: var(--text-yellow-maintenance);
-    transform: scale(1);
-  }
-}
-
-/* Olive/deviation animation for text-deviation class */
-@keyframes stamp-effect-deviation {
-  0% {
-    background-color: var(--surface-dark-accent);
-    transform: scale(1);
-  }
-  41.6% {
-    background-color: var(--text-olive-deviation); /* Light olive flash */
-    transform: scale(1.1);
-  }
-  83.2% {
-    background-color: var(--text-olive-deviation);
-    transform: scale(1.1);
-  }
-  100% {
-    background-color: var(--text-olive-deviation);
-    transform: scale(1);
-  }
-}
-@keyframes stamp-effect-log-right-partner {
-  0% {
-    background-color: var(--surface-dark-accent);
-    transform: scale(1);
-  }
-  41.6% {
-    background-color: #80ccff; /* Light blue flash */
-    transform: scale(1.1);
-  }
-  83.2% {
-    background-color: #80ccff;
-    transform: scale(1.1);
-  }
-  100% {
-    background-color: var(--primary-blue);
-    transform: scale(1);
-  }
-}
-@keyframes stamp-effect-skip {
-  0% {
-    background-color: var(--surface-dark-accent);
-    transform: scale(1);
-  }
-  41.6% {
-    background-color: #ffcc80;
-    transform: scale(1.1);
-  }
-  83.2% {
-    background-color: #ffcc80;
-    transform: scale(1.1);
-  }
-  100% {
-    background-color: var(--warning-orange);
-    transform: scale(1);
-  }
-}
-
-/* --- Final Fade-out Animations (ALL MODES) --- */
-@keyframes final-stamp-and-fade-log-left {
-  0% {
-    background-color: var(--log-green);
-    transform: scale(1);
-    box-shadow: none;
-  }
-  12.5% {
-    /* 500ms */
-    background-color: #33ff33;
-    transform: scale(1.15);
-    box-shadow: 0 0 8px #33ff33;
-  }
-  25% {
-    /* 1000ms */
-    background-color: #33ff33;
-    transform: scale(1.15);
-    box-shadow: 0 0 8px #33ff33;
-  }
-  30% {
-    /* 1200ms */
-    background-color: var(--log-green);
-    transform: scale(1);
-    box-shadow: none;
-  }
-  36.25% {
-    /* 1450ms */
-    background-color: var(--log-green);
-    transform: scale(1);
-    box-shadow: none;
-  }
-  100% {
-    /* 4000ms */
-    background-color: var(--surface-dark-accent);
-    transform: scale(1);
-    box-shadow: none;
-  }
-}
-@keyframes final-stamp-and-fade-log-right {
-  0% {
-    background-color: var(--text-yellow-maintenance);
-    transform: scale(1);
-    box-shadow: none;
-  }
-  12.5% {
-    background-color: #ffff80;
-    transform: scale(1.15);
-    box-shadow: 0 0 8px #ffff80;
-  }
-  25% {
-    background-color: #ffff80;
-    transform: scale(1.15);
-    box-shadow: 0 0 8px #ffff80;
-  }
-  30% {
-    background-color: var(--text-yellow-maintenance);
-    transform: scale(1);
-    box-shadow: none;
-  }
-  36.25% {
-    background-color: var(--text-yellow-maintenance);
-    transform: scale(1);
-    box-shadow: none;
-  }
-  100% {
-    background-color: var(--surface-dark-accent);
-    transform: scale(1);
-    box-shadow: none;
-  }
-}
-
-/* Olive/deviation fade-out animation for text-deviation class */
-@keyframes final-stamp-and-fade-deviation {
-  0% {
-    background-color: var(--text-olive-deviation);
-    transform: scale(1);
-    box-shadow: none;
-  }
-  12.5% {
-    background-color: var(--text-olive-deviation); /* Light olive flash */
-    transform: scale(1.15);
-    box-shadow: 0 0 8px var(--text-olive-deviation);
-  }
-  25% {
-    background-color: var(--text-olive-deviation);
-    transform: scale(1.15);
-    box-shadow: 0 0 8px var(--text-olive-deviation);
-  }
-  30% {
-    background-color: var(--text-olive-deviation);
-    transform: scale(1);
-    box-shadow: none;
-  }
-  36.25% {
-    background-color: var(--text-olive-deviation);
-    transform: scale(1);
-    box-shadow: none;
-  }
-  100% {
-    background-color: var(--surface-dark-accent);
-    transform: scale(1);
-    box-shadow: none;
-  }
-}
-@keyframes final-stamp-and-fade-log-right-partner {
-  0% {
-    background-color: var(--primary-blue);
-    transform: scale(1);
-    box-shadow: none;
-  }
-  12.5% {
-    background-color: #80ccff;
-    transform: scale(1.15);
-    box-shadow: 0 0 8px #80ccff;
-  }
-  25% {
-    background-color: #80ccff;
-    transform: scale(1.15);
-    box-shadow: 0 0 8px #80ccff;
-  }
-  30% {
-    background-color: var(--primary-blue);
-    transform: scale(1);
-    box-shadow: none;
-  }
-  36.25% {
-    background-color: var(--primary-blue);
-    transform: scale(1);
-    box-shadow: none;
-  }
-  100% {
-    background-color: var(--surface-dark-accent);
-    transform: scale(1);
-    box-shadow: none;
-  }
-}
-@keyframes final-stamp-and-fade-skip {
-  0% {
-    background-color: var(--warning-orange);
-    transform: scale(1);
-    box-shadow: none;
-  }
-  12.5% {
-    background-color: #ffcc80;
-    transform: scale(1.15);
-    box-shadow: 0 0 8px #ffcc80;
-  }
-  25% {
-    background-color: #ffcc80;
-    transform: scale(1.15);
-    box-shadow: 0 0 8px #ffcc80;
-  }
-  30% {
-    background-color: var(--warning-orange);
-    transform: scale(1);
-    box-shadow: none;
-  }
-  36.25% {
-    background-color: var(--warning-orange);
-    transform: scale(1);
-    box-shadow: none;
-  }
-  100% {
-    background-color: var(--surface-dark-accent);
-    transform: scale(1);
-    box-shadow: none;
-  }
-}
+@import url("./fuel-gauge.animations.progress.css");
+@import url("./fuel-gauge.animations.stamp.css");
+@import url("./fuel-gauge.animations.fadeout.css");

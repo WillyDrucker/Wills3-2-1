@@ -1,0 +1,203 @@
+/* ==========================================================================
+   FUEL GAUGE - Fadeout Animations
+
+   4-second final stamp and fade sequence for completed fuel segments. Bright
+   flash with glow effect, then gradual fade to default state.
+
+   🔒 CEMENT: 4-second fadeout timing architecture
+   - 0-500ms: Scale to 1.15x with bright flash and glow
+   - 500-1000ms: Hold bright flash at 1.15x scale with glow
+   - 1000-1200ms: Return to final color at normal scale, remove glow
+   - 1200-1450ms: Brief pause at final color
+   - 1450-4000ms: Fade to dark accent background
+   - Ease-out timing for natural deceleration
+
+   Color Modes:
+   - log-left: Green flash with glow (#33ff33 → --log-green → dark) [Superset/Partner left]
+   - log-right: Yellow flash with glow (#ffff80 → --text-yellow-maintenance → dark) [Superset right]
+   - deviation: Olive flash with glow (--text-olive-deviation → dark) [Off-plan exercises]
+   - log-right-partner: Blue flash with glow (#80ccff → --primary-blue → dark) [Partner right]
+   - skip: Orange flash with glow (#ffcc80 → --warning-orange → dark) [Skipped sets]
+
+   Dependencies:
+   Global: _variables.css (--log-green, --text-yellow-maintenance, --text-olive-deviation,
+           --primary-blue, --warning-orange, --surface-dark-accent)
+   Parent: fuel-gauge.animations.css
+
+   Used by: Segment fadeout animations via .is-fading-out class
+   ========================================================================== */
+
+/* === SUPERSET LEFT / PARTNER LEFT (Green) === */
+@keyframes final-stamp-and-fade-log-left {
+  0% {
+    background-color: var(--log-green);
+    transform: scale(1);
+    box-shadow: none;
+  }
+  12.5% {
+    /* 500ms */
+    background-color: #33ff33;
+    transform: scale(1.15);
+    box-shadow: 0 0 8px #33ff33;
+  }
+  25% {
+    /* 1000ms */
+    background-color: #33ff33;
+    transform: scale(1.15);
+    box-shadow: 0 0 8px #33ff33;
+  }
+  30% {
+    /* 1200ms */
+    background-color: var(--log-green);
+    transform: scale(1);
+    box-shadow: none;
+  }
+  36.25% {
+    /* 1450ms */
+    background-color: var(--log-green);
+    transform: scale(1);
+    box-shadow: none;
+  }
+  100% {
+    /* 4000ms */
+    background-color: var(--surface-dark-accent);
+    transform: scale(1);
+    box-shadow: none;
+  }
+}
+
+/* === SUPERSET RIGHT (Yellow) === */
+@keyframes final-stamp-and-fade-log-right {
+  0% {
+    background-color: var(--text-yellow-maintenance);
+    transform: scale(1);
+    box-shadow: none;
+  }
+  12.5% {
+    background-color: #ffff80;
+    transform: scale(1.15);
+    box-shadow: 0 0 8px #ffff80;
+  }
+  25% {
+    background-color: #ffff80;
+    transform: scale(1.15);
+    box-shadow: 0 0 8px #ffff80;
+  }
+  30% {
+    background-color: var(--text-yellow-maintenance);
+    transform: scale(1);
+    box-shadow: none;
+  }
+  36.25% {
+    background-color: var(--text-yellow-maintenance);
+    transform: scale(1);
+    box-shadow: none;
+  }
+  100% {
+    background-color: var(--surface-dark-accent);
+    transform: scale(1);
+    box-shadow: none;
+  }
+}
+
+/* === OFF-PLAN DEVIATION (Olive) === */
+@keyframes final-stamp-and-fade-deviation {
+  0% {
+    background-color: var(--text-olive-deviation);
+    transform: scale(1);
+    box-shadow: none;
+  }
+  12.5% {
+    background-color: var(--text-olive-deviation); /* Light olive flash */
+    transform: scale(1.15);
+    box-shadow: 0 0 8px var(--text-olive-deviation);
+  }
+  25% {
+    background-color: var(--text-olive-deviation);
+    transform: scale(1.15);
+    box-shadow: 0 0 8px var(--text-olive-deviation);
+  }
+  30% {
+    background-color: var(--text-olive-deviation);
+    transform: scale(1);
+    box-shadow: none;
+  }
+  36.25% {
+    background-color: var(--text-olive-deviation);
+    transform: scale(1);
+    box-shadow: none;
+  }
+  100% {
+    background-color: var(--surface-dark-accent);
+    transform: scale(1);
+    box-shadow: none;
+  }
+}
+
+/* === PARTNER RIGHT (Blue) === */
+@keyframes final-stamp-and-fade-log-right-partner {
+  0% {
+    background-color: var(--primary-blue);
+    transform: scale(1);
+    box-shadow: none;
+  }
+  12.5% {
+    background-color: #80ccff;
+    transform: scale(1.15);
+    box-shadow: 0 0 8px #80ccff;
+  }
+  25% {
+    background-color: #80ccff;
+    transform: scale(1.15);
+    box-shadow: 0 0 8px #80ccff;
+  }
+  30% {
+    background-color: var(--primary-blue);
+    transform: scale(1);
+    box-shadow: none;
+  }
+  36.25% {
+    background-color: var(--primary-blue);
+    transform: scale(1);
+    box-shadow: none;
+  }
+  100% {
+    background-color: var(--surface-dark-accent);
+    transform: scale(1);
+    box-shadow: none;
+  }
+}
+
+/* === SKIPPED SETS (Orange) === */
+@keyframes final-stamp-and-fade-skip {
+  0% {
+    background-color: var(--warning-orange);
+    transform: scale(1);
+    box-shadow: none;
+  }
+  12.5% {
+    background-color: #ffcc80;
+    transform: scale(1.15);
+    box-shadow: 0 0 8px #ffcc80;
+  }
+  25% {
+    background-color: #ffcc80;
+    transform: scale(1.15);
+    box-shadow: 0 0 8px #ffcc80;
+  }
+  30% {
+    background-color: var(--warning-orange);
+    transform: scale(1);
+    box-shadow: none;
+  }
+  36.25% {
+    background-color: var(--warning-orange);
+    transform: scale(1);
+    box-shadow: none;
+  }
+  100% {
+    background-color: var(--surface-dark-accent);
+    transform: scale(1);
+    box-shadow: none;
+  }
+}

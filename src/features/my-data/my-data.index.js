@@ -1,3 +1,17 @@
+/* ==========================================================================
+   MY DATA - Business Logic
+
+   Handles My Data page interactions: tab changes, week navigation, history
+   clearing. Manages calendar week offset and renders page.
+
+   🔒 CEMENT: Week navigation wiring
+   - Direct event listeners for calendar week buttons (no delegate reliance)
+   - Prevents week offset going below 0 (current week)
+
+   Dependencies: appState, ui, getMyDataPageTemplate, persistenceService
+   Used by: actionService (myData actions)
+   ========================================================================== */
+
 import { appState } from "state";
 import { ui } from "ui";
 import { getMyDataPageTemplate } from "./my-data.template.js";
@@ -31,7 +45,7 @@ export function renderMyDataPage() {
   ui.mainContent.innerHTML = getMyDataPageTemplate();
   ui.workoutFooter.innerHTML = "";
 
-  // CEMENTED: wire up calendar week navigation (no reliance on external delegates)
+  /* 🔒 CEMENT: Direct week navigation wiring (no reliance on external delegates) */
   const container = ui.mainContent;
   container.querySelectorAll('.week-nav-button[data-action="previousWeek"]')
     .forEach(btn => btn.addEventListener('click', handlePreviousWeek));

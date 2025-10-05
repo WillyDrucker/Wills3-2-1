@@ -1,3 +1,13 @@
+/* ==========================================================================
+   RESET CONFIRMATION MODAL - HTML Template
+
+   Generates reset confirmation modal HTML with backdrop, header, and action
+   buttons. Uses superset-modal classes for consistent modal styling.
+
+   Dependencies: None (pure template)
+   Used by: reset-confirmation-modal.index.js (renderResetConfirmationModal)
+   ========================================================================== */
+
 export function getResetConfirmationModalTemplate() {
   return `
         <div class="superset-modal-backdrop" data-action="closeResetConfirmationModal"></div>

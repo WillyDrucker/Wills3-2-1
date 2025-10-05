@@ -1,0 +1,31 @@
+/* ==========================================================================
+   MY DATA - Performance Card
+
+   Performance metrics card with header and button container. Uses nuclear
+   reset pattern for precise spacing control.
+
+   Dependencies:
+   Global: _variables.css (--header-margin-bottom)
+   Parent: my-data.style.css
+
+   Used by: Performance metrics display
+   ========================================================================== */
+
+/* === PERFORMANCE HEADER === */
+.performance-header {
+  display: block;
+  margin-bottom: var(--header-margin-bottom); /* 4px + descender = 7px visual */
+}
+
+/* === PERFORMANCE CARD RESET === */
+/* Performance card reset */
+.performance-card * {
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+.performance-button-container {
+  margin: 0;
+  padding: 0;
+}

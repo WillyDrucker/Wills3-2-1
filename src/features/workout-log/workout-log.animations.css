@@ -1,13 +1,18 @@
 /* ==========================================================================
-   WORKOUT LOG ANIMATIONS
+   WORKOUT LOG - Animations
+
+   Grow/snap and green flash animations for log updates. Separate animations
+   for value (white) and unit (gray) text.
 
    🔒 CEMENT: Perfect timing and color transitions for log updates
    - Grow/snap: 900ms grow to 1.15x, 100ms snap back (optimal feel)
    - Color flash: Green buildup over 500ms, fade back over 500ms
    - No blackout: Uses explicit color tokens to prevent rendering artifacts
 
-   Architecture: Separate animations for value (white) and unit (gray) text
-   Dependencies: CSS color tokens from base/_variables.css
+   Dependencies:
+   Global: _variables.css (--log-green, --on-surface-light, --on-surface-medium)
+   Parent: workout-log.style.css
+
    Used by: workout-log.index.js via .is-updating-log class
    ========================================================================== */
 

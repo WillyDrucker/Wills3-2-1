@@ -1,16 +1,27 @@
 /* ==========================================================================
-   WORKOUT LOG - MAIN ENTRY POINT
-   
-   Architecture: Component-based with focused separation
-   - Global: Card foundations, headers, button groups
-   - Local: Log items, edit panel, visual states
-   
-   Component Structure:
-   ├── .header.css     - "Today's Workout" header
-   ├── .items.css      - 50px log item cards
-   ├── .edit-panel.css - Weight/reps edit controls
-   ├── .states.css     - Completed/skipped/updating states
-   └── .animations.css - Grow/snap and green flash animations
+   WORKOUT LOG - Main Entry Point
+
+   Component-based workout log with focused file separation. Imports all
+   component styles and provides card foundation with spacing.
+
+   🔒 CEMENT: Spacing architecture
+   - Border compensation: +3px top padding for exact 16px visual rhythm
+   - 4px gaps create tight stacking between log items
+   - Direct 16px spacing from last log item to footer
+
+   Architecture: Component imports with card foundation
+   - header.css: "Today's Workout" header
+   - items.css: 50px log item cards with absolute positioning
+   - edit-panel.css: Weight/reps edit controls
+   - states.css: Completed/skipped/updating states
+   - animations.css: Grow/snap and green flash animations
+
+   Dependencies:
+   Global: _variables.css (--card-padding-top, --card-padding-sides, --space-xxs, --space-m)
+   Global: _card-headers.css, _card-foundations.css, _action-button-groups.css
+   Local: Component CSS files (header, items, edit-panel, states, animations)
+
+   Used by: Workout log card display
    ========================================================================== */
 
 /* Global dependencies */

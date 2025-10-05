@@ -1,15 +1,28 @@
 /* ==========================================================================
-   FUEL GAUGE LAYOUT - Structure and Positioning
+   FUEL GAUGE - Layout Structure
 
-   CEMENT: Base structure for progress indicator
-   - Flexbox container with equal segment distribution
-   - Individual segment positioning and overflow control
-   - Progress bar internal structure
+   Base flexbox structure for horizontal fuel gauge with equal-width segments.
+   Two-layer animation architecture: parent controls fill width, pseudo-element
+   controls color pulse.
 
-   Layout Architecture:
-   ├── .fuel-gauge-container - Main flex container
-   ├── .fuel-segment - Individual progress segments
-   └── .segment-progress - Internal progress bar
+   🔒 CEMENT: Two-layer animation architecture
+   - Container: Equal-width flex segments with 5px spacing
+   - Segment: Relative positioning with overflow hidden for fill animation
+   - Progress bar: Absolute positioned with width 0→100% animation
+   - Pseudo-element: Color pulse animation synchronized with width fill
+
+   Architecture: Nested flex and absolute positioning
+   ├── .fuel-gauge-container - Flex container with equal segment distribution
+   ├── .fuel-segment - Individual segments with relative positioning
+   └── .segment-progress - Absolute progress bar (width animation)
+       └── ::after pseudo - Color pulse layer (color animation)
+
+   Dependencies:
+   Global: _variables.css (--fuel-gauge-height, --surface-dark-accent,
+           --border-radius, --primary-blue-dark)
+   Parent: fuel-gauge.style.css
+
+   Used by: Fuel gauge segments via fuel-gauge.colors.css animation states
    ========================================================================== */
 
 /* === BASE STRUCTURE === */

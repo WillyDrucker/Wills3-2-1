@@ -1,11 +1,26 @@
 /* ==========================================================================
-   SIDE NAV - MAIN STYLES
-   
-   Architecture: Slide-out navigation panel
-   - Global: Colors, typography, spacing tokens
-   - Local: Fixed positioning, slide animation, nav items
-   
-   Structure: Full-screen overlay with right-side panel
+   SIDE NAV - Main Entry Point
+
+   Slide-out navigation panel from right side with backdrop overlay. Uses
+   transform-based animation and focus trap for accessibility.
+
+   🔒 CEMENT: Slide animation architecture
+   - Panel starts off-screen: translateX(100%)
+   - Slides in via transform: translateX(0)
+   - 0.3s ease-in-out timing for smooth transition
+   - Body scroll locked via html.is-side-nav-open overflow: hidden
+
+   Architecture: Fixed overlay with sliding panel
+   ├── .side-nav-container - Fixed full-screen container (z-index: 2000)
+   ├── .side-nav-backdrop - Semi-transparent overlay (rgba(0,0,0,0.5))
+   └── .side-nav-content - Right-side panel (280px width, slide animation)
+       └── Navigation list with icons and dividers
+
+   Dependencies:
+   Global: _variables.css (--surface-dark, --on-surface-light, --font-size-h2,
+           --space-m, --border-radius, --surface-dark-accent, --primary-blue)
+
+   Used by: Global hamburger menu in app header
    ========================================================================== */
 
 /* === CONTAINER === */

@@ -1,0 +1,45 @@
+/* ==========================================================================
+   FUEL GAUGE - Progress Animation
+
+   60-second linear progress animation for active fuel segments. Pulses through
+   blue shades with bright flash near completion.
+
+   🔒 CEMENT: 60-second timing architecture
+   - 0s-30s: Dark blue to darker blue buildup
+   - 55s-58s: Bright cyan to white flash
+   - 58s-60s: Return to dark blue
+   - Linear timing for consistent progress indication
+
+   Dependencies:
+   Global: _variables.css (--primary-blue-dark)
+   Parent: fuel-gauge.animations.css
+
+   Used by: Active fuel segments during rest timers
+   ========================================================================== */
+
+@keyframes segment-color-pulse {
+  0% {
+    /* 0s */
+    background-color: var(--primary-blue-dark);
+  }
+  50% {
+    /* 30s */
+    background-color: #003d66;
+  }
+  91.67% {
+    /* 55s */
+    background-color: #80ccff;
+  }
+  95% {
+    /* 57s */
+    background-color: #ffffff;
+  }
+  96.67% {
+    /* 58s */
+    background-color: #ffffff;
+  }
+  100% {
+    /* 60s */
+    background-color: var(--primary-blue-dark);
+  }
+}

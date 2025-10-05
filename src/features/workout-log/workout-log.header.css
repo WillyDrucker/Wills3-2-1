@@ -1,8 +1,14 @@
 /* ==========================================================================
-   WORKOUT LOG - HEADER
-   
-   "Today's Workout" header with 7px spacing to content
-   Uses global _card-headers.css patterns
+   WORKOUT LOG - Header
+
+   "Today's Workout" header with 7px spacing to content. Uses global card
+   header patterns with collapsed line-height for precise spacing.
+
+   Dependencies:
+   Global: _variables.css (--font-size-h2, --on-surface-light)
+   Parent: workout-log.style.css
+
+   Used by: Workout log card header
    ========================================================================== */
 
 /* === HEADER TYPOGRAPHY === */

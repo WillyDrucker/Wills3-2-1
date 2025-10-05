@@ -1,3 +1,18 @@
+/* ==========================================================================
+   HOME PAGE - HTML Template
+
+   Generates home page HTML with three card sections: Training, Navigation,
+   and Workout History. Each section contains action buttons for navigation.
+
+   Architecture: Three cards with home-group sections
+   - Training: Workout, Stretching (disabled), Conditioning (disabled)
+   - Navigation: My Plan (disabled)
+   - Workout History: My Data
+
+   Dependencies: None (pure template)
+   Used by: home-page.index.js (renderHomePage)
+   ========================================================================== */
+
 export function getHomePageTemplate() {
   return `
     <div class="card home-page-card">

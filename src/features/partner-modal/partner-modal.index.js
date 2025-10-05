@@ -1,3 +1,17 @@
+/* ==========================================================================
+   PARTNER MODAL - Business Logic
+
+   Handles partner workout configuration: user day selection, validation, state
+   management, and confirmation. Enforces mutual exclusivity with superset mode.
+
+   🔒 CEMENT: Partner/Superset mutual exclusivity
+   - Resets superset state completely before activating partner
+   - Restores config header state after modal confirmation
+
+   Dependencies: appState, ui, workoutService, workoutFactoryService, modalService
+   Used by: actionService (openPartnerMode, confirmPartnerWorkout)
+   ========================================================================== */
+
 import { appState } from "state";
 import { ui } from "ui";
 import { getPartnerModalTemplate } from "./partner-modal.template.js";
@@ -14,7 +28,7 @@ export function handleConfirmPartnerWorkout() {
   const { user1Day, user2Day } = appState.partner;
   if (!user1Day || !user2Day) return;
 
-  // CEMENTED FIX: Enforce mutual exclusivity. Reset superset state before activating partner state.
+  /* 🔒 CEMENT: Mutual exclusivity - reset superset state before activating partner */
   appState.superset.isActive = false;
   appState.superset.day1 = null;
   appState.superset.day2 = null;
@@ -28,7 +42,7 @@ export function handleConfirmPartnerWorkout() {
 
   workoutService.recalculateCurrentStateAfterLogChange();
 
-  // Restore config header expanded state from before modal opened
+  /* 🔒 CEMENT: Config header state restoration preserves dropdown UX */
   const shouldRestoreExpandedState = appState.ui.wasConfigHeaderExpandedBeforeModal;
   if (shouldRestoreExpandedState) {
     appState.ui.isConfigHeaderExpanded = true;

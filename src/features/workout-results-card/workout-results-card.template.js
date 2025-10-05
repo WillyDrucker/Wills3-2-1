@@ -1,3 +1,13 @@
+/* ==========================================================================
+   WORKOUT RESULTS CARD - HTML Template
+
+   Generates workout completion card HTML with plate animations and results
+   summary. Shows total sets logged with session color coding.
+
+   Dependencies: appState, workoutMetricsService
+   Used by: workout-results-card.index.js (renderWorkoutResultsCard)
+   ========================================================================== */
+
 import { appState } from "state";
 import * as workoutMetricsService from "services/workoutMetricsService.js";
 

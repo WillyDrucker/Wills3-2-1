@@ -1,3 +1,14 @@
+/* ==========================================================================
+   PARTNER MODAL - HTML Template
+
+   Generates partner modal HTML with two user day selectors (green/blue scheme).
+   Displays user profiles and workout day selection. Today appears first in day
+   options, filters out rest days.
+
+   Dependencies: appState (weeklyPlan, todayDayName, partner)
+   Used by: partner-modal.index.js (renderPartnerModal)
+   ========================================================================== */
+
 import { appState } from "state";
 
 function createDayOptions(currentSelection) {

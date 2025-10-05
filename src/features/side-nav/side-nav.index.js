@@ -1,3 +1,19 @@
+/* ==========================================================================
+   SIDE NAV - Business Logic
+
+   Handles side navigation panel open/close state, focus trap, and rendering.
+   Closes all selectors before opening, syncs fullscreen state, and manages
+   focus restoration on close.
+
+   🔒 CEMENT: Fullscreen state synchronization
+   - Checks actual browser fullscreen state on open
+   - Corrects appState if user exited fullscreen via device navigation
+   - Ensures UI reflects true fullscreen status
+
+   Dependencies: appState, ui, focusTrapService, selectorService, getSideNavTemplate
+   Used by: actionService (openSideNav, closeSideNav), main.js
+   ========================================================================== */
+
 import { appState } from "state";
 import { ui } from "ui";
 import { getSideNavTemplate } from "./side-nav.template.js";
@@ -9,8 +25,8 @@ export function handleOpenSideNav() {
   selectorService.closeAll();
   appState.ui.modal.elementToFocusOnClose = document.activeElement;
 
-  // CEMENTED FIX: Synchronize app state with the browser's actual fullscreen state.
-  // This corrects the UI if the user exits fullscreen using device navigation.
+  /* 🔒 CEMENT: Synchronize app state with browser's actual fullscreen state */
+  /* Corrects UI if user exits fullscreen using device navigation */
   appState.ui.isFullscreen = !!document.fullscreenElement;
 
   appState.ui.sideNav.isOpen = true;

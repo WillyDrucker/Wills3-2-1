@@ -1,26 +1,29 @@
 /* ==========================================================================
-   FUEL GAUGE - MAIN ENTRY POINT
+   FUEL GAUGE - Main Entry Point
 
-   🔒 CEMENT: Visual progress indicator with 60-second segments
-   - Three animation phases: fill, stamp, fade-out
-   - Dynamic colors: Single-mode follows Current Focus selector
-   - Static colors: Dual-mode uses fixed green/yellow or green/blue
+   Visual progress indicator with 60-second segment animations. Imports all
+   component styles for layout, animations, and color state management.
 
-   Architecture: Segment-based fill animation
-   Component Structure:
-   ├── Base layout structure
-   ├── Animation keyframes
-   ├── Color state management
-   └── Dual-mode static colors
+   🔒 CEMENT: Three-phase animation system
+   - Fill phase: 60-second linear width + color pulse animation
+   - Stamp phase: 1.2-second completion flash with scale effect
+   - Fadeout phase: 4-second final stamp with glow and fade to dark
+   - Dynamic single-mode: Colors follow Current Focus selector state
+   - Static dual-mode: Fixed green/yellow (Superset) or green/blue (Partner)
 
-   Dependencies: Global color tokens, animation utilities
-   Used by: Active card exercise tracking
+   Architecture: Segment-based rest timer visualization
+   ├── Layout: Flexbox structure with equal-width segments
+   ├── Animations: Three-phase keyframe system (progress, stamp, fadeout)
+   └── Colors: State-based color management for all modes
+
+   Dependencies:
+   Global: _variables.css (all color and spacing tokens)
+   Local: fuel-gauge.layout.css, fuel-gauge.animations.css, fuel-gauge.colors.css
+
+   Used by: Active workout card rest timer visualization
    ========================================================================== */
 
-/* Global dependencies */
 @import url("../../styles/base/_variables.css");
-
-/* Local component files */
 @import url("./fuel-gauge.layout.css");
 @import url("./fuel-gauge.animations.css");
 @import url("./fuel-gauge.colors.css");

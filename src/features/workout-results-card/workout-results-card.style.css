@@ -1,12 +1,22 @@
 /* ==========================================================================
-   WORKOUT RESULTS CARD - MAIN ENTRY POINT
-   
-   Architecture: Completion card with plate animations
-   - Global: Cards, headers, buttons
-   - Local: Animation container, plate elements
-   
-   Component Structure:
-   └── .animations.css - Plate stacking animations
+   WORKOUT RESULTS CARD - Main Entry Point
+
+   Workout completion card with plate stacking animations. Imports all
+   component styles and provides base layout.
+
+   Architecture: Completion card with animations
+   - Card header with "Workout Results" title
+   - Animation container with plate elements
+   - Results subtext with total sets summary
+   - Reset settings button
+
+   Dependencies:
+   Global: _variables.css (--card-padding-top, --card-padding-sides, --font-size-h2,
+           --on-surface-light, --header-margin-bottom, --space-m, --on-surface-medium)
+   Global: _card-headers.css, _card-foundations.css, _action-button-groups.css
+   Local: workout-results-card.animations.css
+
+   Used by: Workout completion display
    ========================================================================== */
 
 /* workout-results-card.style.css */

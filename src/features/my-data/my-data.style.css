@@ -1,13 +1,20 @@
 /* ==========================================================================
-   MY DATA - MAIN ENTRY POINT
-   
-   CEMENT: Cascade management through selective restoration
-   - Reset all elements to 0 for precise control
-   - Selectively restore spacing with specific overrides
-   - All spacing managed here to win cascade battles
-   
-   Architecture: Performance card + History calendar view
-   Component files handle structure, main file handles spacing
+   MY DATA - Main Entry Point
+
+   Performance metrics and workout history calendar. Imports all component files
+   and provides card foundation styles.
+
+   Architecture: Entry point with imports
+   - Performance card with metrics display
+   - History calendar with 7-day workout view
+   - Component files: header, calendar, history-items, dividers, performance, history-spacing
+
+   Dependencies:
+   Global: _variables.css (--space-m, --card-border-width, --card-padding-top, --card-padding-sides)
+   Global: _card-headers.css, _card-foundations.css, _action-button-groups.css
+   Local: Component CSS files (header, calendar, history-items, dividers, performance, history-spacing)
+
+   Used by: My Data page display
    ========================================================================== */
 
 /* Global dependencies */
@@ -20,6 +27,8 @@
 @import url("./my-data.calendar.css");
 @import url("./my-data.history-items.css");
 @import url("./my-data.dividers.css");
+@import url("./my-data.performance.css");
+@import url("./my-data.history-spacing.css");
 
 /* === CARD FOUNDATION === */
 .my-data-card {
@@ -31,132 +40,4 @@
 .my-data-card .card-content-container {
   padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
   box-sizing: border-box;
-}
-
-/* === PERFORMANCE CARD === */
-.performance-header {
-  display: block;
-  margin-bottom: var(--header-margin-bottom); /* 4px + descender = 7px visual */
-}
-
-/* Performance card reset */
-.performance-card * {
-  margin: 0;
-  padding: 0;
-  line-height: 1;
-}
-
-.performance-button-container {
-  margin: 0;
-  padding: 0;
-}
-
-/* === HISTORY CARD CASCADE MANAGEMENT === */
-/* CEMENT: Nuclear reset enables precise spacing control */
-.history-card * {
-  margin: 0;
-  padding: 0;
-  line-height: 1;
-}
-
-/* CEMENT: Selective spacing restoration - all measurements verified */
-
-/* Headers and navigation */
-.history-card .history-week-header {
-  margin-bottom: var(--header-margin-bottom); /* 4px + descender = 7px visual */
-}
-
-/* Day headers - first exercise should be 7px below */
-.history-card .history-day-header {
-  margin-bottom: var(--history-exercise-spacing); /* 3px + line-height = 7px visual */
-}
-
-/* When day header is followed by placeholder instead of exercises */
-.history-card .history-day-header:has(+ .history-placeholder-text) {
-  margin-bottom: calc(var(--space-m) - 4px); /* 12px = 16px visual to placeholder */
-}
-
-/* Placeholder text */
-.history-card .history-placeholder-text,
-.history-card .day-card-placeholder-text {
-  margin: 0;
-  margin-bottom: calc(var(--space-m) - 1px); /* 15px + italic = 16px visual */
-  padding: 0; /* Overrides global 40px padding */
-}
-
-/* Dividers */
-.history-card .history-day-divider {
-  margin-bottom: var(--history-day-header-spacing); /* 17px = 16px visual to next day */
-}
-
-.history-card .history-session-divider {
-  margin: 13px 0 15px 0; /* 16px visual both sides */
-}
-
-/* Exercise blocks - CEMENT: 16px between exercises */
-.history-card .history-exercise-block {
-  margin: 0 0 calc(var(--space-m) - 4px) 0; /* 12px + 4px line = 16px visual between */
-}
-
-/* Last exercise before divider */
-.history-card .history-exercise-block:last-child {
-  margin-bottom: var(--space-m); /* 16px to divider */
-}
-
-/* Adjust when followed by session divider */
-.history-card .history-exercise-list:has(+ .history-session-divider) .history-exercise-block:last-child {
-  margin-bottom: 13px; /* Compensate for session divider margins */
-}
-
-/* Exercise names - CEMENT: 7px to first set row */
-.history-card .history-exercise-name {
-  margin: 0 0 calc(var(--space-s) - 4px) 0; /* 3px + 4px line = 7px visual */
-}
-
-/* Set rows - CEMENT: 7px between rows */
-.history-card .history-set-row {
-  margin: 0 0 calc(var(--space-s) - 4px) 0; /* 3px + 4px line = 7px visual */
-}
-
-.history-card .history-set-row:last-child {
-  margin-bottom: 0; /* No margin on last row */
-}
-
-/* Set row horizontal alignment - preserve from reset */
-.history-card .history-set-left {
-  margin-left: 100px; /* Indent for set numbers */
-}
-
-.history-card .history-set-right {
-  margin-left: auto; /* Push results to right */
-}
-
-/* Selector container */
-.history-selector-container {
-  margin-bottom: 15px; /* TODO: Tokenize = calc(var(--space-m) - 1px) */
-}
-
-/* Footer button */
-.history-footer {
-  margin-top: 11px; /* TODO: Tokenize = calc(var(--space-s) + 4px) */
-  padding-top: 0;
-}
-
-.history-footer .action-button {
-  margin-top: 0;
-}
-
-/* Selector container */
-.history-selector-container {
-  margin-bottom: 15px; /* TODO: Tokenize = calc(var(--space-m) - 1px) */
-}
-
-/* Footer button */
-.history-footer {
-  margin-top: 11px; /* TODO: Tokenize = calc(var(--space-s) + 4px) */
-  padding-top: 0;
-}
-
-.history-footer .action-button {
-  margin-top: 0;
 }

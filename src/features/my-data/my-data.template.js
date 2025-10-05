@@ -1,3 +1,13 @@
+/* ==========================================================================
+   MY DATA - HTML Template
+
+   Generates My Data page HTML with performance card and history calendar.
+   Includes tab selector (Workouts/Conditioning/Stretching) and week navigator.
+
+   Dependencies: appState, ui, createSelectorHTML, getWorkoutCalendarHTML, getWeekRange
+   Used by: my-data.index.js (renderMyDataPage)
+   ========================================================================== */
+
 import { appState } from "state";
 import { ui } from "ui";
 import { createSelectorHTML } from "ui";

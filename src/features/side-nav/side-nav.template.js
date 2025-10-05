@@ -1,3 +1,20 @@
+/* ==========================================================================
+   SIDE NAV - HTML Template
+
+   Generates side navigation panel HTML with menu items, inline SVG icons, and
+   dynamic fullscreen toggle. Returns empty string when closed.
+
+   Architecture: Menu sections with dividers
+   - Profile section (Will)
+   - Main menu (Themes, Settings, Tools)
+   - Help section (Help & Feedback, About)
+   - Account section (Sign Out, Nuke Everything)
+   - Fullscreen toggle (dynamic text and icon)
+
+   Dependencies: appState (isOpen, isFullscreen)
+   Used by: side-nav.index.js (renderSideNav)
+   ========================================================================== */
+
 import { appState } from "state";
 
 export function getSideNavTemplate() {

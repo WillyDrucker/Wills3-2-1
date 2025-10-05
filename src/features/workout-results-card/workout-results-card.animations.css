@@ -1,8 +1,21 @@
 /* ==========================================================================
-   WORKOUT RESULTS CARD - ANIMATIONS
-   
-   Plate stacking animations for workout completion
-   Three plates animate from center to sides
+   WORKOUT RESULTS CARD - Animations
+
+   Plate stacking animations for workout completion. Three plates animate
+   from center to left and right sides with sequential delays.
+
+   🔒 CEMENT: Animation timing architecture
+   - 0.5s duration for each plate animation
+   - Sequential delays: 0s, 0.2s, 0.4s for staggered effect
+   - Ease-out timing for natural deceleration
+   - Opacity 0→1 with transform for smooth appearance
+
+   Dependencies:
+   Global: _variables.css (--control-height, --card-border-width, --primary-blue,
+           --background-dark, --text-green-plan, --font-size-body-l, --space-xxs)
+   Parent: workout-results-card.style.css
+
+   Used by: Workout completion animation via .is-animating class
    ========================================================================== */
 
 /* === PLATE ELEMENTS === */

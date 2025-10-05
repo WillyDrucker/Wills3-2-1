@@ -1,15 +1,33 @@
 /* ==========================================================================
-   FUEL GAUGE COLORS - State and Mode Management
+   FUEL GAUGE - Color State Management
 
-   CEMENT: Dynamic color system based on Current Focus selector
-   - Normal mode: Dynamic colors from selector state
-   - Dual mode: Static left/right color schemes
+   State-based color system for fuel segments. Supports dynamic single-mode
+   colors (based on Current Focus selector) and static dual-mode color schemes.
+
+   🔒 CEMENT: Dual color mode architecture
+   - Single mode: Colors determined by Current Focus selector state
+   - Dual mode: Static left (green) / right (yellow or blue) schemes
    - Skip timers: Always orange regardless of mode
+   - Animation states preserve color through phase transitions
 
-   Color Architecture:
-   ├── Completed states (final segment colors)
-   ├── Dynamic normal mode colors
-   └── Static dual-mode colors
+   Architecture: Three animation phases per color mode
+   ├── Completed states (final static colors)
+   ├── Stamping states (1.2s completion animation classes)
+   └── Fadeout states (4s final stamp and fade classes)
+
+   Color Modes:
+   - Superset: Green left, Yellow right
+   - Partner: Green left, Blue right
+   - Normal: Dynamic based on selector (green/olive/yellow/blue/orange)
+   - Skip: Orange (all modes)
+
+   Dependencies:
+   Global: _variables.css (--log-green, --text-yellow-maintenance, --primary-blue,
+           --text-olive-deviation, --warning-orange, --surface-dark-accent,
+           --text-orange-deviation, --on-surface-medium)
+   Parent: fuel-gauge.animations.css (keyframe definitions)
+
+   Used by: Fuel gauge segment state classes via fuel-gauge.style.css
    ========================================================================== */
 
 /* === COMPLETED STATES === */

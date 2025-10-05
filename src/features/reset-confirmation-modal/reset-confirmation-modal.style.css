@@ -1,20 +1,27 @@
 /* ==========================================================================
-   RESET CONFIRMATION MODAL - MAIN ENTRY POINT
+   RESET CONFIRMATION MODAL - Main Entry Point
 
-   🔒 CEMENT: Text shadow and 13px margin for visual 16px spacing rhythm
-   🔒 CEMENT: Font metrics compensation essential for precise layout control
+   Simple confirmation modal for reset action. Imports global modal components
+   and applies centered header with font metrics compensation.
 
-   Architecture: Minimal modal with header and buttons
-   Component Structure:
-   ├── Modal header with text shadow and compensation spacing
-   ├── Action button group using global patterns
-   └── Tokenized spacing for 16px visual rhythm
+   🔒 CEMENT: Font metrics compensation for 16px visual spacing
+   - Header to buttons: 13px CSS margin
+   - Font line-height 1 with descenders adds ~3px
+   - Result: 13px + 3px = 16px visual spacing
 
-   - Global: Modal container, card headers, action button groups
-   - Local: Header text shadow and margin compensation only
+   Architecture: Two-button confirmation modal
+   ├── Modal backdrop (inherited from global _modals.css)
+   ├── Modal content card with centered header
+   └── Horizontal button group (Cancel, Confirm)
+
+   Dependencies:
+   Global: _variables.css (--font-size-h2, --on-surface-light, --text-shadow-subtle,
+           --space-m)
+   Global: _modals.css, _card-headers.css, _action-button-groups.css
+
+   Used by: Workout results card "Reset Settings & Clear Logs" action
    ========================================================================== */
 
-/* reset-confirmation-modal.style.css */
 @import url("../../styles/components/_modals.css");
 @import url("../../styles/components/_card-headers.css");
 @import url("../../styles/components/_action-button-groups.css");

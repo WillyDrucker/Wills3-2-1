@@ -1,20 +1,29 @@
 /* ==========================================================================
-   VIDEO PLAYER - MAIN STYLES
+   VIDEO PLAYER - Main Entry Point
 
-   🔒 CEMENT: Performance optimizations for Android mobile lag prevention
-   🔒 CEMENT: Hardware acceleration hints and reduced visual effects
+   Full-screen video modal with YouTube iframe integration and mobile performance
+   optimizations. Uses hardware acceleration hints and reduced visual effects
+   to prevent lag on Android devices.
 
-   Architecture: Full-screen modal with YouTube iframe and performance optimizations
-   Component Structure:
-   ├── Modal container with hardware acceleration hints
-   ├── Backdrop overlay with reduced opacity for performance
-   ├── Video wrapper with aspect ratio and reduced shadow effects
-   ├── YouTube iframe with transform acceleration
-   └── Countdown overlay with optimized rendering
+   🔒 CEMENT: Mobile performance optimizations
+   - Hardware acceleration: will-change: opacity, transform: translateZ(0)
+   - Reduced shadow effects: 8px glow (reduced from 20px for performance)
+   - Direct DOM manipulation for countdown (prevents re-render lag)
+   - Medium video quality forced in player config (see index.js)
 
-   Dependencies: YouTube iframe API, focus trap service
-   - Global: Typography tokens, border radius, color system
-   - Local: Fixed positioning, mobile performance optimizations, video constraints
+   Architecture: Full-screen modal with vertical video
+   ├── Modal container (z-index: 10000, fade transition)
+   ├── Backdrop overlay (rgba(0,0,0,0.85))
+   ├── Video wrapper (9:16 aspect ratio, 85vh height, max-width 95vw)
+   │   ├── YouTube iframe (#youtube-player-container)
+   │   └── Countdown overlay (z-index layering)
+   └── Close button (positioned top-right)
+
+   Dependencies:
+   Global: _variables.css (--border-radius, --on-surface-light, --primary-blue,
+           --text-on-action-color, --font-size-h2)
+
+   Used by: Video link actions in active workout card
    ========================================================================== */
 
 /* === MODAL CONTAINER === */

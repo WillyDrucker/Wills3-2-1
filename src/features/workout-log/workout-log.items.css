@@ -1,5 +1,8 @@
 /* ==========================================================================
-   WORKOUT LOG - ITEMS
+   WORKOUT LOG - Log Items
+
+   50px log item cards with absolute positioning for precise spacing control.
+   Truncation pattern for responsive text overflow.
 
    🔒 CEMENT: Critical 9px/8px/9px spacing system for 50px log cards
    - Line 1 (exercise/timestamp): 9px from top border
@@ -7,8 +10,15 @@
    - Line 2 (details/results): 9px from bottom border
    - Border states: 7px/8px/7px compensated spacing when border active
 
-   Architecture: Absolute positioning for precise control
-   Dependencies: workout-log.states.css for border compensation
+   Architecture: Absolute positioning with truncation
+   - Exercise name truncates, timestamp stays stationary
+   - Set info truncates, results stay stationary
+
+   Dependencies:
+   Global: _variables.css (spacing, colors, control-height)
+   Parent: workout-log.style.css
+   Sibling: workout-log.states.css (border compensation)
+
    Used by: Workout log display system
    ========================================================================== */
 

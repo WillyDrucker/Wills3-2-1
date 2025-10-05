@@ -1,19 +1,26 @@
 /* ==========================================================================
-   PARTNER MODAL - MAIN ENTRY POINT
+   PARTNER MODAL - Styling
 
-   CEMENT: Partner workout configuration interface
-   - Configure partner workouts with user profiles and day selection
-   - Green/blue color scheme for user differentiation
-   - Modal overlay with structured user sections
+   Modal dialog for configuring partner workouts with two-user selection.
+   Green/blue color scheme differentiates User 1 and User 2 (partner).
 
-   Architecture: Modal with dual user configuration
-   Component Structure:
-   ├── User profile sections
-   ├── Visual divider between users
-   └── Day selection controls
+   🔒 CEMENT: Instant modal appearance
+   - Transition removed with !important (overrides global modal fade-in)
+   - Divider spacing: 16px visual both sides (18px top, 15px bottom)
+   - Compensated spacing around divider for visual consistency
 
-   Dependencies: Modals, card foundations, buttons
-   Used by: Partner workout setup flow
+   Architecture: Centered modal overlay with card container
+   - User profile displays (muted selectors)
+   - Visual divider separates users
+   - Day selectors for each user
+   - Cancel and Partner Up! action buttons
+
+   Dependencies:
+   Global: _variables.css (--card-padding-top, --card-padding-sides, --header-margin-bottom,
+           --modal-section-spacing, --on-surface-medium, --space-xxs, --space-m, --modal-button-spacing)
+   Global: _card-headers.css, _card-foundations.css, _action-button-groups.css, _modals.css
+
+   Used by: Partner modal overlay (triggered from config header)
    ========================================================================== */
 
 /* Global dependencies */
@@ -23,7 +30,7 @@
 @import url("../../styles/components/_modals.css");
 
 /* === MODAL CONTAINER === */
-/* Remove transition for instant appearance */
+/* 🔒 CEMENT: Instant appearance - !important overrides global modal fade-in */
 #partner-modal-container {
   transition: none !important;
 }
@@ -58,7 +65,7 @@
 }
 
 /* === DIVIDER === */
-/* CEMENT: 16px visual spacing both sides of divider for balance */
+/* 🔒 CEMENT: 16px visual spacing both sides of divider for balance */
 #partner-modal-container .modal-divider {
   margin: 18px 0 15px 0; /* 18px top, 15px bottom = 16px visual both sides */
 }

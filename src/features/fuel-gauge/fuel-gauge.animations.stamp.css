@@ -1,0 +1,126 @@
+/* ==========================================================================
+   FUEL GAUGE - Stamp Animations
+
+   1.2-second completion effects for individual fuel segments. Each mode has
+   unique color flash and scale animation.
+
+   🔒 CEMENT: 1.2-second stamp timing architecture
+   - 0-500ms: Scale to 1.1x with bright flash
+   - 500-1000ms: Hold bright flash at 1.1x scale
+   - 1000-1200ms: Return to final color at normal scale
+   - Ease-out timing for natural deceleration
+
+   Color Modes:
+   - log-left: Green flash (#33ff33 → --log-green) [Superset/Partner left]
+   - log-right: Yellow flash (#ffff80 → --text-yellow-maintenance) [Superset right]
+   - deviation: Olive flash (--text-olive-deviation) [Off-plan exercises]
+   - log-right-partner: Blue flash (#80ccff → --primary-blue) [Partner right]
+   - skip: Orange flash (#ffcc80 → --warning-orange) [Skipped sets]
+
+   Dependencies:
+   Global: _variables.css (--surface-dark-accent, --log-green, --text-yellow-maintenance,
+           --text-olive-deviation, --primary-blue, --warning-orange)
+   Parent: fuel-gauge.animations.css
+
+   Used by: Segment completion animations via .is-stamping class
+   ========================================================================== */
+
+/* === SUPERSET LEFT / PARTNER LEFT (Green) === */
+@keyframes stamp-effect-log-left {
+  0% {
+    background-color: var(--surface-dark-accent);
+    transform: scale(1);
+  }
+  41.6% {
+    background-color: #33ff33;
+    transform: scale(1.1);
+  }
+  83.2% {
+    background-color: #33ff33;
+    transform: scale(1.1);
+  }
+  100% {
+    background-color: var(--log-green);
+    transform: scale(1);
+  }
+}
+
+/* === SUPERSET RIGHT (Yellow) === */
+@keyframes stamp-effect-log-right {
+  0% {
+    background-color: var(--surface-dark-accent);
+    transform: scale(1);
+  }
+  41.6% {
+    background-color: #ffff80;
+    transform: scale(1.1);
+  }
+  83.2% {
+    background-color: #ffff80;
+    transform: scale(1.1);
+  }
+  100% {
+    background-color: var(--text-yellow-maintenance);
+    transform: scale(1);
+  }
+}
+
+/* === OFF-PLAN DEVIATION (Olive) === */
+@keyframes stamp-effect-deviation {
+  0% {
+    background-color: var(--surface-dark-accent);
+    transform: scale(1);
+  }
+  41.6% {
+    background-color: var(--text-olive-deviation); /* Light olive flash */
+    transform: scale(1.1);
+  }
+  83.2% {
+    background-color: var(--text-olive-deviation);
+    transform: scale(1.1);
+  }
+  100% {
+    background-color: var(--text-olive-deviation);
+    transform: scale(1);
+  }
+}
+
+/* === PARTNER RIGHT (Blue) === */
+@keyframes stamp-effect-log-right-partner {
+  0% {
+    background-color: var(--surface-dark-accent);
+    transform: scale(1);
+  }
+  41.6% {
+    background-color: #80ccff; /* Light blue flash */
+    transform: scale(1.1);
+  }
+  83.2% {
+    background-color: #80ccff;
+    transform: scale(1.1);
+  }
+  100% {
+    background-color: var(--primary-blue);
+    transform: scale(1);
+  }
+}
+
+/* === SKIPPED SETS (Orange) === */
+@keyframes stamp-effect-skip {
+  0% {
+    background-color: var(--surface-dark-accent);
+    transform: scale(1);
+  }
+  41.6% {
+    background-color: #ffcc80;
+    transform: scale(1.1);
+  }
+  83.2% {
+    background-color: #ffcc80;
+    transform: scale(1.1);
+  }
+  100% {
+    background-color: var(--warning-orange);
+    transform: scale(1);
+  }
+}

@@ -1,3 +1,19 @@
+/* ==========================================================================
+   SUPERSET MODAL - Business Logic
+
+   Handles superset workout configuration: day selection, validation, state
+   management, and confirmation. Enforces mutual exclusivity with partner mode.
+
+   🔒 CEMENT: Superset/Partner mutual exclusivity
+   - Resets partner state completely before activating superset
+   - Calculates bonus minutes and time deduction set indexes
+   - Restores config header state after modal confirmation
+
+   Dependencies: appState, ui, workoutService, workoutFactoryService,
+                 workoutMetricsService, modalService, getNextWorkoutDay
+   Used by: actionService (openSupersetMode, confirmSuperset)
+   ========================================================================== */
+
 import { appState } from "state";
 import { ui } from "ui";
 import { getSupersetModalTemplate } from "./superset-modal.template.js";
@@ -31,7 +47,7 @@ export function handleConfirmSuperset() {
   const { day1, day2 } = appState.ui.supersetModal.selection;
   if (!day1 || !day2 || day1 === day2) return;
 
-  // CEMENTED FIX: Enforce mutual exclusivity. Reset partner state before activating superset state.
+  /* 🔒 CEMENT: Mutual exclusivity - reset partner state before activating superset */
   appState.partner.isActive = false;
   appState.partner.user1Day = null;
   appState.partner.user2Day = null;
@@ -43,6 +59,7 @@ export function handleConfirmSuperset() {
   appState.session.workoutLog =
     workoutFactoryService.generateSupersetWorkoutLog();
 
+  /* 🔒 CEMENT: Bonus minutes calculation for time savings in superset mode */
   const metrics = workoutMetricsService.calculateSupersetWorkoutMetrics(
     appState.superset.day1,
     appState.superset.day2,
@@ -50,6 +67,7 @@ export function handleConfirmSuperset() {
   );
   appState.superset.bonusMinutes = metrics.bonusMinutes;
 
+  /* 🔒 CEMENT: Track which sets get time deduction (last N sets from first day) */
   const firstDaySets = appState.session.workoutLog
     .map((log, index) => (log.supersetSide === "left" ? index : -1))
     .filter((index) => index !== -1);
@@ -59,7 +77,7 @@ export function handleConfirmSuperset() {
 
   workoutService.recalculateCurrentStateAfterLogChange();
 
-  // Restore config header expanded state from before modal opened
+  /* 🔒 CEMENT: Config header state restoration preserves dropdown UX */
   const shouldRestoreExpandedState = appState.ui.wasConfigHeaderExpandedBeforeModal;
   if (shouldRestoreExpandedState) {
     appState.ui.isConfigHeaderExpanded = true;

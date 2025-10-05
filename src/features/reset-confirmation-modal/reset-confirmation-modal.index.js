@@ -1,3 +1,13 @@
+/* ==========================================================================
+   RESET CONFIRMATION MODAL - Business Logic
+
+   Handles reset confirmation modal rendering and state management. Shows/hides
+   modal based on appState.ui.activeModal and closes modal on confirmation.
+
+   Dependencies: appState, ui, modalService, getResetConfirmationModalTemplate
+   Used by: actionService (openResetConfirmationModal, confirmReset), main.js
+   ========================================================================== */
+
 import { appState } from "state";
 import { ui } from "ui";
 import { getResetConfirmationModalTemplate } from "./reset-confirmation-modal.template.js";

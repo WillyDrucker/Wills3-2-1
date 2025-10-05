@@ -1,17 +1,23 @@
 /* ==========================================================================
-   SUPERSET MODAL - MAIN ENTRY POINT
+   SUPERSET MODAL - Styling
 
-   CEMENT: Dual-day workout selection interface
-   - Configure superset workouts with two exercise days
-   - Green/yellow color scheme for day differentiation
-   - Modal overlay with card-style content
+   Modal dialog for configuring superset workouts with two-day selection.
+   Green/yellow color scheme differentiates day 1 and day 2 selectors.
 
-   Architecture: Modal with structured day selection
-   Component Structure:
-   └── Standard modal with global patterns
+   🔒 CEMENT: Instant modal appearance
+   - Transition removed with !important (overrides global modal fade-in)
+   - Selection feedback animations (green/yellow 2s flash)
 
-   Dependencies: Modals, card foundations, buttons
-   Used by: Workout configuration flow
+   Architecture: Centered modal overlay with card container
+   - Two day selectors with chronologically ordered workout days
+   - Cancel and Superset! action buttons
+
+   Dependencies:
+   Global: _variables.css (--card-padding-top, --card-padding-sides, --header-margin-bottom,
+           --modal-section-spacing, --space-m, --modal-button-spacing)
+   Global: _card-headers.css, _card-foundations.css, _action-button-groups.css, _modals.css
+
+   Used by: Superset modal overlay (triggered from config header)
    ========================================================================== */
 
 /* Global dependencies */
@@ -21,7 +27,7 @@
 @import url("../../styles/components/_modals.css");
 
 /* === MODAL CONTAINER === */
-/* Remove transition for instant appearance */
+/* 🔒 CEMENT: Instant appearance - !important overrides global modal fade-in */
 .superset-modal-container {
   transition: none !important;
 }

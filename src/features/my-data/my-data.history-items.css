@@ -1,22 +1,23 @@
 /* ==========================================================================
-   MY DATA - HISTORY ITEMS
+   MY DATA - History Items
 
-   Purpose: Exercise blocks and set rows for workout history display
-            Shows exercise names and set details with responsive truncation
-            Structural styles only - spacing controlled in main file
+   Exercise blocks and set rows for workout history display. Shows exercise
+   names and set details with responsive truncation. Structural styles only -
+   spacing controlled in main file.
 
-   CEMENT: Left side (set info) truncates, right side (results) stays stationary
-           Flex layout with truncation enables responsive text overflow
+   🔒 CEMENT: Responsive truncation architecture
+   - Left side (set info) truncates, right side (results) stays stationary
+   - Flex layout with truncation enables responsive text overflow
 
    Dependencies:
-     Parent: my-data.style.css (main spacing and layout)
-     Global: _variables.css (spacing tokens, colors)
+   Global: _variables.css (spacing tokens, colors)
+   Parent: my-data.style.css (main spacing and layout)
 
-   Used by: My Data history view
+   Used by: History calendar view
    ========================================================================== */
 
 /* === EXERCISE NAMES === */
-/* CEMENT: Truncation for responsive exercise name display */
+/* 🔒 CEMENT: Truncation for responsive exercise name display */
 .history-exercise-name {
   font-weight: 600;
   min-width: 0;

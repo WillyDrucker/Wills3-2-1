@@ -1,3 +1,14 @@
+/* ==========================================================================
+   SUPERSET MODAL - HTML Template
+
+   Generates superset modal HTML with two day selectors (green/yellow scheme).
+   Displays chronologically ordered workout days starting from today, filters
+   out rest days and already selected days.
+
+   Dependencies: appState (weeklyPlan, todayDayName, ui.supersetModal.selection)
+   Used by: superset-modal.index.js (renderSupersetModal)
+   ========================================================================== */
+
 import { appState } from "state";
 
 export function getSupersetModalTemplate() {

@@ -1,16 +1,27 @@
 /* ==========================================================================
-   HOME PAGE - MAIN ENTRY POINT
+   HOME PAGE - Main Entry Point
 
-   CEMENT: Cascade management through selective restoration
-   - Reset all elements to 0 for precise control
-   - Selectively restore spacing with specific overrides
-   - All spacing managed here to win cascade battles
+   Home page layout with three card sections. Imports global card components
+   and applies precise spacing through nuclear reset and selective restoration.
 
-   Architecture: Simple cards with action buttons and home groups
-   Component files handle structure, main file handles spacing
+   🔒 CEMENT: Cascade management through selective restoration
+   - Nuclear reset: All elements to margin/padding 0, line-height 1
+   - Selective restoration: Only needed spacing added back with verified values
+   - All spacing managed here to win cascade battles with global styles
+
+   Architecture: Three-card vertical stack with home-group sections
+   ├── Card foundations (borders, backgrounds, padding)
+   ├── Card headers (typography and header margins)
+   └── Action button groups (vertical button stacks)
+
+   Dependencies:
+   Global: _variables.css (--space-m, --card-border-width, --card-padding-top,
+           --card-padding-sides, --header-margin-bottom, --modal-section-spacing)
+   Global: _card-headers.css, _card-foundations.css, _action-button-groups.css
+
+   Used by: Home page navigation via home-page.index.js
    ========================================================================== */
 
-/* Global dependencies */
 @import url("../../styles/components/_card-headers.css");
 @import url("../../styles/components/_card-foundations.css");
 @import url("../../styles/components/_action-button-groups.css");

@@ -1,8 +1,18 @@
 /* ==========================================================================
-   MY DATA - DIVIDERS
-   
-   Day dividers (6px sandwich effect) and session dividers (2px line)
-   Consistent spacing between sections
+   MY DATA - Dividers
+
+   Day dividers with 6px sandwich effect and session dividers with 2px line.
+   Consistent spacing between sections.
+
+   🔒 CEMENT: Sandwich shadow effect
+   - Box-shadow creates 6px visual height (2px line + 2px shadows each side)
+   - Spacing handled in my-data.history-spacing.css due to reset cascade
+
+   Dependencies:
+   Global: None (uses hard-coded values for visual effect)
+   Parent: my-data.style.css, my-data.history-spacing.css (spacing)
+
+   Used by: History calendar view (day and session separators)
    ========================================================================== */
 
 /* === DAY DIVIDER === */

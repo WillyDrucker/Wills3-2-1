@@ -1,3 +1,19 @@
+/* ==========================================================================
+   WORKOUT LOG - Business Logic
+
+   Handles workout log rendering, updates, and clearing. Manages animation
+   state tracking, history updates, and dual-mode reset logic.
+
+   🔒 CEMENT: Animation state tracking with timestamp
+   - Tracks animation start time for progress preservation during re-renders
+   - 5-second defensive cleanup catches stale animation flags
+   - Dual-mode side-specific reset prevents cross-side interference
+
+   Dependencies: appState, ui, getWorkoutLogTemplate, workoutService,
+                 historyService, timerService
+   Used by: actionService (updateLog, clearSet actions), main.js (renderWorkoutLog)
+   ========================================================================== */
+
 import { appState } from "state";
 import { ui } from "ui";
 import { getWorkoutLogTemplate } from "./workout-log.template.js";
