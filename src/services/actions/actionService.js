@@ -54,10 +54,12 @@ export function initialize(dependencies) {
       const actionTarget = target.closest("[data-action]");
       if (actionTarget) {
         const { action, logIndex: logIndexStr, side, videoUrl } = actionTarget.dataset;
-        const logIndex = logIndexStr ? parseInt(logIndexStr, 10) : null;
+        const logIndex = logIndexStr !== undefined ? parseInt(logIndexStr, 10) : null;
 
         if (actions[action]) {
-          actions[action](event, side || logIndex || videoUrl);
+          /* CEMENT: Use ?? to prevent 0 from being treated as falsy */
+          const param = side ?? logIndex ?? videoUrl;
+          actions[action](event, param);
           return;
         }
       }

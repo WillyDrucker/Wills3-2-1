@@ -1,0 +1,63 @@
+/* ==========================================================================
+   ANIMATIONS GENERAL - Utility animations for global components
+
+   CEMENT: Reusable keyframe animations for common UI feedback patterns
+   - Border/text glow: Blue glow effect for active/hover states
+   - Button pulse: Red pulse for error states and destructive actions
+   - Segment fill: Smooth width transition for progress indicators
+
+   Animations defined:
+   1. glow-border - Border color + box-shadow pulse (transparent → blue → transparent)
+   2. text-glow - Text color pulse (dark blue → blue → dark blue)
+   3. button-red-pulse - Background pulse with opacity (dark → red → dark)
+   4. segment-fill-animate - Width transition (0% → 100%)
+
+   Dependencies:
+   Global: _variables.css (--primary-blue, --primary-blue-dark, --background-dark, --skip-red)
+
+   Used by: Buttons, prompts, progress bars, selectors (error state)
+   ========================================================================== */
+
+/* === GENERAL ANIMATIONS === */
+
+@keyframes glow-border {
+  0%,
+  100% {
+    border-color: transparent;
+    box-shadow: 0 0 3px transparent;
+  }
+  50% {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 10px var(--primary-blue), 0 0 12px var(--primary-blue);
+  }
+}
+
+@keyframes text-glow {
+  0%,
+  100% {
+    color: var(--primary-blue-dark);
+  }
+  50% {
+    color: var(--primary-blue);
+  }
+}
+
+@keyframes button-red-pulse {
+  0%,
+  100% {
+    background-color: var(--background-dark);
+  }
+  50% {
+    background-color: var(--skip-red);
+    opacity: 0.5;
+  }
+}
+
+@keyframes segment-fill-animate {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}

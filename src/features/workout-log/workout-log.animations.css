@@ -31,18 +31,20 @@
   }
 }
 
-/* 🔒 CEMENT: Green buildup for value text - prevents blackout */
+/* 🔒 CEMENT: Combined animation - value text stays white during stamp, then flashes green */
 @keyframes workout-log-value-flash {
-  0% { color: var(--on-surface-light); }    /* Start: white */
-  50% { color: var(--text-green-plan); }    /* Peak: tokenized green */
-  100% { color: var(--on-surface-light); }  /* End: white */
+  0% { color: var(--on-surface-light); }    /* White during stamp */
+  55% { color: var(--on-surface-light); }   /* Hold white (1s stamp = 55% of 1.8s total) */
+  77.5% { color: var(--text-green-plan); }  /* Peak green (halfway through flash) */
+  100% { color: var(--on-surface-light); }  /* Return to white */
 }
 
-/* 🔒 CEMENT: Green buildup for unit text - prevents blackout */
+/* 🔒 CEMENT: Combined animation - unit text stays gray during stamp, then flashes green */
 @keyframes workout-log-unit-flash {
-  0% { color: var(--on-surface-medium); }   /* Start: gray */
-  50% { color: var(--text-green-plan); }    /* Peak: tokenized green */
-  100% { color: var(--on-surface-medium); } /* End: gray */
+  0% { color: var(--on-surface-medium); }   /* Gray during stamp */
+  55% { color: var(--on-surface-medium); }  /* Hold gray (1s stamp = 55% of 1.8s total) */
+  77.5% { color: var(--text-green-plan); }  /* Peak green (halfway through flash) */
+  100% { color: var(--on-surface-medium); } /* Return to gray */
 }
 
 /* === ANIMATION APPLICATION === */
@@ -53,18 +55,16 @@
   transform-origin: center center;
 }
 
-/* Value text color animation */
+/* Value text color animation - unified timeline with stamp */
 .workout-log-item.is-updating-log .log-item-results-value {
-  animation: workout-log-value-flash 1s ease-out;
-  animation-delay: 1s; /* After grow/snap completes */
+  animation: workout-log-value-flash 1.8s ease-out; /* CEMENT: Same total duration for sync */
   backface-visibility: hidden; /* Rendering stability */
   -webkit-font-smoothing: antialiased;
 }
 
-/* Unit text color animation */
+/* Unit text color animation - unified timeline with stamp */
 .workout-log-item.is-updating-log .log-item-results-unit {
-  animation: workout-log-unit-flash 1s ease-out;
-  animation-delay: 1s; /* After grow/snap completes */
+  animation: workout-log-unit-flash 1.8s ease-out; /* CEMENT: Same total duration for sync */
   backface-visibility: hidden; /* Rendering stability */
   -webkit-font-smoothing: antialiased;
 }

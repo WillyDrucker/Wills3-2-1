@@ -1,25 +1,54 @@
-/*
-  Contains the foundational, structural CSS for the entire application.
-  This includes the main container and the base styling for all cards.
-*/
+/* ==========================================================================
+   SCAFFOLDING - Application structure and base card architecture
 
+   CEMENT: Foundational layout system with 390px canvas and universal card patterns
+   - App container: Centered 390px canvas with side margins
+   - Card base: Unpadded container with border and background
+   - Card content: Internal wrapper controlling all padding
+
+   Architecture:
+   1. .app-container - 390px max-width, centered, side margins
+   2. .card - Base card shell (background, border, radius, spacing)
+   3. .card-content-container - Internal padding wrapper (controls all spacing)
+
+   CEMENT: Card padding separation pattern
+   - .card provides structure (background, border, margins)
+   - .card-content-container provides spacing (padding controls internal layout)
+   - This separation allows flexible padding overrides per component
+
+   Layout dimensions:
+   - Canvas: 390px max-width (mobile-first design)
+   - Side margins: var(--app-side-margin)
+   - Card spacing: var(--space-m) = 16px bottom margin
+   - Card padding: var(--card-padding) sides and bottom
+   - Scroll offset: var(--space-m) = 16px top margin when scrolling
+
+   Dependencies:
+   Global: _variables.css (--app-side-margin, --space-m, --card-padding, --surface-dark, --border-radius)
+
+   Used by: All pages and card components (foundational structure)
+   ========================================================================== */
+
+/* === APP CONTAINER === */
+/* CEMENT: 390px canvas centered with side margins */
 .app-container {
   max-width: 390px;
   margin: 0 auto;
   padding: 0 var(--app-side-margin);
 }
 
-/* Base card styling, shared by all card-like components */
-/* CEMENTED FIX: The card is now an unpadded container. All internal spacing is handled by the .card-content-container. */
+/* === BASE CARD === */
+/* CEMENT: Unpadded container - all internal spacing via .card-content-container */
 .card {
   background-color: var(--surface-dark);
   border-radius: var(--border-radius);
-  margin-bottom: var(--space-m); /* REFACTORED: Using space token. */
+  margin-bottom: var(--space-m);
   border: 2px solid transparent;
-  scroll-margin-top: var(--space-m); /* Add scroll offset */
+  scroll-margin-top: var(--space-m); /* Offset when scrolling to card */
 }
 
-/* CEMENTED FIX: This wrapper class now controls all internal spacing for card content. */
+/* === CARD CONTENT WRAPPER === */
+/* CEMENT: Controls all internal spacing - padding on sides and bottom only */
 .card-content-container {
   padding: 0 var(--card-padding) var(--card-padding);
 }

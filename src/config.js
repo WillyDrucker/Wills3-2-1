@@ -1,3 +1,23 @@
+/* ==========================================================================
+   CONFIG - Application configuration constants
+
+   Central configuration for workout programs, time options, and business rules.
+   All program-specific data and exercise database URLs defined here.
+
+   Configuration sections:
+   1. Exercise database URL
+   2. Program configurations (order/color mappings)
+   3. Color code mappings (exercise status indicators)
+   4. Workout plans (program names and durations)
+   5. Time options (Standard/Express/Maintenance)
+   6. Express set rules (set reductions by day/exercise)
+   7. Maintenance set rules (set additions by day/exercise)
+   8. Muscle group sort order (display ordering)
+
+   Dependencies: None (pure configuration)
+   Used by: All services and features requiring config data
+   ========================================================================== */
+
 export const EXERCISE_DATABASE_URL =
   "https://beta.wills321.com/data/exercises.json";
 

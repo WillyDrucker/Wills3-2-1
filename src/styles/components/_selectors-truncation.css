@@ -1,0 +1,154 @@
+/* ==========================================================================
+   SELECTORS TRUNCATION - Advanced ellipsis architecture
+
+   CEMENT: Color-matched truncation prevents white ellipsis on colored text
+   - Parent provides overflow context with overflow: hidden
+   - Child spans handle text-overflow: ellipsis and inherit parent color
+   - Result: Ellipsis matches text color (e.g., data-highlight values)
+
+   Architecture: Multi-level truncation system
+   - Selector content: Flex column container for multi-line layouts
+   - Dropdown lines: Two-line layout (main/sub) with individual truncation
+   - Flex patterns: Advanced multi-part text with priority/separator/truncate groups
+
+   Truncation patterns:
+   1. Simple: .selector-content > span (single line)
+   2. Two-line: .item-main-line + .item-sub-line with .truncate-text spans
+   3. Flex: .flex-line-container with .flex-priority + .flex-truncate-group-rigid
+
+   Dependencies:
+   Global: _variables.css (spacing, colors, typography)
+
+   Used by: All selector instances (exercise, config, session, mode, log, dual-mode)
+   ========================================================================== */
+
+/* === SELECTOR CONTENT === */
+/* CEMENT: Truncation container - flex column for multi-line, allows nested color spans */
+.selector-content {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
+  font-weight: 500;
+  color: var(--on-surface-medium);
+  min-width: 0;
+}
+
+.selector-content > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.selector-content > span span {
+  display: inline;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: inherit;
+}
+
+.selector-content.multi-line {
+  line-height: 1.3;
+  padding: 4px 0;
+}
+
+/* === DROPDOWN ITEM LAYOUT === */
+.options-list li .selector-content {
+  display: block;
+  width: 100%;
+}
+
+/* === DROPDOWN TEXT LINES === */
+/* CEMENT: Two-line layout for exercise names, days, descriptions */
+.options-list li .item-main-line,
+.options-list li .item-sub-line {
+  display: block;
+  text-align: center;
+  width: 100%;
+  line-height: 1.2;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.options-list li .item-main-line {
+  margin-bottom: 6px;
+}
+
+.options-list li .item-sub-line {
+  margin-top: 0;
+}
+
+/* CEMENT: Truncating spans with color-matched ellipsis */
+.options-list li .item-main-line > span.truncate-text,
+.options-list li .item-sub-line > span.truncate-text {
+  display: inline-block;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+.options-list li .item-main-line > span:not(.truncate-text),
+.options-list li .item-sub-line > span:not(.truncate-text) {
+  display: inline;
+  white-space: nowrap;
+}
+
+/* === DROPDOWN FLEX OVERRIDE === */
+.options-list li .flex-line-container {
+  display: block;
+  text-align: center;
+}
+
+.options-list li .flex-separator {
+  margin: 0 2px;
+}
+
+/* === ITEM LINES (GLOBAL) === */
+.item-main-line {
+  font-size: inherit;
+}
+
+.item-main-line .data-highlight {
+  font-weight: 600;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.item-sub-line {
+  font-size: 1rem;
+}
+
+.item-sub-line + .item-sub-line {
+  margin-top: 4px;
+}
+
+/* === FLEX LAYOUTS === */
+/* Advanced truncation for complex multi-part text */
+.flex-line-container {
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+  justify-content: center;
+}
+
+.flex-priority {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.flex-separator {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.flex-truncate-group-rigid {
+  display: flex;
+  flex-shrink: 0;
+  white-space: nowrap;
+}

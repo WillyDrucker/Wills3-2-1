@@ -1,20 +1,36 @@
-/* --- REFACTOR: New Layout Primitive (The Stack) --- */
-/*
-  This is the core of the new "Rhythm & Flow" system.
-  It creates consistent, "natural" vertical spacing.
-*/
+/* ==========================================================================
+   HELPERS - Global utility classes
+
+   CEMENT: Reusable utility classes for layout, text, and color patterns
+   - Layout: .stack for vertical rhythm with gap-based spacing
+   - Text: .truncate-text for ellipsis truncation in any context
+   - Colors: Data-driven color classes (.text-plan, .text-warning, etc.)
+   - Muting: Legacy muting styles (NOTE: Primary muting in _selectors-muting.css)
+
+   Utilities defined:
+   1. .stack - Flex column with gap spacing (customizable via --stack-space)
+   2. .truncate-text - Universal ellipsis truncation (flex/grid/block compatible)
+   3. .text-* classes - Semantic color utilities matching data states
+   4. .is-muted - Legacy muting styles (coexists with _selectors-muting.css)
+   5. body.is-selector-open - Global selector state management
+
+   CEMENT: Gap-based spacing prevents margin collapse inconsistencies
+   - Modern approach with pixel-perfect control
+   - Customizable via --stack-space variable (defaults to --space-m)
+
+   Dependencies:
+   Global: _variables.css (spacing, color tokens, muting tokens)
+
+   Used by: Most components (layout stacks, text truncation, color coding)
+   ========================================================================== */
+
+/* === LAYOUT PRIMITIVE: STACK === */
+/* CEMENT: Core vertical rhythm system using gap for consistent spacing */
 .stack {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  /*
-    PROACTIVE IMPROVEMENT (Phase 2):
-    Switched from a margin-based approach to `gap`. The `gap` property is
-    the modern, definitive way to control spacing between flex items. It is
-    not affected by margin collapsing or other browser inconsistencies,
-    giving us true, pixel-perfect control over the layout rhythm.
-  */
-  gap: var(--stack-space, var(--space-m));
+  gap: var(--stack-space, var(--space-m)); /* Default 16px, customizable */
 }
 
 /* --- UNIVERSAL MUTING LOGIC --- */

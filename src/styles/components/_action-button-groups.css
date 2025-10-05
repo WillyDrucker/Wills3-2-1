@@ -1,12 +1,22 @@
 /* ==========================================================================
-   GLOBAL ACTION BUTTON GROUPS - UNIFIED PATTERNS
-   
+   ACTION BUTTON GROUPS - Unified layout patterns
+
    CEMENT: Standard button group layouts with 16px rhythm
-   - Vertical stacks with consistent gaps
-   - Horizontal layouts for modals
-   - Grid layouts for edit panels
-   
-   Used by: active-card, workout-log, home-page, modals
+   - Vertical stacks with consistent gaps (var(--space-m) = 16px)
+   - Horizontal layouts for modals (flex row)
+   - Grid layouts for edit panels (two-column with equal width)
+
+   Layout patterns:
+   1. Vertical: .action-button-group (flex column, 16px gap)
+   2. Horizontal: .modal-actions, .superset-modal-actions (flex row, 16px gap)
+   3. Grid: .edit-panel-actions (2-column grid, 16px gap, equal columns)
+
+   CEMENT: All layouts use var(--space-m) for consistent 16px rhythm
+
+   Dependencies:
+   Global: _variables.css (--space-m, --modal-button-spacing)
+
+   Used by: active-card, workout-log, home-page, modals (superset, partner, reset)
    ========================================================================== */
 
 /* === VERTICAL BUTTON STACKS === */
@@ -17,11 +27,6 @@
   gap: var(--space-m); /* 16px between buttons */
   margin: 0;
   padding: 0;
-}
-
-/* Active card specific - pulls up by 1px for precise spacing */
-#active-card-container .action-button-group {
-  margin: -1px 0 0 0 !important;
 }
 
 /* === HORIZONTAL BUTTON LAYOUTS === */
@@ -88,8 +93,8 @@
 /* === ACTION PROMPTS === */
 /* Clickable prompt text above buttons */
 .action-prompt-block {
-  margin: 0 !important;
-  padding: 0 !important;
+  margin: 0;
+  padding: 0;
 }
 
 .action-prompt-text,

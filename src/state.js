@@ -1,15 +1,37 @@
+/* ==========================================================================
+   STATE - Application state management
+
+   Central state tree for entire application. Defines initial state structure
+   and provides state reset function.
+
+   State tree sections:
+   1. Static data: Exercise database, weekly plan, current day
+   2. Session: Current workout state, logs, progress
+   3. Superset: Dual-mode workout state (day1/day2)
+   4. Partner: Partner workout state (user1/user2)
+   5. Rest timers: Normal and superset rest timer states
+   6. UI: Page navigation, modals, video player, side nav
+   7. User: Login status, history, persistent data
+
+   CEMENT: Color class separation for independent styling
+   - currentSessionColorClass: Header colors (Minutes Remaining, clock)
+   - currentTimerColorClass: Timer colors (independent from headers)
+   - currentExerciseColorClass: Exercise-specific coloring
+
+   Dependencies: utils (formatTime12Hour)
+   Used by: All services and features requiring state access
+   ========================================================================== */
+
 import { formatTime12Hour } from "utils";
 
 export function getInitialAppState() {
   return {
-    // Static data and overall app status
     todayDayName: "",
     allExercises: [],
     weeklyPlan: {},
 
-    // State for the current workout session
     session: {
-      id: Date.now(), // Unique ID for the current workout session
+      id: Date.now(),
       currentWorkoutPlanName: "Will's 3-2-1:",
       currentDayName: "Sunday",
       currentTimeOptionName: "Standard:",
@@ -24,13 +46,12 @@ export function getInitialAppState() {
       activeCardMessage: "Begin Exercise - Log Results",
       activeCardHeaderMessage: "Current Exercise",
       currentExerciseColorClass: "text-plan",
-      currentSessionColorClass: "text-plan", // CEMENT: Controls header colors (Minutes Remaining, clock)
-      currentTimerColorClass: "text-plan", // CEMENT: Controls timer colors, separate from headers
+      currentSessionColorClass: "text-plan",
+      currentTimerColorClass: "text-plan",
       workoutTimeRemaining: 0,
       playCompletionAnimation: false,
     },
 
-    // State for Superset-specific session data
     superset: {
       isActive: false,
       day1: null,
@@ -39,7 +60,6 @@ export function getInitialAppState() {
       timeDeductionSetIndexes: [],
     },
 
-    // State for Partner-specific session data
     partner: {
       isActive: false,
       user1Name: "Will",
@@ -48,7 +68,6 @@ export function getInitialAppState() {
       user2Day: null,
     },
 
-    // State for Normal and Superset rest timers
     rest: {
       normal: {
         type: "none",
@@ -93,15 +112,14 @@ export function getInitialAppState() {
       },
     },
 
-    // State controlling the UI that isn't part of a session
     ui: {
-      currentTime: formatTime12Hour(new Date()), // Real-time clock display - initialized immediately
-      currentPage: "home", // Can be 'home', 'workout', or 'myData'
+      currentTime: formatTime12Hour(new Date()),
+      currentPage: "home",
       isFullscreen: false,
-      isConfigHeaderExpanded: false, // CEMENT: Controls collapsed/expanded state of config-header
-      configHeaderLocked: false, // Prevents config header from collapsing during selector operations
-      wasConfigHeaderExpandedBeforeModal: false, // Tracks if config header was expanded before modal opened
-      activeModal: null, // CEMENTED: 'superset', 'partner', 'reset', etc.
+      isConfigHeaderExpanded: false,
+      configHeaderLocked: false,
+      wasConfigHeaderExpandedBeforeModal: false,
+      activeModal: null,
       modal: {
         elementToFocusOnClose: null,
       },
@@ -124,27 +142,22 @@ export function getInitialAppState() {
         },
         error: null,
       },
-      partnerModal: {
-        // No specific state needed, managed by central service
-      },
-      resetConfirmationModal: {
-        // No specific state needed, managed by central service
-      },
+      partnerModal: {},
+      resetConfirmationModal: {},
       sideNav: {
         isOpen: false,
       },
       myDataPage: {
-        selectedTab: "Workouts", // Can be 'Workouts', 'Conditioning', 'Stretching'
-        weekOffset: 0, // 0 is current week, 1 is last week, etc.
+        selectedTab: "Workouts",
+        weekOffset: 0,
       },
     },
 
-    // User-specific data, including persistent history
     user: {
       isLoggedIn: false,
       data: null,
       history: {
-        workouts: [], // Array of completed workout session objects
+        workouts: [],
       },
     },
   };

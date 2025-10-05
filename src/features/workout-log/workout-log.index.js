@@ -41,9 +41,9 @@ export function handleUpdateLog(index, newWeight, newReps) {
   }
 
   // 🔒 CEMENT: Defensive cleanup prevents corrupted animation state
-  // 5-second timeout catches stale flags that weren't properly cleared
+  // Timeout catches stale flags that weren't properly cleared
   const now = Date.now();
-  if (log.isAnimating && log.animationStartTime && (now - log.animationStartTime) > 5000) {
+  if (log.isAnimating && log.animationStartTime && (now - log.animationStartTime) > 2200) {
     log.isAnimating = false;
     log.animationStartTime = null;
   }
@@ -56,7 +56,7 @@ export function handleUpdateLog(index, newWeight, newReps) {
   setTimeout(() => {
     log.isAnimating = false;
     log.animationStartTime = null; // Clear tracking after animation completes
-  }, 2000);
+  }, 1900); /* CEMENT: 1900ms matches animation duration (1.8s + buffer) */
 
   return true;
 }

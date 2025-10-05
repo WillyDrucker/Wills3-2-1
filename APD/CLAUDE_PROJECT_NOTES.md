@@ -6,6 +6,76 @@
 
 ## VERSION CHANGELOG
 
+### **v5.5.0 - Complete CLAUDE Standards Application & Core File Documentation**
+**Date**: 2025-10-05
+**Problem**: Final core files (config.js, main.js, state.js, index.css/html) lacked CLAUDE standards, /styles directory needed documentation headers, workout log buttons broken, animation timing issues
+**Solution**: Applied comprehensive CLAUDE standards to all remaining files, split oversized CSS files, fixed critical workout log bugs, removed !important flags, unified animation timing
+**Key Achievements**:
+- **Core files documented**: config.js, main.js, state.js with comprehensive CLAUDE headers
+- **Styles directory complete**: 16 CSS files with full documentation (split 2 files → 6 total)
+- **Bug fixes**: Clear Set/Update button (logIndex 0 falsy), green flash animation timing
+- **!important removal**: 3 flags removed from _action-button-groups.css with cascade fixes
+- **File splitting**: _selectors.css (285→3 files), _animations.css (204→3 files) following logical cohesion
+- **Historic cleanup**: Removed version numbers, "how it was fixed" comments, focusing on "how it should be"
+- **Lean approach**: index.html and index.css kept minimal per user requirements
+**Root Causes Identified**:
+- **Falsy zero bug**: Using `||` operator treated logIndex 0 as falsy, preventing first log item actions
+- **Animation fill-mode**: `fill-mode: both` applied animation state immediately, causing parallel playback
+- **!important flags**: Cascade specificity insufficient, needed higher specificity selectors
+- **Missing documentation**: Core entry files lacked comprehensive headers with dependencies
+**Technical Architecture**:
+- **Styles organization**: Base (reset, typography, scaffolding) → Components (buttons, inputs, selectors, modals) → Features → Utilities → Themes
+- **Selectors split**: Base structure (102 lines) + Truncation system (130 lines) + Muting logic (32 lines)
+- **Animations split**: General utilities (43 lines) + Fuel gauge plates (110 lines) + Modal feedback (58 lines)
+- **Animation unification**: Grow/shrink and green flash combined into single 1.8s timeline (no delays needed)
+**Files Split**:
+- `_selectors.css` → 3 files: _selectors-base.css, _selectors-truncation.css, _selectors-muting.css
+- `_animations.css` → 3 files: _animations-general.css, _animations-fuel-gauge.css, _animations-modal.css
+- Both parent files became re-export indexes for backward compatibility
+**Bug Fixes**:
+1. **Clear Set/Update buttons**: Changed `side || logIndex || videoUrl` to `side ?? logIndex ?? videoUrl` (nullish coalescing) - actionService.js:61
+2. **Update button import error**: Added direct import of `recalculateCurrentStateAfterLogChange` from workoutProgressionService - actionHandlers.js:22, 245
+3. **Green flash timing**: Unified animation timeline (0-55% hold, 55-77.5% green, 77.5-100% fade) - workout-log.animations.css:35-48
+**Cascade Fixes**:
+- Removed !important from _action-button-groups.css (lines 24, 91, 92)
+- Added higher specificity rule in active-exercise-card.action-area.css using `#active-card-container .action-button-group`
+**Key CEMENT Areas Protected**:
+- Logical cohesion principle: Fuel gauge 6-plate animations kept together (110 lines) despite line limit
+- Unified animation timeline: Single 1.8s duration with keyframe-based sequencing (no animation-delay)
+- Color-matched truncation: Parent overflow + child ellipsis prevents white ellipsis on colored text
+- Bidirectional selector muting: Exercise selector exception with override during modal open
+**Documentation Pattern Applied**:
+```css
+/* ==========================================================================
+   FILE NAME - Purpose statement
+
+   CEMENT: Key architectural decision or business rule
+   - Bullet point explanation
+   - Additional context
+
+   Architecture: Component structure
+   - Key patterns
+   - Critical dimensions
+
+   Dependencies:
+   Global: _variables.css (tokens used)
+   Local: Related component files
+
+   Used by: Features/components consuming this file
+   ========================================================================== */
+```
+**CLAUDE Standards Completeness**:
+- **16 /styles files**: Full headers with Purpose, CEMENT, Architecture, Dependencies, Used by
+- **5 core files**: config.js, main.js, state.js, index.css (verified), index.html (lean)
+- **Historic cleanup**: Removed version references, "CEMENTED" verbosity, "how it was fixed" comments
+- **Lean manifests**: index.css and index.html kept minimal with focused comments only
+**Technical Discoveries**:
+- Nullish coalescing `??` critical for handling 0 as valid parameter (falsy vs nullish distinction)
+- Animation unification more reliable than delays (timing baked into keyframes, not separate properties)
+- Logical cohesion trumps line limits (6 related fuel gauge animations kept together)
+- Re-export indexes enable backward compatibility during file splitting
+**Status**: COMPLETE - All core files and /styles directory fully documented to CLAUDE standards, bugs fixed, !important flags removed
+
 ### **v6.28 - Services Refactor, Utilities Reorganization & UI Polish**
 **Date**: 2025-10-05
 **Problem**: Large service files (timer, workout) lacked modularity, shared utilities mixed concerns (260 lines), UI had typography/spacing issues, event delegation bugs causing scroll jumps

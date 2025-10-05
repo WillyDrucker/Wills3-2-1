@@ -1,8 +1,24 @@
 /* ==========================================================================
-   BUTTONS - GLOBAL STYLES
-   
-   Base button styles and color variants
-   Button groups moved to _action-button-groups.css
+   BUTTONS - Global button styles and color variants
+
+   CEMENT: Base button architecture with semantic color system
+   - Standard height: var(--control-height) = 50px
+   - Color variants: Green (confirm), blue (standard), red (cancel/skip), yellow (maintenance)
+   - Disabled state: filter-based dimming (brightness 0.5, saturation 0.5)
+   - Shadow: 0 2px 4px rgba(0,0,0,0.8) for depth
+
+   Architecture:
+   - Base: .action-button with consistent sizing and centering
+   - Variants: .button-confirm, .button-cancel, .button-standard, .button-maintenance
+   - Disabled: [disabled] attribute with pointer-events: none
+   - Groups: Moved to _action-button-groups.css
+
+   CEMENT: line-height: 1 prevents text shifting when timer is active
+
+   Dependencies:
+   Global: _variables.css (control-height, border-radius, font-size-h2, color tokens)
+
+   Used by: All interactive components (active-card, workout-log, modals, config-card, home-page)
    ========================================================================== */
 
 /* === BASE BUTTON === */

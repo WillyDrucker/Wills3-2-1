@@ -1,0 +1,83 @@
+/* ==========================================================================
+   ANIMATIONS MODAL - Selection confirmation feedback
+
+   CEMENT: Color-coded visual confirmation for modal selections
+   - Green: Plan configuration (superset/partner exercise selected)
+   - Yellow: Maintenance mode selections
+   - Multi-stage animation: Compress → reset → expand with glow
+
+   Animation stages (both green/yellow follow same pattern):
+   0%: Normal state (scale 1, full opacity)
+   25%: Compress stage (scale 0.98, reduced opacity, dimmed color)
+   50%: Reset stage (scale 1, white color, full opacity)
+   85%: Expand + glow stage (scale 1.2, target color, text-shadow glow)
+   100%: Final state (scale 1, target color, no shadow)
+
+   Color targets:
+   - Green: var(--text-green-plan) - Plan configuration success
+   - Yellow: var(--text-yellow-maintenance) - Maintenance mode feedback
+
+   Dependencies:
+   Global: _variables.css (--on-surface-medium, --text-green-plan, --text-yellow-maintenance)
+
+   Used by: Superset modal, partner modal, maintenance mode selections
+   ========================================================================== */
+
+/* === MODAL SELECTION FEEDBACK ANIMATIONS === */
+/* Superset and Partner modal selection animations */
+
+@keyframes selection-feedback-green {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+    text-shadow: none;
+  }
+  25% {
+    color: var(--on-surface-medium);
+    transform: scale(0.98);
+    opacity: 0.7;
+  }
+  50% {
+    color: #ffffff;
+    transform: scale(1);
+    opacity: 1;
+  }
+  85% {
+    color: var(--text-green-plan);
+    transform: scale(1.2);
+    text-shadow: 0 0 8px var(--text-green-plan);
+  }
+  100% {
+    color: var(--text-green-plan);
+    transform: scale(1);
+    text-shadow: none;
+  }
+}
+
+@keyframes selection-feedback-yellow {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+    text-shadow: none;
+  }
+  25% {
+    color: var(--on-surface-medium);
+    transform: scale(0.98);
+    opacity: 0.7;
+  }
+  50% {
+    color: #ffffff;
+    transform: scale(1);
+    opacity: 1;
+  }
+  85% {
+    color: var(--text-yellow-maintenance);
+    transform: scale(1.2);
+    text-shadow: 0 0 8px var(--text-yellow-maintenance);
+  }
+  100% {
+    color: var(--text-yellow-maintenance);
+    transform: scale(1);
+    text-shadow: none;
+  }
+}

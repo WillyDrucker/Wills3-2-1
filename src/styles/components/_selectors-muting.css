@@ -1,0 +1,58 @@
+/* ==========================================================================
+   SELECTORS MUTING - Business logic state management
+
+   CEMENT: Bidirectional muting system with exercise selector exception
+   - Applied when first set logged - prevents plan/focus changes mid-workout
+   - Also applied to non-open selectors when ANY selector opens
+   - Exercise selector exception: Border-only muting preserves visibility
+   - Exception override: Full muting during bidirectional muting
+
+   Architecture: Three-class specificity naturally overrides base styles
+   - Base muting: .app-selector.is-muted
+   - Config header: #config-header .app-selector.is-muted (higher specificity)
+   - Exercise exception: details#exercise-selector.app-selector.is-muted
+   - Bidirectional override: body.is-selector-open details#exercise-selector.app-selector.is-muted
+
+   Business rules:
+   1. Standard muting: Background, border, filter, opacity, pointer-events disabled
+   2. Exercise selector: Content stays visible (filter/opacity none)
+   3. Bidirectional: All selectors including exercise fully mute
+
+   Dependencies:
+   Global: _variables.css (muting tokens: --muted-background, --muted-border-color, --muted-brightness, --muted-saturation, --muted-opacity)
+
+   Used by: All selectors during workout (exercise, config, session, mode, log, dual-mode)
+   ========================================================================== */
+
+/* === BUSINESS LOGIC MUTING === */
+/* CEMENT: Applied when first set logged - prevents plan/focus changes mid-workout */
+/* Three-class specificity naturally overrides base styles */
+.app-selector.is-muted > summary,
+.app-selector.is-muted[open] > summary,
+#config-header .app-selector.is-muted > summary,
+#config-header .app-selector.is-muted[open] > summary {
+  background: var(--muted-background); /* Global token */
+  box-shadow: inset 0 0 0 2px var(--muted-border-color); /* Global token */
+  pointer-events: none;
+}
+
+.app-selector.is-muted > summary .selector-content,
+.app-selector.is-muted[open] > summary .selector-content {
+  filter: brightness(var(--muted-brightness)) saturate(var(--muted-saturation)); /* Global tokens */
+  opacity: var(--muted-opacity); /* Global token */
+}
+
+/* CEMENT: Exercise selector exception - border-only muting preserves active exercise visibility */
+/* Content stays visible so users can see current exercise even when changes disabled */
+details#exercise-selector.app-selector.is-muted > summary .selector-content,
+details#exercise-selector.app-selector.is-muted[open] > summary .selector-content {
+  filter: none;
+  opacity: 1;
+}
+
+/* CEMENT: Override exception during bidirectional muting - exercise selector fully mutes when other selector opens */
+body.is-selector-open details#exercise-selector.app-selector.is-muted > summary .selector-content,
+body.is-selector-open details#exercise-selector.app-selector.is-muted[open] > summary .selector-content {
+  filter: brightness(var(--muted-brightness)) saturate(var(--muted-saturation));
+  opacity: var(--muted-opacity);
+}

@@ -19,6 +19,7 @@ import * as scrollService from "services/ui/scrollService.js";
 import * as selectorService from "services/ui/selectorService.js";
 import * as persistenceService from "services/core/persistenceService.js";
 import * as workoutService from "services/workout/workoutService.js";
+import { recalculateCurrentStateAfterLogChange } from "services/workout/workoutProgressionService.js";
 import * as modalService from "services/ui/modalService.js";
 import { getNextWorkoutDay } from "utils";
 import { canCycleToSession } from "utils";
@@ -241,7 +242,7 @@ export function getActionHandlers() {
           parseFloat(document.getElementById(`reps-edit-${logIndex}-input`).value)
         )
       ) {
-        workoutService.recalculateCurrentStateAfterLogChange({ shouldScroll: true });
+        recalculateCurrentStateAfterLogChange({ shouldScroll: true });
         coreActions.renderAll();
         persistenceService.saveState();
       }

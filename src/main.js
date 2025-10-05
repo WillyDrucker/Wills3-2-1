@@ -1,3 +1,24 @@
+/* ==========================================================================
+   MAIN - Application entry point and render orchestration
+
+   Central render loop and core update functions. Coordinates all feature
+   renderers and manages app initialization.
+
+   Core functions:
+   - updateActiveWorkoutAndLog: Full workout regeneration (mode switches)
+   - updateActiveWorkoutPreservingLogs: Minimal update (session cycling)
+   - renderAll: Main render loop - clears and re-renders entire UI
+   - renderError: Displays top-level error messages
+
+   CEMENT: Render function separation prevents animation restarts
+   - Mode switching uses updateActiveWorkoutAndLog (full re-render)
+   - Session cycling uses updateActiveWorkoutPreservingLogs (minimal update)
+   - Session cycling only updates display, never re-renders active card/log
+
+   Dependencies: appState, ui, all services, all feature renderers
+   Used by: DOMContentLoaded initialization, appInitializerService
+   ========================================================================== */
+
 import { appState } from "state";
 import { ui } from "ui";
 import * as workoutProgressionService from "services/workout/workoutProgressionService.js";
@@ -8,7 +29,6 @@ import * as scrollService from "services/ui/scrollService.js";
 import * as persistenceService from "services/core/persistenceService.js";
 import * as appInitializerService from "services/core/appInitializerService.js";
 
-// --- Import Feature Renderers ---
 import { renderAppHeader } from "features/app-header/app-header.index.js";
 import { renderHomePage } from "features/home-page/home-page.index.js";
 import { renderMyDataPage } from "features/my-data/my-data.index.js";
@@ -26,8 +46,6 @@ import {
 } from "features/active-exercise-card/active-exercise-card.index.js";
 import { renderWorkoutResultsCard } from "features/workout-results-card/workout-results-card.index.js";
 
-// --- Core State & Render Functions ---
-
 function updateActiveWorkoutAndLog() {
   if (appState.partner.isActive) {
     appState.session.workoutLog =
@@ -43,59 +61,34 @@ function updateActiveWorkoutAndLog() {
   persistenceService.saveState();
 }
 
-// 🔒 CEMENT: Preserve logged sets when changing session type
-// Ultra-targeted update to preserve animations
 function updateActiveWorkoutPreservingLogs() {
-  const oldLogLength = appState.session.workoutLog?.length || 0;
-
   if (appState.partner.isActive) {
-    // Partner mode: preserve logged sets when changing session
     appState.session.workoutLog =
       workoutLogPreservationService.updatePartnerWorkoutLogForSessionChange(
         appState.session.workoutLog
       );
   } else if (appState.superset.isActive) {
-    // Superset mode: preserve logged sets when changing session
     appState.session.workoutLog =
       workoutLogPreservationService.updateSupersetWorkoutLogForSessionChange(
         appState.session.workoutLog
       );
   } else {
-    // Normal mode: preserve logged sets
     appState.session.workoutLog = workoutLogPreservationService.updateWorkoutLogForSessionChange(
       appState.session.workoutLog
     );
   }
   workoutProgressionService.recalculateCurrentStateAfterLogChange();
-  updateWorkoutTimeRemaining(); // Update time based on new set count
+  updateWorkoutTimeRemaining();
 
-  const newLogLength = appState.session.workoutLog?.length || 0;
-
-  // 🔒 CEMENT: Minimal render to preserve animations and config-header state
-  // DO NOT re-render active card/log when session cycling - it restarts animations
-  // Session cycling in ANY mode (normal or dual) should NOT trigger re-render
-  // This function is ONLY called for session cycling, never for mode switching
-  // Mode switching uses updateActiveWorkoutAndLog() which does full re-render
-  // Therefore: NEVER re-render here, only update session display below
-
-  // Always update session display (works whether expanded or collapsed)
-  // This updates both the icon bar button and expanded session text
-  // Use setTimeout with longer delay to ensure DOM is ready on first open
+  /* CEMENT: Minimal render preserves animations - only update session display */
   setTimeout(() => {
     renderSessionDisplay();
-    renderFocusDisplay(); // Update focus icon for dual-mode exercise cycling
+    renderFocusDisplay();
   }, 50);
 
   persistenceService.saveState();
 }
 
-/**
- * CEMENTED
- * This is the application's main render loop and the heart of the Prime Directive.
- * It is responsible for clearing the main content areas and re-rendering the
- * entire visible UI from the current `appState`. Its structure is definitive.
- * Do not modify without a significant architectural review.
- */
 function renderAll() {
   ui.configSection.innerHTML = "";
   ui.mainContent.innerHTML = "";
@@ -126,17 +119,11 @@ function renderAll() {
   }
 }
 
-/**
- * CEMENTED
- * A stable, simple utility for displaying a top-level error message.
- */
 function renderError(message) {
   ui.mainContent.innerHTML = `<div class="card rest-day-container"><span class="rest-day-text text-skip">${message}</span></div>`;
   ui.configSection.innerHTML = "";
   ui.workoutFooter.innerHTML = "";
 }
-
-// --- App Initialization ---
 
 document.addEventListener("DOMContentLoaded", () => {
   appInitializerService.initialize({

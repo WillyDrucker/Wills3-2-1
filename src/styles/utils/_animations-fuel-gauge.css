@@ -1,0 +1,137 @@
+/* ==========================================================================
+   ANIMATIONS FUEL GAUGE - Weight plate stacking animations
+
+   CEMENT: Instant appearance with smooth position transition
+   - Plates appear at center (opacity 0 → 1 at 1% mark)
+   - Then slide to final position (left/right sides)
+   - Prevents gradual fade-in, ensures crisp plate visibility
+
+   Architecture: 6 coordinated animations for realistic barbell loading
+   - Left side: plate-move-left-1, plate-move-left-2, plate-move-left-3
+   - Right side: plate-move-right-1, plate-move-right-2, plate-move-right-3
+   - Each number represents stack position (1 = outermost, 3 = innermost)
+
+   Animation pattern (all 6 animations):
+   0%: Center position, opacity 0 (invisible)
+   1%: Center position, opacity 1 (instant appearance)
+   100%: Final position (left edge or right edge with offset), opacity 1
+
+   Position calculations:
+   - Left: 0, 5px, 10px (progressive offset from left edge)
+   - Right: calc(100% - 50px), calc(100% - 50px - 5px), calc(100% - 50px - 10px)
+
+   Dependencies: None (pure transform/opacity animations)
+
+   Used by: /features/fuel-gauge component
+   ========================================================================== */
+
+/* === FUEL GAUGE PLATE ANIMATIONS === */
+/* Rebuilt: Keyframes for plate stacking with instant appearance */
+
+@keyframes plate-move-left-3 {
+  0% {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+  }
+  1% {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 1;
+  }
+  100% {
+    left: 0;
+    transform: translateY(-50%);
+    opacity: 1;
+  }
+}
+
+@keyframes plate-move-right-3 {
+  0% {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+  }
+  1% {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 1;
+  }
+  100% {
+    left: calc(100% - 50px);
+    transform: translateY(-50%);
+    opacity: 1;
+  }
+}
+
+@keyframes plate-move-left-2 {
+  0% {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+  }
+  1% {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 1;
+  }
+  100% {
+    left: 5px;
+    transform: translateY(-50%);
+    opacity: 1;
+  }
+}
+
+@keyframes plate-move-right-2 {
+  0% {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+  }
+  1% {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 1;
+  }
+  100% {
+    left: calc(100% - 50px - 5px);
+    transform: translateY(-50%);
+    opacity: 1;
+  }
+}
+
+@keyframes plate-move-left-1 {
+  0% {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+  }
+  1% {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 1;
+  }
+  100% {
+    left: 10px;
+    transform: translateY(-50%);
+    opacity: 1;
+  }
+}
+
+@keyframes plate-move-right-1 {
+  0% {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+  }
+  1% {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 1;
+  }
+  100% {
+    left: calc(100% - 50px - 10px);
+    transform: translateY(-50%);
+    opacity: 1;
+  }
+}

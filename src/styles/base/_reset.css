@@ -1,3 +1,26 @@
+/* ==========================================================================
+   RESET - Browser normalization and base setup
+
+   CEMENT: Universal box-sizing and scrollbar stabilization
+   - box-sizing: border-box prevents padding/border dimension surprises
+   - margin/padding reset eliminates browser defaults
+   - Scrollbar always reserved but invisible (prevents layout shift)
+
+   Architecture:
+   1. Universal reset: All elements use border-box, zero margin/padding
+   2. Scrollbar stabilization: Space reserved but hidden for app-like feel
+   3. Invisible scrollbar utility: .is-scrollable class for overflow containers
+
+   CEMENT: Scrollbar stabilization prevents layout shift on page navigation
+   - overflow-y: scroll reserves space (no content jump)
+   - scrollbar-width: none hides it (clean aesthetic)
+   - Result: 390px canvas stays stable across all pages
+
+   Dependencies: None (pure reset layer)
+
+   Used by: All pages and components (foundational reset)
+   ========================================================================== */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -5,16 +28,9 @@
 }
 
 html {
-  /*
-    Stabilization Rule:
-    1. `overflow-y: scroll` forces the browser to always reserve space for a
-       scrollbar, eliminating layout shifts when navigating between pages of
-       different content heights.
-    2. `scrollbar-width: none` and the `::-webkit-scrollbar` rule then make
-       that now-reserved space invisible, preserving our app-like aesthetic.
-  */
-  overflow-y: scroll;
-  scrollbar-width: none; /* For Firefox */
+  /* CEMENT: Scrollbar stabilization - reserve space but keep invisible */
+  overflow-y: scroll; /* Always reserve space for scrollbar */
+  scrollbar-width: none; /* Hide scrollbar in Firefox */
 }
 
 /* For Chrome, Safari, and Opera */

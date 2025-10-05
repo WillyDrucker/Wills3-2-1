@@ -1,8 +1,28 @@
 /* ==========================================================================
-   MODALS - GLOBAL CONTAINER STYLES
-   
-   Base modal containers and backdrops
-   Content styles in component-specific files
+   MODALS - Global container and backdrop styles
+
+   CEMENT: Fixed-position overlay system with fade transitions
+   - Full viewport overlay with z-index 1000
+   - Centered content with 16px top padding
+   - Fade in/out transitions (0.3s opacity + visibility)
+   - Hidden state: opacity 0, visibility hidden (allows transitions)
+
+   Architecture:
+   - Container: Fixed position, full screen, flex centered
+   - Content: Feature-specific styles in component files
+   - Backdrop: Semi-transparent background (blur effect optional)
+   - Transitions: 0.3s ease for opacity and visibility
+
+   Modal types:
+   1. .superset-modal-container - Exercise superset configuration
+   2. #partner-modal-container - Partner exercise selection
+   3. #reset-confirmation-modal-container - Workout reset confirmation
+
+   Dependencies:
+   Global: _variables.css (spacing tokens)
+   Feature: Component-specific modal content styles
+
+   Used by: /features/config-card (superset, partner, reset modals)
    ========================================================================== */
 
 /* === MODAL CONTAINERS === */

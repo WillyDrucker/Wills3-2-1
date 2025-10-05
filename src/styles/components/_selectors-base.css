@@ -1,0 +1,122 @@
+/* ==========================================================================
+   SELECTORS BASE - Core selector structure and states
+
+   CEMENT: Blue border visual language distinguishes selectors from buttons
+   - Black background prevents opacity artifacts during muting
+   - Square bottom corners on open state connect seamlessly to dropdown
+   - Absolute-positioned dropdown prevents layout shift
+
+   Architecture: Native details/summary with custom styling
+   - Base selector: 50px height (var(--control-height))
+   - Options list: Absolute positioned, z-index 100
+   - Error state: Red pulse animation (button-red-pulse)
+
+   Dependencies:
+   Global: _variables.css (spacing, colors, typography, control-height)
+   Global: _animations-general.css (button-red-pulse)
+
+   Used by: config-card, config-header, active-card, workout-log, my-data, dual-mode
+   ========================================================================== */
+
+/* === BASE SELECTOR === */
+.app-selector {
+  position: relative;
+  font-size: var(--font-size-h2); /* Global: 1.25rem */
+  font-weight: 600;
+  margin: 0;
+}
+
+.app-selector:last-child {
+  margin-bottom: 0;
+}
+
+/* === SUMMARY (CLOSED STATE) === */
+/* CEMENT: Blue border distinguishes selectors from buttons, black background prevents opacity issues */
+.app-selector summary {
+  background-color: var(--background-dark);
+  box-shadow: inset 0 0 0 2px var(--primary-blue);
+  border-radius: var(--border-radius);
+  min-height: var(--control-height); /* Global: 50px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.app-selector summary::-webkit-details-marker {
+  display: none;
+}
+
+/* CEMENT: Square bottom corners connect to dropdown seamlessly */
+.app-selector[open] > summary {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* === OPTIONS LIST (OPEN STATE) === */
+/* CEMENT: Absolute positioning prevents layout shift, z-index above content */
+.options-list {
+  list-style: none;
+  background-color: var(--background-dark);
+  border: 2px solid var(--primary-blue);
+  border-top: none;
+  border-bottom-left-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+  padding: 4px;
+  position: absolute;
+  width: 100%;
+  z-index: 100;
+}
+
+/* CEMENT: Standard 50px option height matches control height token */
+.options-list li {
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: var(--border-radius);
+  text-align: center;
+  border: 2px solid var(--on-surface-disabled);
+  height: var(--control-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.options-list li:not(:last-child):not(.is-note) {
+  margin-bottom: 4px;
+}
+
+/* === NOTE ITEMS === */
+/* Non-selectable informational items in dropdown */
+.options-list li.is-note {
+  border: none;
+  cursor: default;
+  background-color: transparent;
+  min-height: auto;
+  padding-top: 8px;
+  padding-bottom: 4px;
+  height: auto;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+/* === COLORED BORDERS === */
+/* Session cycling, mode selection visual indicators */
+.options-list li.has-colored-border.border-yellow {
+  border-color: var(--text-yellow-maintenance);
+}
+
+.options-list li.has-colored-border.border-blue {
+  border-color: var(--primary-blue);
+}
+
+.options-list li.has-colored-border.border-red {
+  border-color: var(--text-red-skip);
+}
+
+/* === ERROR STATE === */
+summary.is-flashing-error {
+  animation: button-red-pulse 0.56s linear 3;
+}

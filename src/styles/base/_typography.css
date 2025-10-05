@@ -1,3 +1,33 @@
+/* ==========================================================================
+   TYPOGRAPHY - Base font system and heading styles
+
+   CEMENT: Roboto font family with standardized heading hierarchy
+   - Body: Roboto sans-serif
+   - H1: 2.5rem (40px) - App title only, tight line-height
+   - H2: 1.25rem (20px) - All component headers, tight line-height
+   - Text shadow: 0 2px 4px rgba(0,0,0,0.8) for depth on dark backgrounds
+
+   Architecture:
+   - Body default: Roboto font family
+   - H1: Large display text with collapsed line-box (line-height: 1)
+   - H2: Standard header size with zero margin for precise control
+
+   CEMENT: line-height: 1 collapses line-box to eliminate extra vertical space
+   - Enables pixel-perfect alignment with rhythm system
+   - Prevents unwanted gaps in vertical layouts
+
+   Typography tokens (from _variables.css):
+   - --font-size-h1: 2.5rem (App title)
+   - --font-size-h2: 1.25rem (Headers, selectors, prompts)
+   - --font-size-body-m: 1rem (Standard body text)
+
+   Dependencies:
+   Global: _variables.css (font-size tokens, color tokens)
+   External: Google Fonts "Roboto" (loaded in HTML)
+
+   Used by: All text content across the application
+   ========================================================================== */
+
 body {
   font-family: "Roboto", sans-serif;
 }
@@ -5,7 +35,7 @@ body {
 h1 {
   font-size: var(--font-size-h1);
   font-weight: 700;
-  line-height: 1; /* Collapse the line-box to remove extra vertical space */
+  line-height: 1; /* CEMENT: Collapse line-box for precise vertical rhythm */
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
@@ -13,7 +43,7 @@ h2 {
   color: var(--on-surface-light);
   font-size: var(--font-size-h2);
   font-weight: 600;
-  margin: 0; /* CEMENTED: Explicitly neutralize default margin for robust layout control. */
+  margin: 0; /* CEMENT: Zero margin for precise rhythm control */
   text-align: left;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }

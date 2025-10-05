@@ -72,12 +72,12 @@
 }
 
 /* === ACTION BUTTONS === */
-/* 🔒 CEMENT: Button group with standard spacing */
+/* 🔒 CEMENT: Button group with -1px top adjustment for precise spacing alignment */
 #active-card-container .action-button-group {
   display: flex;
   flex-direction: column;
   gap: var(--space-m);
-  margin: 0;
+  margin: -1px 0 0 0;
   padding: 0;
 }
 

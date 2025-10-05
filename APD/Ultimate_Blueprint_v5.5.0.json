@@ -1,0 +1,306 @@
+{
+  "project": "Will's 3-2-1 Workout Tracking Application",
+  "version": "5.5.0",
+  "philosophy": "SUPER STUPID SIMPLE (SSS), REMOVE DON'T ADD",
+  "tech_stack": "Vanilla JavaScript, ES Modules, CSS Tokens",
+
+  "critical_dependencies": {
+    "global_css_reset": "src/styles/base/_reset.css - Scrollbar stabilization (prevents layout shift)",
+    "import_map": "index.html - ES module bare specifier mapping",
+    "app_state": "src/state.js - Centralized state with color class separation",
+    "render_system": "src/main.js - renderAll() with render function separation (prevents animation restarts)"
+  },
+
+  "file_structure": {
+    "root": {
+      "index.html": "Entry point with import map (lean comments)",
+      "APD/": {
+        "CLAUDE.md": "System instructions for Claude Code",
+        "CLAUDE_STANDARDS.md": "5 development standards",
+        "CLAUDE_SESSION_HANDOFF.md": "v5.5.0 - Core documentation complete",
+        "CLAUDE_PROJECT_NOTES.md": "v5.5.0 changelog + technical discoveries"
+      }
+    },
+
+    "src/": {
+      "main.js": "Bootstrap with 🔒 render function separation (mode vs session cycling)",
+      "state.js": "Centralized appState with 🔒 color class separation (session/timer/exercise)",
+      "config.js": "Application constants (8 configuration sections)",
+
+      "features/": {
+        "dual-mode/": {
+          "dual-mode.style.css": "Entry point (imports 11 component files)",
+          "dual-mode.layout.css": "🔒 CSS table with transparent borders",
+          "dual-mode.spacing.css": "16-18px rhythm",
+          "dual-mode.colors.css": "Static color schemes (Superset/Partner)",
+          "dual-mode.header.css": "Card header with muscle group icons",
+          "dual-mode.selector.css": "Exercise selector dual-mode styling",
+          "dual-mode.fuel-gauge.css": "Side-by-side fuel gauge",
+          "dual-mode.timers.css": "Side-by-side timer (4.5rem)",
+          "dual-mode.active-card.css": "General dual-mode overrides",
+          "dual-mode.partner-modal.css": "Partner green/blue",
+          "dual-mode.superset-modal.css": "Superset green/yellow"
+        },
+
+        "active-exercise-card/": {
+          "active-exercise-card.index.js": "Entry point with re-exports",
+          "active-exercise-card.template.js": "Template selector",
+          "active-exercise-card.templates.workoutCard.js": "Workout card HTML",
+          "active-exercise-card.templates.completionCard.js": "Completion with animation",
+          "active-exercise-card.templates.exerciseSelector.js": "Dropdown HTML",
+          "active-exercise-card.templates.actionArea.js": "🔒 Static colors (cancel/reset)",
+          "active-exercise-card.templates.fuelGauge.js": "Fuel gauge HTML",
+          "active-exercise-card.numberInputHandler.js": "Press-and-hold logic",
+          "active-exercise-card.actions.js": "Re-exports + handlers",
+          "active-exercise-card.actions.log.js": "handleLogSet",
+          "active-exercise-card.actions.skip.js": "handleSkipSet/handleSkipRest",
+          "active-exercise-card.style.css": "Entry point (imports all CSS)",
+          "active-exercise-card.header.css": "Flexbox truncation",
+          "active-exercise-card.fuel-gauge.css": "'Recovering' overlay",
+          "active-exercise-card.inputs.css": "Weight/reps grid",
+          "active-exercise-card.actions.css": "Button layouts",
+          "active-exercise-card.action-area.css": "🔒 Cascade specificity (#id .class, no !important)",
+          "active-exercise-card.selector.css": "Entry point (re-imports split files)",
+          "active-exercise-card.selector.summary.css": "🔒 4-line, 100px height",
+          "active-exercise-card.selector.dropdown.css": "50px items",
+          "active-exercise-card.selector.muting.css": "Bidirectional muting",
+          "active-exercise-card.youtube-overlay.css": "YouTube button",
+          "active-exercise-card.waiting-card.css": "'Finishing up...'"
+        },
+
+        "config-card/": {
+          "config-card.index.js": "Configuration logic",
+          "config-card.style.css": "Entry point",
+          "config-card.selectors.css": "Two-line patterns",
+          "config-card.header.index.js": "Collapsible header with 🔒 lock",
+          "config-card.header.template.js": "Template selector",
+          "config-card.header.template.collapsed.js": "Icon bar",
+          "config-card.header.template.expanded.js": "Full config",
+          "config-card.header.style.css": "Icon bar and buttons",
+          "config-card.header.expanded.css": "Expanded state",
+          "config-card.header.muting.css": "🔒 Bidirectional (Config ↔ Log)",
+          "config-card.template.daySelector.js": "Day selector",
+          "config-card.template.planSelector.js": "Plan selector",
+          "config-card.template.time.js": "🔒 Shared session selector",
+          "config-card.template.currentSetup.js": "Current setup display"
+        },
+
+        "workout-log/": {
+          "workout-log.index.js": "Log logic with 🔒 animation timeout (2100ms)",
+          "workout-log.template.js": "Item templates",
+          "workout-log.templates.item.js": "Log item HTML",
+          "workout-log.style.css": "Entry point (imports components)",
+          "workout-log.header.css": "🔒 line-height: 1, margin: 4px (7px visual)",
+          "workout-log.items.css": "50px cards with absolute positioning",
+          "workout-log.edit-panel.css": "Edit controls",
+          "workout-log.states.css": "Completed/skipped/updating",
+          "workout-log.animations.css": "🔒 Unified 1.8s timeline (0-55% hold, 55-77.5% green, no delays)"
+        },
+
+        "fuel-gauge/": {
+          "fuel-gauge.style.css": "Entry point",
+          "fuel-gauge.layout.css": "Base structure",
+          "fuel-gauge.colors.css": "Dynamic/static states",
+          "fuel-gauge.animations.css": "60s fill, 1.2s stamp, 4s fade"
+        },
+
+        "superset-modal/": {
+          "superset-modal.index.js": "Logic with 🔒 config lock",
+          "superset-modal.style.css": "Dual-day modal",
+          "superset-modal.template.js": "Modal HTML"
+        },
+
+        "partner-modal/": {
+          "partner-modal.index.js": "Logic with 🔒 config lock",
+          "partner-modal.style.css": "User profile modal",
+          "partner-modal.template.js": "Modal HTML"
+        },
+
+        "reset-confirmation-modal/": {
+          "reset-confirmation-modal.index.js": "Reset logic",
+          "reset-confirmation-modal.template.js": "Confirmation HTML",
+          "reset-confirmation-modal.style.css": "Modal styling"
+        },
+
+        "video-player/": {
+          "video-player.index.js": "YouTube player logic",
+          "video-player.style.css": "Modal video styling"
+        },
+
+        "side-nav/": {
+          "side-nav.index.js": "Navigation logic",
+          "side-nav.style.css": "Slide-out styling"
+        },
+
+        "app-header/": {
+          "app-header.style.css": "Navigation and branding"
+        },
+
+        "home-page/": {
+          "home-page.style.css": "Landing layout"
+        },
+
+        "my-data/": {
+          "my-data.index.js": "Data visualization",
+          "my-data.templates.calendarView.js": "Calendar templates",
+          "my-data.style.css": "Visualization and calendar",
+          "my-data.header.css": "Page header",
+          "my-data.calendar.css": "Calendar grid"
+        },
+
+        "workout-results-card/": {
+          "workout-results-card.index.js": "Results logic",
+          "workout-results-card.style.css": "Results styling",
+          "workout-results-card.animations.css": "Reveal animations"
+        }
+      },
+
+      "services/": {
+        "core/": {
+          "appInitializerService.js": "Startup and initialization",
+          "navigationService.js": "Page routing",
+          "persistenceService.js": "Local storage persistence"
+        },
+
+        "actions/": {
+          "actionService.js": "🔒 Event delegation (summary BEFORE data-action), 🔒 nullish coalescing (?? for logIndex 0)",
+          "actionHandlers.js": "All data-action callbacks with 🔒 config header locking"
+        },
+
+        "timer/": {
+          "timerService.js": "Core timer state (85 lines)",
+          "timerCompletionService.js": "Rest completion (106 lines)",
+          "timerResumptionService.js": "Visibility-based resumption (102 lines)"
+        },
+
+        "workout/": {
+          "workoutService.js": "Re-export index (34 lines)",
+          "workoutStateService.js": "Active card state (117 lines)",
+          "workoutLogGenerationService.js": "Log creation (187 lines)",
+          "workoutLogPreservationService.js": "Log preservation (116 lines)",
+          "workoutProgressionService.js": "Advancement logic (178 lines)",
+          "workoutMetricsService.js": "Duration calculations (67 lines)"
+        },
+
+        "ui/": {
+          "modalService.js": "Modal management",
+          "scrollService.js": "Scroll utilities",
+          "selectorService.js": "Selector state and muting"
+        },
+
+        "data/": {
+          "historyService.js": "Workout history"
+        }
+      },
+
+      "styles/": {
+        "index.css": "CSS manifest (verified CLAUDE header)",
+        "base/": {
+          "_variables.css": "🔒 Global tokens (16px/7px rhythm, --header-margin-bottom: 4px)",
+          "_reset.css": "🔒 Scrollbar stabilization (prevents layout shift)",
+          "_typography.css": "🔒 line-height: 1 (prevents descender cutoff)",
+          "_scaffolding.css": "🔒 Card padding separation (shell vs content)"
+        },
+        "components/": {
+          "_buttons.css": "Button variants (green/blue/red/yellow)",
+          "_inputs.css": "Form input styling",
+          "_selectors.css": "Re-export index (backward compatibility)",
+          "_selectors-base.css": "Core structure (102 lines)",
+          "_selectors-truncation.css": "🔒 Color-matched ellipsis (130 lines)",
+          "_selectors-muting.css": "🔒 Bidirectional muting + exercise exception (32 lines)",
+          "_modals.css": "Modal overlay (fade transitions)",
+          "_card-headers.css": "🔒 line-height: 1, margin-bottom: 4px",
+          "_card-foundations.css": "🔒 11px top + border = 16px visual",
+          "_action-button-groups.css": "🔒 No !important (removed 3 flags)"
+        },
+        "utils/": {
+          "_helpers.css": "🔒 .stack (gap-based), truncation, color classes",
+          "_animations.css": "Re-export index (backward compatibility)",
+          "_animations-general.css": "Glow/pulse/fill (43 lines)",
+          "_animations-fuel-gauge.css": "🔒 6 plate animations (110 lines, logical cohesion)",
+          "_animations-modal.css": "Selection feedback green/yellow (58 lines)"
+        },
+        "themes/": {
+          "_default.css": "Default theme",
+          "_dark.css": "Dark theme overrides"
+        }
+      },
+
+      "shared/": {
+        "ui.js": "Re-export from utils/uiComponents.js",
+        "utils.js": "Re-export index",
+        "utils/": {
+          "timeUtils.js": "Time/date formatting (87 lines)",
+          "calendarUtils.js": "Calendar calculations (91 lines)",
+          "domUtils.js": "DOM manipulation (53 lines)",
+          "generalUtils.js": "Misc helpers (90 lines)",
+          "uiComponents.js": "UI builders + ui refs (79 lines)",
+          "sessionValidation.js": "🔒 Session cycling validation (139 lines)"
+        }
+      },
+
+      "lib/": {
+        "wakeLock.js": "🔒 Visibility check (prevents background error)",
+        "fullscreen.js": "Fullscreen API wrapper"
+      }
+    }
+  },
+
+  "critical_notes": {
+    "nullish_coalescing": "🔒 Use ?? not || when 0 is valid (actionService.js:61 - logIndex 0 bug fix)",
+    "animation_unification": "🔒 Unified timeline more reliable than delays (workout-log.animations.css)",
+    "logical_cohesion": "🔒 Related code stays together even if > 100 lines (fuel-gauge 6 animations)",
+    "event_delegation_order": "🔒 Summary clicks BEFORE data-action (prevents scroll jump)",
+    "css_spacing_system": "🔒 16px/7px rhythm: line-height: 1 + margin-bottom: 4px (+ 3px descender)",
+    "cascade_specificity": "🔒 Use #id .class in features, not !important in globals",
+    "backward_compatibility": "Re-export indexes maintain existing imports during file splitting",
+    "service_architecture": "Timer: 3 files, Workout: 6 files (100-200 line guideline)",
+    "config_header_locking": "🔒 Lock prevents collapse during selector operations",
+    "wake_lock_visibility": "🔒 Check visibilityState before request",
+    "dual_mode_layout": "🔒 CSS table with transparent borders",
+    "selector_muting": "🔒 Bidirectional with exercise exception (border-only preserves visibility)",
+    "documentation_complete": "🔒 Core files + /styles directory at 100% CLAUDE standards"
+  },
+
+  "architecture_patterns": {
+    "component_pattern": "Each feature: .index.js (logic), .template.js (HTML), .style.css (styles)",
+    "state_flow": "User action → Service method → appState mutation → renderAll() → persistenceService.saveState()",
+    "file_splitting": "🔒 Logical cohesion trumps line limits (split when concerns are separable)",
+    "css_imports": "Entry point imports all components (prevents duplicates)",
+    "re_export_indexes": "Old monolithic files become re-exports for gradual migration",
+    "animation_sequencing": "🔒 Unified timeline with keyframe percentages (no animation-delay)",
+    "documentation_pattern": "CSS: verbose headers, JS: concise headers, inline: lean CEMENT comments"
+  },
+
+  "v5_5_0_changes": {
+    "core_files_documented": [
+      "config.js - Added comprehensive header with 8 config sections",
+      "main.js - Added header, removed historic 'CEMENTED' verbosity",
+      "state.js - Added header with color class separation notes",
+      "index.html - Minimized to lean format",
+      "index.css - Verified existing header"
+    ],
+    "styles_split": [
+      "_selectors.css → 3 files (base 102, truncation 130, muting 32)",
+      "_animations.css → 3 files (general 43, fuel-gauge 110, modal 58)"
+    ],
+    "styles_enhanced": [
+      "_helpers.css - Complete header rewrite",
+      "_buttons.css - Enhanced with color variants",
+      "_action-button-groups.css - Removed 3 !important flags",
+      "_modals.css - Enhanced with fade transitions",
+      "_reset.css - Scrollbar stabilization documented",
+      "_scaffolding.css - Card architecture explained",
+      "_typography.css - Font system with rhythm notes"
+    ],
+    "bug_fixes": [
+      "Clear Set/Update buttons - Nullish coalescing ?? for logIndex 0",
+      "Update button import - Added recalculateCurrentStateAfterLogChange from workoutProgressionService",
+      "Green flash timing - Unified 1.8s timeline (0-55% hold, 55-77.5% green)"
+    ],
+    "cascade_fixes": [
+      "Removed !important from _action-button-groups.css (3 flags)",
+      "Added higher specificity in active-exercise-card.action-area.css (#id .class)"
+    ]
+  }
+}
