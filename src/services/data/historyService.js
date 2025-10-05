@@ -1,6 +1,21 @@
+/* ==========================================================================
+   HISTORY SERVICE - Workout History Management
+
+   Manages workout history data: creating sessions, adding/updating/removing
+   log entries. Builds session header metadata from current workout state.
+
+   🔒 CEMENT: Partner mode log filtering
+   - Partner mode: Only logs left side (user1) to avoid duplication
+   - Right side (user2) skipped since it's mirrored from left
+   - Session header dynamically updates with plan, session type, and body part
+
+   Dependencies: appState, formatTimestamp, persistenceService, programConfig
+   Used by: Active card actions (log/skip), workout log (clear sets)
+   ========================================================================== */
+
 import { appState } from "state";
 import { formatTimestamp } from "utils";
-import * as persistenceService from "services/persistenceService.js";
+import * as persistenceService from "services/core/persistenceService.js";
 import { programConfig } from "config";
 
 function getSessionHeaderInfo() {

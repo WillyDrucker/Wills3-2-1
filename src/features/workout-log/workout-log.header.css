@@ -15,14 +15,14 @@
 #workout-log-card .card-header {
   font-size: var(--font-size-h2);
   font-weight: 600;
-  line-height: 0.7; /* Collapsed for precise spacing */
+  line-height: 1; /* Matches config header - prevents descender cutoff */
   color: var(--on-surface-light);
   margin: 0;
   padding: 0;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
 }
 
-/* CEMENT: 7px visual gap to content */
+/* CEMENT: 7px visual gap to content (4px + 3px descender) */
 #workout-log-card .card-header + #workout-content {
-  margin-top: var(--space-s);
+  margin-top: var(--header-margin-bottom);
 }

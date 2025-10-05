@@ -1,6 +1,6 @@
 import { appState } from "state";
 import { timeOptions } from "config";
-import * as workoutFactoryService from "services/workoutFactoryService.js";
+import * as workoutLogGenerationService from "services/workout/workoutLogGenerationService.js";
 
 function _getLedgerSide(session, day1Source, day2Source) {
   const sessionType = timeOptions.find(
@@ -8,12 +8,12 @@ function _getLedgerSide(session, day1Source, day2Source) {
   )?.type;
   if (!sessionType) return "left";
 
-  const tempLog1 = workoutFactoryService.generateWorkoutLog(
+  const tempLog1 = workoutLogGenerationService.generateWorkoutLog(
     true,
     sessionType,
     day1Source
   );
-  const tempLog2 = workoutFactoryService.generateWorkoutLog(
+  const tempLog2 = workoutLogGenerationService.generateWorkoutLog(
     true,
     sessionType,
     day2Source

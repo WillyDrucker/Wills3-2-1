@@ -1,3 +1,19 @@
+/* ==========================================================================
+   PERSISTENCE SERVICE - LocalStorage State Management
+
+   Saves and loads application state to/from localStorage. Implements midnight
+   reset logic and timer cleanup for safe state restoration.
+
+   🔒 CEMENT: Midnight reset logic
+   - Compares save timestamp with current date (using Date objects)
+   - If saved on a different day, flags for reset via needsReset signal
+   - Preserves user history and page state across resets
+   - Cleans timer IDs before saving (non-serializable)
+
+   Dependencies: appState, getInitialAppState
+   Used by: All state-changing operations, appInitializerService (load on startup)
+   ========================================================================== */
+
 import { appState, getInitialAppState } from "state";
 
 const APP_STATE_KEY = "wills-321-app-state";

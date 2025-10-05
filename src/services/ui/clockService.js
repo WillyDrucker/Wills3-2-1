@@ -1,12 +1,24 @@
-// This file is new
+/* ==========================================================================
+   CLOCK SERVICE - Time Display Updates
+
+   Manages application clock with 60-second update intervals. Updates time
+   display in config header and active card header.
+
+   🔒 CEMENT: 60-second interval optimization
+   - Updates every 60 seconds to save battery
+   - Only re-renders if time string has changed
+   - Prevents unnecessary UI re-renders during workout
+
+   Dependencies: appState, formatTime12Hour utility
+   Used by: core/appInitializerService (initialization)
+   ========================================================================== */
+
 import { appState } from "state";
 import { formatTime12Hour } from "utils";
 
 let _renderActiveCardHeader = null;
 let _renderConfigHeaderLine = null;
 
-// 🔒 CEMENT: Updates clock display on 60-second intervals
-// Reduces battery usage and prevents UI re-render issues
 function updateTime() {
   const now = new Date();
   const newTime = formatTime12Hour(now);

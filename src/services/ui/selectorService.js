@@ -1,4 +1,20 @@
-import * as scrollService from "services/scrollService.js";
+/* ==========================================================================
+   SELECTOR SERVICE - Dropdown State Management
+
+   Manages custom dropdown selector state, scrolling, and group-based opening
+   rules. Enforces one-selector-at-a-time policy with group awareness.
+
+   🔒 CEMENT: Selector group isolation
+   - Config Group: Config dropdown + internal selectors + modal selectors
+   - Exercise Group: Current Exercise selector
+   - Log Group: Edit log selectors (weight/reps/notes)
+   - Different groups block each other, same group allows toggling
+
+   Dependencies: scrollService, appState
+   Used by: actionService, workout log, config card, modals
+   ========================================================================== */
+
+import * as scrollService from "services/ui/scrollService.js";
 import { appState } from "state";
 
 export function closeAll() {

@@ -1,10 +1,12 @@
 import { appState } from "state";
 import { ui } from "ui";
-import * as workoutService from "services/workoutService.js";
-import * as workoutFactoryService from "services/workoutFactoryService.js";
-import * as scrollService from "services/scrollService.js";
-import * as persistenceService from "services/persistenceService.js";
-import * as appInitializerService from "services/appInitializerService.js";
+import * as workoutProgressionService from "services/workout/workoutProgressionService.js";
+import * as workoutLogGenerationService from "services/workout/workoutLogGenerationService.js";
+import * as workoutLogPreservationService from "services/workout/workoutLogPreservationService.js";
+import { updateWorkoutTimeRemaining } from "services/workout/workoutService.js";
+import * as scrollService from "services/ui/scrollService.js";
+import * as persistenceService from "services/core/persistenceService.js";
+import * as appInitializerService from "services/core/appInitializerService.js";
 
 // --- Import Feature Renderers ---
 import { renderAppHeader } from "features/app-header/app-header.index.js";
@@ -29,14 +31,14 @@ import { renderWorkoutResultsCard } from "features/workout-results-card/workout-
 function updateActiveWorkoutAndLog() {
   if (appState.partner.isActive) {
     appState.session.workoutLog =
-      workoutFactoryService.generatePartnerWorkoutLog();
+      workoutLogGenerationService.generatePartnerWorkoutLog();
   } else if (appState.superset.isActive) {
     appState.session.workoutLog =
-      workoutFactoryService.generateSupersetWorkoutLog();
+      workoutLogGenerationService.generateSupersetWorkoutLog();
   } else {
-    appState.session.workoutLog = workoutFactoryService.generateWorkoutLog();
+    appState.session.workoutLog = workoutLogGenerationService.generateWorkoutLog();
   }
-  workoutService.recalculateCurrentStateAfterLogChange();
+  workoutProgressionService.recalculateCurrentStateAfterLogChange();
   renderAll();
   persistenceService.saveState();
 }
@@ -49,23 +51,23 @@ function updateActiveWorkoutPreservingLogs() {
   if (appState.partner.isActive) {
     // Partner mode: preserve logged sets when changing session
     appState.session.workoutLog =
-      workoutFactoryService.updatePartnerWorkoutLogForSessionChange(
+      workoutLogPreservationService.updatePartnerWorkoutLogForSessionChange(
         appState.session.workoutLog
       );
   } else if (appState.superset.isActive) {
     // Superset mode: preserve logged sets when changing session
     appState.session.workoutLog =
-      workoutFactoryService.updateSupersetWorkoutLogForSessionChange(
+      workoutLogPreservationService.updateSupersetWorkoutLogForSessionChange(
         appState.session.workoutLog
       );
   } else {
     // Normal mode: preserve logged sets
-    appState.session.workoutLog = workoutFactoryService.updateWorkoutLogForSessionChange(
+    appState.session.workoutLog = workoutLogPreservationService.updateWorkoutLogForSessionChange(
       appState.session.workoutLog
     );
   }
-  workoutService.recalculateCurrentStateAfterLogChange();
-  workoutService.updateWorkoutTimeRemaining(); // Update time based on new set count
+  workoutProgressionService.recalculateCurrentStateAfterLogChange();
+  updateWorkoutTimeRemaining(); // Update time based on new set count
 
   const newLogLength = appState.session.workoutLog?.length || 0;
 
@@ -104,7 +106,7 @@ function renderAll() {
   } else if (appState.ui.currentPage === "myData") {
     renderMyDataPage();
   } else {
-    workoutService.updateWorkoutTimeRemaining();
+    updateWorkoutTimeRemaining();
     if (appState.session.isWorkoutComplete) {
       renderWorkoutResultsCard();
     } else {

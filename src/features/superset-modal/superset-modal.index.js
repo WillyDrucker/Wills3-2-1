@@ -17,10 +17,10 @@
 import { appState } from "state";
 import { ui } from "ui";
 import { getSupersetModalTemplate } from "./superset-modal.template.js";
-import * as workoutService from "services/workoutService.js";
-import * as workoutFactoryService from "services/workoutFactoryService.js";
-import * as workoutMetricsService from "services/workoutMetricsService.js";
-import * as modalService from "services/modalService.js";
+import { recalculateCurrentStateAfterLogChange } from "services/workout/workoutProgressionService.js";
+import { generateSupersetWorkoutLog } from "services/workout/workoutLogGenerationService.js";
+import * as workoutMetricsService from "services/workout/workoutMetricsService.js";
+import * as modalService from "services/ui/modalService.js";
 import { getNextWorkoutDay } from "utils";
 
 export function handleSupersetSelection(selector, day) {
@@ -57,7 +57,7 @@ export function handleConfirmSuperset() {
   appState.superset.day2 = day2;
 
   appState.session.workoutLog =
-    workoutFactoryService.generateSupersetWorkoutLog();
+    generateSupersetWorkoutLog();
 
   /* 🔒 CEMENT: Bonus minutes calculation for time savings in superset mode */
   const metrics = workoutMetricsService.calculateSupersetWorkoutMetrics(
@@ -75,7 +75,7 @@ export function handleConfirmSuperset() {
     -metrics.bonusMinutes
   );
 
-  workoutService.recalculateCurrentStateAfterLogChange();
+  recalculateCurrentStateAfterLogChange();
 
   /* 🔒 CEMENT: Config header state restoration preserves dropdown UX */
   const shouldRestoreExpandedState = appState.ui.wasConfigHeaderExpandedBeforeModal;

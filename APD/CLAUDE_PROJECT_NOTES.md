@@ -6,6 +6,77 @@
 
 ## VERSION CHANGELOG
 
+### **v6.28 - Services Refactor, Utilities Reorganization & UI Polish**
+**Date**: 2025-10-05
+**Problem**: Large service files (timer, workout) lacked modularity, shared utilities mixed concerns (260 lines), UI had typography/spacing issues, event delegation bugs causing scroll jumps
+**Solution**: Split services into focused modules (100-200 lines), reorganized utilities with backward compatibility, fixed critical UI bugs, applied CLAUDE documentation standards
+**Key Achievements**:
+- **Services split**: timerService (3 files), workoutService (6 files) for better maintainability
+- **Utilities reorganization**: utils.js (260 lines) → 6 focused modules (timeUtils, calendarUtils, domUtils, generalUtils, uiComponents, sessionValidation)
+- **Backward compatibility**: Re-export indexes maintain all existing import paths
+- **UI polish**: Fixed typography (descender cutoff), spacing (16px/7px rhythm), event delegation (scroll jump), wake lock (visibility check)
+- **Bug fixes**: 6 critical issues resolved (import errors, event bubbling, typography, spacing, wake lock, function calls)
+- **Documentation**: CLAUDE headers applied to all modified files, wakeLock.js fully documented
+**Root Causes Identified**:
+- **Monolithic services**: Large files (timerService, workoutService) mixed multiple concerns
+- **Utils organization**: 260-line utils.js contained unrelated utilities (time, calendar, DOM, general, UI, validation)
+- **Event delegation order**: Summary clicks checked after data-action attributes, causing scroll jumps
+- **Typography issues**: line-height 0.7 cut off descenders, incorrect padding calculations
+- **Wake lock error**: No visibility check before initial request, causing background load errors
+**Technical Architecture**:
+- **Timer services**: Core state (timerService.js) + completion handlers (timerCompletionService.js) + resumption logic (timerResumptionService.js)
+- **Workout services**: Re-export index + state management + log generation + preservation + progression + metrics
+- **Shared utilities**: Re-export indexes (utils.js, ui.js) + focused modules in shared/utils/ directory
+- **Backward compatibility pattern**: Old monolithic files become re-export indexes for gradual migration
+**Files Split**:
+- `timerService.js` → 3 files: timerService (85 lines), timerCompletionService (106 lines), timerResumptionService (102 lines)
+- `workoutService.js` → 6 files: workoutService (34 lines re-exports), workoutStateService (117 lines), workoutLogGenerationService (187 lines), workoutLogPreservationService (116 lines), workoutProgressionService (178 lines), workoutMetricsService (67 lines)
+- `utils.js` → 6 modules: timeUtils (87 lines), calendarUtils (91 lines), domUtils (53 lines), generalUtils (90 lines), uiComponents (79 lines), sessionValidation (139 lines)
+- `sessionValidation.js` moved from src/utils/ to shared/utils/ for better organization
+**Import Path Updates**:
+- Updated 11 files for timer/workout service imports
+- Updated 5 files for sessionValidation imports (now use "utils" instead of "utils/sessionValidation.js")
+- Converted all `require()` calls to ES module imports (removed circular dependency workarounds)
+**Bug Fixes**:
+1. **Edit log selector scroll jump**: Reordered event delegation to check summary clicks BEFORE data-action attributes (actionService.js:42-51)
+2. **Typography descender cutoff**: Changed line-height from 0.7 to 1 in workout-log.header.css
+3. **Spacing corrections**: Adjusted padding from 14px→12px for exact 16px visual rhythm (workout-log.style.css)
+4. **Wake lock error**: Added visibility check before initial request (wakeLock.js:35-37)
+5. **Import errors**: Fixed handleNormalRestCompletion, resumeTimersFromState imports after service split
+6. **Function call errors**: Fixed workoutService namespace calls (active-exercise-card.actions.log.js:110-111)
+**Key CEMENT Areas Protected**:
+- Event delegation order (summary before data-action) prevents scroll jumps - CRITICAL
+- CSS spacing system (16px/7px visual rhythm) with line-height: 1 prevents descender cutoff
+- Wake lock visibility check prevents NotAllowedError on background load
+- Backward compatibility re-exports maintain all existing import paths
+**Documentation Pattern Applied**:
+```javascript
+/* ==========================================================================
+   WAKE LOCK - Screen Wake Lock Management
+
+   Prevents screen from sleeping during workout sessions using the Screen Wake
+   Lock API. Automatically handles visibility changes and page hide events.
+
+   🔒 CEMENT: Visibility check prevents initialization errors
+   - Only requests wake lock when page is visible
+   - Prevents NotAllowedError on background page load
+   - Automatically re-requests when page becomes visible
+
+   Dependencies: None (browser Wake Lock API)
+   Used by: appInitializerService.js (initialization)
+   ========================================================================== */
+```
+**Technical Discoveries**:
+- Event delegation order is critical: summary clicks MUST be checked before data-action to prevent bubbling
+- Line-height: 1 essential for preventing descender cutoff while maintaining spacing precision
+- Backward compatibility via re-exports allows seamless migration without breaking changes
+- ES module imports only (no require() calls) prevents circular dependency issues
+- Visibility checks essential for Wake Lock API to prevent background initialization errors
+**Cleanup**:
+- Removed empty src/utils/ folder (sessionValidation.js moved to shared/utils/)
+- All old monolithic files converted to re-export indexes
+**Status**: COMPLETE - Services modularized, utilities reorganized, UI polished, all bugs fixed, documentation complete
+
 ### **v6.27 - Dual-Mode & Active-Exercise Documentation Standards**
 **Date**: 2025-10-04
 **Problem**: Dual-mode and active-exercise-card files lacked comprehensive documentation headers, dependency tracking, and CEMENT protection

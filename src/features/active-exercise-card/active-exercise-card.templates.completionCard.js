@@ -1,5 +1,5 @@
 import { appState } from "state";
-import * as workoutMetricsService from "services/workoutMetricsService.js";
+import * as workoutMetricsService from "services/workout/workoutMetricsService.js";
 
 /* ==========================================================================
    ACTIVE EXERCISE CARD - Completion Card Template

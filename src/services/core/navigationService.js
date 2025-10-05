@@ -1,8 +1,23 @@
+/* ==========================================================================
+   NAVIGATION SERVICE - Page Transitions & Mode Management
+
+   Handles page navigation with cleanup of open UI elements. Manages normal/
+   superset/partner mode switching with state reset.
+
+   🔒 CEMENT: Clean navigation transitions
+   - Closes all modals, selectors, side nav, and video player before navigation
+   - Resets scroll position to top on page change
+   - Clears superset/partner state when returning to normal mode
+
+   Dependencies: appState, side nav, video player, selectorService, modalService
+   Used by: actionService (page navigation, mode switching), config card
+   ========================================================================== */
+
 import { appState } from "state";
 import { handleCloseSideNav } from "features/side-nav/side-nav.index.js";
 import { handleCloseVideo } from "features/video-player/video-player.index.js";
-import * as selectorService from "services/selectorService.js";
-import * as modalService from "services/modalService.js";
+import * as selectorService from "services/ui/selectorService.js";
+import * as modalService from "services/ui/modalService.js";
 
 function _closeAllModalsAndSelectors() {
   handleCloseSideNav();

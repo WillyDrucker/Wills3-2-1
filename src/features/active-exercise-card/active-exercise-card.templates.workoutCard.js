@@ -4,7 +4,7 @@ import { createNumberInputHTML } from "ui";
 import { getAnchorAreaHTML } from "./active-exercise-card.templates.fuelGauge.js";
 import { getActionAreaHTML } from "./active-exercise-card.templates.actionArea.js";
 import { getExerciseSelectorHTML } from "./active-exercise-card.templates.exerciseSelector.js";
-import * as workoutMetricsService from "services/workoutMetricsService.js";
+import * as workoutMetricsService from "services/workout/workoutMetricsService.js";
 
 /* ==========================================================================
    ACTIVE EXERCISE CARD - Workout Card Template

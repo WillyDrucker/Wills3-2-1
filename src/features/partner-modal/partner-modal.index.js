@@ -15,9 +15,9 @@
 import { appState } from "state";
 import { ui } from "ui";
 import { getPartnerModalTemplate } from "./partner-modal.template.js";
-import * as workoutService from "services/workoutService.js";
-import * as workoutFactoryService from "services/workoutFactoryService.js";
-import * as modalService from "services/modalService.js";
+import { recalculateCurrentStateAfterLogChange } from "services/workout/workoutProgressionService.js";
+import { generatePartnerWorkoutLog } from "services/workout/workoutLogGenerationService.js";
+import * as modalService from "services/ui/modalService.js";
 
 export function handlePartnerDaySelection(user, day) {
   appState.partner[user] = day;
@@ -38,9 +38,9 @@ export function handleConfirmPartnerWorkout() {
   appState.partner.isActive = true;
 
   appState.session.workoutLog =
-    workoutFactoryService.generatePartnerWorkoutLog();
+    generatePartnerWorkoutLog();
 
-  workoutService.recalculateCurrentStateAfterLogChange();
+  recalculateCurrentStateAfterLogChange();
 
   /* 🔒 CEMENT: Config header state restoration preserves dropdown UX */
   const shouldRestoreExpandedState = appState.ui.wasConfigHeaderExpandedBeforeModal;

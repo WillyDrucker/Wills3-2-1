@@ -2,7 +2,7 @@ import { appState } from "state";
 import { ui } from "ui";
 import { timeOptions } from "config";
 import { getConfigCardTemplate } from "./config-card.template.js";
-import * as navigationService from "services/navigationService.js";
+import * as navigationService from "services/core/navigationService.js";
 
 /* ==========================================================================
    CONFIG CARD - State management and change handlers

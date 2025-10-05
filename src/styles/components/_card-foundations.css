@@ -37,11 +37,6 @@
 
 /* === SPECIAL PADDING CASES === */
 
-/* Workout log needs extra 3px for border compensation */
-#workout-log-card > .card-content-container {
-  padding-top: calc(var(--card-padding-top) + 3px);
-}
-
 /* Active card uses tokenized values */
 #active-card-container .card-content-container {
   padding: 11px 14px 14px 14px; /* CEMENT: DO NOT MODIFY */

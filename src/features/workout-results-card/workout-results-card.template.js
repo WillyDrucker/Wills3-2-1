@@ -9,7 +9,7 @@
    ========================================================================== */
 
 import { appState } from "state";
-import * as workoutMetricsService from "services/workoutMetricsService.js";
+import * as workoutMetricsService from "services/workout/workoutMetricsService.js";
 
 export function getWorkoutResultsCardTemplate() {
   const { totalSets } = workoutMetricsService.calculateWorkoutMetrics(

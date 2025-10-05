@@ -9,7 +9,7 @@
    ========================================================================== */
 
 import { appState } from "state";
-import * as workoutMetricsService from "services/workoutMetricsService.js";
+import * as workoutMetricsService from "services/workout/workoutMetricsService.js";
 import { getLogItemHTML } from "./workout-log.templates.item.js";
 
 export function getWorkoutLogTemplate() {

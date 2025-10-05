@@ -3,13 +3,15 @@ import { formatTimestamp } from "utils";
 import {
   startNormalRestTimer,
   startSupersetRestTimer,
+} from "services/timer/timerService.js";
+import {
   handleNormalRestCompletion,
   handleSupersetRestCompletion,
-} from "services/timerService.js";
-import * as workoutService from "services/workoutService.js";
-import { canLogDualModeSide } from "services/workoutService.js";
-import * as historyService from "services/historyService.js";
-import * as selectorService from "services/selectorService.js";
+} from "services/timer/timerCompletionService.js";
+import { canLogDualModeSide, recalculateCurrentStateAfterLogChange } from "services/workout/workoutProgressionService.js";
+import { updateWorkoutCompletionState } from "services/workout/workoutStateService.js";
+import * as historyService from "services/data/historyService.js";
+import * as selectorService from "services/ui/selectorService.js";
 
 /* ==========================================================================
    ACTIVE EXERCISE CARD - Skip Actions
@@ -77,16 +79,16 @@ export function handleSkipSet(side = null) {
       if (hasMoreSetsOnThisSide) {
         startSupersetRestTimer(side, "skip");
       } else {
-        workoutService.recalculateCurrentStateAfterLogChange();
-        workoutService.updateWorkoutCompletionState();
+        recalculateCurrentStateAfterLogChange();
+        updateWorkoutCompletionState();
       }
     } else {
       appState.session.lastLoggedSet.normal = lastLoggedData;
       startNormalRestTimer("skip");
     }
   } else {
-    workoutService.updateWorkoutCompletionState();
-    workoutService.recalculateCurrentStateAfterLogChange();
+    updateWorkoutCompletionState();
+    recalculateCurrentStateAfterLogChange();
   }
 }
 
@@ -94,8 +96,8 @@ export function handleSkipSet(side = null) {
 export function handleSkipRest(side = null) {
   if (appState.superset.isActive || appState.partner.isActive) {
     if (!side) return;
-    handleSupersetRestCompletion(side, { wasSkipped: true });
+    handleSupersetRestCompletion(appState.rest.superset[side], { wasSkipped: true });
   } else {
-    handleNormalRestCompletion({ wasSkipped: true });
+    handleNormalRestCompletion(appState.rest.normal, { wasSkipped: true });
   }
 }

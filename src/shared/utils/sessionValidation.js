@@ -1,8 +1,28 @@
+/* ==========================================================================
+   SESSION VALIDATION UTILITIES - Session Cycling Validation
+
+   Validates whether cycling to a different session type (Recommended/Express/
+   Maintenance) is allowed based on logged exercise sets. Prevents data loss
+   by blocking session changes that would remove logged sets.
+
+   🔒 CEMENT: Session cycling validation logic
+   - Recommended: Always allowed (adds sets, never removes)
+   - Express: Blocks if any removed sets are logged
+   - Maintenance: Blocks if logged sets beyond first 2 per Major1/Minor1
+   - Validates against actual workout log filtering rules
+
+   Dependencies: appState, timeOptions, expressSetRules, maintenanceSetRules
+   Used by: Config header (session cycling buttons), action handlers
+   ========================================================================== */
+
 import { appState } from "state";
 import { timeOptions, expressSetRules, maintenanceSetRules } from "config";
 
-// 🔒 CEMENT: Shared session cycling validation logic
-// Prevents cycling to sessions that would remove logged exercise sets
+/**
+ * CEMENTED
+ * Validates whether cycling to a target session type is allowed without
+ * removing logged exercise sets. Returns true if safe to cycle.
+ */
 export function canCycleToSession(targetSessionName) {
   const targetOption = timeOptions.find((t) => t.name === targetSessionName);
   if (!targetOption) return false;

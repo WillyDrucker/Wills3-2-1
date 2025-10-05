@@ -1,3 +1,19 @@
+/* ==========================================================================
+   SCROLL SERVICE - Smart Viewport Scrolling
+
+   Handles intelligent scrolling when selectors open to prevent menu overflow.
+   Only scrolls if dropdown menu would extend beyond viewport bottom.
+
+   🔒 CEMENT: Viewport overflow prevention
+   - Config card: Scroll only if selector menu overflows viewport
+   - Active card: Scroll only if selector menu overflows viewport
+   - Log items: Scroll edit controls into view if needed
+   - 16px buffer for comfortable spacing
+
+   Dependencies: scrollToElement utility
+   Used by: selectorService, actionService
+   ========================================================================== */
+
 import { scrollToElement } from "utils";
 
 export function handleSelectorOpening(detailsElement) {

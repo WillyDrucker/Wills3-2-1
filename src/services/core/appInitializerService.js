@@ -1,15 +1,39 @@
+/* ==========================================================================
+   APP INITIALIZER SERVICE - Application Bootstrap
+
+   Orchestrates application startup: loads exercises, initializes services,
+   restores state from localStorage, and handles reset logic. Single entry
+   point for all initialization logic.
+
+   🔒 CEMENT: Startup sequence
+   1. Initialize timer, modal, fullscreen, clock, and action services
+   2. Fetch exercise data from API
+   3. Build weekly plan
+   4. Load saved state from localStorage
+   5. Handle midnight reset if needed (via persistenceService flag)
+   6. Resume active timers if state was restored
+   7. Initialize wake lock and event listeners
+   8. Trigger glow animations
+
+   Dependencies: appState, workoutService, persistenceService, exerciseClient,
+                 timerService, actionService, modalService, clockService,
+                 fullscreen, wakeLock
+   Used by: main.js (DOMContentLoaded)
+   ========================================================================== */
+
 import { appState, getInitialAppState } from "state";
 import { getTodayDayName } from "utils";
-import * as workoutService from "services/workoutService.js";
-import * as persistenceService from "services/persistenceService.js";
+import * as workoutService from "services/workout/workoutService.js";
+import * as persistenceService from "services/core/persistenceService.js";
 import { fetchExercises } from "api/exerciseClient.js";
-import * as timerService from "services/timerService.js";
+import * as timerService from "services/timer/timerService.js";
+import { resumeTimersFromState } from "services/timer/timerResumptionService.js";
 import { initializeWakeLock } from "lib/wakeLock.js";
-import * as actionService from "services/actionService.js";
-import * as modalService from "services/modalService.js";
+import * as actionService from "services/actions/actionService.js";
+import * as modalService from "services/ui/modalService.js";
 import * as fullscreen from "lib/fullscreen.js";
 import { renderSideNav } from "features/side-nav/side-nav.index.js";
-import * as clockService from "services/clockService.js";
+import * as clockService from "services/ui/clockService.js";
 import { renderActiveCardHeader } from "features/active-exercise-card/active-exercise-card.index.js";
 import { renderConfigHeaderLine } from "features/config-card/config-card.header.index.js";
 
@@ -111,7 +135,7 @@ export async function initialize(dependencies) {
         appState.session.currentDayName === appState.todayDayName ? "text-plan" : "text-deviation";
     }
 
-    timerService.resumeTimersFromState();
+    resumeTimersFromState();
     renderAll();
   } else {
     appState.session.currentDayName = appState.todayDayName;

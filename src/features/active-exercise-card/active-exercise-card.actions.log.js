@@ -3,10 +3,11 @@ import { formatTimestamp } from "utils";
 import {
   startNormalRestTimer,
   startSupersetRestTimer,
-} from "services/timerService.js";
-import * as workoutService from "services/workoutService.js";
-import * as historyService from "services/historyService.js";
-import * as selectorService from "services/selectorService.js";
+} from "services/timer/timerService.js";
+import { recalculateCurrentStateAfterLogChange } from "services/workout/workoutProgressionService.js";
+import { updateWorkoutCompletionState } from "services/workout/workoutStateService.js";
+import * as historyService from "services/data/historyService.js";
+import * as selectorService from "services/ui/selectorService.js";
 
 /* ==========================================================================
    ACTIVE EXERCISE CARD - Log Set Actions
@@ -94,8 +95,8 @@ export function handleLogSet(side = null) {
       if (hasMoreSetsOnThisSide) {
         startSupersetRestTimer(side, "log");
       } else {
-        workoutService.recalculateCurrentStateAfterLogChange();
-        workoutService.updateWorkoutCompletionState();
+        recalculateCurrentStateAfterLogChange();
+        updateWorkoutCompletionState();
       }
     } else {
       appState.session.lastLoggedSet.normal = {
@@ -106,8 +107,8 @@ export function handleLogSet(side = null) {
       startNormalRestTimer("log");
     }
   } else {
-    workoutService.updateWorkoutCompletionState();
-    workoutService.recalculateCurrentStateAfterLogChange();
+    updateWorkoutCompletionState();
+    recalculateCurrentStateAfterLogChange();
   }
   return true;
 }

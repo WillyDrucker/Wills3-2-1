@@ -17,12 +17,12 @@
 import { appState } from "state";
 import { ui } from "ui";
 import { getWorkoutLogTemplate } from "./workout-log.template.js";
-import * as workoutService from "services/workoutService.js";
-import * as historyService from "services/historyService.js";
+import { resetExerciseForMuscleGroup, recalculateCurrentStateAfterLogChange } from "services/workout/workoutProgressionService.js";
+import * as historyService from "services/data/historyService.js";
 import {
   handleNormalRestCompletion,
   handleSupersetRestCompletion,
-} from "services/timerService.js";
+} from "services/timer/timerCompletionService.js";
 
 export function renderWorkoutLog() {
   ui.workoutFooter.innerHTML = getWorkoutLogTemplate();
@@ -126,12 +126,12 @@ export function handleClearSet(index) {
 
   if (!remainingCompleted) {
     // Pass the superset side to ensure we only reset exercises on this side
-    workoutService.resetExerciseForMuscleGroup(
+    resetExerciseForMuscleGroup(
       muscleGroupToReset,
       dayForReset,
       logToClear.supersetSide
     );
   }
 
-  workoutService.recalculateCurrentStateAfterLogChange({ shouldScroll: true });
+  recalculateCurrentStateAfterLogChange({ shouldScroll: true });
 }

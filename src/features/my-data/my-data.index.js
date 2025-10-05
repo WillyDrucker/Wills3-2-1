@@ -15,7 +15,7 @@
 import { appState } from "state";
 import { ui } from "ui";
 import { getMyDataPageTemplate } from "./my-data.template.js";
-import * as persistenceService from "services/persistenceService.js";
+import * as persistenceService from "services/core/persistenceService.js";
 
 export function handleHistoryTabChange(newTab) {
   if (appState.ui.myDataPage.selectedTab === newTab) return;

@@ -1,7 +1,7 @@
 import { appState } from "state";
 import { workoutPlans, timeOptions } from "config";
 import { createSelectorHTML } from "ui";
-import { canCycleToSession } from "utils/sessionValidation.js";
+import { canCycleToSession } from "utils";
 import { getDaySelectorHTML } from "./config-card.template.day.js";
 
 /* ==========================================================================

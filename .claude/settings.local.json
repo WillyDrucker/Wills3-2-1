@@ -17,7 +17,13 @@
       "Bash(git reset:*)",
       "Bash(git commit -m \"$(cat <<''EOF''\nv6.23: Config dropdown persistence & selector muting improvements\n\n- Fixed config dropdown closing on Superset/Partner confirmation (setTimeout unlock)\n- Implemented bidirectional selector blocking (config ↔ external)\n- Enhanced visual muting consistency (exercise selector + config border)\n- Added dynamic Focus Quick Button icons for dual modes\n- Fixed event bubbling issue with stopPropagation\n- Updated button styling (Cancel/Reset solid colors)\n- Fixed dual-mode clear bug (exercise duplication)\n- Added z-index fix for hamburger menu muting\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
       "Bash(paste:*)",
-      "Bash(sort:*)"
+      "Bash(sort:*)",
+      "Bash(for file in workout/workoutStateService.js workout/workoutLogGenerationService.js workout/workoutLogPreservationService.js timer/timerService.js timer/timerCompletionService.js timer/timerResumptionService.js)",
+      "Bash(do echo \"=== $file ===\")",
+      "Bash(head:*)",
+      "Bash(done)",
+      "Bash(for:*)",
+      "Bash(do sed -i 's|from \"\"utils/sessionValidation\\.js\"\"|from \"\"utils\"\"|g' \"$file\")"
     ],
     "deny": [],
     "ask": []

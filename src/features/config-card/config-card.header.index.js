@@ -3,9 +3,9 @@ import { ui } from "ui";
 import { timeOptions } from "config";
 import { getConfigHeaderTemplate } from "./config-card.header.template.js";
 import { handleTimeChange } from "./config-card.index.js";
-import { canCycleToSession } from "utils/sessionValidation.js";
-import * as persistenceService from "services/persistenceService.js";
-import * as selectorService from "services/selectorService.js";
+import { canCycleToSession } from "utils";
+import * as persistenceService from "services/core/persistenceService.js";
+import * as selectorService from "services/ui/selectorService.js";
 
 /* ==========================================================================
    CONFIG HEADER - Collapsible header logic

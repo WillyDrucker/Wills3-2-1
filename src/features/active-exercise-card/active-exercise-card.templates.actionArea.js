@@ -14,7 +14,7 @@
 
 import { appState } from "state";
 import { formatTime } from "utils";
-import { canLogDualModeSide } from "services/workoutService.js";
+import { canLogDualModeSide } from "services/workout/workoutProgressionService.js";
 
 export function getActionAreaHTML() {
   if (appState.superset.isActive || appState.partner.isActive) {

@@ -2,9 +2,9 @@ import { appState } from "state";
 import { timeOptions } from "config";
 import { createSelectorHTML } from "ui";
 import { getDurationUnit } from "utils";
-import * as workoutMetricsService from "services/workoutMetricsService.js";
-import * as workoutFactoryService from "services/workoutFactoryService.js";
-import { canCycleToSession } from "utils/sessionValidation.js";
+import * as workoutMetricsService from "services/workout/workoutMetricsService.js";
+import * as workoutLogGenerationService from "services/workout/workoutLogGenerationService.js";
+import { canCycleToSession } from "utils";
 
 /* ==========================================================================
    CONFIG CARD - Time Selector Template (Shared)
@@ -36,7 +36,7 @@ export function getTimeSelectorHTML(isAnySetLogged, selectorId = "time-selector-
     );
     totalDuration = metrics.duration;
   } else {
-    const tempWorkoutForSummary = workoutFactoryService.generateWorkoutLog(
+    const tempWorkoutForSummary = workoutLogGenerationService.generateWorkoutLog(
       true,
       currentTime.type
     );
@@ -68,7 +68,7 @@ export function getTimeSelectorHTML(isAnySetLogged, selectorId = "time-selector-
         );
         duration = metrics.duration;
       } else {
-        const tempLog = workoutFactoryService.generateWorkoutLog(
+        const tempLog = workoutLogGenerationService.generateWorkoutLog(
           true,
           opt.type
         );

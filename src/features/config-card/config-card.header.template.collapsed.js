@@ -1,6 +1,6 @@
 import { appState } from "state";
 import { workoutPlans, timeOptions } from "config";
-import { canCycleToSession } from "utils/sessionValidation.js";
+import { canCycleToSession } from "utils";
 
 /* ==========================================================================
    CONFIG HEADER - Collapsed template (icon bar)

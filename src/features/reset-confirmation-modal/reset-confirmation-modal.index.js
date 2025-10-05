@@ -11,7 +11,7 @@
 import { appState } from "state";
 import { ui } from "ui";
 import { getResetConfirmationModalTemplate } from "./reset-confirmation-modal.template.js";
-import * as modalService from "services/modalService.js";
+import * as modalService from "services/ui/modalService.js";
 
 export function handleConfirmReset() {
   modalService.close();

@@ -1,6 +1,6 @@
 import { appState } from "state";
-import * as workoutService from "services/workoutService.js";
-import * as youtubeService from "services/youtubeService.js";
+import { recalculateCurrentStateAfterLogChange } from "services/workout/workoutProgressionService.js";
+import * as youtubeService from "services/integrations/youtubeService.js";
 import { programConfig } from "config";
 
 /* ==========================================================================
@@ -70,5 +70,5 @@ export function handleExerciseSwap(newExerciseOrder) {
     }
   });
 
-  workoutService.recalculateCurrentStateAfterLogChange();
+  recalculateCurrentStateAfterLogChange();
 }

@@ -18,7 +18,7 @@ import { appState } from "state";
 import { ui } from "ui";
 import { getSideNavTemplate } from "./side-nav.template.js";
 import * as focusTrapService from "lib/focusTrap.js";
-import * as selectorService from "services/selectorService.js";
+import * as selectorService from "services/ui/selectorService.js";
 
 export function handleOpenSideNav() {
   if (appState.ui.sideNav.isOpen) return;

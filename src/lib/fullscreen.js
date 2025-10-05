@@ -1,3 +1,17 @@
+/* ==========================================================================
+   FULLSCREEN - Fullscreen API with Screen Orientation Lock
+
+   Manages fullscreen mode with browser vendor prefixes (webkit support).
+   Locks screen orientation to portrait after entering fullscreen.
+
+   🔒 CEMENT: Screen orientation lock MUST happen after fullscreen entry
+   - Orientation lock API only works when already in fullscreen mode
+   - Lock called in enterFullScreenAndLock() after requestFullscreen()
+
+   Dependencies: state (appState), screenOrientation (lockScreenOrientation)
+   Used by: side-nav.index.js (fullscreen toggle), actionHandlers.js
+   ========================================================================== */
+
 import { appState } from "state";
 import { lockScreenOrientation } from "lib/screenOrientation.js";
 
@@ -15,7 +29,7 @@ async function enterFullScreenAndLock() {
   } else if (docEl.webkitRequestFullscreen) {
     await docEl.webkitRequestFullscreen();
   }
-  // CEMENTED FIX: Lock screen orientation after entering fullscreen.
+  /* 🔒 CEMENT: Lock screen orientation after entering fullscreen */
   await lockScreenOrientation();
 }
 

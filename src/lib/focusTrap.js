@@ -1,3 +1,18 @@
+/* ==========================================================================
+   FOCUS TRAP - Keyboard Focus Management for Modals
+
+   Traps keyboard focus within a container element for accessibility.
+   Cycles Tab navigation between first and last focusable elements.
+
+   🔒 CEMENT: Tab cycle prevents focus escaping modal boundaries
+   - Tab on last element focuses first element
+   - Shift+Tab on first element focuses last element
+   - Prevents background interaction while modal is open
+
+   Dependencies: None (vanilla DOM APIs)
+   Used by: Modal components requiring focus trapping
+   ========================================================================== */
+
 let trapContainer = null;
 let focusableElements = [];
 let firstFocusableElement = null;

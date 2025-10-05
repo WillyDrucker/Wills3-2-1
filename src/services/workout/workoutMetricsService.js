@@ -1,5 +1,5 @@
 import { timeOptions } from "config";
-import { generateWorkoutLog } from "services/workoutFactoryService.js";
+import { generateWorkoutLog } from "services/workout/workoutLogGenerationService.js";
 
 /**
  * CEMENTED

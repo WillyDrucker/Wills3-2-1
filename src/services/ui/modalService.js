@@ -1,6 +1,21 @@
+/* ==========================================================================
+   MODAL SERVICE - Generic Modal State Management
+
+   Centralized modal open/close logic with focus trap integration and stack
+   management for nested modals. Handles selector cleanup and focus restoration.
+
+   🔒 CEMENT: Single source of truth for modal operations
+   - Stacking support allows modals to open on top of existing modals
+   - Focus trap activation/deactivation on open/close
+   - Automatic selector cleanup on modal close prevents stuck muted states
+
+   Dependencies: appState, focusTrapService, selectorService
+   Used by: navigationService, reset modal, superset modal, partner modal, config modal
+   ========================================================================== */
+
 import { appState } from "state";
 import * as focusTrapService from "lib/focusTrap.js";
-import * as selectorService from "services/selectorService.js";
+import * as selectorService from "services/ui/selectorService.js";
 
 let _renderAll = null;
 let modalStack = []; // Track modal stack for nested modals
