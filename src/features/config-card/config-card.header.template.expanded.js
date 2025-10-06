@@ -1,7 +1,7 @@
 import { appState } from "state";
 import { workoutPlans, timeOptions } from "config";
 import { createSelectorHTML } from "ui";
-import { canCycleToSession } from "utils";
+import { canCycleToSession, isSessionCyclingLocked } from "utils";
 import { getDaySelectorHTML } from "./config-card.template.day.js";
 
 /* ==========================================================================
@@ -93,7 +93,8 @@ function getAbbreviatedPlanText() {
 function getSessionTimeText() {
   const { session } = appState;
   const timeMinutes = appState.session.workoutTimeRemaining;
-  return `<div class="session-quick-button-stack"><span class="${session.currentSessionColorClass}">${timeMinutes} Mins</span><span class="${session.currentSessionColorClass}">Remain</span></div>`;
+  const timeText = timeMinutes === 1 ? "Min" : "Mins";
+  return `<div class="session-quick-button-stack"><span class="${session.currentSessionColorClass}">${timeMinutes} ${timeText}</span><span class="${session.currentSessionColorClass}">Remain</span></div>`;
 }
 
 // Expanded state template - full controls
@@ -141,8 +142,8 @@ export function getExpandedTemplate() {
   const isLeftDisabled = !canCyclePrevious();
   const isRightDisabled = !canCycleNext();
 
-  // 🔒 CEMENT: Check if session cycling is disabled (both directions unavailable)
-  const isSessionCyclingDisabled = isLeftDisabled && isRightDisabled;
+  // 🔒 CEMENT: Check if session cycling completely locked (Maintenance lock after 3rd set)
+  const isSessionCyclingDisabled = isSessionCyclingLocked();
 
   return `
     <div class="card" id="config-header">

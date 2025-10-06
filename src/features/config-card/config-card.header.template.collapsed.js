@@ -1,10 +1,11 @@
 import { appState } from "state";
 import { workoutPlans, timeOptions } from "config";
-import { canCycleToSession } from "utils";
+import { canCycleToSession, isSessionCyclingLocked } from "utils";
 
 /* ==========================================================================
    CONFIG HEADER - Collapsed template (icon bar)
 
+   Quick buttons remain clickable even when muted to expand config dropdown.
    Displays three quick buttons: Plan, Focus, Session
    ========================================================================== */
 
@@ -100,19 +101,22 @@ function getAbbreviatedPlanText() {
 function getSessionTimeText() {
   const { session } = appState;
   const timeMinutes = appState.session.workoutTimeRemaining;
+  const timeText = timeMinutes === 1 ? "Min" : "Mins";
   // Stacked layout: minutes on top (colored), "Remain" below (same color)
-  return `<div class="session-quick-button-stack"><span class="${session.currentSessionColorClass}">${timeMinutes} Mins</span><span class="${session.currentSessionColorClass}">Remain</span></div>`;
+  return `<div class="session-quick-button-stack"><span class="${session.currentSessionColorClass}">${timeMinutes} ${timeText}</span><span class="${session.currentSessionColorClass}">Remain</span></div>`;
 }
 
 // Collapsed state template - minimal icon bar
 export function getCollapsedTemplate() {
-  // 🔒 CEMENT: Check if any set is logged to disable plan/focus buttons
+  // 🔒 CEMENT: Check if any set is logged to visually mute plan/focus buttons
+  // Buttons remain clickable to open config dropdown even when muted
   const isAnySetLogged = appState.session.workoutLog.some(
     (log) => log.status !== "pending"
   );
 
-  // 🔒 CEMENT: Check if session cycling is disabled (both directions unavailable)
-  const isSessionCyclingDisabled = !canCyclePrevious() && !canCycleNext();
+  // 🔒 CEMENT: Check if session cycling completely locked (Maintenance lock after 3rd set)
+  // Button remains clickable to open config dropdown even when muted
+  const isSessionCyclingDisabled = isSessionCyclingLocked();
 
   return `
     <div class="card" id="config-header">

@@ -73,17 +73,20 @@ export function handleClearSet(index) {
       ? logToClear.exercise.day
       : appState.session.currentDayName;
 
+  // 🔒 CEMENT: Stop timer if clearing the set that triggered it
   if (appState.superset.isActive || appState.partner.isActive) {
     const restState = appState.rest.superset[logToClear.supersetSide];
     if (restState.type !== "none" && index === restState.triggeringSetIndex) {
-      handleSupersetRestCompletion(logToClear.supersetSide, {
+      handleSupersetRestCompletion(restState, {
         wasSkipped: false,
       });
     }
   } else {
     const restState = appState.rest.normal;
     if (restState.type !== "none" && index === restState.triggeringSetIndex) {
-      handleNormalRestCompletion({ wasSkipped: false });
+      handleNormalRestCompletion(restState, {
+        wasSkipped: false,
+      });
     }
   }
 

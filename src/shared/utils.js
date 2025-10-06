@@ -61,4 +61,5 @@ export {
 // Session validation
 export {
   canCycleToSession,
+  isSessionCyclingLocked,
 } from "./utils/sessionValidation.js";

@@ -1,9 +1,10 @@
 /* ==========================================================================
    CONFIG HEADER - Icon bar and quick buttons
 
-   CEMENT: Collapsible icon bar with quick access buttons
+   CEMENT: Quick buttons remain clickable even when muted
    - Three buttons: Plan (flex), Focus (fixed 50px), Session (flex)
-   - Border-only muting preserves active information visibility
+   - Visual-only muting: buttons remain clickable for config dropdown access
+   - pointer-events: auto overrides global .is-muted rule
    - 50px height constraint prevents layout shift
 
    Architecture: Collapsed icon bar displays current state
@@ -241,24 +242,26 @@
 }
 
 /* === BUSINESS LOGIC MUTING === */
-/* CEMENT: Border-only muting preserves active information visibility */
+/* CEMENT: Visual-only muting - buttons remain clickable for config dropdown access */
 /* Content stays visible because buttons show current state (plan, focus, session) */
+/* Buttons remain interactive to allow opening config dropdown even when all selectors are muted */
+/* pointer-events: auto overrides global .is-muted rule from _helpers.css */
 .icon-bar-item.icon-plan-wide.is-muted {
   background: var(--muted-background);
   box-shadow: inset 0 0 0 2px var(--muted-border-color);
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 .icon-bar-item.icon-display.is-muted {
   background: var(--muted-background);
   box-shadow: inset 0 0 0 2px var(--muted-border-color);
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 .icon-bar-item.icon-session-wide.is-muted {
   background: var(--muted-background);
   box-shadow: inset 0 0 0 2px var(--muted-border-color);
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 /* === RESPONSIVE LAYOUT === */

@@ -76,6 +76,73 @@
 - Re-export indexes enable backward compatibility during file splitting
 **Status**: COMPLETE - All core files and /styles directory fully documented to CLAUDE standards, bugs fixed, !important flags removed
 
+### **v6.29 - Config Quick Buttons, Session Cycling Logic Overhaul & Critical Timer Bug Fix**
+**Date**: 2025-10-06
+**Problem**: Config quick buttons not clickable when muted, session cycling validation logic incorrect (allowed invalid state transitions), critical timer bug where clearing triggering set didn't stop active timer, session text pluralization issue
+**Solution**: Made quick buttons clickable with pointer-events override, completely rewrote session cycling validation to be reactive to log state, fixed timer completion handler parameters, added session cycling set count real-time updates, fixed "1 Min" text
+**Key Achievements**:
+- **Quick buttons clickable**: Added `pointer-events: auto` override for muted buttons to allow config dropdown access
+- **Session cycling overhaul**: Rewrote validation logic to be purely reactive - clearing sets automatically releases locks
+- **Critical timer fix**: Fixed incorrect parameters to timer completion handlers when clearing sets
+- **Real-time updates**: Session cycling now updates active exercise card set count immediately
+- **Reactive validation**: New helper `hasNonMajor1ThirdSet()` detects Maintenance path divergence
+**Root Causes Identified**:
+- **Global .is-muted rule**: `pointer-events: none` in _helpers.css blocked quick button clicks
+- **Session validation logic**: Complex rule-based logic didn't account for Maintenance divergence at 3rd set from different muscle group
+- **Timer completion params**: Passing wrong parameters (options object instead of restState) prevented timer cleanup
+- **Missing render call**: Session cycling didn't re-render active exercise card, leaving stale set counts
+**Session Cycling Rules** (New reactive logic):
+1. **0-2 Major1 sets logged**: All sessions available (Standard/Express/Maintenance)
+2. **3rd Major1 set logged**: Locked to Standard/Express (Maintenance blocked)
+3. **3rd set from different muscle group**: Locked to Maintenance (Express blocked, Standard always available)
+4. **Clearing sets releases locks**: If 3rd set cleared → all sessions available again
+5. **Standard always available**: Baseline workout with all sets
+6. **Standard ↔ Express always allowed**: Same set structure
+**Technical Architecture**:
+- **Reactive validation**: `canCycleToSession()` checks only current log state, no history tracking
+- **Divergence detection**: `hasNonMajor1ThirdSet()` checks for 2 Major1 + 1+ non-Major1 sets
+- **Timer cleanup**: `handleCompletion()` clears interval, sets type to "none", triggers fadeout
+- **Set count updates**: `renderActiveExerciseCard()` called during session cycling to update "Set X of Y"
+**Files Modified**:
+- `config-card.header.style.css` - Added `pointer-events: auto` to `.is-muted` button rules (lines 251, 257, 263)
+- `config-card.header.template.collapsed.js` - Reverted to button elements with individual click handlers
+- `sessionValidation.js` - Complete rewrite with reactive logic, added `hasNonMajor1ThirdSet()` helper
+- `main.js` - Added `renderActiveExerciseCard()` call during session cycling updates (line 87)
+- `workout-log.index.js` - Fixed timer completion handler parameters (lines 80, 87)
+**Bug Fixes**:
+1. **Quick buttons not clickable**: Added `pointer-events: auto` override for `.is-muted` class (overrides global rule from _helpers.css:40)
+2. **Session cycling validation**: Rewrote logic to check for Major1 count AND non-Major1 3rd set (Maintenance divergence)
+3. **Timer not stopping on clear**: Fixed parameters from `handleNormalRestCompletion({ wasSkipped: false })` to `handleNormalRestCompletion(restState, { wasSkipped: false })`
+4. **Set count not updating**: Added `renderActiveExerciseCard()` call when session type changes
+5. **Session text pluralization**: Fixed "1 Mins Remain" to "1 Min Remain" using conditional `timeText` variable
+**Key CEMENT Areas Protected**:
+- **Reactive validation**: Purely state-based, no history - clearing sets automatically releases locks
+- **Timer cleanup critical**: If cleared set triggered timer, must stop timer immediately (prevents rogue timers)
+- **Quick button accessibility**: Must remain clickable even when muted (provides config dropdown access)
+- **Session lock muting**: Session quick button mutes when completely locked (Maintenance after 3rd non-Major1 set)
+**Validation Rules Summary**:
+```javascript
+// Trying to cycle TO Maintenance
+if (targetType === "Maintenance") {
+  // Block if 3rd Major1 set logged (Standard/Express path committed)
+  if (loggedMajor1Count >= 3) return false;
+  return true; // Allow if 0-2 Major1 sets
+}
+
+// Trying to cycle TO Express (from Maintenance)
+if (targetType === "Express") {
+  // Block if 3rd set from different muscle group (Maintenance path diverged)
+  if (hasNonMajor1ThirdSet()) return false;
+  return true; // Allow otherwise
+}
+```
+**Technical Discoveries**:
+- `pointer-events: auto` can override global `.is-muted` rule with higher specificity
+- Session validation must be purely reactive to support set clearing/re-logging scenarios
+- Timer completion handlers expect `(restState, options)` not `(options)` or `(side, options)`
+- Active exercise card must re-render on session cycling to update calculated set counts
+**Status**: COMPLETE - Quick buttons clickable when muted, session cycling validation fully reactive and correct, critical timer bug fixed
+
 ### **v6.28 - Services Refactor, Utilities Reorganization & UI Polish**
 **Date**: 2025-10-05
 **Problem**: Large service files (timer, workout) lacked modularity, shared utilities mixed concerns (260 lines), UI had typography/spacing issues, event delegation bugs causing scroll jumps

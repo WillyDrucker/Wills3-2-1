@@ -80,10 +80,12 @@ function updateActiveWorkoutPreservingLogs() {
   workoutProgressionService.recalculateCurrentStateAfterLogChange();
   updateWorkoutTimeRemaining();
 
-  /* CEMENT: Minimal render preserves animations - only update session display */
+  /* CEMENT: Minimal render preserves animations - update session display, active card, and workout log */
   setTimeout(() => {
     renderSessionDisplay();
     renderFocusDisplay();
+    renderActiveExerciseCard(); // Update Current Exercise set count to reflect session changes
+    renderWorkoutLog(); // Update Today's Workout to reflect session changes
   }, 50);
 
   persistenceService.saveState();

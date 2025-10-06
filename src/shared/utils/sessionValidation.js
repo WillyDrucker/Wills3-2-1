@@ -1,27 +1,74 @@
 /* ==========================================================================
    SESSION VALIDATION UTILITIES - Session Cycling Validation
 
-   Validates whether cycling to a different session type (Recommended/Express/
-   Maintenance) is allowed based on logged exercise sets. Prevents data loss
-   by blocking session changes that would remove logged sets.
+   Validates whether cycling to a different session type (Standard/Express/
+   Maintenance) is allowed based on logged exercise sets. Purely reactive to
+   current log state - clearing sets releases locks.
 
-   🔒 CEMENT: Session cycling validation logic
-   - Recommended: Always allowed (adds sets, never removes)
-   - Express: Blocks if any removed sets are logged
-   - Maintenance: Blocks if logged sets beyond first 2 per Major1/Minor1
-   - Validates against actual workout log filtering rules
+   🔒 CEMENT: Session cycling validation rules (reactive to log state)
+   - 0-2 Major1 sets logged: All sessions available (Standard/Express/Maintenance)
+   - 3rd set logged from Major1: Locked to Standard/Express (can't go to Maintenance)
+   - 3rd set logged from different muscle group: Locked to Maintenance (can't go to Standard/Express)
+   - Clearing sets releases locks: If 3rd set cleared → all sessions available again
+   - Standard ↔ Express: Always allowed (same set structure)
+   - Standard: Always available (baseline workout with all sets)
 
-   Dependencies: appState, timeOptions, expressSetRules, maintenanceSetRules
+   Dependencies: appState, timeOptions
    Used by: Config header (session cycling buttons), action handlers
    ========================================================================== */
 
 import { appState } from "state";
-import { timeOptions, expressSetRules, maintenanceSetRules } from "config";
+import { timeOptions } from "config";
 
 /**
- * CEMENTED
- * Validates whether cycling to a target session type is allowed without
- * removing logged exercise sets. Returns true if safe to cycle.
+ * Helper: Count logged Major1 muscle group sets
+ */
+function countLoggedMajor1Sets() {
+  const currentLog = appState.session.workoutLog;
+  if (!currentLog || currentLog.length === 0) return 0;
+
+  return currentLog.filter(
+    (log) => log.exercise.muscle_group === "Major1" && log.status !== "pending"
+  ).length;
+}
+
+/**
+ * Helper: Count total logged sets (any muscle group)
+ */
+function countTotalLoggedSets() {
+  const currentLog = appState.session.workoutLog;
+  if (!currentLog || currentLog.length === 0) return 0;
+
+  return currentLog.filter((log) => log.status !== "pending").length;
+}
+
+/**
+ * Helper: Check if a 3rd set from a different muscle group has been logged
+ * This indicates the Maintenance path has diverged
+ */
+function hasNonMajor1ThirdSet() {
+  const currentLog = appState.session.workoutLog;
+  if (!currentLog || currentLog.length === 0) return false;
+
+  const loggedSets = currentLog.filter((log) => log.status !== "pending");
+
+  // Need at least 3 logged sets total
+  if (loggedSets.length < 3) return false;
+
+  // Check if we have exactly 2 Major1 sets and a 3rd set from different muscle group
+  const major1Sets = loggedSets.filter((log) => log.exercise.muscle_group === "Major1");
+  const nonMajor1Sets = loggedSets.filter((log) => log.exercise.muscle_group !== "Major1");
+
+  // If we have 2 Major1 sets and at least 1 non-Major1 set, Maintenance path has diverged
+  return major1Sets.length === 2 && nonMajor1Sets.length >= 1;
+}
+
+/**
+ * Validates whether cycling to a target session type is allowed.
+ * Purely reactive - bases decision only on current log state.
+ * Clearing sets automatically releases locks.
+ *
+ * Returns true if safe to cycle, false if blocked.
  */
 export function canCycleToSession(targetSessionName) {
   const targetOption = timeOptions.find((t) => t.name === targetSessionName);
@@ -29,111 +76,70 @@ export function canCycleToSession(targetSessionName) {
 
   const targetType = targetOption.type;
 
-  // Can always cycle back to Recommended (adds sets, doesn't remove)
-  if (targetType === "Recommended") return true;
-
   const currentLog = appState.session.workoutLog;
   if (!currentLog || currentLog.length === 0) return true;
 
-  const targetDay = appState.session.currentDayName;
+  // Get current session type
+  const currentSessionName = appState.session.currentTimeOptionName;
+  const currentOption = timeOptions.find((t) => t.name === currentSessionName);
+  const currentType = currentOption?.type;
 
-  if (targetType === "Express") {
-    const dayRules = expressSetRules[targetDay];
+  const loggedMajor1Count = countLoggedMajor1Sets();
+  const totalLoggedSets = countTotalLoggedSets();
 
-    // 🔒 CEMENT: Express validation must simulate the actual filtering that happens in generateWorkoutLog
-    // The current log has been renumbered, so we can't directly compare set numbers to rules
-    // Instead, we need to check: would Express filtering remove any logged sets from the current log?
+  // 🔒 CEMENT: Standard (Recommended) always allowed - baseline workout with all sets
+  if (targetType === "Recommended") return true;
 
-    if (dayRules) {
-      // For days with rules: Check if any logged sets would be removed
-      // We can't match by set number (current log is renumbered), so we match by exercise name
-      // and check if the logged set count would decrease
-
-      const loggedByExercise = {};
-      currentLog.forEach((log) => {
-        if (log.status !== "pending") {
-          const name = log.exercise.exercise_name;
-          loggedByExercise[name] = (loggedByExercise[name] || 0) + 1;
-        }
-      });
-
-      // Check if any exercises in removal rules have logged sets
-      for (const rule of dayRules) {
-        if (loggedByExercise[rule.name] > 0) {
-          // This exercise has logged sets and would have a set removed by Express
-          // Block Express cycling
-          return false;
-        }
-      }
-      return true;
-    } else {
-      // No rules: Express removes last set
-      // Check if last set is logged
-      const lastSet = currentLog[currentLog.length - 1];
-      return lastSet.status === "pending";
-    }
+  // 🔒 CEMENT: Allow cycling between Standard and Express (same set structure)
+  if (
+    (currentType === "Recommended" && targetType === "Express") ||
+    (currentType === "Express" && targetType === "Recommended")
+  ) {
+    return true;
   }
 
+  // 🔒 CEMENT: Check if 3rd set has been logged (determines lock state)
+  const has3rdMajor1Set = loggedMajor1Count >= 3;
+  const has3rdNonMajor1Set = hasNonMajor1ThirdSet();
+
+  // 🔒 CEMENT: Trying to cycle TO Maintenance
   if (targetType === "Maintenance") {
-    // 🔒 CEMENT: Maintenance keeps only first 2 sets of each Major1/Minor1 exercise
-    // Block if ANY sets beyond the first 2 per exercise are logged
-
-    const exerciseSetCounts = {};
-
-    // Group by exercise name and count logged sets per exercise
-    currentLog.forEach((log) => {
-      const exName = log.exercise.exercise_name;
-      const muscleGroup = log.exercise.muscle_group;
-
-      if (muscleGroup === "Major1" || muscleGroup === "Minor1") {
-        if (!exerciseSetCounts[exName]) {
-          exerciseSetCounts[exName] = { total: 0, logged: 0, muscleGroup };
-        }
-        exerciseSetCounts[exName].total++;
-        if (log.status !== "pending") {
-          exerciseSetCounts[exName].logged++;
-        }
-      }
-    });
-
-    // Check each Major1/Minor1 exercise
-    for (const exName in exerciseSetCounts) {
-      const { total, logged, muscleGroup } = exerciseSetCounts[exName];
-
-      // If this exercise has more than 2 sets total, and ANY are logged beyond first 2
-      if (total > 2 && logged > 0) {
-        // Get the first 2 sets for this exercise
-        const exerciseSets = currentLog.filter(
-          (log) => log.exercise.exercise_name === exName
-        );
-        const beyond2Sets = exerciseSets.slice(2);
-
-        // If any sets beyond the first 2 are logged, block Maintenance
-        const hasLoggedBeyond2 = beyond2Sets.some((log) => log.status !== "pending");
-        if (hasLoggedBeyond2) {
-          return false;
-        }
-      }
+    // Block if 3rd Major1 set logged (Standard/Express path committed)
+    if (has3rdMajor1Set) {
+      return false;
     }
+    // Otherwise allow (0-2 Major1 sets logged, or cleared back to 2)
+    return true;
+  }
 
-    // Check if any non-Major1/Minor1 sets would be removed that are logged
-    const dayRules = maintenanceSetRules[targetDay];
-    const otherSets = currentLog.filter(
-      (log) => log.exercise.muscle_group !== "Major1" && log.exercise.muscle_group !== "Minor1"
-    );
-
-    for (const log of otherSets) {
-      const isInAddRules =
-        dayRules &&
-        dayRules.add &&
-        dayRules.add.some(
-          (rule) => rule.name === log.exercise.exercise_name && rule.set === log.setNumber
-        );
-      if (!isInAddRules && log.status !== "pending") {
-        return false;
-      }
+  // 🔒 CEMENT: Trying to cycle TO Express (from Maintenance)
+  if (targetType === "Express") {
+    // Block if 3rd set is from different muscle group (Maintenance path has diverged)
+    if (has3rdNonMajor1Set) {
+      return false;
     }
+    // Otherwise allow
+    return true;
   }
 
   return true;
 }
+
+/**
+ * Helper: Check if session cycling is completely locked (both directions blocked)
+ * Used to determine if session quick button should be muted.
+ * Reactive to log state - clearing sets releases the lock.
+ */
+export function isSessionCyclingLocked() {
+  const currentSessionName = appState.session.currentTimeOptionName;
+  const currentOption = timeOptions.find((t) => t.name === currentSessionName);
+  const currentType = currentOption?.type;
+
+  // 🔒 CEMENT: Locked to Maintenance if 3rd set from different muscle group logged
+  if (currentType === "Maintenance" && hasNonMajor1ThirdSet()) {
+    return true; // Express blocked, Standard always allowed (so not fully locked, but chevrons should be muted)
+  }
+
+  return false;
+}
+

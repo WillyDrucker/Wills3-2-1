@@ -4,7 +4,7 @@
    CEMENT: Three selector groups mute each other when one opens
    - Config Group (this header) ↔ Exercise Group (active card) ↔ Log Group (workout log)
    - When any group opens, other groups mute automatically
-   - Border-only muting for icon buttons preserves active information
+   - Visual-only muting: icon buttons remain clickable (pointer-events: auto)
 
    Architecture: High-specificity :has() selectors
    - Exercise/Log → Config: Mutes icon bar buttons and chevrons
