@@ -23,7 +23,18 @@
       "Bash(head:*)",
       "Bash(done)",
       "Bash(for:*)",
-      "Bash(do sed -i 's|from \"\"utils/sessionValidation\\.js\"\"|from \"\"utils\"\"|g' \"$file\")"
+      "Bash(do sed -i 's|from \"\"utils/sessionValidation\\.js\"\"|from \"\"utils\"\"|g' \"$file\")",
+      "Bash(node:*)",
+      "WebFetch(domain:supabase.com)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(gh repo view:*)",
+      "Bash(gh issue view:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(gh auth:*)",
+      "Bash(gh issue comment:*)",
+      "Bash(gh issue close:*)",
+      "Bash(gh issue reopen:*)"
     ],
     "deny": [],
     "ask": []

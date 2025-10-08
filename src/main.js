@@ -29,6 +29,9 @@ import * as scrollService from "services/ui/scrollService.js";
 import * as persistenceService from "services/core/persistenceService.js";
 import * as appInitializerService from "services/core/appInitializerService.js";
 
+import { getSession, onAuthStateChange, isAuthenticated, isGuest } from "services/authService.js";
+import { renderLoginPage } from "features/login-page/login-page.index.js";
+import { renderProfilePage } from "features/profile-page/profile-page.index.js";
 import { renderAppHeader } from "features/app-header/app-header.index.js";
 import { renderHomePage } from "features/home-page/home-page.index.js";
 import { renderMyDataPage } from "features/my-data/my-data.index.js";
@@ -100,6 +103,8 @@ function renderAll() {
     renderHomePage();
   } else if (appState.ui.currentPage === "myData") {
     renderMyDataPage();
+  } else if (appState.ui.currentPage === "profile") {
+    renderProfilePage();
   } else {
     updateWorkoutTimeRemaining();
     if (appState.session.isWorkoutComplete) {
@@ -127,7 +132,47 @@ function renderError(message) {
   ui.workoutFooter.innerHTML = "";
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+/* 🔒 CEMENT: Login-first authentication flow
+ * 1. Check if user has existing session (Supabase session or guest mode)
+ * 2. If not authenticated: Show login page
+ * 3. If authenticated or guest: Initialize and render app
+ * 4. Listen for auth-success event to initialize app after login
+ */
+async function checkAuthAndInitialize() {
+  // Check for existing Supabase session
+  const { session } = await getSession();
+
+  // If authenticated or guest mode, initialize app
+  if (isAuthenticated() || isGuest()) {
+    // 🔒 CEMENT: Authenticated users always start at homepage on fresh load
+    // Guest mode uses saved state (preserves last page for quick workout access)
+    if (isAuthenticated()) {
+      appState.ui.currentPage = "home";
+    }
+
+    appInitializerService.initialize({
+      renderAll,
+      updateActiveWorkoutAndLog,
+      updateActiveWorkoutPreservingLogs,
+      renderError,
+      initializeActiveCardEventListeners,
+      renderConfigHeader,
+      renderConfigHeaderLine,
+      renderActiveExerciseCard,
+    });
+  } else {
+    // Show login page
+    renderLoginPage();
+  }
+}
+
+// Listen for successful authentication (from login page)
+window.addEventListener("auth-success", () => {
+  // 🔒 CEMENT: Authenticated users go to homepage, guests use saved state
+  if (isAuthenticated()) {
+    appState.ui.currentPage = "home";
+  }
+
   appInitializerService.initialize({
     renderAll,
     updateActiveWorkoutAndLog,
@@ -139,3 +184,13 @@ document.addEventListener("DOMContentLoaded", () => {
     renderActiveExerciseCard,
   });
 });
+
+// Listen for auth state changes (logout, session expiry)
+onAuthStateChange((user, session) => {
+  // If user logs out, show login page
+  if (!user && !isGuest()) {
+    renderLoginPage();
+  }
+});
+
+document.addEventListener("DOMContentLoaded", checkAuthAndInitialize);

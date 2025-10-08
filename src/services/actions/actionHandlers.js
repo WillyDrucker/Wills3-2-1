@@ -23,6 +23,7 @@ import { recalculateCurrentStateAfterLogChange } from "services/workout/workoutP
 import * as modalService from "services/ui/modalService.js";
 import { getNextWorkoutDay } from "utils";
 import { canCycleToSession } from "utils";
+import { signOut as authSignOut } from "services/authService.js";
 import { renderConfigHeader, renderSessionDisplay, notifyConfigHeaderToggled } from "features/config-card/config-card.header.index.js";
 
 import {
@@ -96,11 +97,25 @@ export function getActionHandlers() {
       coreActions.renderAll();
       persistenceService.saveState();
     },
+    goToProfile: () => {
+      navigationService.goToPage("profile");
+      handleCloseSideNav();
+      coreActions.renderAll();
+      persistenceService.saveState();
+    },
     openSideNav: handleOpenSideNav,
     closeSideNav: handleCloseSideNav,
     closeSideNavIfBlank: (e) => {
       if (e.target.classList.contains("side-nav-content"))
         handleCloseSideNav();
+    },
+    signOut: async () => {
+      const { error } = await authSignOut();
+      if (error) {
+        console.error("Sign out error:", error);
+      }
+      // Auth state change listener in main.js will handle showing login page
+      handleCloseSideNav();
     },
     nukeEverything: persistenceService.nukeEverything,
     toggleFullScreen: () => {

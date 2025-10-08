@@ -46,6 +46,23 @@ src/
 
 **State Flow**: User action → Service method → `appState` mutation → `renderAll()` → `persistenceService.saveState()`
 
+## GitHub Issue Tracking
+
+**Issue Management**:
+- Create issues with concise descriptions (2-3 sentences max)
+- **DO NOT close issues** until user explicitly confirms completion
+- Include issue numbers in commit messages where applicable
+- Keep issue comments brief and focused
+
+**Issue Types**:
+- **Bug**: Critical bugs, broken functionality
+- **Feature**: New features or enhancements
+- **Task**: Refactoring, documentation, standards application
+
+**Status**:
+- Issues remain open until user confirms - never auto-close
+- User will test and verify before closing
+
 ## Notification System
 
 **Beep Notifications**: Claude will play a notification beep to signal completion of planning or implementation phases. This helps with multi-project workflow management.

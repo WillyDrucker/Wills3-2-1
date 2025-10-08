@@ -21,6 +21,10 @@
 export const EXERCISE_DATABASE_URL =
   "https://beta.wills321.com/data/exercises.json";
 
+// Supabase configuration
+export const SUPABASE_URL = "https://exowzsiimszqdgswnffu.supabase.co";
+export const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4b3d6c2lpbXN6cWRnc3duZmZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk3OTY0MTMsImV4cCI6MjA3NTM3MjQxM30.zxzgF78MBad4yoWLsxTj0ZftwEeW6tlwePenAF0wIrg";
+
 export const programConfig = {
   "Will's 3-2-1:": {
     orderKey: "program_order",

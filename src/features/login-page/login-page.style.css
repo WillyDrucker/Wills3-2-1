@@ -1,0 +1,330 @@
+/* ==========================================================================
+   LOGIN PAGE - Authentication UI Styling
+
+   Centered login card with email/password authentication and guest mode.
+   Designed for mobile-first responsive layout with future OAuth support.
+
+   Architecture:
+   - Fullscreen flexbox centered layout
+   - Card max-width 400px
+   - Email/password inputs with 1.25rem labels
+   - Sign Up/Sign In buttons with guest mode option
+   - Forgot password link (centered, 16px spacing)
+   - Reset password modal overlay
+
+   Spacing System:
+   - Title to Email: 32px visual (23px actual + font metrics)
+   - Labels to inputs: 7px visual (uses --header-margin-bottom)
+   - Email to Password: 16px visual (13px compensates for font metrics)
+   - Forgot Password: 16px above/below (13px/12px compensates)
+   - OR divider: 16px above/below (13px/12px asymmetric)
+
+   Dependencies:
+   - _variables.css: spacing tokens, typography, colors
+   - _card-foundations.css: base card structure
+   - _action-button-groups.css: button patterns
+
+   Used by: login-page.index.js
+   ========================================================================== */
+
+/* === PAGE CONTAINER === */
+.login-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--space-l);
+  background: var(--background-dark);
+}
+
+/* === LOGIN CARD === */
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* Override global card padding (11px) for login's larger title font */
+.login-page .login-card .card-content-container {
+  padding-top: 8px; /* Compensates for 2.5rem title ascender - achieves 16px visual from top */
+}
+
+.login-title {
+  font-size: var(--font-size-h1); /* Global: 2.5rem (40px) - matches app header */
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  text-align: center;
+  margin: 0 0 23px 0; /* Compensates for font metrics - achieves 32px visual */
+  color: var(--text-primary);
+}
+
+/* === FORM CONTAINER === */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  /* No gap - spacing controlled per element for precision */
+}
+
+/* === INPUT GROUPS === */
+.login-input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+}
+
+/* First input group (Email) */
+.login-input-group:first-of-type {
+  margin-bottom: 13px; /* Compensates for font metrics - achieves 16px visual to Password */
+}
+
+/* Second input group (Password) - no extra margin-top, relies on Email's margin-bottom */
+.login-input-group:last-of-type {
+  margin-bottom: 0;
+}
+
+.forgot-password-link {
+  align-self: center; /* Center alignment */
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--primary-blue);
+  text-decoration: none;
+  margin: 13px 0 12px 0; /* Compensates for font metrics - achieves 16px visual both sides */
+  display: block;
+}
+
+.forgot-password-link:hover {
+  color: var(--primary-blue-light);
+  text-decoration: underline;
+}
+
+.login-label {
+  font-size: var(--font-size-h2); /* 1.25rem - matches config card headers */
+  font-weight: 600;
+  line-height: 1;
+  color: var(--text-primary);
+  margin: 0 0 var(--header-margin-bottom) 0; /* 4px + descender = 7px visual */
+}
+
+.login-input {
+  width: 100%;
+  min-height: var(--control-height); /* Global: 50px - matches selector height */
+  padding: 10px 16px; /* Matches selector padding */
+  font-size: 1rem;
+  font-family: 'Roboto', sans-serif;
+  color: var(--text-primary);
+  background: var(--background-dark); /* Matches selector background */
+  box-shadow: inset 0 0 0 2px var(--primary-blue); /* Matches selector border */
+  border: none; /* Border handled by box-shadow */
+  border-radius: var(--border-radius); /* Global: 8px - matches selector */
+  transition: box-shadow 0.2s ease;
+}
+
+.login-input:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--primary-blue-bright);
+}
+
+.login-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* === ERROR/SUCCESS MESSAGES === */
+.login-error {
+  padding: var(--space-s); /* Global: 12px */
+  font-size: 0.875rem;
+  border-radius: 4px; /* Smaller radius than controls (8px) for subtle messaging */
+  text-align: center;
+  background: rgba(255, 82, 82, 0.1);
+  border: 1px solid var(--text-skip);
+  color: var(--text-skip);
+  transition: opacity 0.2s ease;
+  margin-bottom: var(--space-m); /* 16px spacing to next element */
+}
+
+.login-error.is-hidden {
+  display: none;
+}
+
+.login-error.login-success {
+  background: rgba(39, 174, 96, 0.1);
+  border-color: var(--log-green);
+  color: var(--log-green);
+}
+
+/* === BUTTON GROUPS === */
+.login-button-group {
+  display: flex;
+  gap: var(--space-m); /* Global: 16px between buttons */
+}
+
+.login-button-group .action-button {
+  flex: 1; /* Equal width buttons */
+}
+
+/* Secondary button style (Sign Up) - Blue like Sign In */
+.button-secondary {
+  background-color: var(--primary-blue);
+  color: var(--text-on-action-color);
+}
+
+.button-secondary:hover {
+  background: var(--primary-blue-light);
+  color: var(--text-on-action-color);
+}
+
+/* === GUEST BUTTON === */
+.button-guest {
+  width: 100%;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 2px solid var(--primary-blue-dark);
+}
+
+.button-guest:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--primary-blue);
+  color: var(--text-primary);
+}
+
+/* Yellow highlight for "Guest" text - overrides inherited button color */
+.login-page .button-guest .guest-highlight {
+  color: var(--text-yellow-maintenance); /* Matches side nav maintenance yellow */
+}
+
+/* === DIVIDER === */
+/* "OR" divider between Sign In/Sign Up and Guest Mode - centered text over horizontal line */
+.login-divider {
+  position: relative;
+  text-align: center;
+  margin: 0;
+  padding: 13px 0 12px 0; /* Asymmetric padding compensates for font metrics - achieves 16px visual */
+}
+
+/* Horizontal line behind "OR" text */
+.login-divider::before {
+  content: '';
+  position: absolute;
+  top: 50%; /* Center line vertically */
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--primary-blue-dark);
+}
+
+/* "OR" text - positioned above line with card background to create break */
+.login-divider-text {
+  position: relative; /* Above ::before line (z-index stacking) */
+  display: inline-block;
+  padding: 0 var(--space-s); /* 12px horizontal breathing room around "OR" */
+  background: var(--background-card); /* Covers line behind text */
+  color: var(--text-primary);
+  font-size: 1rem; /* Matches label size for consistency */
+  font-weight: 600; /* Matches label weight for consistency */
+  line-height: 1; /* Tight line height prevents extra vertical space */
+}
+
+/* === RESET PASSWORD MODAL === */
+/* Fullscreen overlay for "Forgot Password" flow - dismissible with Cancel button */
+.reset-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8); /* Dark overlay to focus attention */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Above all page content */
+  padding: var(--space-l);
+}
+
+.reset-modal.is-hidden {
+  display: none;
+}
+
+.reset-modal-content {
+  width: 100%;
+  max-width: 400px;
+  padding: var(--space-l);
+}
+
+.reset-modal-title {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-s) 0;
+}
+
+.reset-modal-description {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-m) 0;
+  line-height: 1.4;
+}
+
+.reset-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: var(--space-m);
+}
+
+.reset-label {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--text-primary);
+}
+
+.reset-button-group {
+  display: flex;
+  gap: var(--space-m);
+}
+
+.reset-button-group .action-button {
+  flex: 1;
+}
+
+/* === LOADING STATE === */
+/* Applied to buttons during async operations (Sign In, Sign Up, Reset) */
+.button-loading {
+  opacity: 0.6; /* Visual feedback that action is processing */
+  cursor: not-allowed; /* Prevent additional clicks */
+}
+
+/* === FOOTER === */
+.login-footer {
+  margin-top: var(--space-l); /* Global: 24px top */
+  max-width: 400px;
+  text-align: center;
+}
+
+.login-footer-text {
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+/* === RESPONSIVE === */
+/* Mobile optimization: Reduce padding, stack buttons vertically, smaller title */
+@media (max-width: 480px) {
+  .login-page {
+    padding: var(--space-m); /* Reduce from 24px to 16px on small screens */
+  }
+
+  .login-title {
+    font-size: 1.25rem; /* Reduce from 2.5rem for mobile readability */
+  }
+
+  .login-button-group {
+    flex-direction: column; /* Stack Sign Up/Sign In vertically */
+    gap: var(--space-m); /* Maintain 16px rhythm between stacked buttons */
+  }
+
+  .login-button-group .action-button {
+    width: 100%; /* Full width for better touch targets */
+  }
+}

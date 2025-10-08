@@ -1,0 +1,189 @@
+/* ==========================================================================
+   PROFILE PAGE - Profile Management Styling
+
+   Profile management card for authenticated users with password change
+   functionality and account settings.
+
+   CEMENT: Consistent with login page styling
+   - 1rem font size for labels (matches exercise log names)
+   - 50px input height (matches selector height)
+   - 7px label-to-input spacing
+   - 16px button spacing
+
+   Architecture: Card-based layout with sections
+   - Account information (email display)
+   - Password change form
+   - Account actions (sign out)
+
+   Dependencies:
+   Global: _variables.css (spacing, colors, typography, control-height)
+   Global: _card-foundations.css (card base styles)
+   Global: _action-button-groups.css (button styles)
+
+   Used by: profile-page.index.js
+   ========================================================================== */
+
+/* === PROFILE PAGE CARD === */
+.profile-page-card {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* === PROFILE SECTIONS === */
+.profile-section {
+  margin-bottom: var(--space-l); /* Global: 24px */
+}
+
+.profile-section:last-child {
+  margin-bottom: 0;
+}
+
+.profile-section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-m) 0; /* Global: 16px bottom */
+  line-height: 1; /* Collapse line-box to eliminate extra vertical space */
+  padding: 0;
+}
+
+/* === ACCOUNT INFORMATION === */
+.profile-info-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px; /* 7px spacing between label and value */
+}
+
+.profile-email-display {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text-plan); /* Green for authenticated user */
+  padding: 10px 16px;
+  background: var(--background-dark);
+  box-shadow: inset 0 0 0 2px var(--primary-blue);
+  border-radius: var(--border-radius);
+  min-height: var(--control-height); /* Global: 50px */
+  display: flex;
+  align-items: center;
+}
+
+/* === PASSWORD CHANGE FORM === */
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m); /* Global: 16px between sections */
+}
+
+.profile-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px; /* 7px spacing between label and input */
+}
+
+.profile-label {
+  font-size: 1rem; /* Matches exercise log name */
+  font-weight: 600; /* Matches exercise log name */
+  color: var(--text-primary);
+  line-height: 1; /* Collapse line-box to eliminate extra vertical space */
+  margin: 0;
+  padding: 0;
+}
+
+.profile-input {
+  width: 100%;
+  min-height: var(--control-height); /* Global: 50px - matches selector height */
+  padding: 10px 16px; /* Matches selector padding */
+  font-size: 1rem;
+  font-family: 'Roboto', sans-serif;
+  color: var(--text-primary);
+  background: var(--background-dark); /* Matches selector background */
+  box-shadow: inset 0 0 0 2px var(--primary-blue); /* Matches selector border */
+  border: none; /* Border handled by box-shadow */
+  border-radius: var(--border-radius); /* Global: 8px - matches selector */
+  transition: box-shadow 0.2s ease;
+}
+
+.profile-input:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--primary-blue-bright);
+}
+
+.profile-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* === ERROR/SUCCESS MESSAGES === */
+.profile-error {
+  padding: var(--space-s); /* Global: 12px */
+  font-size: 0.875rem;
+  border-radius: 4px;
+  text-align: center;
+  background: rgba(255, 82, 82, 0.1);
+  border: 1px solid var(--text-skip);
+  color: var(--text-skip);
+  transition: opacity 0.2s ease;
+}
+
+.profile-error.is-hidden {
+  display: none;
+}
+
+.profile-success {
+  padding: var(--space-s); /* Global: 12px */
+  font-size: 0.875rem;
+  border-radius: 4px;
+  text-align: center;
+  background: rgba(39, 174, 96, 0.1);
+  border: 1px solid var(--log-green);
+  color: var(--log-green);
+  transition: opacity 0.2s ease;
+}
+
+.profile-success.is-hidden {
+  display: none;
+}
+
+/* === BUTTON GROUPS === */
+.profile-button-group {
+  display: flex;
+  gap: var(--space-m); /* Global: 16px between buttons */
+}
+
+.profile-button-group .action-button {
+  flex: 1; /* Equal width buttons */
+}
+
+/* Update Password button - stacked text */
+.profile-update-btn {
+  flex-direction: column;
+  height: auto;
+  min-height: var(--control-height);
+  padding: 8px 16px;
+  line-height: 1.2;
+}
+
+.profile-update-btn span {
+  display: block;
+}
+
+/* === LOADING STATE === */
+.button-loading {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 480px) {
+  .profile-page-card {
+    margin: var(--space-m); /* Global: 16px on mobile */
+  }
+
+  .profile-button-group {
+    flex-direction: column;
+    gap: var(--space-m); /* Global: 16px vertical stacking */
+  }
+
+  .profile-button-group .action-button {
+    width: 100%;
+  }
+}

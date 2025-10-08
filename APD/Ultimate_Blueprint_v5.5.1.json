@@ -1,0 +1,377 @@
+{
+  "project": "Will's 3-2-1 Workout Tracking Application",
+  "version": "5.5.1",
+  "philosophy": "SUPER STUPID SIMPLE (SSS), REMOVE DON'T ADD",
+  "tech_stack": "Vanilla JavaScript, ES Modules, CSS Tokens, Supabase Auth",
+
+  "critical_dependencies": {
+    "global_css_reset": "src/styles/base/_reset.css - Scrollbar stabilization",
+    "import_map": "index.html - ES module bare specifier mapping",
+    "app_state": "src/state.js - Centralized state with auth and color class separation",
+    "render_system": "src/main.js - renderAll() with mode vs session render separation",
+    "auth_system": "src/services/authService.js - Supabase authentication with guest mode",
+    "supabase_client": "src/lib/supabaseClient.js - Supabase initialization"
+  },
+
+  "file_structure": {
+    "root": {
+      "index.html": "Entry point with import map",
+      "reset-password.html": "Password reset page for Supabase email token flow",
+      "APD/": {
+        "CLAUDE.md": "System instructions for Claude Code with issue tracking",
+        "CLAUDE_STANDARDS.md": "4 development standards (CEMENT disabled)",
+        "CLAUDE_SESSION_HANDOFF.md": "v5.5.1 - Authentication system & login polish",
+        "CLAUDE_PROJECT_NOTES.md": "v5.5.1 changelog + auth discoveries",
+        "Ultimate_Blueprint_v5.5.1.json": "This file - comprehensive file map"
+      }
+    },
+
+    "src/": {
+      "main.js": "Bootstrap with auth routing and render function separation",
+      "state.js": "Centralized appState with auth state (user, session, isAuthenticated)",
+      "config.js": "Application constants with Supabase URL/key configuration",
+
+      "lib/": {
+        "supabaseClient.js": "Supabase client initialization with environment config",
+        "wakeLock.js": "Screen wake lock with visibility check",
+        "fullscreen.js": "Fullscreen API wrapper",
+        "screenOrientation.js": "Screen orientation lock (portrait-primary)",
+        "focusTrap.js": "Keyboard focus management for modals"
+      },
+
+      "api/": {
+        "exerciseClient.js": "API client for exercise data from remote JSON"
+      },
+
+      "features/": {
+        "login-page/": {
+          "login-page.index.js": "Login business logic (sign in/up, guest mode, errors)",
+          "login-page.template.js": "Login HTML with email/password and guest option",
+          "login-page.style.css": "Login page 16px/7px rhythm with font metric compensation"
+        },
+
+        "profile-page/": {
+          "profile-page.index.js": "Profile business logic (email display, password change)",
+          "profile-page.template.js": "Profile management HTML with account info and password form",
+          "profile-page.style.css": "Profile page card and form styling"
+        },
+
+        "reset-password/": {
+          "reset-password.index.js": "Password reset logic with session validation and dev mode",
+          "reset-password.template.js": "Password reset form HTML for new password entry",
+          "reset-password.style.css": "Reset password page centered card styling"
+        },
+
+        "dual-mode/": {
+          "dual-mode.style.css": "Entry point (imports 11 component files)",
+          "dual-mode.layout.css": "CSS table with transparent borders",
+          "dual-mode.spacing.css": "16-18px rhythm",
+          "dual-mode.colors.css": "Static color schemes (Superset/Partner)",
+          "dual-mode.header.css": "Card header with muscle group icons",
+          "dual-mode.selector.css": "Exercise selector dual-mode styling",
+          "dual-mode.fuel-gauge.css": "Side-by-side fuel gauge",
+          "dual-mode.inputs.css": "Input adjustments for dual layouts",
+          "dual-mode.active-card.css": "General dual-mode overrides",
+          "dual-mode.partner-modal.css": "Partner green/blue",
+          "dual-mode.superset-modal.css": "Superset green/yellow"
+        },
+
+        "active-exercise-card/": {
+          "active-exercise-card.index.js": "Entry point with re-exports",
+          "active-exercise-card.template.js": "Template selector (rest/completion/workout)",
+          "active-exercise-card.templates.workoutCard.js": "Workout card HTML",
+          "active-exercise-card.templates.completionCard.js": "Completion with animation",
+          "active-exercise-card.templates.exerciseSelector.js": "Dropdown HTML",
+          "active-exercise-card.templates.actionArea.js": "Static colors (cancel/reset)",
+          "active-exercise-card.templates.fuelGauge.js": "Fuel gauge HTML",
+          "active-exercise-card.numberInputHandler.js": "Press-and-hold logic",
+          "active-exercise-card.actions.js": "Re-exports + handlers",
+          "active-exercise-card.actions.log.js": "handleLogSet",
+          "active-exercise-card.actions.skip.js": "handleSkipSet/handleSkipRest",
+          "active-exercise-card.style.css": "Entry point (imports all CSS)",
+          "active-exercise-card.header.css": "Flexbox truncation",
+          "active-exercise-card.fuel-gauge.css": "'Recovering' overlay",
+          "active-exercise-card.inputs.css": "Weight/reps grid",
+          "active-exercise-card.actions.css": "Button layouts",
+          "active-exercise-card.action-area.css": "Cascade specificity (#id .class)",
+          "active-exercise-card.selector.summary.css": "4-line, 100px height",
+          "active-exercise-card.selector.dropdown.css": "50px items",
+          "active-exercise-card.selector.muting.css": "Bidirectional muting",
+          "active-exercise-card.state-active.css": "Active state styling",
+          "active-exercise-card.state-inactive.css": "Inactive state styling",
+          "active-exercise-card.animations.css": "Fuel gauge animations"
+        },
+
+        "config-card/": {
+          "config-card.index.js": "Configuration logic",
+          "config-card.style.css": "Entry point",
+          "config-card.selectors.css": "Two-line patterns",
+          "config-card.header.index.js": "Collapsible header with lock",
+          "config-card.header.template.js": "Template selector",
+          "config-card.header.template.collapsed.js": "Icon bar",
+          "config-card.header.template.expanded.js": "Full config",
+          "config-card.header.style.css": "Icon bar and buttons with pointer-events override",
+          "config-card.header.expanded.css": "Expanded state",
+          "config-card.header.muting.css": "Bidirectional (Config ↔ Log)",
+          "config-card.template.day.js": "Unified day selector",
+          "config-card.template.plan.js": "Unified plan selector",
+          "config-card.template.time.js": "Shared session selector",
+          "config-card.modal.index.js": "Full config modal rendering",
+          "config-card.modal.style.css": "Config modal styling",
+          "assets/muscle-groups/": "Muscle group icon images (arms, back, chest, legs, shoulders)"
+        },
+
+        "workout-log/": {
+          "workout-log.index.js": "Log logic with animation timeout (2100ms) and timer cleanup",
+          "workout-log.template.js": "Item templates",
+          "workout-log.templates.item.js": "Log item HTML",
+          "workout-log.style.css": "Entry point (imports components)",
+          "workout-log.header.css": "line-height: 1, margin: 4px (7px visual)",
+          "workout-log.items.css": "50px cards with absolute positioning",
+          "workout-log.edit-panel.css": "Edit controls",
+          "workout-log.states.css": "Completed/skipped/updating",
+          "workout-log.animations.css": "Unified 1.8s timeline (0-55% hold, 55-77.5% green)"
+        },
+
+        "fuel-gauge/": {
+          "fuel-gauge.style.css": "Entry point",
+          "fuel-gauge.layout.css": "Base structure",
+          "fuel-gauge.colors.css": "Dynamic/static states",
+          "fuel-gauge.animations.css": "60s fill, 1.2s stamp, 4s fade",
+          "fuel-gauge.animations.fadeout.css": "Fadeout for completion",
+          "fuel-gauge.animations.progress.css": "Progress bar keyframes",
+          "fuel-gauge.animations.stamp.css": "Stamp animation"
+        },
+
+        "superset-modal/": {
+          "superset-modal.index.js": "Logic with config lock",
+          "superset-modal.style.css": "Dual-day modal",
+          "superset-modal.template.js": "Modal HTML (green/yellow)"
+        },
+
+        "partner-modal/": {
+          "partner-modal.index.js": "Logic with config lock",
+          "partner-modal.style.css": "User profile modal",
+          "partner-modal.template.js": "Modal HTML (green/blue)"
+        },
+
+        "reset-confirmation-modal/": {
+          "reset-confirmation-modal.index.js": "Reset logic",
+          "reset-confirmation-modal.template.js": "Confirmation HTML",
+          "reset-confirmation-modal.style.css": "Modal styling"
+        },
+
+        "video-player/": {
+          "video-player.index.js": "YouTube player with countdown",
+          "video-player.style.css": "Full-screen 9:16 modal",
+          "video-player.template.js": "Video player HTML"
+        },
+
+        "side-nav/": {
+          "side-nav.index.js": "Navigation panel with focus trap",
+          "side-nav.template.js": "Menu with Profile/Logout links",
+          "side-nav.style.css": "Slide-out styling"
+        },
+
+        "app-header/": {
+          "app-header.index.js": "Header render controller",
+          "app-header.template.js": "Header with inline SVGs",
+          "app-header.style.css": "Three-column grid sticky header"
+        },
+
+        "home-page/": {
+          "home-page.index.js": "Home page render function",
+          "home-page.template.js": "Home HTML with training sections",
+          "home-page.style.css": "Home page card layout"
+        },
+
+        "my-data/": {
+          "my-data.index.js": "Data page interaction handlers",
+          "my-data.template.js": "Page HTML with performance card",
+          "my-data.templates.calendarView.js": "Calendar orchestrator (7-day grid)",
+          "my-data.templates.calendarDay.js": "Single day builder",
+          "my-data.templates.calendarExercise.js": "Exercise block builder",
+          "my-data.style.css": "Main page container",
+          "my-data.calendar.css": "Calendar grid layout",
+          "my-data.dividers.css": "Section dividers",
+          "my-data.header.css": "Page header with tabs",
+          "my-data.history-items.css": "Exercise item styling",
+          "my-data.history-spacing.css": "History element spacing",
+          "my-data.performance.css": "Performance metrics card"
+        },
+
+        "workout-results-card/": {
+          "workout-results-card.index.js": "Results logic with plate animation",
+          "workout-results-card.template.js": "Completion card HTML",
+          "workout-results-card.style.css": "Results styling",
+          "workout-results-card.animations.css": "Plate stacking keyframes"
+        }
+      },
+
+      "services/": {
+        "authService.js": "Supabase auth (signUp, signIn, signOut, resetPassword, updatePassword, getSession, guest mode)",
+
+        "core/": {
+          "appInitializerService.js": "Startup with auth initialization",
+          "navigationService.js": "Page routing with auth checks",
+          "persistenceService.js": "Local storage with midnight reset"
+        },
+
+        "actions/": {
+          "actionService.js": "Event delegation (summary before data-action, ?? for logIndex 0)",
+          "actionHandlers.js": "All data-action callbacks with profile handler"
+        },
+
+        "timer/": {
+          "timerService.js": "Core timer state (85 lines)",
+          "timerCompletionService.js": "Rest completion (106 lines) with correct parameters",
+          "timerResumptionService.js": "Visibility-based resumption (102 lines)"
+        },
+
+        "workout/": {
+          "workoutService.js": "Re-export index (34 lines)",
+          "workoutStateService.js": "Active card state (117 lines)",
+          "workoutLogGenerationService.js": "Log creation (187 lines)",
+          "workoutLogPreservationService.js": "Log preservation (116 lines)",
+          "workoutProgressionService.js": "Advancement logic (178 lines)",
+          "workoutMetricsService.js": "Duration calculations (67 lines)",
+          "timerLedgerService.js": "Remaining workout time for dual-mode"
+        },
+
+        "ui/": {
+          "modalService.js": "Modal management",
+          "scrollService.js": "Smart viewport scrolling",
+          "selectorService.js": "Selector state and muting",
+          "clockService.js": "Time display updates (60s intervals)"
+        },
+
+        "data/": {
+          "historyService.js": "Workout history"
+        },
+
+        "integrations/": {
+          "youtubeService.js": "Video link injection for Major1 exercises"
+        }
+      },
+
+      "styles/": {
+        "index.css": "CSS manifest with login page imports",
+        "base/": {
+          "_variables.css": "Global tokens (16px/7px rhythm, --header-margin-bottom: 4px)",
+          "_reset.css": "Scrollbar stabilization",
+          "_typography.css": "line-height: 1 (prevents descender cutoff)",
+          "_scaffolding.css": "Card padding separation (shell vs content)"
+        },
+        "components/": {
+          "_buttons.css": "Button variants (green/blue/red/yellow)",
+          "_inputs.css": "Form input styling",
+          "_selectors.css": "Re-export index",
+          "_selectors-base.css": "Core structure (102 lines)",
+          "_selectors-truncation.css": "Color-matched ellipsis (130 lines)",
+          "_selectors-muting.css": "Bidirectional muting + exercise exception (32 lines)",
+          "_modals.css": "Modal overlay (fade transitions)",
+          "_card-headers.css": "line-height: 1, margin-bottom: 4px",
+          "_card-foundations.css": "11px top + border = 16px visual",
+          "_action-button-groups.css": "No !important (removed 3 flags)"
+        },
+        "utils/": {
+          "_helpers.css": ".stack (gap-based), truncation, color classes",
+          "_animations.css": "Re-export index",
+          "_animations-general.css": "Glow/pulse/fill (43 lines)",
+          "_animations-fuel-gauge.css": "6 plate animations (110 lines)",
+          "_animations-modal.css": "Selection feedback green/yellow (58 lines)"
+        },
+        "themes/": {
+          "_default.css": "Default theme",
+          "_dark.css": "Dark theme overrides"
+        }
+      },
+
+      "shared/": {
+        "ui.js": "Re-export from utils/uiComponents.js",
+        "utils.js": "Re-export index",
+        "utils/": {
+          "timeUtils.js": "Time/date formatting (87 lines)",
+          "calendarUtils.js": "Calendar calculations (91 lines)",
+          "domUtils.js": "DOM manipulation (53 lines)",
+          "generalUtils.js": "Misc helpers (90 lines)",
+          "uiComponents.js": "UI builders + ui refs (79 lines)",
+          "sessionValidation.js": "Reactive session cycling validation (139 lines)"
+        }
+      }
+    }
+  },
+
+  "critical_notes": {
+    "authentication": "Supabase auth with guest mode fallback, sessions persist in localStorage (never expire on free tier)",
+    "password_reset": "Email token flow with session validation, dev mode (?dev=true) bypasses redirect only",
+    "font_metrics": "Asymmetric padding/margins for symmetric visual spacing (23px → 32px visual)",
+    "cascade_specificity": ".parent .component pattern overrides globals without !important",
+    "nullish_coalescing": "Use ?? not || when 0 is valid (actionService.js:61)",
+    "animation_unification": "Unified timeline more reliable than delays (workout-log.animations.css)",
+    "event_delegation_order": "Summary clicks BEFORE data-action (prevents scroll jump)",
+    "css_spacing_system": "16px/7px rhythm: line-height: 1 + margin-bottom: 4px (+ 3px descender)",
+    "config_header_locking": "Lock prevents collapse during selector operations",
+    "wake_lock_visibility": "Check visibilityState before request",
+    "dual_mode_layout": "CSS table with transparent borders",
+    "selector_muting": "Bidirectional with exercise exception (border-only preserves visibility)",
+    "reactive_validation": "Session cycling purely reactive to current log state (clearing sets releases locks)",
+    "timer_cleanup": "Pass restState as first parameter to completion handlers",
+    "pointer_events_override": "pointer-events: auto overrides global .is-muted for quick buttons"
+  },
+
+  "architecture_patterns": {
+    "component_pattern": "Each feature: .index.js (logic), .template.js (HTML), .style.css (styles)",
+    "state_flow": "User action → Service → appState mutation → renderAll() → persistenceService.saveState()",
+    "auth_flow": "Supabase client → authService → appState.auth → navigationService routing",
+    "file_splitting": "Logical cohesion trumps line limits",
+    "css_imports": "Entry point imports all components",
+    "re_export_indexes": "Old files become re-exports for gradual migration",
+    "animation_sequencing": "Unified timeline with keyframe percentages",
+    "documentation_pattern": "CSS: Architecture/Spacing/Dependencies, JS: concise headers, CEMENT disabled"
+  },
+
+  "v5_5_1_changes": {
+    "authentication_added": [
+      "src/lib/supabaseClient.js - Supabase initialization",
+      "src/services/authService.js - Full auth service (signUp/In/Out, resetPassword, getSession)",
+      "src/features/login-page/ - Complete login/signup UI",
+      "src/features/profile-page/ - Profile management UI",
+      "src/features/reset-password/ - Password reset flow",
+      "reset-password.html - Standalone reset page"
+    ],
+    "core_modified": [
+      "src/config.js - Added Supabase URL/key config",
+      "src/main.js - Added auth routing",
+      "src/state.js - Added auth state (user, session, isAuthenticated)",
+      "src/features/side-nav/side-nav.template.js - Added Profile/Logout links",
+      "src/services/core/appInitializerService.js - Added auth initialization",
+      "src/services/actions/actionHandlers.js - Added profile handler",
+      "src/styles/index.css - Added login page imports"
+    ],
+    "ui_polish": [
+      "Login page - Applied 16px/7px rhythm with font metric compensation",
+      "Login page - Removed 2 !important flags (increased specificity)",
+      "Login page - Comprehensive CLAUDE standards documentation"
+    ],
+    "github_issues": [
+      "Issue #7 - Password Reset Security (open)",
+      "Issue #8 - Login Page Polish (closed)",
+      "Issue #9 - Forgot Password Modal (open)",
+      "Issue #10 - Reset Password Page (open)"
+    ],
+    "technical_discoveries": [
+      "Font metrics require asymmetric padding/margins for symmetric visual spacing",
+      "Large title fonts (2.5rem) need 8px padding for 16px visual (vs 11px default)",
+      ".parent .component specificity overrides globals without !important",
+      "Supabase sessions persist indefinitely on free tier",
+      "Email token auth auto-authenticates via URL parameters"
+    ],
+    "standards_updates": [
+      "CLAUDE_STANDARDS.md - CEMENT system commented out (testing lean approach)",
+      "CLAUDE.md - Added GitHub issue tracking section",
+      "CLAUDE_SESSION_HANDOFF.md - Summarized to 130 lines, added v5.5.1",
+      "CLAUDE_PROJECT_NOTES.md - Added v5.5.1 changelog"
+    ]
+  }
+}

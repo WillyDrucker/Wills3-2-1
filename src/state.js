@@ -11,7 +11,8 @@
    4. Partner: Partner workout state (user1/user2)
    5. Rest timers: Normal and superset rest timer states
    6. UI: Page navigation, modals, video player, side nav
-   7. User: Login status, history, persistent data
+   7. Auth: Authentication state (isAuthenticated, isGuest, user, session)
+   8. User: User history and persistent data
 
    CEMENT: Color class separation for independent styling
    - currentSessionColorClass: Header colors (Minutes Remaining, clock)
@@ -153,9 +154,14 @@ export function getInitialAppState() {
       },
     },
 
+    auth: {
+      isAuthenticated: false,
+      isGuest: false,
+      user: null,
+      session: null,
+    },
+
     user: {
-      isLoggedIn: false,
-      data: null,
       history: {
         workouts: [],
       },

@@ -128,6 +128,13 @@ export async function initialize(dependencies) {
       appState.ui.currentPage = loadedState.ui.currentPage;
     }
 
+    // 🔒 CEMENT: Authenticated users always go to homepage (not saved page)
+    // Guest mode preserves last page from localStorage
+    if (appState.auth?.isAuthenticated) {
+      appState.ui.currentPage = "home";
+    }
+
+
     // 🔒 CEMENT: Set timer color after loading state
     // Today = green (text-plan), Any other day = olive (text-deviation)
     if (appState.session.currentDayName) {
@@ -158,3 +165,4 @@ export async function initialize(dependencies) {
   initializeActiveCardEventListeners();
   initializeWakeLock();
 }
+

@@ -6,6 +6,67 @@
 
 ## VERSION CHANGELOG
 
+### **v5.5.1 - Supabase Authentication & Login Page Polish**
+**Date**: 2025-10-08
+**Problem**: Application needed user authentication system with email/password, password reset flow, and polished login UI following 16px/7px rhythm
+**Solution**: Integrated Supabase authentication with complete login/reset flow, applied CLAUDE standards to login page with precise font metric compensation
+**Key Achievements**:
+- **Supabase integration**: Full auth system (signUp, signIn, signOut, resetPassword, updatePassword, getSession)
+- **Password reset flow**: Email token auth with security validation, dev mode for testing
+- **Login page polish**: 16px/7px rhythm with font metric compensation, removed !important flags
+- **CLAUDE standards**: Comprehensive documentation, cascade specificity, tokenization
+- **GitHub issues**: Created 4 issues for tracking (1 closed, 3 pending user confirmation)
+**Root Causes Identified**:
+- **Font metric compensation**: Large fonts (2.5rem) need different compensation than small (1.25rem) for visual spacing
+- **Asymmetric padding**: Top/bottom need different values to achieve symmetric visual spacing
+- **Session persistence**: Supabase free tier sessions never expire (stored in localStorage)
+- **Cascade specificity**: Increase parent specificity instead of using !important
+**Technical Architecture**:
+- **Auth service**: Centralized authentication in `src/services/authService.js`
+- **Supabase client**: Initialized in `src/lib/supabaseClient.js`
+- **Feature pattern**: Each feature has .index.js (logic), .template.js (HTML), .style.css (styles)
+- **Standalone pages**: reset-password.html for email token flow
+**Files Added**:
+- `src/features/login-page/` - login-page.index.js, login-page.template.js, login-page.style.css
+- `src/features/profile-page/` - profile-page.index.js, profile-page.template.js, profile-page.style.css
+- `src/features/reset-password/` - reset-password.index.js, reset-password.template.js, reset-password.style.css
+- `src/lib/supabaseClient.js` - Supabase initialization with environment config
+- `src/services/authService.js` - Authentication methods
+- `reset-password.html` - Standalone reset password page
+**Files Modified**:
+- `src/config.js` - Added Supabase URL/key configuration
+- `src/main.js` - Added authentication routing logic
+- `src/state.js` - Added auth state (user, session, isAuthenticated)
+- `src/features/side-nav/side-nav.template.js` - Added Profile/Logout links
+- `src/services/core/appInitializerService.js` - Added auth initialization
+- `src/services/actions/actionHandlers.js` - Added profile handler
+- `src/styles/index.css` - Added login page imports
+**Login Page UI Specifications**:
+- Title: 32px visual from Email (23px actual + font metrics compensation)
+- Email/Password labels: 1.25rem (matches config card headers)
+- Label to input: 7px visual (uses `--header-margin-bottom: 4px`)
+- Email to Password: 16px visual (13px compensated)
+- Forgot Password link: 16px visual above/below (13px/12px asymmetric)
+- OR divider: 16px visual above/below (13px/12px asymmetric)
+**CLAUDE Standards Applied**:
+- Removed 2 !important flags from login page (cascade specificity pattern)
+- Comprehensive file headers with Architecture/Spacing System/Dependencies
+- Tokenized all possible values (hard-coded values are font-metric compensations only)
+- Inline documentation for complex patterns (divider overlay, modal, responsive)
+- Semantic class naming throughout
+**GitHub Issues Created**:
+- Issue #7: Password Reset Dev Mode & Session Validation (open - security testing)
+- Issue #8: Login Page Typography & Spacing Polish (closed)
+- Issue #9: Forgot Password Modal UI Polish (open - requirements pending)
+- Issue #10: Password Reset Page UI Polish (open - requirements pending)
+**Technical Discoveries**:
+- Font metrics require asymmetric padding/margins for symmetric visual spacing
+- Large title fonts (2.5rem) need 8px padding for 16px visual (vs 11px default)
+- `.parent .component` specificity pattern overrides globals without !important
+- Supabase sessions persist indefinitely on free tier (Pro plan required for timeout)
+- Email token auth auto-authenticates user via URL parameters
+**Status**: COMPLETE - Authentication system functional, login page polished to standards, pending user testing
+
 ### **v5.5.0 - Complete CLAUDE Standards Application & Core File Documentation**
 **Date**: 2025-10-05
 **Problem**: Final core files (config.js, main.js, state.js, index.css/html) lacked CLAUDE standards, /styles directory needed documentation headers, workout log buttons broken, animation timing issues
