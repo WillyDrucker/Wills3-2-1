@@ -24,7 +24,7 @@ export function getLoginPageTemplate() {
 
           <div class="login-form">
             <div class="login-input-group">
-              <label for="login-email" class="login-label">Email</label>
+              <label class="login-label">Email</label>
               <input
                 type="email"
                 id="login-email"
@@ -36,7 +36,7 @@ export function getLoginPageTemplate() {
             </div>
 
             <div class="login-input-group">
-              <label for="login-password" class="login-label">Password</label>
+              <label class="login-label">Password</label>
               <input
                 type="password"
                 id="login-password"
@@ -106,7 +106,7 @@ export function getLoginPageTemplate() {
           <p class="reset-modal-description">Enter your email address and we'll send you a link to reset your password.</p>
 
           <div class="reset-input-group">
-            <label for="reset-email" class="reset-label">Email</label>
+            <label class="reset-label">Email</label>
             <input
               type="email"
               id="reset-email"

@@ -10,7 +10,7 @@
    - renderAll: Main render loop - clears and re-renders entire UI
    - renderError: Displays top-level error messages
 
-   CEMENT: Render function separation prevents animation restarts
+   Render function separation prevents animation restarts:
    - Mode switching uses updateActiveWorkoutAndLog (full re-render)
    - Session cycling uses updateActiveWorkoutPreservingLogs (minimal update)
    - Session cycling only updates display, never re-renders active card/log
@@ -83,7 +83,7 @@ function updateActiveWorkoutPreservingLogs() {
   workoutProgressionService.recalculateCurrentStateAfterLogChange();
   updateWorkoutTimeRemaining();
 
-  /* CEMENT: Minimal render preserves animations - update session display, active card, and workout log */
+  /* Minimal render preserves animations - update session display, active card, and workout log */
   setTimeout(() => {
     renderSessionDisplay();
     renderFocusDisplay();
@@ -132,10 +132,10 @@ function renderError(message) {
   ui.workoutFooter.innerHTML = "";
 }
 
-/* 🔒 CEMENT: Login-first authentication flow
+/* Login-first authentication flow
  * 1. Check if user has existing session (Supabase session or guest mode)
  * 2. If not authenticated: Show login page
- * 3. If authenticated or guest: Initialize and render app
+ * 3. If authenticated: Initialize at homepage, Guest: Initialize at workout page
  * 4. Listen for auth-success event to initialize app after login
  */
 async function checkAuthAndInitialize() {
@@ -144,10 +144,11 @@ async function checkAuthAndInitialize() {
 
   // If authenticated or guest mode, initialize app
   if (isAuthenticated() || isGuest()) {
-    // 🔒 CEMENT: Authenticated users always start at homepage on fresh load
-    // Guest mode uses saved state (preserves last page for quick workout access)
+    // Authenticated users → homepage, Guests → workout page (ignore saved page state)
     if (isAuthenticated()) {
       appState.ui.currentPage = "home";
+    } else if (isGuest()) {
+      appState.ui.currentPage = "workout";
     }
 
     appInitializerService.initialize({
@@ -168,9 +169,11 @@ async function checkAuthAndInitialize() {
 
 // Listen for successful authentication (from login page)
 window.addEventListener("auth-success", () => {
-  // 🔒 CEMENT: Authenticated users go to homepage, guests use saved state
+  // Authenticated users → homepage, Guests → workout page
   if (isAuthenticated()) {
     appState.ui.currentPage = "home";
+  } else if (isGuest()) {
+    appState.ui.currentPage = "workout"; // Forces workout page (not homepage, not saved state)
   }
 
   appInitializerService.initialize({

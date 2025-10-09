@@ -10,6 +10,10 @@ Will's 3-2-1 is a browser-based workout tracking application using vanilla JavaS
 
 **Philosophy**: SUPER STUPID SIMPLE (SSS) - The user experience must be effortless and guided. REMOVE, DON'T ADD - Simplify or remove complexity when possible.
 
+**UI/UX Rules**:
+- **NO HOVER EFFECTS**: Zero mouse-over effects anywhere in the application. Touch-first design.
+- **NO TRANSITIONS/DELAYS**: All UI changes must be immediate. No CSS transitions or animation delays. This is a workout app - everything must be big, thick, bold, and instant for performance.
+
 ## Quick Start
 
 **Run application**: `python -m http.server 8000` then open `localhost:8000`
@@ -48,20 +52,26 @@ src/
 
 ## GitHub Issue Tracking
 
-**Issue Management**:
-- Create issues with concise descriptions (2-3 sentences max)
-- **DO NOT close issues** until user explicitly confirms completion
-- Include issue numbers in commit messages where applicable
-- Keep issue comments brief and focused
+**Issue Creation** (Keep lean):
+- Concise descriptions (2-3 sentences max)
+- High-level acceptance criteria only
+- No code diffs during creation
 
 **Issue Types**:
 - **Bug**: Critical bugs, broken functionality
 - **Feature**: New features or enhancements
 - **Task**: Refactoring, documentation, standards application
 
-**Status**:
-- Issues remain open until user confirms - never auto-close
-- User will test and verify before closing
+**Issue Updates** (After fix confirmed):
+- Add minimal solution summary
+- Add code diff highlighting the fix (file + line numbers)
+- **DO NOT** show iterative code changes - repository tracks that
+- If issue snowballs, add more depth but stay lean
+
+**Issue Closure**:
+- **DO NOT close** until user explicitly confirms
+- User tests and verifies before closing
+- Include issue number in commit messages
 
 ## Notification System
 

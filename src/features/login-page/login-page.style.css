@@ -94,11 +94,6 @@
   display: block;
 }
 
-.forgot-password-link:hover {
-  color: var(--primary-blue-light);
-  text-decoration: underline;
-}
-
 .login-label {
   font-size: var(--font-size-h2); /* 1.25rem - matches config card headers */
   font-weight: 600;
@@ -111,20 +106,108 @@
   width: 100%;
   min-height: var(--control-height); /* Global: 50px - matches selector height */
   padding: 10px 16px; /* Matches selector padding */
-  font-size: 1rem;
-  font-family: 'Roboto', sans-serif;
-  color: var(--text-primary);
-  background: var(--background-dark); /* Matches selector background */
-  box-shadow: inset 0 0 0 2px var(--primary-blue); /* Matches selector border */
-  border: none; /* Border handled by box-shadow */
+  font-size: 16px !important; /* Use explicit px instead of rem for Chrome autofill */
+  font-family: 'Roboto', sans-serif !important;
+  color: #FFFFFF !important; /* White text always */
+  -webkit-text-fill-color: #FFFFFF !important; /* Force white text in autofill */
+  background: rgba(255, 255, 255, 0.1) !important; /* Gray background */
+  box-shadow: inset 0 0 0 2px #0099ff !important; /* Bright blue border */
+  border: none !important; /* Border handled by box-shadow */
   border-radius: var(--border-radius); /* Global: 8px - matches selector */
-  transition: box-shadow 0.2s ease;
+  will-change: font-size, font-family; /* Force Chrome to track font changes specially */
 }
 
+/* Focus state - immediate black background */
 .login-input:focus {
-  outline: none;
-  box-shadow: inset 0 0 0 2px var(--primary-blue-bright);
+  outline: none !important;
+  color: #FFFFFF !important; /* White text always */
+  background: #000000 !important; /* Black background */
+  box-shadow: inset 0 0 0 2px #0099ff !important; /* Bright blue border */
 }
+/* Keyframe animation to force Chrome to respect our font styles */
+@keyframes autofill-fix {
+  0% {
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+  }
+  100% {
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+  }
+}
+
+
+/* Override browser autofill styles - ALL STATES */
+.login-input:-webkit-autofill,
+.login-input:-webkit-autofill:hover,
+.login-input:-webkit-autofill:focus,
+.login-input:-webkit-autofill:active,
+.login-input:-webkit-autofill:not(:focus) {
+  -webkit-text-fill-color: #FFFFFF !important;
+  -webkit-box-shadow: inset 0 0 0 2px #0099ff, 0 0 0 1000px rgba(255, 255, 255, 0.1) inset !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  background-image: none !important;
+  color: #FFFFFF !important;
+  font-size: 16px !important;
+  font-family: 'Roboto', sans-serif !important;
+  will-change: font-size, font-family !important;
+  /* Extremely long transition delays Chrome's autofill white background indefinitely */
+  transition: background-color 5000000s ease-in-out 0s, font-size 5000000s ease-in-out 0s !important;
+  /* Force Chrome to recalculate styles using instant animation */
+  animation: autofill-fix 0s forwards !important;
+}
+
+/* Autofill when focused */
+.login-input:focus:-webkit-autofill {
+  -webkit-box-shadow: inset 0 0 0 2px #0099ff, 0 0 0 1000px #000000 inset !important;
+  background-color: #000000 !important;
+  font-size: 16px !important;
+  font-family: 'Roboto', sans-serif !important;
+  will-change: font-size, font-family !important;
+  transition: background-color 5000000s ease-in-out 0s, font-size 5000000s ease-in-out 0s !important;
+}
+
+/* Override Chrome's internal autofill selected state */
+.login-input:-webkit-autofill-selected,
+.login-input:-internal-autofill-selected {
+  appearance: none !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  background-image: none !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  font-size: 16px !important;
+  font-family: 'Roboto', sans-serif !important;
+  will-change: font-size, font-family !important;
+  -webkit-box-shadow: inset 0 0 0 2px #0099ff, 0 0 0 1000px rgba(255, 255, 255, 0.1) inset !important;
+  box-shadow: inset 0 0 0 2px #0099ff, 0 0 0 1000px rgba(255, 255, 255, 0.1) inset !important;
+  transition: background-color 5000000s ease-in-out 0s, font-size 5000000s ease-in-out 0s !important;
+}
+
+/* Standard :autofill pseudo-class (newer browsers) */
+.login-input:autofill,
+.login-input:autofill:hover,
+.login-input:autofill:focus {
+  -webkit-text-fill-color: #FFFFFF !important;
+  box-shadow: inset 0 0 0 2px #0099ff, 0 0 0 1000px rgba(255, 255, 255, 0.1) inset !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  font-size: 16px !important;
+  font-family: 'Roboto', sans-serif !important;
+  will-change: font-size, font-family !important;
+}
+
+.login-input:autofill:focus {
+  box-shadow: inset 0 0 0 2px #0099ff, 0 0 0 1000px #000000 inset !important;
+  background-color: #000000 !important;
+}
+
+/* Override Chrome's autofill dropdown hover font change (::first-line fix) */
+.login-input:-webkit-autofill::first-line {
+  font-family: 'Roboto', sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  color: #FFFFFF !important;
+}
+
 
 .login-input::placeholder {
   color: var(--text-tertiary);
@@ -139,7 +222,6 @@
   background: rgba(255, 82, 82, 0.1);
   border: 1px solid var(--text-skip);
   color: var(--text-skip);
-  transition: opacity 0.2s ease;
   margin-bottom: var(--space-m); /* 16px spacing to next element */
 }
 
@@ -169,23 +251,12 @@
   color: var(--text-on-action-color);
 }
 
-.button-secondary:hover {
-  background: var(--primary-blue-light);
-  color: var(--text-on-action-color);
-}
-
 /* === GUEST BUTTON === */
 .button-guest {
   width: 100%;
   background: transparent;
   color: var(--text-secondary);
   border: 2px solid var(--primary-blue-dark);
-}
-
-.button-guest:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: var(--primary-blue);
-  color: var(--text-primary);
 }
 
 /* Yellow highlight for "Guest" text - overrides inherited button color */

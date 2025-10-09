@@ -34,7 +34,11 @@
       "Bash(gh auth:*)",
       "Bash(gh issue comment:*)",
       "Bash(gh issue close:*)",
-      "Bash(gh issue reopen:*)"
+      "Bash(gh issue reopen:*)",
+      "Bash(gh issue create:*)",
+      "Bash(gh issue list:*)",
+      "WebSearch",
+      "WebFetch(domain:stackoverflow.com)"
     ],
     "deny": [],
     "ask": []
