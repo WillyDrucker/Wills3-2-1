@@ -30,9 +30,6 @@ export function getWorkoutCalendarHTML() {
         <div class="calendar-view-container history-calendar ${containerClass}">
             ${daySectionsHtml}
         </div>
-        <div class="card-footer-action-single history-footer">
-            <button class="action-button button-rest-skip history-clear-button" data-action="clearHistory">Test Clear History</button>
-        </div>
     </div>
     `;
 }

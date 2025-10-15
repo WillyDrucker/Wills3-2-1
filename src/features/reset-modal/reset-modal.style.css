@@ -1,0 +1,103 @@
+/* ==========================================================================
+   RESET MODAL - Styling
+
+   Fullscreen modal for reset operations. Matches "Reset Password Link" modal
+   layout with title and stacked action buttons.
+
+   Architecture: Centered card on dark overlay
+   - Title: 2.5rem (matches "Will's 3-2-1")
+   - 3 stacked buttons with 16px spacing
+   - Green/Yellow/Red buttons with black text
+
+   Dependencies:
+   - _variables.css: spacing tokens, colors
+   - _card-foundations.css: base card structure
+   - _action-button-groups.css: button patterns
+
+   Used by: Reset modal
+   ========================================================================== */
+
+/* === MODAL OVERLAY === */
+.reset-options-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8); /* Dark overlay */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Above all page content */
+  padding: 10px; /* 10px from edges */
+}
+
+.reset-options-modal-overlay.is-hidden {
+  display: none;
+}
+
+/* === MODAL CONTENT CARD === */
+.reset-options-modal-content {
+  width: 100%;
+  max-width: 400px; /* Matches login/reset password modals */
+  padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
+  border: 2px solid var(--primary-blue); /* Blue border like Current Plan selector */
+}
+
+/* === TITLE === */
+.reset-options-modal-title {
+  font-size: var(--font-size-h1); /* Global: 2.5rem - matches "Will's 3-2-1" */
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: var(--text-shadow-subtle); /* Global: 0 2px 4px rgba(0, 0, 0, 0.8) */
+  text-align: center;
+  color: var(--text-primary);
+  margin: -3px 0 var(--space-m) 0; /* 16px to first button */
+}
+
+/* === ACTION BUTTONS === */
+.reset-options-modal-content .action-button {
+  width: 100%;
+  margin-bottom: var(--space-m); /* 16px spacing between buttons */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.3; /* Tighter line height for wrapped text */
+}
+
+.reset-options-modal-content .action-button:last-child {
+  margin-bottom: 0; /* No margin on last button */
+}
+
+/* Green button - Reset Workout Defaults */
+.button-reset-defaults {
+  background-color: var(--log-green); /* Global: #00cc00 - green */
+  color: #000000; /* Black text */
+}
+
+.button-reset-defaults:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Yellow button - Reset Workout Defaults & Clear Logs */
+.button-reset-and-clear {
+  background-color: var(--text-yellow-maintenance); /* Global: yellow */
+  color: #000000; /* Black text */
+}
+
+/* Red button - Clear My Data */
+.button-clear-data {
+  background-color: var(--skip-red); /* Global: #b30000 - red */
+  color: #000000; /* Black text */
+}
+
+/* === RESPONSIVE === */
+/* Allow button text to wrap at narrow viewports */
+@media (max-width: 360px) {
+  .reset-options-modal-content .action-button {
+    white-space: normal;
+    line-height: 1.2;
+  }
+}

@@ -128,10 +128,13 @@ export async function initialize(dependencies) {
       appState.ui.currentPage = loadedState.ui.currentPage;
     }
 
-    // 🔒 CEMENT: Authenticated users always go to homepage (not saved page)
-    // Guest mode preserves last page from localStorage
+    // 🔒 CEMENT: Force initial page based on auth state
+    // Authenticated users → homepage
+    // Guest users → workout page (ignore saved page state)
     if (appState.auth?.isAuthenticated) {
       appState.ui.currentPage = "home";
+    } else if (appState.auth?.isGuest) {
+      appState.ui.currentPage = "workout";
     }
 
 

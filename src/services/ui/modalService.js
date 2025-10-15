@@ -47,6 +47,7 @@ export function open(modalName, allowStacking = false) {
   }
   appState.ui.activeModal = modalName;
   document.documentElement.classList.add("is-modal-open");
+  document.documentElement.setAttribute("data-active-modal", modalName);
 
   _renderAll();
 
@@ -74,6 +75,7 @@ export function close() {
   if (modalStack.length > 0) {
     const previousModal = modalStack.pop();
     appState.ui.activeModal = previousModal;
+    document.documentElement.setAttribute("data-active-modal", previousModal);
 
     _renderAll();
 
@@ -92,6 +94,7 @@ export function close() {
   // No stacked modals, fully close
   appState.ui.activeModal = null;
   document.documentElement.classList.remove("is-modal-open");
+  document.documentElement.removeAttribute("data-active-modal");
 
   _renderAll();
 

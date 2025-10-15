@@ -12,11 +12,8 @@
    5. Password updated via updateUser()
    6. Redirect to login page
 
-   🔒 CEMENT: Security
-   - User must be authenticated (via email token) to access this page
-   - Password must be min 6 characters
-   - Passwords must match
-   - Auto-redirect to login on success or if not authenticated
+   Security: User must be authenticated via email token to access page.
+   Password validation requires min 6 characters and matching passwords.
 
    Dependencies: authService, getResetPasswordTemplate
    Used by: reset-password.html (standalone page)
@@ -73,31 +70,30 @@ function attachEventListeners() {
 
   // Update password button
   resetBtn.addEventListener("click", async () => {
-    const newPassword = newPasswordInput.value;
-    const confirmPassword = confirmPasswordInput.value;
+    const newPassword = newPasswordInput.value.trim();
+    const confirmPassword = confirmPasswordInput.value.trim();
 
     // Validation
     if (!newPassword || !confirmPassword) {
-      showError(errorDiv, "Please fill in all fields");
+      showButtonError(resetBtn, "Fill In All Fields");
       return;
     }
 
     if (newPassword.length < 6) {
-      showError(errorDiv, "Password must be at least 6 characters");
+      showButtonError(resetBtn, "Min 6 Characters");
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      showError(errorDiv, "Passwords do not match");
+      showButtonError(resetBtn, "Passwords Don't Match");
       return;
     }
 
     // Security check: Verify session exists before updating password
     const { session } = await getSession();
-    console.log("🔒 Session check:", session ? "AUTHENTICATED" : "NOT AUTHENTICATED");
 
     if (!session) {
-      showError(errorDiv, "Authentication required. Please use the reset link from your email.");
+      showButtonError(resetBtn, "Authentication Required");
       return;
     }
 
@@ -106,12 +102,10 @@ function attachEventListeners() {
     const { error } = await updatePassword(newPassword);
 
     if (error) {
-      showError(errorDiv, error);
       hideLoading(resetBtn, "Update Password");
+      showButtonError(resetBtn, "Update Failed");
     } else {
-      hideError(errorDiv);
-      showSuccess(errorDiv, "Password updated successfully! Redirecting to login...");
-      hideLoading(resetBtn, "Update Password");
+      hideLoading(resetBtn, "Success! Redirecting...");
 
       // Redirect to login after 2 seconds
       setTimeout(() => {
@@ -129,34 +123,34 @@ function attachEventListeners() {
 }
 
 /**
- * Show error message
+ * Show error in button with red flash animation
+ * Matches active-exercise card input validation flash (3 pulses, 1700ms total)
  */
-function showError(errorDiv, message) {
-  if (errorDiv) {
-    errorDiv.textContent = message;
-    errorDiv.classList.remove("is-hidden", "reset-password-success");
-    errorDiv.classList.add("reset-password-error");
-  }
-}
+function showButtonError(button, message) {
+  if (!button) return;
 
-/**
- * Hide error message
- */
-function hideError(errorDiv) {
-  if (errorDiv) {
-    errorDiv.classList.add("is-hidden");
-  }
-}
+  // Save original state
+  const originalDisabled = button.disabled;
 
-/**
- * Show success message
- */
-function showSuccess(errorDiv, message) {
-  if (errorDiv) {
-    errorDiv.textContent = message;
-    errorDiv.classList.remove("is-hidden", "reset-password-error");
-    errorDiv.classList.add("reset-password-success");
-  }
+  // Show error message and disable button
+  button.textContent = message;
+  button.disabled = true;
+
+  // Override disabled state filters to show true colors during animation
+  button.style.filter = "none";
+  button.style.opacity = "1";
+
+  // Add CSS animation class (3 pulses, 0.56s each = 1.68s total)
+  button.classList.add("button-is-flashing");
+
+  // Remove class and restore state after animation completes (1700ms)
+  setTimeout(() => {
+    button.classList.remove("button-is-flashing");
+    button.textContent = "Update Password";
+    button.style.filter = ""; // Restore default filter
+    button.style.opacity = ""; // Restore default opacity
+    button.disabled = originalDisabled;
+  }, 1700);
 }
 
 /**

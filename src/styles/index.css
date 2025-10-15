@@ -45,6 +45,7 @@
 @import url("../features/superset-modal/superset-modal.style.css");
 @import url("../features/partner-modal/partner-modal.style.css");
 @import url("../features/reset-confirmation-modal/reset-confirmation-modal.style.css");
+@import url("../features/reset-modal/reset-modal.style.css");
 
 /* Pages */
 @import url("../features/login-page/login-page.style.css");

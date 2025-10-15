@@ -30,13 +30,17 @@ import {
   handleHistoryTabChange,
   handlePreviousWeek,
   handleNextWeek,
-  handleClearHistory,
 } from "features/my-data/my-data.index.js";
 import {
   handleOpenSideNav,
   handleCloseSideNav,
 } from "features/side-nav/side-nav.index.js";
 import { handleConfirmReset } from "features/reset-confirmation-modal/reset-confirmation-modal.index.js";
+import {
+  handleResetWorkoutDefaults,
+  handleResetWorkoutAndClearLogs,
+  handleClearMyData,
+} from "features/reset-modal/reset-modal.index.js";
 import {
   handleShowVideo,
   handleCloseVideo,
@@ -134,7 +138,6 @@ export function getActionHandlers() {
     },
     previousWeek: handlePreviousWeek,
     nextWeek: handleNextWeek,
-    clearHistory: handleClearHistory,
     scrollToTop: () => window.scrollTo({ top: 0, behavior: 'smooth' }),
     scrollToActiveCard: () => {
       const activeCardElement = document.getElementById('active-exercise-card') || document.getElementById('dual-mode-card');
@@ -232,6 +235,27 @@ export function getActionHandlers() {
       persistenceService.saveState();
     },
     openResetConfirmationModal: () => modalService.open("reset"),
+    openResetOptionsModal: () => {
+      handleCloseSideNav();
+      modalService.open("resetOptions");
+    },
+    closeResetOptionsModal: () => modalService.close(),
+    resetWorkoutDefaults: () => {
+      if (handleResetWorkoutDefaults()) {
+        modalService.close();
+        coreActions.updateActiveWorkoutAndLog();
+      }
+    },
+    resetWorkoutAndClearLogs: () => {
+      handleResetWorkoutAndClearLogs();
+      modalService.close();
+      coreActions.updateActiveWorkoutAndLog();
+    },
+    clearMyData: () => {
+      handleClearMyData();
+      modalService.close();
+      coreActions.renderAll();
+    },
     setNormalMode: () => {
       selectorService.closeAll();
       navigationService.setNormalMode();

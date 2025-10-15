@@ -39,6 +39,9 @@ export const ui = {
   resetConfirmationModalContainer: document.getElementById(
     "reset-confirmation-modal-container"
   ),
+  resetOptionsModalContainer: document.getElementById(
+    "reset-options-modal-container"
+  ),
 };
 
 /**

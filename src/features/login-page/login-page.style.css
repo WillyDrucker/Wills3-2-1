@@ -106,23 +106,23 @@
   width: 100%;
   min-height: var(--control-height); /* Global: 50px - matches selector height */
   padding: 10px 16px; /* Matches selector padding */
-  font-size: 16px !important; /* Use explicit px instead of rem for Chrome autofill */
+  font-size: 16px !important;
   font-family: 'Roboto', sans-serif !important;
-  color: #FFFFFF !important; /* White text always */
-  -webkit-text-fill-color: #FFFFFF !important; /* Force white text in autofill */
-  background: rgba(255, 255, 255, 0.1) !important; /* Gray background */
-  box-shadow: inset 0 0 0 2px #0099ff !important; /* Bright blue border */
-  border: none !important; /* Border handled by box-shadow */
-  border-radius: var(--border-radius); /* Global: 8px - matches selector */
-  will-change: font-size, font-family; /* Force Chrome to track font changes specially */
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: inset 0 0 0 2px var(--primary-blue) !important; /* Global: #0099ff */
+  border: none !important;
+  border-radius: var(--border-radius); /* Global: 8px */
+  will-change: font-size, font-family;
 }
 
-/* Focus state - immediate black background */
+/* Focus state - black background on focus */
 .login-input:focus {
   outline: none !important;
-  color: #FFFFFF !important; /* White text always */
-  background: #000000 !important; /* Black background */
-  box-shadow: inset 0 0 0 2px #0099ff !important; /* Bright blue border */
+  color: #FFFFFF !important;
+  background: var(--background-dark) !important; /* Global: #000000 */
+  box-shadow: inset 0 0 0 2px var(--primary-blue) !important; /* Global: #0099ff */
 }
 /* Keyframe animation to force Chrome to respect our font styles */
 @keyframes autofill-fix {
@@ -137,37 +137,36 @@
 }
 
 
-/* Override browser autofill styles - ALL STATES */
+/* === CHROME AUTOFILL OVERRIDES === */
+/* All !important flags REQUIRED to override Chrome's aggressive autofill styling */
 .login-input:-webkit-autofill,
 .login-input:-webkit-autofill:hover,
 .login-input:-webkit-autofill:focus,
 .login-input:-webkit-autofill:active,
 .login-input:-webkit-autofill:not(:focus) {
   -webkit-text-fill-color: #FFFFFF !important;
-  -webkit-box-shadow: inset 0 0 0 2px #0099ff, 0 0 0 1000px rgba(255, 255, 255, 0.1) inset !important;
+  -webkit-box-shadow: inset 0 0 0 2px var(--primary-blue), 0 0 0 1000px rgba(255, 255, 255, 0.1) inset !important;
   background-color: rgba(255, 255, 255, 0.1) !important;
   background-image: none !important;
   color: #FFFFFF !important;
   font-size: 16px !important;
   font-family: 'Roboto', sans-serif !important;
   will-change: font-size, font-family !important;
-  /* Extremely long transition delays Chrome's autofill white background indefinitely */
   transition: background-color 5000000s ease-in-out 0s, font-size 5000000s ease-in-out 0s !important;
-  /* Force Chrome to recalculate styles using instant animation */
   animation: autofill-fix 0s forwards !important;
 }
 
-/* Autofill when focused */
+/* Autofill focus state - black background */
 .login-input:focus:-webkit-autofill {
-  -webkit-box-shadow: inset 0 0 0 2px #0099ff, 0 0 0 1000px #000000 inset !important;
-  background-color: #000000 !important;
+  -webkit-box-shadow: inset 0 0 0 2px var(--primary-blue), 0 0 0 1000px var(--background-dark) inset !important;
+  background-color: var(--background-dark) !important;
   font-size: 16px !important;
   font-family: 'Roboto', sans-serif !important;
   will-change: font-size, font-family !important;
   transition: background-color 5000000s ease-in-out 0s, font-size 5000000s ease-in-out 0s !important;
 }
 
-/* Override Chrome's internal autofill selected state */
+/* Chrome internal autofill selected state */
 .login-input:-webkit-autofill-selected,
 .login-input:-internal-autofill-selected {
   appearance: none !important;
@@ -178,8 +177,8 @@
   font-size: 16px !important;
   font-family: 'Roboto', sans-serif !important;
   will-change: font-size, font-family !important;
-  -webkit-box-shadow: inset 0 0 0 2px #0099ff, 0 0 0 1000px rgba(255, 255, 255, 0.1) inset !important;
-  box-shadow: inset 0 0 0 2px #0099ff, 0 0 0 1000px rgba(255, 255, 255, 0.1) inset !important;
+  -webkit-box-shadow: inset 0 0 0 2px var(--primary-blue), 0 0 0 1000px rgba(255, 255, 255, 0.1) inset !important;
+  box-shadow: inset 0 0 0 2px var(--primary-blue), 0 0 0 1000px rgba(255, 255, 255, 0.1) inset !important;
   transition: background-color 5000000s ease-in-out 0s, font-size 5000000s ease-in-out 0s !important;
 }
 
@@ -188,7 +187,7 @@
 .login-input:autofill:hover,
 .login-input:autofill:focus {
   -webkit-text-fill-color: #FFFFFF !important;
-  box-shadow: inset 0 0 0 2px #0099ff, 0 0 0 1000px rgba(255, 255, 255, 0.1) inset !important;
+  box-shadow: inset 0 0 0 2px var(--primary-blue), 0 0 0 1000px rgba(255, 255, 255, 0.1) inset !important;
   background-color: rgba(255, 255, 255, 0.1) !important;
   font-size: 16px !important;
   font-family: 'Roboto', sans-serif !important;
@@ -196,8 +195,8 @@
 }
 
 .login-input:autofill:focus {
-  box-shadow: inset 0 0 0 2px #0099ff, 0 0 0 1000px #000000 inset !important;
-  background-color: #000000 !important;
+  box-shadow: inset 0 0 0 2px var(--primary-blue), 0 0 0 1000px var(--background-dark) inset !important;
+  background-color: var(--background-dark) !important;
 }
 
 /* Override Chrome's autofill dropdown hover font change (::first-line fix) */
@@ -245,7 +244,7 @@
   flex: 1; /* Equal width buttons */
 }
 
-/* Secondary button style (Sign Up) - Blue like Sign In */
+/* Secondary button style (Sign Up) - Blue */
 .button-secondary {
   background-color: var(--primary-blue);
   color: var(--text-on-action-color);
@@ -296,8 +295,8 @@
   line-height: 1; /* Tight line height prevents extra vertical space */
 }
 
-/* === RESET PASSWORD MODAL === */
-/* Fullscreen overlay for "Forgot Password" flow - dismissible with Cancel button */
+/* === RESET PASSWORD LINK MODAL === */
+/* Fullscreen overlay for "Forgot Password?" flow - sends reset link via email */
 .reset-modal {
   position: fixed;
   top: 0;
@@ -319,35 +318,40 @@
 .reset-modal-content {
   width: 100%;
   max-width: 400px;
-  padding: var(--space-l);
+  padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides); /* 11px top, 14px sides (14px + 2px border = 16px visual) */
 }
 
 .reset-modal-title {
-  font-size: var(--font-size-h2);
-  font-weight: 600;
+  font-size: var(--font-size-h1); /* Global: 2.5rem - "Reset Password Link" title */
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: var(--text-shadow-subtle); /* Global: 0 2px 4px rgba(0, 0, 0, 0.8) */
+  text-align: center;
   color: var(--text-primary);
-  margin: 0 0 var(--space-s) 0;
+  margin: -3px 0 6px 0; /* Negative top margin compensates for card padding + font ascender = 16px visual from top */
 }
 
 .reset-modal-description {
-  font-size: 0.875rem;
+  font-size: 1rem;
+  text-align: center;
   color: var(--text-secondary);
-  margin: 0 0 var(--space-m) 0;
+  margin: 0 0 7px 0; /* Compensates for line-height - achieves 16px visual to Email label */
   line-height: 1.4;
 }
 
 .reset-input-group {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 4px; /* With label descender = 7px visual */
   margin-bottom: var(--space-m);
 }
 
 .reset-label {
-  font-size: 1rem;
+  font-size: var(--font-size-h2); /* 1.25rem - matches login page Email/Password labels */
   font-weight: 600;
   line-height: 1;
   color: var(--text-primary);
+  margin: 0; /* Gap handles spacing */
 }
 
 .reset-button-group {
@@ -359,11 +363,23 @@
   flex: 1;
 }
 
-/* === LOADING STATE === */
-/* Applied to buttons during async operations (Sign In, Sign Up, Reset) */
-.button-loading {
-  opacity: 0.6; /* Visual feedback that action is processing */
-  cursor: not-allowed; /* Prevent additional clicks */
+/* === ERROR FLASH ANIMATION === */
+/* Applied on validation failure - 3 pulses for visual feedback */
+.login-button-group .action-button.button-is-flashing,
+.reset-button-group .action-button.button-is-flashing {
+  animation: button-red-pulse 560ms linear 3; /* 560ms × 3 = 1680ms total */
+}
+
+/* Pulse between error red and card background with 50% opacity at peak */
+@keyframes button-red-pulse {
+  0%,
+  100% {
+    background-color: var(--surface-dark); /* Global: #1e1e1e - card background */
+  }
+  50% {
+    background-color: var(--skip-red); /* Global: #b30000 - error red */
+    opacity: 0.5; /* Fade to 50% at peak for smooth pulse effect */
+  }
 }
 
 /* === FOOTER === */
@@ -380,22 +396,11 @@
 }
 
 /* === RESPONSIVE === */
-/* Mobile optimization: Reduce padding, stack buttons vertically, smaller title */
-@media (max-width: 480px) {
-  .login-page {
-    padding: var(--space-m); /* Reduce from 24px to 16px on small screens */
-  }
-
-  .login-title {
-    font-size: 1.25rem; /* Reduce from 2.5rem for mobile readability */
-  }
-
-  .login-button-group {
-    flex-direction: column; /* Stack Sign Up/Sign In vertically */
-    gap: var(--space-m); /* Maintain 16px rhythm between stacked buttons */
-  }
-
+/* Allow button text to wrap within buttons at narrow viewports when text doesn't fit */
+@media (max-width: 360px) {
+  .reset-button-group .action-button,
   .login-button-group .action-button {
-    width: 100%; /* Full width for better touch targets */
+    white-space: normal; /* Allow text to wrap */
+    line-height: 1.2; /* Tighter line height for multi-line text */
   }
 }

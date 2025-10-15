@@ -120,6 +120,32 @@ export async function updatePassword(newPassword) {
 }
 
 /**
+ * Update user metadata (nickname, etc.)
+ * @param {Object} metadata - Metadata object to update (e.g., { nickname: "Will" })
+ * @returns {Promise<{user, error}>}
+ */
+export async function updateUserMetadata(metadata) {
+  try {
+    const { data, error } = await supabase.auth.updateUser({
+      data: metadata,
+    });
+
+    if (error) {
+      return { user: null, error: error.message };
+    }
+
+    // Update local auth state with new metadata
+    if (data.user) {
+      updateAuthState(data.user, appState.auth.session);
+    }
+
+    return { user: data.user, error: null };
+  } catch (err) {
+    return { user: null, error: err.message };
+  }
+}
+
+/**
  * Request password reset email
  * Sends secure reset link to user's email with dynamic redirect URL
  * @param {string} email - User's email address
@@ -255,6 +281,7 @@ function updateAuthState(user, session) {
       id: user.id,
       email: user.email,
       createdAt: user.created_at,
+      nickname: user.user_metadata?.nickname || null,
     } : null,
     session: session,
   };

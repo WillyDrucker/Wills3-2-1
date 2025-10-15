@@ -39,6 +39,7 @@ function getPersistableState(fullState) {
     partner: fullState.partner,
     rest: cleanRestStateForPersistence(fullState.rest),
     user: fullState.user,
+    auth: fullState.auth, // Save auth state (includes nickname for guest users)
     ui: {
       currentPage: fullState.ui.currentPage,
       isConfigHeaderExpanded: fullState.ui.isConfigHeaderExpanded,

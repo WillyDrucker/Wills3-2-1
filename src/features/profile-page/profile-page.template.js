@@ -20,6 +20,8 @@ import { appState } from "state";
 
 export function getProfilePageTemplate() {
   const userEmail = appState.auth?.user?.email || "Not logged in";
+  const savedNickname = appState.auth?.user?.nickname;
+  const defaultNickname = savedNickname || userEmail.substring(0, 8);
 
   return `
     <div class="card profile-page-card">
@@ -32,6 +34,20 @@ export function getProfilePageTemplate() {
           <div class="profile-info-group">
             <label class="profile-label">Email</label>
             <div class="profile-email-display">${userEmail}</div>
+          </div>
+
+          <div class="profile-info-group">
+            <label for="profile-nickname" class="profile-label">Nickname</label>
+            <input
+              type="text"
+              id="profile-nickname"
+              class="profile-input"
+              value="${defaultNickname}"
+              maxlength="8"
+              placeholder="Enter nickname (8 chars max)"
+              required
+            />
+            <div id="nickname-feedback" class="profile-success is-hidden" style="margin-top: 8px; text-align: left; font-size: 0.75rem;"></div>
           </div>
         </div>
 

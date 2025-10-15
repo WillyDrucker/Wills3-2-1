@@ -56,3 +56,17 @@ body.is-selector-open details#exercise-selector.app-selector.is-muted[open] > su
   filter: brightness(var(--muted-brightness)) saturate(var(--muted-saturation));
   opacity: var(--muted-opacity);
 }
+
+/* === RESET MODAL SELECTOR MUTING === */
+/* CEMENT: Mute all selectors (border + text) when reset modal is open */
+/* Applied to prevent confusion while modal is active - maintains visual hierarchy */
+html[data-active-modal="resetOptions"] .app-selector > summary,
+html[data-active-modal="resetOptions"] .app-selector[open] > summary {
+  box-shadow: inset 0 0 0 2px var(--muted-border-color);
+}
+
+html[data-active-modal="resetOptions"] .app-selector > summary .selector-content,
+html[data-active-modal="resetOptions"] .app-selector[open] > summary .selector-content {
+  filter: brightness(var(--muted-brightness)) saturate(var(--muted-saturation));
+  opacity: var(--muted-opacity);
+}

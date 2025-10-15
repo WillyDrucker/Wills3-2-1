@@ -49,8 +49,6 @@ export function getLoginPageTemplate() {
               <a href="#" id="forgot-password-link" class="forgot-password-link">Forgot Password?</a>
             </div>
 
-            <div id="login-error" class="login-error is-hidden"></div>
-
             <div class="login-button-group">
               <button
                 type="button"
@@ -64,7 +62,7 @@ export function getLoginPageTemplate() {
                 id="login-signin-btn"
                 class="action-button button-log"
               >
-                Sign In
+                Log In
               </button>
             </div>
 
@@ -77,7 +75,7 @@ export function getLoginPageTemplate() {
               id="login-guest-btn"
               class="action-button button-guest"
             >
-              🔓&nbsp;Continue as&nbsp;<span class="guest-highlight">Guest</span>
+              🔓&nbsp;Continue As&nbsp;<span class="guest-highlight">Guest</span>
             </button>
 
             <!-- Future: OAuth providers -->
@@ -102,7 +100,7 @@ export function getLoginPageTemplate() {
       <!-- Password Reset Modal -->
       <div id="reset-password-modal" class="reset-modal is-hidden">
         <div class="reset-modal-content card">
-          <h2 class="reset-modal-title">Reset Password</h2>
+          <h2 class="reset-modal-title">Reset Password Link</h2>
           <p class="reset-modal-description">Enter your email address and we'll send you a link to reset your password.</p>
 
           <div class="reset-input-group">

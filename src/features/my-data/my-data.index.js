@@ -34,12 +34,6 @@ export function handleNextWeek() {
   renderMyDataPage();
 }
 
-export function handleClearHistory() {
-  appState.user.history.workouts = [];
-  persistenceService.saveState();
-  renderMyDataPage();
-}
-
 export function renderMyDataPage() {
   ui.configSection.innerHTML = "";
   ui.mainContent.innerHTML = getMyDataPageTemplate();

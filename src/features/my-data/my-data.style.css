@@ -36,8 +36,7 @@
   border: var(--card-border-width) solid transparent;
 }
 
-/* Standard card padding from global */
-.my-data-card .card-content-container {
-  padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
-  box-sizing: border-box;
+/* History card needs specific bottom padding for 16px visual spacing to placeholder text */
+.my-data-card.history-card .card-content-container {
+  padding-bottom: 11px; /* Compensates for italic font metrics = 16px visual to bottom */
 }

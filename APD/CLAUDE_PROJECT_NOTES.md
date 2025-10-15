@@ -6,6 +6,80 @@
 
 ## VERSION CHANGELOG
 
+### **v5.5.3 - Reset Modal Feature & CLAUDE Standards Application**
+**Date**: 2025-10-15
+**Problem**: Need reset functionality for non-dev users, login/reset page files lacking CLAUDE standards (CEMENT references, hard-coded colors, !important flags, verbose comments)
+**Solution**: Implemented three-option reset modal for non-dev users, applied comprehensive CLAUDE standards to all authentication pages, implemented selector muting system for modal
+**Key Achievements**:
+- **Reset modal feature**: Three-option modal for non-dev users (Reset Workout Defaults, Reset Workout Defaults & Clear Logs, Clear My Data)
+- **Developer distinction**: Only `willy.drucker@gmail.com` sees "Nuke Everything", others see "Reset" with modal
+- **Selector muting**: All selectors mute (border + text) when reset modal open, implemented via `data-active-modal` attribute
+- **CLAUDE standards**: Applied to 12 files across login-page, reset-password, reset-modal, profile-page features
+- **Tokenization**: Replaced hard-coded colors (#0099ff → var(--primary-blue), #000000 → var(--background-dark))
+- **Standards cleanup**: Removed CEMENT references, cleaned autofill comments, removed transitions, concise documentation
+- **Issue closure**: Closed #23 (Reset Password Page polish) - all items verified complete
+**Root Causes Identified**:
+- **CEMENT disabled**: Standards document specifies CEMENT system temporarily disabled for lean approach
+- **Hard-coded values**: Colors not tokenized for consistency
+- **Verbose comments**: Autofill sections had excessive documentation
+- **Historic references**: Files contained version numbers and fix history instead of forward-looking docs
+**Technical Architecture**:
+- **Reset modal**: Overlay system with 3 vertically stacked action buttons (green/yellow/red)
+- **User detection**: Email check in side-nav template conditionally renders Nuke vs Reset
+- **Disabled logic**: Button disabled if `appState.session.workoutLog.some(log => log.status === "completed" || log.status === "skipped")`
+- **Selector muting**: `html[data-active-modal="resetOptions"]` selector targets all `.app-selector` elements
+- **Modal service integration**: `modalService.open()` sets `data-active-modal` attribute, removed on close
+**Files Created**:
+- `src/features/reset-modal/reset-modal.template.js` - Three-button reset modal template
+- `src/features/reset-modal/reset-modal.style.css` - Modal styling with blue border, 10px padding
+- `src/features/reset-modal/reset-modal.index.js` - Business logic for reset operations
+**Files Refactored to Standards** (12 total):
+- Login page: login-page.style.css, login-page.index.js, login-page.template.js
+- Reset password: reset-password.style.css, reset-password.index.js, reset-password.template.js
+- Reset modal: reset-modal.template.js, reset-modal.style.css, reset-modal.index.js (new)
+- Profile page: profile-page.style.css, profile-page.index.js, profile-page.template.js
+**Files Modified**:
+- `src/features/side-nav/side-nav.template.js` - Conditional rendering (developer vs user)
+- `src/services/actions/actionHandlers.js` - Added reset modal action handlers
+- `src/services/ui/modalService.js` - Added `data-active-modal` attribute management
+- `src/styles/components/_selectors-muting.css` - Added reset modal selector muting rules
+- `index.html` - Added reset-options-modal-container
+- `src/shared/utils/uiComponents.js` - Registered modal container reference
+- `src/main.js` - Added renderResetOptionsModal() to render loop
+- `src/styles/index.css` - Imported reset modal CSS
+**Reset Modal Features**:
+- **Button 1 (Green)**: Reset Workout Defaults - Restores config to defaults (disabled if sets logged)
+- **Button 2 (Yellow)**: Reset Workout Defaults & Clear Logs - Restores config + clears session logs
+- **Button 3 (Red)**: Clear My Data - Clears all workout history from My Data page
+- **Styling**: Blue border, 10px edge padding, 16px spacing between buttons, black text on colored backgrounds
+- **Business logic**: Checks for completed/skipped sets (not pending), calls appropriate handler functions
+**Selector Muting System**:
+- **Implementation**: `html[data-active-modal="resetOptions"] .app-selector` CSS rules
+- **Visual effect**: Muted border color + filtered/dimmed text content
+- **Scope**: All selectors throughout application (config, exercise, session, log, dual-mode)
+- **Muting tokens**: Uses global variables (--muted-border-color, --muted-brightness, --muted-saturation, --muted-opacity)
+**CLAUDE Standards Applied**:
+- **!important justification**: Chrome autofill overrides REQUIRE !important flags (documented as exception)
+- **CEMENT removal**: Replaced "🔒 CEMENT:" with concise explanatory comments
+- **Tokenization**: All colors use CSS variables (--primary-blue, --background-dark, --log-green, --skip-red, --text-yellow-maintenance)
+- **Documentation**: Proper file headers with Architecture/Spacing System/Dependencies/Used by sections
+- **Transitions removed**: Eliminated CSS transitions (violates no-transition rule)
+- **Comment conciseness**: Removed verbose Chrome autofill explanations, kept only necessary notes
+**Standards Checklist Completed**:
+1. ✅ Documentation: Comprehensive file headers added
+2. ✅ !important Removal: Removed where possible (kept only Chrome autofill exceptions)
+3. ✅ Tokenization: Replaced hard-coded color values
+4. ✅ Section Headers: CSS files organized with === SECTION === markers
+5. ✅ Clean Comments: Removed CEMENT/version references, kept visual outcome explanations
+6. ✅ Semantic Classes: Verified purpose-driven naming conventions
+**Technical Discoveries**:
+- `data-active-modal` attribute enables CSS targeting of specific modal states
+- Selector muting requires targeting both summary and content separately for proper visual effect
+- Reset button disabled state must check log status, not just log length (pending sets allowed)
+- Modal service can track modal stack and restore previous modal on close
+- Chrome autofill !important flags are necessary exception to standards (browser override requirement)
+**Status**: COMPLETE - Reset modal functional with proper business logic, selector muting implemented, CLAUDE standards applied to all authentication pages
+
 ### **v5.5.2 - Chrome Autofill Investigation & Code Cleanup**
 **Date**: 2025-10-09
 **Problem**: Chrome autofill styling issues - small font-size on initial load, need to investigate CSS/JS workarounds

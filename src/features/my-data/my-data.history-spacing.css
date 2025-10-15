@@ -50,8 +50,13 @@
 .history-card .history-placeholder-text,
 .history-card .day-card-placeholder-text {
   margin: 0;
-  margin-bottom: calc(var(--space-m) - 1px); /* 15px + italic = 16px visual */
+  margin-bottom: calc(var(--space-m) - 1px); /* 15px + italic = 16px visual to divider */
   padding: 0; /* Overrides global 40px padding */
+}
+
+/* Last day placeholder (Sunday) - no divider after, so space to card bottom */
+.history-card .history-day-section:last-child .history-placeholder-text {
+  margin-bottom: 0; /* Card padding handles spacing to bottom */
 }
 
 /* === DIVIDERS === */
@@ -104,18 +109,8 @@
   margin-left: auto; /* Push results to right */
 }
 
-/* === SELECTOR AND FOOTER === */
+/* === SELECTOR === */
 /* Selector container */
 .history-selector-container {
   margin-bottom: 15px; /* TODO: Tokenize = calc(var(--space-m) - 1px) */
-}
-
-/* Footer button */
-.history-footer {
-  margin-top: 11px; /* TODO: Tokenize = calc(var(--space-s) + 4px) */
-  padding-top: 0;
-}
-
-.history-footer .action-button {
-  margin-top: 0;
 }

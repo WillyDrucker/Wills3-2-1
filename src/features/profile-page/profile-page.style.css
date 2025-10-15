@@ -4,21 +4,21 @@
    Profile management card for authenticated users with password change
    functionality and account settings.
 
-   CEMENT: Consistent with login page styling
-   - 1rem font size for labels (matches exercise log names)
-   - 50px input height (matches selector height)
-   - 7px label-to-input spacing
-   - 16px button spacing
-
    Architecture: Card-based layout with sections
    - Account information (email display)
    - Password change form
    - Account actions (sign out)
 
+   Spacing System:
+   - Label-to-input: 7px gap
+   - Section spacing: 24px (--space-l)
+   - Button spacing: 16px (--space-m)
+   - Control height: 50px (matches selectors)
+
    Dependencies:
-   Global: _variables.css (spacing, colors, typography, control-height)
-   Global: _card-foundations.css (card base styles)
-   Global: _action-button-groups.css (button styles)
+   - _variables.css: spacing, colors, typography, control-height
+   - _card-foundations.css: card base styles
+   - _action-button-groups.css: button styles
 
    Used by: profile-page.index.js
    ========================================================================== */
@@ -95,16 +95,16 @@
   padding: 10px 16px; /* Matches selector padding */
   font-size: 1rem;
   font-family: 'Roboto', sans-serif;
-  color: var(--text-primary);
+  color: #888888; /* Light gray for all non-focused states */
   background: var(--background-dark); /* Matches selector background */
   box-shadow: inset 0 0 0 2px var(--primary-blue); /* Matches selector border */
   border: none; /* Border handled by box-shadow */
-  border-radius: var(--border-radius); /* Global: 8px - matches selector */
-  transition: box-shadow 0.2s ease;
+  border-radius: var(--border-radius); /* Global: 8px */
 }
 
 .profile-input:focus {
   outline: none;
+  color: #000000; /* Black when clicked/editing */
   box-shadow: inset 0 0 0 2px var(--primary-blue-bright);
 }
 
@@ -121,7 +121,6 @@
   background: rgba(255, 82, 82, 0.1);
   border: 1px solid var(--text-skip);
   color: var(--text-skip);
-  transition: opacity 0.2s ease;
 }
 
 .profile-error.is-hidden {
@@ -136,7 +135,6 @@
   background: rgba(39, 174, 96, 0.1);
   border: 1px solid var(--log-green);
   color: var(--log-green);
-  transition: opacity 0.2s ease;
 }
 
 .profile-success.is-hidden {

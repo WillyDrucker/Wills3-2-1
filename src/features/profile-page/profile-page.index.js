@@ -3,23 +3,25 @@
 
    Renders profile page and handles profile management actions:
    - Display user email
+   - Update nickname (8 character max, auto-saved)
    - Change password (with current password verification)
    - Sign out
 
-   🔒 CEMENT: Password change requires verification
-   - Current password required (security best practice)
-   - New password must match confirmation
-   - Minimum 6 characters
-   - Success message on completion
+   Password change requires current password verification for security.
+   New password must match confirmation and be minimum 6 characters.
 
-   Dependencies: ui, authService, getProfilePageTemplate
+   Nickname features 500ms debounced auto-save with 8 character max.
+   Authenticated users save to Supabase user_metadata, guests to localStorage.
+
+   Dependencies: ui, authService, getProfilePageTemplate, persistenceService
    Used by: actionService (goToProfile), main.js (page navigation)
    ========================================================================== */
 
 import { ui } from "ui";
-import { signIn, updatePassword } from "services/authService.js";
+import { signIn, updatePassword, updateUserMetadata } from "services/authService.js";
 import { appState } from "state";
 import { getProfilePageTemplate } from "./profile-page.template.js";
+import { saveState } from "services/core/persistenceService.js";
 
 /**
  * Render profile page
@@ -33,6 +35,7 @@ export function renderProfilePage() {
  * Attach event listeners to profile page elements
  */
 function attachEventListeners() {
+  const nicknameInput = document.getElementById("profile-nickname");
   const currentPasswordInput = document.getElementById("profile-current-password");
   const newPasswordInput = document.getElementById("profile-new-password");
   const confirmPasswordInput = document.getElementById("profile-confirm-password");
@@ -40,10 +43,86 @@ function attachEventListeners() {
   const errorDiv = document.getElementById("profile-error");
   const successDiv = document.getElementById("profile-success");
 
-  if (!currentPasswordInput || !newPasswordInput || !confirmPasswordInput || !updateBtn) {
+  if (!nicknameInput || !currentPasswordInput || !newPasswordInput || !confirmPasswordInput || !updateBtn) {
     console.error("Profile page: Required elements not found");
     return;
   }
+
+  // Nickname input - debounced auto-save on change
+  const nicknameFeedback = document.getElementById("nickname-feedback");
+  let nicknameTimeout;
+
+  nicknameInput.addEventListener("input", () => {
+    const nickname = nicknameInput.value.trim();
+
+    // Clear previous timeout
+    if (nicknameTimeout) {
+      clearTimeout(nicknameTimeout);
+    }
+
+    // Hide feedback while typing
+    if (nicknameFeedback) {
+      nicknameFeedback.classList.add("is-hidden");
+    }
+
+    // Validate length in real-time
+    if (nickname.length > 8) {
+      if (nicknameFeedback) {
+        nicknameFeedback.textContent = "Maximum 8 characters";
+        nicknameFeedback.classList.remove("profile-success");
+        nicknameFeedback.classList.add("profile-error");
+        nicknameFeedback.classList.remove("is-hidden");
+      }
+      return;
+    }
+
+    // Debounce for 500ms before saving
+    nicknameTimeout = setTimeout(async () => {
+      if (nickname && nickname.length <= 8) {
+        // Update appState
+        if (appState.auth && appState.auth.user) {
+          appState.auth.user.nickname = nickname;
+
+          // Save to Supabase if authenticated (not guest)
+          if (appState.auth.isAuthenticated) {
+            const { error } = await updateUserMetadata({ nickname });
+
+            if (error) {
+              if (nicknameFeedback) {
+                nicknameFeedback.textContent = "Failed to save nickname";
+                nicknameFeedback.classList.remove("profile-success");
+                nicknameFeedback.classList.add("profile-error");
+                nicknameFeedback.classList.remove("is-hidden");
+              }
+              return;
+            }
+          }
+
+          // Save to localStorage
+          saveState();
+
+          // Show success feedback
+          if (nicknameFeedback) {
+            nicknameFeedback.textContent = "✓ Nickname saved";
+            nicknameFeedback.classList.remove("profile-error");
+            nicknameFeedback.classList.add("profile-success");
+            nicknameFeedback.classList.remove("is-hidden");
+
+            // Hide after 2 seconds
+            setTimeout(() => {
+              nicknameFeedback.classList.add("is-hidden");
+            }, 2000);
+          }
+        }
+      } else if (!nickname) {
+        // Empty nickname - clear from state
+        if (appState.auth && appState.auth.user) {
+          appState.auth.user.nickname = null;
+          saveState();
+        }
+      }
+    }, 500);
+  });
 
   // Update Password button
   updateBtn.addEventListener("click", async () => {
