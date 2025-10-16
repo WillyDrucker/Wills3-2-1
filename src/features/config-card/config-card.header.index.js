@@ -12,10 +12,66 @@ import * as selectorService from "services/ui/selectorService.js";
 
    Handles config header rendering, click-outside behavior, session cycling,
    and dynamic focus display updates.
+
+   🔒 CEMENT: Click-outside cancellation
+   - Clicking outside config dropdown reverts changes (same as Cancel button)
+   - Uses snapshot to restore previous session/day settings
+   - Preserves logged workout history during restoration
    ========================================================================== */
 
 // Click-outside handler for auto-collapsing config-header
 let ignoreNextOutsideClick = false;
+
+// Core update function passed from main.js via initialization
+let updateActiveWorkoutPreservingLogs = null;
+
+/**
+ * Initialize with core update function
+ * Called from actionHandlers.js during app initialization
+ */
+export function initializeConfigHeader(updateFunction) {
+  updateActiveWorkoutPreservingLogs = updateFunction;
+}
+
+/**
+ * Cancel config changes and revert to snapshot
+ * Shared logic used by both Cancel button and click-outside handler
+ * Preserves logged workout history during restoration
+ */
+export function cancelConfigChanges() {
+  if (appState.ui.configHeaderSnapshot) {
+    const snapshot = appState.ui.configHeaderSnapshot;
+    const needsRestore =
+      appState.session.currentDayName !== snapshot.currentDayName ||
+      appState.session.currentTimeOptionName !== snapshot.currentTimeOptionName;
+
+    appState.ui.isConfigHeaderExpanded = false;
+    appState.ui.configHeaderSnapshot = null;
+    notifyConfigHeaderToggled();
+
+    if (needsRestore) {
+      // Restore snapshot values
+      appState.session.currentDayName = snapshot.currentDayName;
+      appState.session.currentTimeOptionName = snapshot.currentTimeOptionName;
+      appState.session.currentSessionColorClass = snapshot.currentSessionColorClass;
+
+      // Use preserving logs to restore session without losing logged history
+      if (updateActiveWorkoutPreservingLogs) {
+        updateActiveWorkoutPreservingLogs();
+      } else {
+        renderConfigHeader();
+      }
+    } else {
+      renderConfigHeader();
+    }
+  } else {
+    appState.ui.isConfigHeaderExpanded = false;
+    notifyConfigHeaderToggled();
+    renderConfigHeader();
+  }
+
+  persistenceService.saveState();
+}
 
 function handleClickOutside(event) {
   const configHeaderCard = document.getElementById('config-header');
@@ -56,10 +112,9 @@ function handleClickOutside(event) {
   }
 
   // Check if click is outside the config-header card
+  // Cancel changes and revert to snapshot (same as Cancel button)
   if (!configHeaderCard.contains(event.target)) {
-    appState.ui.isConfigHeaderExpanded = false;
-    renderConfigHeader();
-    persistenceService.saveState();
+    cancelConfigChanges();
   }
 }
 
@@ -90,15 +145,17 @@ export function notifyConfigHeaderToggled() {
   ignoreNextOutsideClick = true;
 }
 
-// 🔒 CEMENT: Updates only the clock display (for clock updates without DOM disruption)
-// CRITICAL: Avoid innerHTML updates - they restart ALL animations and lose focus
-// Instead, update only textContent property
+// Updates clock display and workout time remaining (called every minute by timer)
+// Uses textContent updates to avoid restarting animations
 export function renderConfigHeaderLine() {
   const clockElement = document.querySelector("#config-header .card-header-clock");
   if (!clockElement) return;
 
-  // Update only the clock text content (no innerHTML = no DOM disruption)
+  // Update clock text content (no innerHTML = no DOM disruption)
   clockElement.textContent = appState.ui.currentTime;
+
+  // Update workout time remaining display (called every 60 seconds by timer)
+  renderSessionDisplay();
 }
 
 // 🔒 CEMENT: Updates only the session display text (for session cycling without animation reset)

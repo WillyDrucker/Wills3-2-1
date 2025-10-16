@@ -4,7 +4,7 @@
    All data-action callback functions for the event delegation system. Each
    handler is called from actionService.js when a matching data-action is found.
 
-   🔒 CEMENT: Config header locking prevents collapse during selector operations
+   Config header locking prevents collapse during selector operations:
    - Lock set before operation: configHeaderLocked = true
    - Unlock after operation completes and selectors close
    - Ensures expanded state persists during day/plan/exercise changes
@@ -24,7 +24,7 @@ import * as modalService from "services/ui/modalService.js";
 import { getNextWorkoutDay } from "utils";
 import { canCycleToSession } from "utils";
 import { signOut as authSignOut } from "services/authService.js";
-import { renderConfigHeader, renderSessionDisplay, notifyConfigHeaderToggled } from "features/config-card/config-card.header.index.js";
+import { renderConfigHeader, renderSessionDisplay, notifyConfigHeaderToggled, initializeConfigHeader, cancelConfigChanges } from "features/config-card/config-card.header.index.js";
 
 import {
   handleHistoryTabChange,
@@ -82,6 +82,7 @@ let coreActions = {};
 
 export function initialize(dependencies) {
   coreActions = dependencies;
+  initializeConfigHeader(dependencies.updateActiveWorkoutPreservingLogs);
 }
 
 export function getActionHandlers() {
@@ -118,7 +119,6 @@ export function getActionHandlers() {
       if (error) {
         console.error("Sign out error:", error);
       }
-      // Auth state change listener in main.js will handle showing login page
       handleCloseSideNav();
     },
     nukeEverything: persistenceService.nukeEverything,
@@ -211,28 +211,7 @@ export function getActionHandlers() {
       persistenceService.saveState();
     },
     cancelConfigHeaderChanges: () => {
-      if (appState.ui.configHeaderSnapshot) {
-        const snapshot = appState.ui.configHeaderSnapshot;
-        const needsRestore =
-          appState.session.currentDayName !== snapshot.currentDayName ||
-          appState.session.currentTimeOptionName !== snapshot.currentTimeOptionName;
-        appState.ui.isConfigHeaderExpanded = false;
-        appState.ui.configHeaderSnapshot = null;
-        notifyConfigHeaderToggled();
-        if (needsRestore) {
-          appState.session.currentDayName = snapshot.currentDayName;
-          appState.session.currentTimeOptionName = snapshot.currentTimeOptionName;
-          appState.session.currentSessionColorClass = snapshot.currentSessionColorClass;
-          coreActions.updateActiveWorkoutAndLog();
-        } else {
-          renderConfigHeader();
-        }
-      } else {
-        appState.ui.isConfigHeaderExpanded = false;
-        notifyConfigHeaderToggled();
-        renderConfigHeader();
-      }
-      persistenceService.saveState();
+      cancelConfigChanges();
     },
     openResetConfirmationModal: () => modalService.open("reset"),
     openResetOptionsModal: () => {

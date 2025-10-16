@@ -4,7 +4,7 @@
    Saves and loads application state to/from localStorage. Implements midnight
    reset logic and timer cleanup for safe state restoration.
 
-   🔒 CEMENT: Midnight reset logic
+   Midnight reset logic:
    - Compares save timestamp with current date (using Date objects)
    - If saved on a different day, flags for reset via needsReset signal
    - Preserves user history and page state across resets
@@ -26,20 +26,15 @@ function cleanRestStateForPersistence(restObj) {
   return newRestObj;
 }
 
-/**
- * CEMENTED
- * This function defines the exact shape of the state object that gets persisted
- * to localStorage. It is a core part of the persistence layer.
- */
 function getPersistableState(fullState) {
   return {
-    saveTimestamp: new Date().toISOString(), // Full ISO string for accurate time checking
+    saveTimestamp: new Date().toISOString(),
     session: fullState.session,
     superset: fullState.superset,
     partner: fullState.partner,
     rest: cleanRestStateForPersistence(fullState.rest),
     user: fullState.user,
-    auth: fullState.auth, // Save auth state (includes nickname for guest users)
+    auth: fullState.auth,
     ui: {
       currentPage: fullState.ui.currentPage,
       isConfigHeaderExpanded: fullState.ui.isConfigHeaderExpanded,
@@ -57,12 +52,6 @@ export function saveState() {
   }
 }
 
-/**
- * CEMENTED
- * This function contains the definitive logic for loading state from localStorage,
- * including the critical "clear at midnight" rule. This logic is stable and
- * crucial for correct session management.
- */
 export function loadState() {
   try {
     const serializedState = localStorage.getItem(APP_STATE_KEY);
@@ -75,15 +64,14 @@ export function loadState() {
     const savedDate = new Date(loadedData.saveTimestamp);
     const savedDateStr = savedDate.toISOString().slice(0, 10);
 
-    // CEMENTED: Midnight reset logic with 1-hour grace period.
+    // Midnight reset with 1-hour grace period (saves before 11 PM trigger reset)
     if (savedDateStr !== todayStr) {
       const savedHour = savedDate.getHours();
-      // If the last save was before 11 PM on a previous day, reset the session.
       if (savedHour < 23) {
-        // CEMENTED FIX: Instead of creating a partial state, signal that a full reset is needed.
         return {
           needsReset: true,
-          user: loadedData.user, // Pass the user history to preserve it.
+          user: loadedData.user,
+          auth: loadedData.auth,
           ui: loadedData.ui,
         };
       }
@@ -104,16 +92,9 @@ function clearState() {
   }
 }
 
-/**
- * CEMENTED
- * The definitive, failsafe procedure for a hard reset of the application.
- * The sequence of removing the unload listener before clearing storage is critical
- * to prevent the in-memory state from being re-saved on navigation.
- */
+// Hard reset: remove beforeunload listener before clearing to prevent re-save
 export function nukeEverything() {
-  // CEMENTED FIX: Remove the beforeunload listener before clearing state
-  // to prevent the in-memory state from being re-saved.
   window.removeEventListener("beforeunload", saveState);
   clearState();
-  window.location.href = "/"; // Hard navigate to the root to force a clean start
+  window.location.href = "/";
 }

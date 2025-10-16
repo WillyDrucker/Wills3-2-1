@@ -5,7 +5,7 @@
    restores state from localStorage, and handles reset logic. Single entry
    point for all initialization logic.
 
-   🔒 CEMENT: Startup sequence
+   Startup sequence:
    1. Initialize timer, modal, fullscreen, clock, and action services
    2. Fetch exercise data from API
    3. Build weekly plan
@@ -58,6 +58,7 @@ function resetSessionAndLogs() {
   const weeklyPlan = appState.weeklyPlan;
   const isApiReady = appState.ui.videoPlayer.isApiReady;
   const userHistory = appState.user.history;
+  const authState = appState.auth;
 
   const initialAppState = getInitialAppState();
 
@@ -69,12 +70,10 @@ function resetSessionAndLogs() {
   appState.ui.currentPage = currentPage;
   appState.ui.videoPlayer.isApiReady = isApiReady;
   appState.user.history = userHistory;
+  appState.auth = authState;
   appState.session.currentDayName = today;
 
-  // 🔒 CEMENT: Initialize timer color based on today's workout type
-  // Will be properly set after weeklyPlan is built
-
-  this.updateActiveWorkoutAndLog(); // `this` will be bound from main.js
+  this.updateActiveWorkoutAndLog();
 }
 
 export async function initialize(dependencies) {
@@ -111,35 +110,32 @@ export async function initialize(dependencies) {
 
   const loadedState = persistenceService.loadState();
 
-  // CEMENTED FIX: The initializer now handles the reset signal from the persistence service.
   if (loadedState && loadedState.needsReset) {
     if (loadedState.user) appState.user = loadedState.user;
+    if (loadedState.auth) appState.auth = loadedState.auth;
     if (loadedState.ui && loadedState.ui.currentPage) {
       appState.ui.currentPage = loadedState.ui.currentPage;
     }
-    boundReset(); // Call the single source of truth for resetting.
+    boundReset();
   } else if (loadedState) {
     if (loadedState.session) appState.session = loadedState.session;
     if (loadedState.superset) appState.superset = loadedState.superset;
     if (loadedState.partner) appState.partner = loadedState.partner;
     if (loadedState.rest) appState.rest = loadedState.rest;
     if (loadedState.user) appState.user = loadedState.user;
+    if (loadedState.auth) appState.auth = loadedState.auth;
     if (loadedState.ui && loadedState.ui.currentPage) {
       appState.ui.currentPage = loadedState.ui.currentPage;
     }
 
-    // 🔒 CEMENT: Force initial page based on auth state
-    // Authenticated users → homepage
-    // Guest users → workout page (ignore saved page state)
+    // Force initial page: authenticated users → home, guest users → workout
     if (appState.auth?.isAuthenticated) {
       appState.ui.currentPage = "home";
     } else if (appState.auth?.isGuest) {
       appState.ui.currentPage = "workout";
     }
 
-
-    // 🔒 CEMENT: Set timer color after loading state
-    // Today = green (text-plan), Any other day = olive (text-deviation)
+    // Set timer color: today = green (text-plan), other days = olive (text-deviation)
     if (appState.session.currentDayName) {
       appState.session.currentTimerColorClass =
         appState.session.currentDayName === appState.todayDayName ? "text-plan" : "text-deviation";
@@ -149,7 +145,6 @@ export async function initialize(dependencies) {
     renderAll();
   } else {
     appState.session.currentDayName = appState.todayDayName;
-    // Today = green (text-plan)
     appState.session.currentTimerColorClass = "text-plan";
     updateActiveWorkoutAndLog();
   }

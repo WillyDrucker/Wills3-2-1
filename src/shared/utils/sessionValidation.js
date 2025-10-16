@@ -5,20 +5,21 @@
    Maintenance) is allowed based on logged exercise sets. Purely reactive to
    current log state - clearing sets releases locks.
 
-   🔒 CEMENT: Session cycling validation rules (reactive to log state)
+   Session cycling validation rules (reactive to log state):
    - 0-2 Major1 sets logged: All sessions available (Standard/Express/Maintenance)
    - 3rd set logged from Major1: Locked to Standard/Express (can't go to Maintenance)
    - 3rd set logged from different muscle group: Locked to Maintenance (can't go to Standard/Express)
    - Clearing sets releases locks: If 3rd set cleared → all sessions available again
-   - Standard ↔ Express: Always allowed (same set structure)
+   - Standard ↔ Express: Allowed only if Express has remaining pending sets
    - Standard: Always available (baseline workout with all sets)
 
-   Dependencies: appState, timeOptions
+   Dependencies: appState, timeOptions, workoutLogGenerationService
    Used by: Config header (session cycling buttons), action handlers
    ========================================================================== */
 
 import { appState } from "state";
 import { timeOptions } from "config";
+import { generateWorkoutLog, generateSupersetWorkoutLog, generatePartnerWorkoutLog } from "services/workout/workoutLogGenerationService.js";
 
 /**
  * Helper: Count logged Major1 muscle group sets
@@ -64,6 +65,59 @@ function hasNonMajor1ThirdSet() {
 }
 
 /**
+ * Helper: Check if Express session would have any pending sets remaining
+ * Simulates what the Express workout would be and checks for pending sets
+ */
+function hasExpressSetsPending() {
+  const { superset, partner, session } = appState;
+
+  // Generate Express workout log based on current mode
+  let expressLog;
+  if (superset.isActive) {
+    expressLog = generateSupersetWorkoutLog();
+  } else if (partner.isActive) {
+    expressLog = generatePartnerWorkoutLog();
+  } else {
+    expressLog = generateWorkoutLog(true, "Express");
+  }
+
+  // Merge with existing logged sets
+  const currentLog = session.workoutLog || [];
+  const mergedLog = [];
+
+  // Keep logged sets that exist in Express structure
+  currentLog.forEach((oldEntry) => {
+    if (oldEntry.status !== "pending") {
+      const matchInExpressLog = expressLog.find(
+        (newEntry) =>
+          newEntry.exercise.exercise_name === oldEntry.exercise.exercise_name &&
+          newEntry.setNumber === oldEntry.setNumber
+      );
+
+      if (matchInExpressLog) {
+        mergedLog.push(oldEntry);
+      }
+    }
+  });
+
+  // Add pending sets from Express structure
+  expressLog.forEach((newEntry) => {
+    const alreadyLogged = mergedLog.find(
+      (merged) =>
+        merged.exercise.exercise_name === newEntry.exercise.exercise_name &&
+        merged.setNumber === newEntry.setNumber
+    );
+
+    if (!alreadyLogged) {
+      mergedLog.push(newEntry);
+    }
+  });
+
+  // Check if any pending sets remain
+  return mergedLog.some((log) => log.status === "pending");
+}
+
+/**
  * Validates whether cycling to a target session type is allowed.
  * Purely reactive - bases decision only on current log state.
  * Clearing sets automatically releases locks.
@@ -87,22 +141,19 @@ export function canCycleToSession(targetSessionName) {
   const loggedMajor1Count = countLoggedMajor1Sets();
   const totalLoggedSets = countTotalLoggedSets();
 
-  // 🔒 CEMENT: Standard (Recommended) always allowed - baseline workout with all sets
+  // Standard (Recommended) always allowed - baseline workout with all sets
   if (targetType === "Recommended") return true;
 
-  // 🔒 CEMENT: Allow cycling between Standard and Express (same set structure)
-  if (
-    (currentType === "Recommended" && targetType === "Express") ||
-    (currentType === "Express" && targetType === "Recommended")
-  ) {
+  // Allow cycling from Express back to Standard
+  if (currentType === "Express" && targetType === "Recommended") {
     return true;
   }
 
-  // 🔒 CEMENT: Check if 3rd set has been logged (determines lock state)
+  // Check if 3rd set has been logged (determines lock state)
   const has3rdMajor1Set = loggedMajor1Count >= 3;
   const has3rdNonMajor1Set = hasNonMajor1ThirdSet();
 
-  // 🔒 CEMENT: Trying to cycle TO Maintenance
+  // Trying to cycle TO Maintenance
   if (targetType === "Maintenance") {
     // Block if 3rd Major1 set logged (Standard/Express path committed)
     if (has3rdMajor1Set) {
@@ -112,10 +163,14 @@ export function canCycleToSession(targetSessionName) {
     return true;
   }
 
-  // 🔒 CEMENT: Trying to cycle TO Express (from Maintenance)
+  // Trying to cycle TO Express
   if (targetType === "Express") {
     // Block if 3rd set is from different muscle group (Maintenance path has diverged)
     if (has3rdNonMajor1Set) {
+      return false;
+    }
+    // Block if no pending sets would remain in Express
+    if (!hasExpressSetsPending()) {
       return false;
     }
     // Otherwise allow
@@ -135,9 +190,36 @@ export function isSessionCyclingLocked() {
   const currentOption = timeOptions.find((t) => t.name === currentSessionName);
   const currentType = currentOption?.type;
 
-  // 🔒 CEMENT: Locked to Maintenance if 3rd set from different muscle group logged
+  // If currently in Standard, check if both Express and Maintenance are unavailable
+  if (currentType === "Recommended") {
+    const canGoToExpress = timeOptions.some(
+      (opt) => opt.type === "Express" && canCycleToSession(opt.name)
+    );
+    const canGoToMaintenance = timeOptions.some(
+      (opt) => opt.type === "Maintenance" && canCycleToSession(opt.name)
+    );
+
+    // Locked if neither Express nor Maintenance available
+    if (!canGoToExpress && !canGoToMaintenance) {
+      return true;
+    }
+  }
+
+  // Locked to Maintenance if 3rd set from different muscle group logged
   if (currentType === "Maintenance" && hasNonMajor1ThirdSet()) {
     return true; // Express blocked, Standard always allowed (so not fully locked, but chevrons should be muted)
+  }
+
+  // If in Express, check if only Standard available
+  if (currentType === "Express") {
+    const canGoToMaintenance = timeOptions.some(
+      (opt) => opt.type === "Maintenance" && canCycleToSession(opt.name)
+    );
+
+    // Locked if only Standard available (Maintenance blocked)
+    if (!canGoToMaintenance) {
+      return true;
+    }
   }
 
   return false;

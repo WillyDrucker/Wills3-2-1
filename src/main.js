@@ -84,12 +84,13 @@ function updateActiveWorkoutPreservingLogs() {
   workoutProgressionService.recalculateCurrentStateAfterLogChange();
   updateWorkoutTimeRemaining();
 
-  /* Minimal render preserves animations - update session display, active card, and workout log */
+  // Minimal render preserves animations
   setTimeout(() => {
+    renderConfigHeader();
     renderSessionDisplay();
     renderFocusDisplay();
-    renderActiveExerciseCard(); // Update Current Exercise set count to reflect session changes
-    renderWorkoutLog(); // Update Today's Workout to reflect session changes
+    renderActiveExerciseCard();
+    renderWorkoutLog();
   }, 50);
 
   persistenceService.saveState();
@@ -134,19 +135,12 @@ function renderError(message) {
   ui.workoutFooter.innerHTML = "";
 }
 
-/* Login-first authentication flow
- * 1. Check if user has existing session (Supabase session or guest mode)
- * 2. If not authenticated: Show login page
- * 3. If authenticated: Initialize at homepage, Guest: Initialize at workout page
- * 4. Listen for auth-success event to initialize app after login
- */
+// Login-first: check existing session → initialize or show login
 async function checkAuthAndInitialize() {
-  // Check for existing Supabase session
   const { session } = await getSession();
 
-  // If authenticated or guest mode, initialize app
   if (isAuthenticated() || isGuest()) {
-    // Authenticated users → homepage, Guests → workout page (ignore saved page state)
+    // Authenticated → home, Guest → workout (ignore saved page)
     if (isAuthenticated()) {
       appState.ui.currentPage = "home";
     } else if (isGuest()) {
@@ -164,18 +158,16 @@ async function checkAuthAndInitialize() {
       renderActiveExerciseCard,
     });
   } else {
-    // Show login page
     renderLoginPage();
   }
 }
 
-// Listen for successful authentication (from login page)
 window.addEventListener("auth-success", () => {
-  // Authenticated users → homepage, Guests → workout page
+  // Authenticated → home, Guest → workout (force, not saved state)
   if (isAuthenticated()) {
     appState.ui.currentPage = "home";
   } else if (isGuest()) {
-    appState.ui.currentPage = "workout"; // Forces workout page (not homepage, not saved state)
+    appState.ui.currentPage = "workout";
   }
 
   appInitializerService.initialize({
@@ -190,9 +182,7 @@ window.addEventListener("auth-success", () => {
   });
 });
 
-// Listen for auth state changes (logout, session expiry)
 onAuthStateChange((user, session) => {
-  // If user logs out, show login page
   if (!user && !isGuest()) {
     renderLoginPage();
   }
