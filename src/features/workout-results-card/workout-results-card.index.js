@@ -2,7 +2,13 @@
    WORKOUT RESULTS CARD - Business Logic
 
    Renders workout completion card with plate stacking animations. Handles
-   auto-replay on render and manual replay via event delegation.
+   auto-replay on render, manual replay via event delegation, and button
+   state transitions after animation completes.
+
+   Architecture: Button state transition
+   - Initial state: Green "Workout Saved!" (button-log class, disabled)
+   - After 4000ms: Blue "Begin Another Workout" (button-finish class, enabled)
+   - Timing: 3s animation + 1s buffer = 4000ms delay
 
    🔒 CEMENT: Animation replay architecture
    - Auto-replay on render (covers page refresh/direct navigation)
@@ -34,6 +40,17 @@ export function renderWorkoutResultsCard() {
       if (anim) replayCompletionAnimation(anim);
     }
   });
+
+  /* Change button state after animation completes (3s animation + 1s delay = 4s) */
+  const button = ui.mainContent.querySelector(".workout-saved-button");
+  if (button) {
+    setTimeout(() => {
+      button.textContent = "Begin Another Workout";
+      button.classList.remove("button-log");
+      button.classList.add("button-finish");
+      button.disabled = false;
+    }, 4000);
+  }
 }
 
 function replayCompletionAnimation(el) {

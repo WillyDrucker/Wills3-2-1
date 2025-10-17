@@ -20,7 +20,7 @@ export function buildDaySectionHTML(day, index, daysOfWeek, hasWideResults) {
   /* Find all workout sessions for this day */
   const workoutsForDay = appState.user.history.workouts.filter(
     (session) => {
-      const sessionDate = new Date(session.id).getTime();
+      const sessionDate = new Date(session.timestamp).getTime();
       return sessionDate >= dayStart && sessionDate <= dayEnd;
     }
   );

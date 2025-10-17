@@ -133,3 +133,7 @@ body.is-selector-open
 .text-info {
   color: var(--on-surface-medium);
 }
+/* Utility class for committed workout data (green text) */
+.text-success {
+  color: var(--text-green-plan);
+}

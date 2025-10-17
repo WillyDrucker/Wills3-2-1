@@ -58,3 +58,24 @@
   text-overflow: clip;
   white-space: inherit;
 }
+
+/* === RESULTS DISPLAY === */
+.history-results-container {
+  display: flex;
+  align-items: baseline;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.history-results-value {
+  font-size: 1rem;
+  font-weight: 600;
+  /* No default color - allows utility classes (text-plan, etc.) to control color */
+  /* Defaults to inherited text color (white) when no utility class applied */
+}
+
+.history-results-unit {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--on-surface-medium); /* Always gray */
+}

@@ -1,22 +1,31 @@
 /* ==========================================================================
    HISTORY SERVICE - Workout History Management
 
-   Manages workout history data: creating sessions, adding/updating/removing
-   log entries. Builds session header metadata from current workout state.
+   Manages workout history with immediate database persistence. All log
+   operations (add/update/remove) trigger instant saves to both localStorage
+   and Supabase database for real-time backup.
+
+   Architecture: Immediate save pattern
+   - Every log/skip/edit triggers saveWorkoutToDatabase() (fire-and-forget)
+   - LocalStorage persisted first, then async database save
+   - Session header metadata built from current workout state
+   - Workout created on first log, removed if all logs cleared
 
    🔒 CEMENT: Partner mode log filtering
    - Partner mode: Only logs left side (user1) to avoid duplication
    - Right side (user2) skipped since it's mirrored from left
    - Session header dynamically updates with plan, session type, and body part
 
-   Dependencies: appState, formatTimestamp, persistenceService, programConfig
-   Used by: Active card actions (log/skip), workout log (clear sets)
+   Dependencies: appState, formatTimestamp, persistenceService, programConfig,
+                 workoutSyncService
+   Used by: Active card actions (log/skip), workout log (clear/update sets)
    ========================================================================== */
 
 import { appState } from "state";
 import { formatTimestamp } from "utils";
 import * as persistenceService from "services/core/persistenceService.js";
 import { programConfig } from "config";
+import { saveWorkoutToDatabase } from "./workoutSyncService.js";
 
 function getSessionHeaderInfo() {
   const { session, weeklyPlan, allExercises } = appState;
@@ -88,7 +97,7 @@ export function addOrUpdateLog(logEntry) {
 
     workout = {
       id: session.id,
-      timestamp: formatTimestamp(new Date()),
+      timestamp: new Date().toISOString(),
       ...headerInfo,
       logs: [],
     };
@@ -113,6 +122,13 @@ export function addOrUpdateLog(logEntry) {
   }
 
   persistenceService.saveState();
+
+  // Immediately save to database if user is authenticated
+  if (appState.auth?.isAuthenticated) {
+    saveWorkoutToDatabase(workout).catch((error) => {
+      console.error("Failed to save workout to database:", error);
+    });
+  }
 }
 
 export function removeLog(logEntry) {
@@ -121,6 +137,8 @@ export function removeLog(logEntry) {
   const workoutIndex = history.findIndex((w) => w.id === session.id);
 
   if (workoutIndex > -1) {
+    const workout = history[workoutIndex];
+
     history[workoutIndex].logs = history[workoutIndex].logs.filter(
       (l) =>
         !(
@@ -135,5 +153,12 @@ export function removeLog(logEntry) {
     }
 
     persistenceService.saveState();
+
+    // Immediately save to database if user is authenticated
+    if (appState.auth?.isAuthenticated) {
+      saveWorkoutToDatabase(workout).catch((error) => {
+        console.error("Failed to save workout to database:", error);
+      });
+    }
   }
 }

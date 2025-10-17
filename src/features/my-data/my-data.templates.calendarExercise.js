@@ -2,14 +2,22 @@
    MY DATA - Calendar Exercise Builder
 
    Builds exercise block HTML with set rows for calendar view. Handles color
-   coding, dumbbell exercises, skipped sets, and superset differentiation.
+   coding, dumbbell exercises, skipped sets, superset differentiation, and
+   visual state indicators for active vs completed sessions.
 
-   Dependencies: isDumbbellExercise, pluralize, colorCodeMap, programConfig
+   Architecture: Visual state system
+   - Current active session: White text (in-progress)
+   - Completed sessions: Green text (logged/database saved)
+   - Color swap aligns green with logged state semantic meaning
+
+   Dependencies: isDumbbellExercise, pluralize, colorCodeMap, programConfig,
+                 appState
    Used by: my-data.templates.calendarDay.js
    ========================================================================== */
 
 import { colorCodeMap, programConfig } from "config";
 import { isDumbbellExercise, pluralize } from "utils";
+import { appState } from "state";
 
 export function buildExerciseBlocksHTML(orderedExercises, session, hasWideResults) {
   const currentPlan =
@@ -33,6 +41,11 @@ export function buildExerciseBlocksHTML(orderedExercises, session, hasWideResult
           "text-plan";
       }
 
+      /* Determine text color based on current session */
+      /* Current active session = white (in progress), Completed sessions = green (logged) */
+      const isCurrentSessionMatch = session.id === appState.session.id;
+      const valueColorClass = isCurrentSessionMatch ? "" : "text-plan";
+
       /* Build set rows */
       const setRowsHtml = logsForExercise
         .map((log) => {
@@ -44,20 +57,20 @@ export function buildExerciseBlocksHTML(orderedExercises, session, hasWideResult
           const resultText =
             log.status === "skipped"
               ? `<span class="text-orange history-skipped-text">Skipped</span>`
-              : `<div class="log-item-results-container history-results-container">
-                  <span class="log-item-results-value history-results-value">${
+              : `<div class="history-results-container">
+                  <span class="history-results-value ${valueColorClass}">${
                     log.weight
                   }</span>
-                  <span class="log-item-results-unit history-results-unit">&nbsp;${pluralize(
+                  <span class="history-results-unit">&nbsp;${pluralize(
                     log.weight,
                     "lb",
                     "lbs"
                   )}</span>
-                  <span class="log-item-results-unit history-results-unit">&nbsp;x&nbsp;</span>
-                  <span class="log-item-results-value history-results-value">${
+                  <span class="history-results-unit">&nbsp;x&nbsp;</span>
+                  <span class="history-results-value ${valueColorClass}">${
                     log.reps
                   }</span>
-                  <span class="log-item-results-unit history-results-unit">&nbsp;${pluralize(
+                  <span class="history-results-unit">&nbsp;${pluralize(
                     log.reps,
                     "rep",
                     "reps"

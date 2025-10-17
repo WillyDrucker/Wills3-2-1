@@ -1,8 +1,13 @@
 /* ==========================================================================
    WORKOUT RESULTS CARD - HTML Template
 
-   Generates workout completion card HTML with plate animations and results
-   summary. Shows total sets logged with session color coding.
+   Generates workout completion card HTML with plate animations, results
+   summary, and two-state action button (Saved → Begin Another Workout).
+
+   Architecture: Button initial state
+   - Button starts as green "Workout Saved!" (button-log class)
+   - Disabled attribute prevents clicks during animation
+   - State transition handled in workout-results-card.index.js
 
    Dependencies: appState, workoutMetricsService
    Used by: workout-results-card.index.js (renderWorkoutResultsCard)
@@ -19,6 +24,19 @@ export function getWorkoutResultsCardTemplate() {
     ? "is-animating"
     : "";
 
+  // Check if current session is committed
+  const workout = appState.user.history.workouts.find((w) => w.id === appState.session.id);
+  const isCommitted = workout?.isCommitted || false;
+
+  const commitBanner = isCommitted
+    ? `<div class="workout-saved-banner">
+         <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+           <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+         </svg>
+         <span>Workout Logged!</span>
+       </div>`
+    : '';
+
   return `
       <div class="card workout-results-container" id="active-card-container">
         <div class="card-content-container">
@@ -34,8 +52,9 @@ export function getWorkoutResultsCardTemplate() {
               appState.session.currentSessionColorClass
             }">${totalSets}</span> total sets.</p>
           </div>
+          ${commitBanner}
           <div class="action-button-container">
-            <button class="action-button button-finish" data-action="openResetConfirmationModal">Reset Settings & Clear Logs</button>
+            <button class="action-button button-log workout-saved-button" data-action="openResetConfirmationModal" disabled>Workout Saved!</button>
           </div>
         </div>
       </div>`;

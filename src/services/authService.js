@@ -92,6 +92,10 @@ export async function signOut() {
     // Clear auth state
     clearAuthState();
 
+    // Clear localStorage to remove all previous user data
+    localStorage.clear();
+    console.log("localStorage cleared on sign out");
+
     return { error: null };
   } catch (err) {
     return { error: err.message };
@@ -236,9 +240,13 @@ export function onAuthStateChange(callback) {
 
 /**
  * Continue as guest (bypass authentication)
- * Sets guest mode flag in app state
+ * Sets guest mode flag in app state and clears previous user data
  */
 export function continueAsGuest() {
+  // Clear localStorage to remove all previous user data
+  localStorage.clear();
+  console.log("localStorage cleared for guest mode");
+
   appState.auth = {
     isAuthenticated: false,
     isGuest: true,

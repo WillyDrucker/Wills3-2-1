@@ -110,5 +110,6 @@ export function handleLogSet(side = null) {
     updateWorkoutCompletionState();
     recalculateCurrentStateAfterLogChange();
   }
+
   return true;
 }

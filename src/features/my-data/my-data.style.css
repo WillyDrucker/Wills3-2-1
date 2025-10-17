@@ -40,3 +40,15 @@
 .my-data-card.history-card .card-content-container {
   padding-bottom: 11px; /* Compensates for italic font metrics = 16px visual to bottom */
 }
+
+/* === CLEAR DAILY DATA CARD === */
+/* Admin-only card for willy.drucker@gmail.com */
+.clear-daily-data-card {
+  margin-bottom: var(--space-m); /* 16px rhythm */
+}
+
+/* Button variant - red background with black text */
+.button-clear-daily-data {
+  background-color: var(--skip-red); /* Red: #b30000 */
+  color: var(--text-on-action-color); /* Black: #000000 */
+}

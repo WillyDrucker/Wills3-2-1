@@ -53,6 +53,7 @@ export function handleUpdateLog(index, newWeight, newReps) {
   log.isAnimating = true;
   log.animationStartTime = now; // Track when animation started for progress calculation
   historyService.addOrUpdateLog(log);
+
   setTimeout(() => {
     log.isAnimating = false;
     log.animationStartTime = null; // Clear tracking after animation completes

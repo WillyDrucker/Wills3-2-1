@@ -1,10 +1,16 @@
 /* ==========================================================================
    MY DATA - HTML Template
 
-   Generates My Data page HTML with performance card and history calendar.
-   Includes tab selector (Workouts/Conditioning/Stretching) and week navigator.
+   Generates My Data page HTML with performance card, history calendar,
+   tab selector, week navigator, and admin-only Clear Today's Data button.
 
-   Dependencies: appState, ui, createSelectorHTML, getWorkoutCalendarHTML, getWeekRange
+   Architecture: Admin-only features
+   - Clear Today's Data button visible only for willy.drucker@gmail.com
+   - Email check via appState.auth.user.email
+   - Button wired in my-data.index.js render function
+
+   Dependencies: appState, ui, createSelectorHTML, getWorkoutCalendarHTML,
+                 getWeekRange
    Used by: my-data.index.js (renderMyDataPage)
    ========================================================================== */
 
@@ -59,6 +65,16 @@ export function getMyDataPageTemplate() {
   const weekRange = getWeekRange(weekOffset);
   const nextButtonDisabled = weekOffset === 0 ? "disabled" : "";
 
+  // Admin-only: Clear Today's Data button for willy.drucker@gmail.com
+  const isAdmin = appState.auth?.user?.email === "willy.drucker@gmail.com";
+  const clearDailyDataButton = isAdmin
+    ? `<div class="card my-data-card clear-daily-data-card">
+        <div class="card-content-container">
+          <button class="action-button button-clear-daily-data clear-daily-data-button">Clear Today's Data</button>
+        </div>
+      </div>`
+    : "";
+
   return `
     <div class="card my-data-card performance-card">
       <div class="card-content-container">
@@ -88,5 +104,6 @@ export function getMyDataPageTemplate() {
             ${logContentHtml}
         </div>
     </div>
+    ${clearDailyDataButton}
   `;
 }
