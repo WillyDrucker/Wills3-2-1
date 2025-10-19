@@ -3,7 +3,7 @@
 
    CEMENT: Fixed-position overlay system with fade transitions
    - Full viewport overlay with z-index 1000
-   - Centered content with 16px top padding
+   - Centered content with 16px top, 10px left/right (var(--app-side-margin))
    - Fade in/out transitions (0.3s opacity + visibility)
    - Hidden state: opacity 0, visibility hidden (allows transitions)
 
@@ -25,10 +25,12 @@
    Used by: /features/config-card (superset, partner, reset modals)
    ========================================================================== */
 
-/* === MODAL CONTAINERS === */
+/* === MODAL CONTAINERS BASE === */
+/* Base styles for all modal containers */
 .superset-modal-container,
 #partner-modal-container,
-#reset-confirmation-modal-container {
+#reset-confirmation-modal-container,
+#new-workout-modal-container {
   position: fixed;
   top: 0;
   left: 0;
@@ -37,15 +39,27 @@
   z-index: 1000;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  padding-top: 16px;
+  padding: 16px var(--app-side-margin); /* Global: 16px top, 10px left/right standard */
   transition: opacity 0.3s ease, visibility 0.3s;
+}
+
+/* Top-aligned modals (superset, partner) */
+.superset-modal-container,
+#partner-modal-container {
+  align-items: flex-start; /* Top alignment for selector modals */
+}
+
+/* Center-aligned modals (confirmation windows) */
+#reset-confirmation-modal-container,
+#new-workout-modal-container {
+  align-items: center; /* Vertical centering for confirmation modals */
 }
 
 /* Hidden state */
 .superset-modal-container.is-hidden,
 #partner-modal-container.is-hidden,
-#reset-confirmation-modal-container.is-hidden {
+#reset-confirmation-modal-container.is-hidden,
+#new-workout-modal-container.is-hidden {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;

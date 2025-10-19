@@ -1,0 +1,116 @@
+/* ==========================================================================
+   APD/CLAUDE v5.5.5 - CONFIRMATION MODALS GLOBAL STANDARD
+
+   SINGLE SOURCE OF TRUTH for all confirmation modal styling patterns.
+
+   Purpose:
+   - Establishes base styling for all confirmation windows
+   - Ensures consistent UX across reset, new-workout, and future confirmations
+   - Provides 16px visual spacing rhythm throughout all modals
+
+   Architecture:
+   LAYOUT: Centered fullscreen overlay with backdrop
+   TYPOGRAPHY: Title (2.5rem/700) → Description (1rem/600) → Question (1.25rem/600)
+   SPACING: 16px visual rhythm with font-metric compensation
+   BORDERS: 2px solid blue (--primary-blue)
+   BUTTONS: Flex 2-button or Grid 3-button layouts
+
+   Spacing Rhythm (16px visual):
+   - Card top → Title: 16px (8px padding compensates for font ascender)
+   - Title → Description: 16px (7px margin compensates for font metrics)
+   - Description → Question: 16px (9px margin compensates for line-height 1.2)
+   - Question → Buttons: 16px (13px margin compensates for font metrics)
+   - Button gaps: 16px (var(--space-m))
+
+   Customization:
+   Individual modals can extend/override for unique features (animations, colors, layouts)
+   while maintaining base typography and spacing consistency.
+
+   Dependencies:
+   - _variables.css: Spacing/color/typography tokens
+   - _modals.css: Base modal container system
+   - _action-button-groups.css: Button layout patterns
+
+   Used by:
+   - reset-confirmation-modal (Config-card Reset button)
+   - new-workout-modal (Workout Complete → Begin New Workout)
+   - Future confirmation modals
+   ========================================================================== */
+
+/* === MODAL CONTAINER CENTERING === */
+/* Centering handled in _modals.css - no override needed */
+/* Individual confirmation modal containers use align-items: center from _modals.css */
+
+/* === MODAL CARD BASE === */
+/* Apply to all confirmation modal cards */
+.confirmation-modal-card {
+  padding: 8px var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
+  border: 2px solid var(--primary-blue); /* Standard blue border */
+  max-width: 400px; /* Consistent max width */
+  width: 100%;
+}
+
+/* === TITLE BASE === */
+/* Apply to all confirmation modal titles */
+.confirmation-modal-title {
+  font-size: var(--font-size-h1); /* Global: 2.5rem */
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: var(--text-shadow-subtle); /* Global: 0 2px 4px rgba(0, 0, 0, 0.8) */
+  text-align: center;
+  color: var(--text-primary);
+  margin: -3px 0 7px 0; /* Compensates for font metrics - achieves 16px visual to description */
+}
+
+/* === DESCRIPTION TEXT BASE === */
+/* Apply to all confirmation modal description paragraphs */
+.confirmation-modal-description {
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--text-primary);
+  margin: 0 0 9px 0; /* Achieves 16px visual to next element */
+  line-height: 1.2; /* 7px visual spacing between wrapped lines */
+}
+
+/* === WARNING TEXT BASE === */
+/* Apply to warning text (e.g., logged sets count) */
+.confirmation-modal-warning {
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--text-primary);
+  margin: 0 0 9px 0; /* Achieves 16px visual to question */
+  line-height: 1; /* Collapse line-box for single line text */
+}
+
+/* === QUESTION TEXT BASE === */
+/* Apply to all confirmation modal question text */
+.confirmation-modal-question {
+  font-size: var(--font-size-h2); /* Global: 1.25rem */
+  font-weight: 600;
+  text-align: center;
+  color: var(--text-primary);
+  margin: 0 0 13px 0; /* Compensates for font metrics - achieves 16px visual to buttons */
+  line-height: 1; /* Collapse line-box */
+}
+
+/* === BUTTON GROUP BASE === */
+/* Standard two-button layout */
+.confirmation-modal-actions {
+  display: flex;
+  gap: var(--space-m); /* Global: 16px */
+  margin-top: 0; /* Question already has 16px margin-bottom */
+}
+
+/* === THREE BUTTON LAYOUT === */
+/* For modals with three buttons (Cancel | Middle | Confirm) */
+.confirmation-modal-actions-three {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr; /* Equal width columns */
+  gap: var(--space-m); /* Global: 16px between all buttons */
+}
+
+.confirmation-modal-actions-three .action-button {
+  width: 100%; /* Fill grid column */
+}

@@ -34,7 +34,7 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding: var(--space-l);
+  padding: var(--app-side-margin); /* Global: 10px - standard app edge margin */
   background: var(--background-dark);
 }
 
@@ -308,7 +308,7 @@
   align-items: center;
   justify-content: center;
   z-index: 1000; /* Above all page content */
-  padding: var(--space-l);
+  padding: var(--app-side-margin); /* Global: 10px - standard app edge margin */
 }
 
 .reset-modal.is-hidden {

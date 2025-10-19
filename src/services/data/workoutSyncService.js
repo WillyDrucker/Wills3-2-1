@@ -264,6 +264,60 @@ export async function migrateLocalWorkoutsToDatabase(localWorkouts) {
 }
 
 /**
+ * Delete a single workout from database by ID
+ *
+ * Purpose: Removes empty/zombie workouts when last log is cleared via edit selector.
+ * When historyService.removeLog() clears the last logged set, it calls this function
+ * to delete the entire workout from database instead of saving an empty workout.
+ *
+ * Why needed: Prevents orphaned workout headers appearing in My Data with "No sets logged"
+ *
+ * Foreign key handling: Deletes workout_logs first to satisfy ON DELETE CASCADE constraint,
+ * then deletes workout record. Both operations scoped to current user_id for security.
+ *
+ * @param {number|string} workoutId - The workout ID to delete (session.id timestamp)
+ * @returns {Promise<{success: boolean, error?: string}>} Result object with success status
+ */
+export async function deleteWorkoutFromDatabase(workoutId) {
+  try {
+    const userId = appState.auth?.user?.id;
+    if (!userId) {
+      return { success: false, error: "User not authenticated" };
+    }
+
+    // Delete workout logs first (foreign key constraint)
+    const { error: logsError } = await supabase
+      .from("workout_logs")
+      .delete()
+      .eq("workout_id", workoutId)
+      .eq("user_id", userId);
+
+    if (logsError) {
+      console.error("Error deleting workout logs:", logsError);
+      return { success: false, error: logsError.message };
+    }
+
+    // Delete workout
+    const { error: workoutError } = await supabase
+      .from("workouts")
+      .delete()
+      .eq("id", workoutId)
+      .eq("user_id", userId);
+
+    if (workoutError) {
+      console.error("Error deleting workout:", workoutError);
+      return { success: false, error: workoutError.message };
+    }
+
+    console.log(`Deleted workout ${workoutId} from database`);
+    return { success: true };
+  } catch (error) {
+    console.error("Unexpected error deleting workout:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
  * Clear all workouts logged today from database and appState
  * Admin-only function for willy.drucker@gmail.com
  * @returns {Promise<{success: boolean, deleted: number, error?: string}>}

@@ -100,7 +100,7 @@ export function getLoginPageTemplate() {
       <!-- Password Reset Modal -->
       <div id="reset-password-modal" class="reset-modal is-hidden">
         <div class="reset-modal-content card">
-          <h2 class="reset-modal-title">Reset Password Link</h2>
+          <h2 class="reset-modal-title">Reset Link</h2>
           <p class="reset-modal-description">Enter your email address and we'll send you a link to reset your password.</p>
 
           <div class="reset-input-group">

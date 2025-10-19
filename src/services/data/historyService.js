@@ -25,7 +25,7 @@ import { appState } from "state";
 import { formatTimestamp } from "utils";
 import * as persistenceService from "services/core/persistenceService.js";
 import { programConfig } from "config";
-import { saveWorkoutToDatabase } from "./workoutSyncService.js";
+import { saveWorkoutToDatabase, deleteWorkoutFromDatabase } from "./workoutSyncService.js";
 
 function getSessionHeaderInfo() {
   const { session, weeklyPlan, allExercises } = appState;
@@ -131,6 +131,23 @@ export function addOrUpdateLog(logEntry) {
   }
 }
 
+/**
+ * Remove a logged set from workout history
+ *
+ * Purpose: Delete a specific logged set when user clicks Clear in edit log selector.
+ * Filters out matching log entry by exercise name, set number, and superset side.
+ *
+ * Database Sync Logic:
+ * - If last log removed (0 logs remaining): Deletes entire workout from database
+ *   to prevent zombie/orphaned workout headers in My Data
+ * - If logs still remain: Saves updated workout to database with remaining logs
+ * - Fire-and-forget async pattern (catches errors, doesn't block UI)
+ *
+ * Why delete on empty: Prevents "No sets logged" workout headers appearing in
+ * My Data workout history list. User expects cleared logs to disappear completely.
+ *
+ * @param {Object} logEntry - The log entry to remove (contains exercise, setNumber, supersetSide)
+ */
 export function removeLog(logEntry) {
   const { user, session } = appState;
   let history = user.history.workouts;
@@ -148,17 +165,27 @@ export function removeLog(logEntry) {
         )
     );
 
-    if (history[workoutIndex].logs.length === 0) {
+    const logsRemainingAfterRemoval = history[workoutIndex].logs.length;
+
+    if (logsRemainingAfterRemoval === 0) {
       history.splice(workoutIndex, 1);
     }
 
     persistenceService.saveState();
 
-    // Immediately save to database if user is authenticated
+    // Handle database update if user is authenticated
     if (appState.auth?.isAuthenticated) {
-      saveWorkoutToDatabase(workout).catch((error) => {
-        console.error("Failed to save workout to database:", error);
-      });
+      if (logsRemainingAfterRemoval === 0) {
+        // Last log was cleared - delete entire workout from database
+        deleteWorkoutFromDatabase(workout.id).catch((error) => {
+          console.error("Failed to delete workout from database:", error);
+        });
+      } else {
+        // Still has logs - save updated workout to database
+        saveWorkoutToDatabase(workout).catch((error) => {
+          console.error("Failed to save workout to database:", error);
+        });
+      }
     }
   }
 }

@@ -25,7 +25,12 @@ export function renderResetConfirmationModal() {
       appState.ui.activeModal !== "reset"
     );
     if (appState.ui.activeModal === "reset") {
-      container.innerHTML = getResetConfirmationModalTemplate();
+      // Count logged sets (completed or skipped status)
+      const loggedSetsCount = appState.session.workoutLog.filter(
+        log => log.status === "completed" || log.status === "skipped"
+      ).length;
+
+      container.innerHTML = getResetConfirmationModalTemplate(loggedSetsCount);
     } else {
       container.innerHTML = "";
     }

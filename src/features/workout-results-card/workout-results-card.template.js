@@ -54,7 +54,7 @@ export function getWorkoutResultsCardTemplate() {
           </div>
           ${commitBanner}
           <div class="action-button-container">
-            <button class="action-button button-log workout-saved-button" data-action="openResetConfirmationModal" disabled>Workout Saved!</button>
+            <button class="action-button button-log workout-saved-button" data-action="openNewWorkoutModal" disabled>Workout Saved!</button>
           </div>
         </div>
       </div>`;

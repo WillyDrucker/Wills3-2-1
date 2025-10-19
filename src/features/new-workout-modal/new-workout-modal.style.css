@@ -1,0 +1,91 @@
+/* ==========================================================================
+   APD/CLAUDE v5.5.5 - NEW WORKOUT CONFIRMATION MODAL
+
+   Confirmation window for beginning new workout after completing a workout.
+   Triggered from workout-results-card "Workout Saved!" → "Begin Another Workout" button.
+
+   Purpose:
+   - Confirms workout is saved to database/My Data
+   - Warns user that starting new workout clears Today's Workout
+   - Provides visual feedback with green flash animation
+
+   Base Styles:
+   Inherits all base styling from _confirmation-modals.css:
+   - Title: 2.5rem/700 centered
+   - Description: 1rem/600 line-height 1.2
+   - Question: 1.25rem/600
+   - 16px spacing rhythm throughout
+   - Blue border, centered layout
+
+   Custom Features:
+   - Green "Yes" button (button-new-workout-yes)
+   - Saved text animation: Grow → Snap → Flash green with glow → Stay green
+   - Animation timing: 1.8s (matches workout log animations)
+
+   Dependencies:
+   - _confirmation-modals.css: Base confirmation modal pattern
+   - _variables.css: Color tokens (--log-green, --text-green-plan)
+   - _modals.css: Modal container system
+
+   Used by: Workout results card post-completion flow
+   ========================================================================== */
+
+@import url("../../styles/components/_modals.css");
+@import url("../../styles/components/_card-headers.css");
+@import url("../../styles/components/_action-button-groups.css");
+@import url("../../styles/components/_confirmation-modals.css");
+
+/* ==========================================================================
+   NEW WORKOUT-SPECIFIC STYLES ONLY
+   All base confirmation modal styles come from _confirmation-modals.css
+   ========================================================================== */
+
+/* === MODAL CONTAINER OVERRIDE === */
+#new-workout-modal-container {
+  /* Uses .confirmation-modal-container from shared styles */
+}
+
+/* === GREEN YES BUTTON - New Workout specific === */
+.new-workout-card .button-new-workout-yes {
+  background-color: var(--log-green) !important;
+}
+
+/* === SAVED TEXT ANIMATION === */
+/* Grow, snap back, THEN flash green with glow and stay green */
+@keyframes saved-text-grow-flash {
+  0% {
+    color: var(--text-primary); /* Start white */
+    transform: scale(1);
+    text-shadow: none;
+  }
+  60% {
+    color: var(--text-primary); /* Stay white during grow */
+    transform: scale(1.15); /* Grow to 1.15x (matches workout log) */
+    text-shadow: none;
+  }
+  66.7% {
+    color: var(--text-primary); /* Stay white during snap */
+    transform: scale(1); /* Snap back */
+    text-shadow: none;
+  }
+  75% {
+    color: var(--text-green-plan); /* Flash to green with glow */
+    transform: scale(1);
+    text-shadow: 0 0 8px var(--text-green-plan);
+  }
+  85% {
+    color: var(--text-green-plan); /* Stay green, remove glow */
+    transform: scale(1);
+    text-shadow: none;
+  }
+  100% {
+    color: var(--text-green-plan); /* Stay green */
+    transform: scale(1);
+    text-shadow: none;
+  }
+}
+
+.new-workout-card .saved-text-animate {
+  animation: saved-text-grow-flash 1.8s ease-out forwards; /* forwards keeps final state */
+  transform-origin: center center;
+}

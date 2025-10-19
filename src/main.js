@@ -37,6 +37,7 @@ import { renderHomePage } from "features/home-page/home-page.index.js";
 import { renderMyDataPage } from "features/my-data/my-data.index.js";
 import { renderSideNav } from "features/side-nav/side-nav.index.js";
 import { renderResetConfirmationModal } from "features/reset-confirmation-modal/reset-confirmation-modal.index.js";
+import { renderNewWorkoutModal } from "features/new-workout-modal/new-workout-modal.index.js";
 import { renderResetOptionsModal } from "features/reset-modal/reset-modal.index.js";
 import { renderVideoPlayer } from "features/video-player/video-player.index.js";
 import { renderSupersetModal } from "features/superset-modal/superset-modal.index.js";
@@ -119,6 +120,7 @@ function renderAll() {
   }
   renderSideNav();
   renderResetConfirmationModal();
+  renderNewWorkoutModal();
   renderResetOptionsModal();
   renderSupersetModal();
   renderPartnerModal();

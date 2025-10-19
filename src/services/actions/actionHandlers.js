@@ -36,6 +36,7 @@ import {
   handleCloseSideNav,
 } from "features/side-nav/side-nav.index.js";
 import { handleConfirmReset } from "features/reset-confirmation-modal/reset-confirmation-modal.index.js";
+import { handleConfirmNewWorkout } from "features/new-workout-modal/new-workout-modal.index.js";
 import {
   handleResetWorkoutDefaults,
   handleResetWorkoutAndClearLogs,
@@ -322,6 +323,22 @@ export function getActionHandlers() {
     closeResetConfirmationModal: () => modalService.close(),
     confirmReset: () => {
       handleConfirmReset();
+      coreActions.resetSessionAndLogs();
+    },
+    saveMyDataAndReset: () => {
+      handleConfirmReset();
+      // Reset session/logs but keep database entries (saves workout to My Data)
+      coreActions.resetSessionAndLogs();
+    },
+
+    // === NEW WORKOUT MODAL ACTIONS (v5.5.5) ===
+    // Triggered from workout-results-card "Begin Another Workout" button
+    // Confirms workout saved to My Data, then resets Today's Workout
+    openNewWorkoutModal: () => modalService.open("newWorkout"),
+    closeNewWorkoutModal: () => modalService.close(),
+    confirmNewWorkout: () => {
+      handleConfirmNewWorkout();
+      // Reset session/logs but keep database entries (workout preserved in My Data)
       coreActions.resetSessionAndLogs();
     },
     showVideo: (event, videoUrl) => handleShowVideo(videoUrl),

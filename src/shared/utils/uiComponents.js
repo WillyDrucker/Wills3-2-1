@@ -39,6 +39,9 @@ export const ui = {
   resetConfirmationModalContainer: document.getElementById(
     "reset-confirmation-modal-container"
   ),
+  newWorkoutModalContainer: document.getElementById(
+    "new-workout-modal-container"
+  ),
   resetOptionsModalContainer: document.getElementById(
     "reset-options-modal-container"
   ),

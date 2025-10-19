@@ -1,45 +1,68 @@
 /* ==========================================================================
-   RESET CONFIRMATION MODAL - Main Entry Point
+   APD/CLAUDE v5.5.5 - RESET CONFIRMATION MODAL
 
-   Simple confirmation modal for reset action. Imports global modal components
-   and applies centered header with font metrics compensation.
+   Confirmation window for config-card Reset button.
+   Warns user about clearing Today's Workout logs when sets are logged.
 
-   🔒 CEMENT: Font metrics compensation for 16px visual spacing
-   - Header to buttons: 13px CSS margin
-   - Font line-height 1 with descenders adds ~3px
-   - Result: 13px + 3px = 16px visual spacing
+   Purpose:
+   - Dynamic layout: 0 logs = 2 buttons (Cancel/Yes), 1+ logs = 3 buttons (Cancel/Save My Data/Yes)
+   - Shows logged sets count warning in green when logs exist
+   - Confirms reset action with context-specific question text
+   - "Save My Data" option preserves workout to database before reset
 
-   Architecture: Two-button confirmation modal
-   ├── Modal backdrop (inherited from global _modals.css)
-   ├── Modal content card with centered header
-   └── Horizontal button group (Cancel, Confirm)
+   Base Styles:
+   Inherits all base styling from _confirmation-modals.css:
+   - Title: 2.5rem/700 centered
+   - Description: 1rem/600 line-height 1.2
+   - Warning: 1rem/600 with green highlight
+   - Question: 1.25rem/600
+   - 16px spacing rhythm throughout
+   - Blue border, centered layout
+
+   Custom Features:
+   - button-reset-save-mydata: Green button with stacked "Save" / "My Data" text
+   - Dynamic text based on logged sets count (see template.js)
+   - Three-button grid layout for logged sets scenario
 
    Dependencies:
-   Global: _variables.css (--font-size-h2, --on-surface-light, --text-shadow-subtle,
-           --space-m)
-   Global: _modals.css, _card-headers.css, _action-button-groups.css
+   - _confirmation-modals.css: Base confirmation modal pattern
+   - _variables.css: Color tokens (--log-green)
+   - _modals.css: Modal container system
 
-   Used by: Workout results card "Reset Settings & Clear Logs" action
+   Used by: Config-card Reset button
    ========================================================================== */
 
 @import url("../../styles/components/_modals.css");
 @import url("../../styles/components/_card-headers.css");
 @import url("../../styles/components/_action-button-groups.css");
+@import url("../../styles/components/_confirmation-modals.css");
 
-#reset-confirmation-modal-container .card-header {
-  font-size: var(--font-size-h2);
-  font-weight: 600;
-  line-height: 1;
-  color: var(--on-surface-light);
-  text-align: center;
-  text-shadow: var(--text-shadow-subtle);
-  margin: 0;
-  padding: 0;
-  /* Direct to buttons - no bottom margin */
+/* ==========================================================================
+   RESET-SPECIFIC STYLES ONLY
+   All base confirmation modal styles come from _confirmation-modals.css
+   ========================================================================== */
+
+/* === MODAL CONTAINER OVERRIDE === */
+#reset-confirmation-modal-container {
+  /* Uses .confirmation-modal-container from shared styles */
 }
 
-#reset-confirmation-modal-container .superset-modal-actions {
+/* === SAVE MY DATA BUTTON (Green stacked text) - Reset specific === */
+.reset-confirmation-card .button-reset-save-mydata {
+  background-color: var(--log-green);
   display: flex;
-  gap: var(--space-m);        /* Global: 16px */
-  margin-top: 13px;           /* Adjusted for 16px visual spacing (font metrics compensation) */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 8px 12px;
+}
+
+.reset-confirmation-card .button-save-line1,
+.reset-confirmation-card .button-save-line2 {
+  display: block;
+}
+
+.reset-confirmation-card .button-save-line1 {
+  margin-bottom: 2px;
 }
