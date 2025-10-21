@@ -10,6 +10,10 @@ import * as navigationService from "services/core/navigationService.js";
    Handles configuration state changes for plan, day, and time selections.
    Provides state snapshot/restore functionality for cancel operations.
    Manages default reset behavior.
+
+   Dependencies: appState, ui, config (timeOptions), config-card.template,
+                 navigationService
+   Used by: main.js (initial render), actionHandlers (config updates)
    ========================================================================== */
 
 // Store state snapshot for cancel/restore operations

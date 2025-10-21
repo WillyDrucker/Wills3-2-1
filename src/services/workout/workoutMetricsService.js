@@ -1,3 +1,15 @@
+/* ==========================================================================
+   WORKOUT METRICS SERVICE - Workout Statistics Calculator
+
+   Pure functions for calculating workout metrics including total sets,
+   duration, and sets per exercise. Handles both standard and dual-mode
+   (superset/partner) workout calculations. Single source of truth for
+   all workout metric computations.
+
+   Dependencies: config (timeOptions), workoutLogGenerationService
+   Used by: Workout services, config card, workout results display
+   ========================================================================== */
+
 import { timeOptions } from "config";
 import { generateWorkoutLog } from "services/workout/workoutLogGenerationService.js";
 

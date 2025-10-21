@@ -8,6 +8,10 @@ import { getTimeSelectorHTML } from "./config-card.template.time.js";
    CONFIG MODAL - Full configuration modal rendering
 
    Renders config modal to #config-modal-container when activeModal is 'config'.
+
+   Dependencies: appState, ui, config-card.template.plan, config-card.template.day,
+                 config-card.template.time
+   Used by: actionHandlers (modal rendering)
    ========================================================================== */
 
 export function renderConfigModal() {

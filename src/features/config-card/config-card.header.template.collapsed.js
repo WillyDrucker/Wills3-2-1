@@ -7,6 +7,9 @@ import { canCycleToSession, isSessionCyclingLocked } from "utils";
 
    Quick buttons remain clickable even when muted to expand config dropdown.
    Displays three quick buttons: Plan, Focus, Session
+
+   Dependencies: appState, config (workoutPlans, timeOptions), utils
+   Used by: config-card.header.render.js (collapsed state rendering)
    ========================================================================== */
 
 // Helper: Check if next session cycling is allowed

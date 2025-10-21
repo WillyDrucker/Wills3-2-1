@@ -22,6 +22,7 @@
    Global: _variables.css, _card-foundations.css, _card-headers.css, _selectors.css
    Local: config-card.header.style.base.css, config-card.header.style.quickbuttons.css,
           config-card.header.expanded.css, config-card.header.muting.css
+   Used by: config-card.header.index.js (config header rendering)
    ========================================================================== */
 
 /* Global dependencies */

@@ -38,7 +38,7 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding: var(--app-side-margin); /* Global: 10px - standard app edge margin */
+  padding: 0; /* No padding - card handles all spacing */
   background: var(--background-dark);
 }
 
@@ -46,10 +46,10 @@
 .login-card {
   width: 100%;
   max-width: 400px;
-  margin: 0 auto;
+  margin: 0 var(--app-side-margin); /* Global: 10px left/right - card edge 10px from screen edge */
 }
 
-/* Override global card padding (11px) for login's larger title font */
+/* Override global card padding (11px top) for login's larger title font */
 .login-page .login-card .card-content-container {
   padding-top: 8px; /* Compensates for 2.5rem title ascender - achieves 16px visual from top */
 }

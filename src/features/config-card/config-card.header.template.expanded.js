@@ -8,6 +8,10 @@ import { getDaySelectorHTML } from "./config-card.template.day.js";
    CONFIG HEADER - Expanded template (full dropdown)
 
    Displays full configuration controls with Plan/Focus/Session selectors
+
+   Dependencies: appState, config (workoutPlans, timeOptions), ui,
+                 utils, config-card.template.day
+   Used by: config-card.header.template.js (expanded state delegation)
    ========================================================================== */
 
 // Helper: Check if next session cycling is allowed

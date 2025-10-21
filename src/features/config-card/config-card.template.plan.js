@@ -11,6 +11,9 @@ import { createSelectorHTML } from "ui";
    - Config Modal: Omits reset option
 
    Displays current plan/mode (Normal, Superset, Partner) with mode options.
+
+   Dependencies: appState, config (workoutPlans), ui (createSelectorHTML)
+   Used by: config-card.template.js, config-card.modal.index.js
    ========================================================================== */
 
 export function getPlanSelectorHTML(isAnySetLogged, selectorId = "workout-setup-selector-details", includeResetOption = true) {

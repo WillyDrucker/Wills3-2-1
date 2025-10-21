@@ -1,3 +1,14 @@
+/* ==========================================================================
+   TIMER LEDGER SERVICE - Workout Time Calculations
+
+   Calculates remaining workout time and determines ledger side assignment
+   for dual-mode workouts. Manages time tracking logic based on session type,
+   rest periods, and workout progress.
+
+   Dependencies: appState, config (timeOptions), workoutLogGenerationService
+   Used by: Workout services, timer services, config card time calculations
+   ========================================================================== */
+
 import { appState } from "state";
 import { timeOptions } from "config";
 import * as workoutLogGenerationService from "services/workout/workoutLogGenerationService.js";

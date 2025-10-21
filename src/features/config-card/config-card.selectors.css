@@ -3,6 +3,9 @@
 
    Multi-line selector content for workout setup
    Balanced text layouts for two-line items
+
+   Dependencies: _variables.css (selector multiline tokens)
+   Used by: config-card.style.css (selector customizations)
    ========================================================================== */
 
 /* === MULTI-LINE SELECTORS === */

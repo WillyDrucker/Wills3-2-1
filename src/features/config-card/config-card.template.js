@@ -1,3 +1,15 @@
+/* ==========================================================================
+   CONFIG CARD TEMPLATE - Main Config Card HTML Generator
+
+   Generates the main config card container HTML with three selector groups:
+   Current Setup (plan), Current Focus (day), and Current Session (time).
+   Delegates to specialized template modules for each selector type.
+
+   Dependencies: appState, config-card.template.plan, config-card.template.day,
+                 config-card.template.time
+   Used by: config-card.index.js (main config card render)
+   ========================================================================== */
+
 import { appState } from "state";
 import { getPlanSelectorHTML } from "./config-card.template.plan.js";
 import { getDaySelectorHTML } from "./config-card.template.day.js";

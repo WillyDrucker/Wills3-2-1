@@ -8,6 +8,9 @@
    - Utilities provide helper classes and animations
 
    Import Order: Critical for cascade control and specificity management
+
+   Dependencies: All CSS modules imported in cascade order
+   Used by: index.html (main stylesheet entry point)
    ========================================================================== */
 
 /* === 1. VARIABLES - Must be first === */

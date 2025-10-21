@@ -1,11 +1,12 @@
 /* ==========================================================================
    GLOBAL CARD FOUNDATIONS - UNIFIED PADDING & BORDERS
-   
+
    CEMENT: Universal card structure achieving 16px visual margins
    - 11px top padding compensates for font ascender = 16px visual
    - 14px side padding + 2px border = 16px visual
    - All cards use this foundation pattern
-   
+
+   Dependencies: _variables.css (spacing, border-radius, colors)
    Used by: ALL card components in the app
    ========================================================================== */
 

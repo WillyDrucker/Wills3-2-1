@@ -1,22 +1,26 @@
+/* ==========================================================================
+   GLOBAL DESIGN TOKENS - CSS Variables System
+
+   CEMENT: Unified token system achieving pixel-perfect spacing across all components
+   - 16px primary rhythm (margins, major gaps)
+   - 7px secondary rhythm (header-to-content)
+   - Font metrics calibrated for Roboto at all sizes
+   - Zero local tokens needed for standard components
+
+   Token Categories:
+   1. TYPOGRAPHY - Font sizes and line heights
+   2. SPACING - The rhythm system
+   3. LAYOUT - Structural dimensions
+   4. COLORS - UI and data states
+   5. COMPONENT EXCEPTIONS - Special cases only
+
+   DO NOT modify without measuring visual output across ALL components
+
+   Dependencies: None (foundational layer)
+   Used by: All components and pages (global design system)
+   ========================================================================== */
+
 :root {
-  /* ==========================================================================
-     GLOBAL DESIGN TOKENS - CEMENTED SYSTEM
-     
-     CEMENT: Unified token system achieving pixel-perfect spacing across all components
-     - 16px primary rhythm (margins, major gaps)
-     - 7px secondary rhythm (header-to-content)
-     - Font metrics calibrated for Roboto at all sizes
-     - Zero local tokens needed for standard components
-     
-     Token Categories:
-     1. TYPOGRAPHY - Font sizes and line heights
-     2. SPACING - The rhythm system
-     3. LAYOUT - Structural dimensions
-     4. COLORS - UI and data states
-     5. COMPONENT EXCEPTIONS - Special cases only
-     
-     DO NOT modify without measuring visual output across ALL components
-     ========================================================================== */
 
   /* === TYPOGRAPHY TOKENS === */
   /* CEMENT: Standardized font sizes - no magic numbers */

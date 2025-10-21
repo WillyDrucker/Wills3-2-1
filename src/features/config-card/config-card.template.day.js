@@ -7,6 +7,9 @@ import { createSelectorHTML } from "ui";
    CEMENT: Unified day selector used across all config contexts
    Displays current day's workout focus with chronologically-ordered options.
    Shows dual-mode info (Superset/Partner) when active.
+
+   Dependencies: appState, ui (createSelectorHTML)
+   Used by: config-card.template.js (main config card template)
    ========================================================================== */
 
 export function getDaySelectorHTML(isAnySetLogged, selectorId = "day-selector-details") {

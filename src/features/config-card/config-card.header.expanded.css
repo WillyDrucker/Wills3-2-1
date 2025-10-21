@@ -14,6 +14,7 @@
 
    Dependencies:
    Global: _variables.css (spacing, colors, typography, control-height)
+   Used by: config-card.header.style.css (expanded state styling)
    ========================================================================== */
 
 /* === EXPANDED DROPDOWN OVERLAY === */

@@ -12,6 +12,7 @@
 
    Dependencies:
    Global: _variables.css (muting tokens)
+   Used by: config-card.header.style.css (bidirectional muting behavior)
    ========================================================================== */
 
 /* === CONFIG BORDER MUTING === */

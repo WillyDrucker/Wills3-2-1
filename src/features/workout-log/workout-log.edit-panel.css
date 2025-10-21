@@ -20,6 +20,7 @@
    Dependencies:
    Global: _variables.css (spacing, colors, control-height, muting tokens)
    Global: _selectors.css (base dropdown patterns)
+   Used by: workout-log.style.css (edit panel functionality)
    ========================================================================== */
 
 /* === EDIT CONTROLS PANEL === */

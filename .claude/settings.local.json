@@ -39,7 +39,8 @@
       "Bash(gh issue list:*)",
       "WebSearch",
       "WebFetch(domain:stackoverflow.com)",
-      "Bash(gh label list:*)"
+      "Bash(gh label list:*)",
+      "Bash(del \"C:\\Dev\\Wills321\\src\\features\\login-page\\login-page.index.new.js\")"
     ],
     "deny": [],
     "ask": []

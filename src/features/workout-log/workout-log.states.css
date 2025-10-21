@@ -17,6 +17,7 @@
    Dependencies:
    Global: _variables.css (colors, border-radius, card-border-width)
    Local: --log-spacing-top, --log-spacing-middle, --log-spacing-bottom tokens
+   Used by: workout-log.style.css (log item state styling)
    ========================================================================== */
 
 /* === COMPLETED STATE === */

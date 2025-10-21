@@ -13,6 +13,10 @@ import { canCycleToSession } from "utils";
    Displays current session type (Standard/Express/Maintenance) with duration.
    Calculates dynamic duration based on mode (Normal/Superset/Partner).
    Mutes invalid options that would remove logged sets.
+
+   Dependencies: appState, config (timeOptions), ui (createSelectorHTML), utils,
+                 workoutMetricsService, workoutLogGenerationService
+   Used by: config-card.template.js, config-card.modal.index.js
    ========================================================================== */
 
 export function getTimeSelectorHTML(isAnySetLogged, selectorId = "time-selector-details") {

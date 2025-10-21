@@ -11,6 +11,10 @@
 
    Component Structure:
    └── .selectors.css - Two-line selector customization
+
+   Dependencies: _card-headers.css, _card-foundations.css, _selectors.css,
+                 config-card.selectors.css
+   Used by: config-card.index.js (config card rendering)
    ========================================================================== */
 
 /* Global dependencies */
