@@ -77,7 +77,7 @@ export function initialize(dependencies) {
         if (historyTab) selectorHandlers.handleHistoryTab(historyTab);
         if (day) {
           const parentDetails = listItemTarget.closest("details");
-          selectorHandlers.handleDaySelection(day, listItemTarget);
+          selectorHandlers.handleDaySelection(day, parentDetails);
         }
         if (plan) selectorHandlers.handlePlanSelection(plan);
         if (time) selectorHandlers.handleTimeSelection(time);

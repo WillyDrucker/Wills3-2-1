@@ -9,7 +9,24 @@
    - Unlock after operation completes and selectors close
    - Ensures expanded state persists during day/plan/exercise changes
 
-   Dependencies: appState, feature handlers, core services, persistenceService
+   "Let's Go!" button pulse animation triggers:
+   - confirmSuperset: Triggered immediately when selector displays after confirmation
+   - confirmPartnerWorkout: Triggered immediately when selector displays after confirmation
+   - handleDaySelection: Triggered immediately when Current Focus selector displays
+   - cycleNextSession: Triggered only if not already pulsing (non-interrupting)
+   - cyclePreviousSession: Triggered only if not already pulsing (non-interrupting)
+   - handleTimeSelection: Triggered only if not already pulsing (non-interrupting)
+   - Animation runs in parallel with selector grow/glow animations
+   - Session changes won't interrupt ongoing pulse from superset/partner/day changes
+
+   Quick Button grow animations (on "Let's Go!" close only):
+   - toggleConfigHeader: Detects changes in plan/focus/session values
+   - Compares snapshot to current state on config close
+   - Triggers grow-snap animations on changed Quick Buttons
+   - Animations run simultaneously, never on Cancel
+
+   Dependencies: appState, feature handlers, core services, persistenceService,
+                 selectorAnimationService
    Used by: actions/actionService.js (action map)
    ========================================================================== */
 
@@ -17,6 +34,7 @@ import { appState } from "state";
 import * as navigationService from "services/core/navigationService.js";
 import * as scrollService from "services/ui/scrollService.js";
 import * as selectorService from "services/ui/selectorService.js";
+import { animateSelector, animateSelectors, triggerLetsGoButtonPulse, stopLetsGoButtonPulse, restoreLetsGoButtonPulse } from "services/ui/selectorAnimationService.js";
 import * as persistenceService from "services/core/persistenceService.js";
 import * as workoutService from "services/workout/workoutService.js";
 import { recalculateCurrentStateAfterLogChange } from "services/workout/workoutProgressionService.js";
@@ -147,6 +165,23 @@ export function getActionHandlers() {
       }
     },
     openSupersetModal: () => {
+      // Save current state before modal opens (for Cancel restoration)
+      appState.ui.previousDualModeState = {
+        superset: {
+          isActive: appState.superset.isActive,
+          day1: appState.superset.day1,
+          day2: appState.superset.day2,
+          bonusMinutes: appState.superset.bonusMinutes,
+          timeDeductionSetIndexes: [...(appState.superset.timeDeductionSetIndexes || [])]
+        },
+        partner: {
+          isActive: appState.partner.isActive,
+          user1Day: appState.partner.user1Day,
+          user2Day: appState.partner.user2Day
+        },
+        workoutLog: appState.session.workoutLog ? [...appState.session.workoutLog] : null
+      };
+
       let initialDay1 = appState.session.currentDayName;
       if (appState.weeklyPlan[initialDay1]?.title === "Rest") {
         initialDay1 = getNextWorkoutDay(initialDay1);
@@ -161,6 +196,23 @@ export function getActionHandlers() {
       modalService.open("superset", allowStacking);
     },
     openPartnerMode: () => {
+      // Save current state before modal opens (for Cancel restoration)
+      appState.ui.previousDualModeState = {
+        superset: {
+          isActive: appState.superset.isActive,
+          day1: appState.superset.day1,
+          day2: appState.superset.day2,
+          bonusMinutes: appState.superset.bonusMinutes,
+          timeDeductionSetIndexes: [...(appState.superset.timeDeductionSetIndexes || [])]
+        },
+        partner: {
+          isActive: appState.partner.isActive,
+          user1Day: appState.partner.user1Day,
+          user2Day: appState.partner.user2Day
+        },
+        workoutLog: appState.session.workoutLog ? [...appState.session.workoutLog] : null
+      };
+
       let initialDay = appState.session.currentDayName;
       if (appState.weeklyPlan[initialDay]?.title === "Rest") {
         initialDay = getNextWorkoutDay(initialDay);
@@ -182,10 +234,14 @@ export function getActionHandlers() {
     cycleNextSession: () => {
       cycleNextSession();
       coreActions.updateActiveWorkoutPreservingLogs();
+      // Trigger pulse only if not already pulsing (won't interrupt ongoing animation)
+      triggerLetsGoButtonPulse(appState);
     },
     cyclePreviousSession: () => {
       cyclePreviousSession();
       coreActions.updateActiveWorkoutPreservingLogs();
+      // Trigger pulse only if not already pulsing (won't interrupt ongoing animation)
+      triggerLetsGoButtonPulse(appState);
     },
     toggleConfigHeader: () => {
       const openSelector = document.querySelector("details[open]");
@@ -205,10 +261,50 @@ export function getActionHandlers() {
           currentDayName: appState.session.currentDayName,
           currentTimeOptionName: appState.session.currentTimeOptionName,
           currentSessionColorClass: appState.session.currentSessionColorClass,
+          superset: {
+            isActive: appState.superset.isActive,
+            day1: appState.superset.day1,
+            day2: appState.superset.day2,
+            bonusMinutes: appState.superset.bonusMinutes,
+            timeDeductionSetIndexes: [...(appState.superset.timeDeductionSetIndexes || [])]
+          },
+          partner: {
+            isActive: appState.partner.isActive,
+            user1Day: appState.partner.user1Day,
+            user2Day: appState.partner.user2Day
+          },
+          workoutLog: appState.session.workoutLog ? [...appState.session.workoutLog] : null
+        };
+      }
+      // Stop pulse when closing config
+      if (wasExpanded && !appState.ui.isConfigHeaderExpanded) {
+        stopLetsGoButtonPulse(appState);
+      }
+
+      // Detect changes for Quick Button animations (only on "Let's Go!" close)
+      let animationFlags = null;
+      if (wasExpanded && !appState.ui.isConfigHeaderExpanded && appState.ui.configHeaderSnapshot) {
+        const snapshot = appState.ui.configHeaderSnapshot;
+
+        // Check what changed
+        const dayChanged = appState.session.currentDayName !== snapshot.currentDayName;
+        const sessionChanged = appState.session.currentTimeOptionName !== snapshot.currentTimeOptionName;
+        const supersetChanged = appState.superset.isActive !== snapshot.superset.isActive ||
+                                appState.superset.day1 !== snapshot.superset.day1 ||
+                                appState.superset.day2 !== snapshot.superset.day2;
+        const partnerChanged = appState.partner.isActive !== snapshot.partner.isActive ||
+                               appState.partner.user1Day !== snapshot.partner.user1Day ||
+                               appState.partner.user2Day !== snapshot.partner.user2Day;
+
+        // Determine which buttons to animate
+        animationFlags = {
+          animatePlan: supersetChanged || partnerChanged,
+          animateFocus: dayChanged || supersetChanged || partnerChanged,
+          animateSession: sessionChanged
         };
       }
       notifyConfigHeaderToggled();
-      renderConfigHeader();
+      renderConfigHeader(animationFlags);
       persistenceService.saveState();
     },
     cancelConfigHeaderChanges: () => {
@@ -275,6 +371,32 @@ export function getActionHandlers() {
     },
     cancelLog: selectorService.closeAll,
     closeSupersetModal: () => {
+      // Restore previous dual-mode state (Cancel = revert to last known working state)
+      if (appState.ui.previousDualModeState) {
+        const prev = appState.ui.previousDualModeState;
+
+        // Restore superset state
+        appState.superset.isActive = prev.superset.isActive;
+        appState.superset.day1 = prev.superset.day1;
+        appState.superset.day2 = prev.superset.day2;
+        appState.superset.bonusMinutes = prev.superset.bonusMinutes;
+        appState.superset.timeDeductionSetIndexes = prev.superset.timeDeductionSetIndexes;
+
+        // Restore partner state
+        appState.partner.isActive = prev.partner.isActive;
+        appState.partner.user1Day = prev.partner.user1Day;
+        appState.partner.user2Day = prev.partner.user2Day;
+
+        // Restore workout log
+        if (prev.workoutLog) {
+          appState.session.workoutLog = prev.workoutLog;
+          recalculateCurrentStateAfterLogChange();
+        }
+
+        // Clear saved state
+        appState.ui.previousDualModeState = null;
+      }
+
       appState.ui.configHeaderLocked = false;
       const shouldRestore = appState.ui.wasConfigHeaderExpandedBeforeModal;
       if (shouldRestore) {
@@ -284,7 +406,7 @@ export function getActionHandlers() {
       modalService.close();
       if (shouldRestore) {
         setTimeout(() => {
-          renderConfigHeader();
+          renderConfigHeader(animationFlags);
           persistenceService.saveState();
         }, 0);
       }
@@ -292,12 +414,45 @@ export function getActionHandlers() {
     confirmSuperset: () => {
       handleConfirmSuperset();
       coreActions.updateActiveWorkoutAndLog();
+      // Clear saved state (confirmation = accept new state)
+      appState.ui.previousDualModeState = null;
       setTimeout(() => {
         appState.ui.configHeaderLocked = false;
         persistenceService.saveState();
+
+        // Trigger pulse and selector animations immediately when selector displays
+        appState.ui.isLetsGoButtonPulsing = false;
+        triggerLetsGoButtonPulse(appState);
+        animateSelectors(['current-plan-selector', 'config-header-day-selector']);
       }, 0);
     },
     closePartnerModal: () => {
+      // Restore previous dual-mode state (Cancel = revert to last known working state)
+      if (appState.ui.previousDualModeState) {
+        const prev = appState.ui.previousDualModeState;
+
+        // Restore superset state
+        appState.superset.isActive = prev.superset.isActive;
+        appState.superset.day1 = prev.superset.day1;
+        appState.superset.day2 = prev.superset.day2;
+        appState.superset.bonusMinutes = prev.superset.bonusMinutes;
+        appState.superset.timeDeductionSetIndexes = prev.superset.timeDeductionSetIndexes;
+
+        // Restore partner state
+        appState.partner.isActive = prev.partner.isActive;
+        appState.partner.user1Day = prev.partner.user1Day;
+        appState.partner.user2Day = prev.partner.user2Day;
+
+        // Restore workout log
+        if (prev.workoutLog) {
+          appState.session.workoutLog = prev.workoutLog;
+          recalculateCurrentStateAfterLogChange();
+        }
+
+        // Clear saved state
+        appState.ui.previousDualModeState = null;
+      }
+
       appState.ui.configHeaderLocked = false;
       const shouldRestore = appState.ui.wasConfigHeaderExpandedBeforeModal;
       if (shouldRestore) {
@@ -307,7 +462,7 @@ export function getActionHandlers() {
       modalService.close();
       if (shouldRestore) {
         setTimeout(() => {
-          renderConfigHeader();
+          renderConfigHeader(animationFlags);
           persistenceService.saveState();
         }, 0);
       }
@@ -315,9 +470,16 @@ export function getActionHandlers() {
     confirmPartnerWorkout: () => {
       handleConfirmPartnerWorkout();
       coreActions.updateActiveWorkoutAndLog();
+      // Clear saved state (confirmation = accept new state)
+      appState.ui.previousDualModeState = null;
       setTimeout(() => {
         appState.ui.configHeaderLocked = false;
         persistenceService.saveState();
+
+        // Trigger pulse and selector animations immediately when selector displays
+        appState.ui.isLetsGoButtonPulsing = false;
+        triggerLetsGoButtonPulse(appState);
+        animateSelectors(['current-plan-selector', 'config-header-day-selector']);
       }, 0);
     },
     closeResetConfirmationModal: () => modalService.close(),
@@ -358,7 +520,7 @@ export function getSelectorHandlers() {
         if (parentDetails.id === "partner-user2-day-selector")
           handlePartnerDaySelection("user2Day", day);
       } else if (parentSupersetModal) {
-        const selectorId = parentDetails.id === "superset-selector-1" ? "day1" : "day2";
+        const selectorId = parentDetails.id === "superset-primary-focus-selector" ? "day1" : "day2";
         handleSupersetSelection(selectorId, day);
       } else {
         const wasExpanded = appState.ui.isConfigHeaderExpanded;
@@ -368,6 +530,11 @@ export function getSelectorHandlers() {
         }
         handleDayChange(day);
         coreActions.updateActiveWorkoutAndLog();
+
+        // Trigger pulse and selector animation immediately when selector displays
+        appState.ui.isLetsGoButtonPulsing = false;
+        triggerLetsGoButtonPulse(appState);
+        animateSelector('config-header-day-selector');
       }
     },
     handlePlanSelection: (plan) => {
@@ -378,11 +545,18 @@ export function getSelectorHandlers() {
       }
       handlePlanChange(plan);
       coreActions.updateActiveWorkoutAndLog();
+
+      // Trigger Let's Go button pulse (only if not already pulsing)
+      if (!appState.ui.isLetsGoButtonPulsing) {
+        triggerLetsGoButtonPulse(appState);
+      }
     },
     handleTimeSelection: (time) => {
       if (canCycleToSession(time)) {
         handleTimeChange(time);
         coreActions.updateActiveWorkoutPreservingLogs();
+        // Trigger pulse only if not already pulsing (won't interrupt ongoing animation)
+        triggerLetsGoButtonPulse(appState);
       }
     },
     handleExerciseSwapSelection: (exerciseSwap) => {

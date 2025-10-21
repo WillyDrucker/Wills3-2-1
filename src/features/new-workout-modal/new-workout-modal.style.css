@@ -1,5 +1,5 @@
 /* ==========================================================================
-   APD/CLAUDE v5.5.5 - NEW WORKOUT CONFIRMATION MODAL
+   NEW WORKOUT CONFIRMATION MODAL
 
    Confirmation window for beginning new workout after completing a workout.
    Triggered from workout-results-card "Workout Saved!" → "Begin Another Workout" button.
@@ -47,7 +47,7 @@
 
 /* === GREEN YES BUTTON - New Workout specific === */
 .new-workout-card .button-new-workout-yes {
-  background-color: var(--log-green) !important;
+  background-color: var(--log-green);
 }
 
 /* === SAVED TEXT ANIMATION === */

@@ -264,13 +264,13 @@ function attachEventListeners() {
       resetModal.classList.add("is-hidden");
     });
 
-    // Close modal when clicking outside content area (on overlay)
-    resetModal.addEventListener("click", (e) => {
-      // Only close if clicking directly on the modal overlay (not on the content)
-      if (e.target === resetModal) {
+    // Close modal when clicking backdrop
+    const resetBackdrop = document.getElementById("reset-modal-backdrop");
+    if (resetBackdrop) {
+      resetBackdrop.addEventListener("click", () => {
         resetModal.classList.add("is-hidden");
-      }
-    });
+      });
+    }
 
     // Send reset link
     resetSendBtn.addEventListener("click", async () => {
@@ -318,7 +318,7 @@ function attachEventListeners() {
         setTimeout(() => {
           resetModal.classList.add("is-hidden");
           // Reset button to original state
-          resetSendBtn.textContent = "Send Reset Link";
+          resetSendBtn.innerHTML = '<span class="button-text-wrap">Send<br>Reset Link</span>';
           resetSendBtn.disabled = false;
           resetSendBtn.style.filter = "";
           resetSendBtn.style.opacity = "";
@@ -561,7 +561,7 @@ function updateRateLimitCountdown(button) {
       // Time expired - restore button
       clearInterval(button.rateLimitInterval);
       button.rateLimitInterval = null;
-      button.textContent = "Send Reset Link";
+      button.innerHTML = '<span class="button-text-wrap">Send<br>Reset Link</span>';
       button.disabled = false;
       button.style.filter = "";
       button.style.opacity = "";
@@ -569,7 +569,7 @@ function updateRateLimitCountdown(button) {
     }
 
     const seconds = getRateLimitRemainingSeconds();
-    button.innerHTML = `Resting For:<br>${seconds}s`;
+    button.innerHTML = `<span class="button-text-wrap">Resting For:<br>${seconds}s</span>`;
     button.disabled = true;
     // Keep muted appearance during rate limit
     button.style.filter = "";

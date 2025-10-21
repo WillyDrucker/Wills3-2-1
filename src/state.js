@@ -120,6 +120,7 @@ export function getInitialAppState() {
       isConfigHeaderExpanded: false,
       configHeaderLocked: false,
       wasConfigHeaderExpandedBeforeModal: false,
+      isLetsGoButtonPulsing: false,
       activeModal: null,
       modal: {
         elementToFocusOnClose: null,

@@ -21,6 +21,7 @@
 
 /* === UNIVERSAL CARD PADDING === */
 /* CEMENT: This padding pattern achieves exact 16px visual margins */
+/* NOTE: Confirmation modals (.confirmation-modal-card) have their own padding in _confirmation-modals.css */
 .card-content-container,
 .card .card-content-container,
 #config-card .card-content-container,
@@ -29,7 +30,6 @@
 .my-data-card .card-content-container,
 .home-page-card .card-content-container,
 .workout-results-container .card-content-container,
-.superset-modal-content.card,
 .modal-content.card {
   padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
   box-sizing: border-box;

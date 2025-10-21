@@ -6,17 +6,33 @@ import { handleTimeChange } from "./config-card.index.js";
 import { canCycleToSession } from "utils";
 import * as persistenceService from "services/core/persistenceService.js";
 import * as selectorService from "services/ui/selectorService.js";
+import { recalculateCurrentStateAfterLogChange } from "services/workout/workoutProgressionService.js";
+import { stopLetsGoButtonPulse } from "services/ui/selectorAnimationService.js";
+import { updateWorkoutTimeRemaining } from "services/workout/workoutService.js";
+import { renderActiveExerciseCard } from "features/active-exercise-card/active-exercise-card.index.js";
+import { renderWorkoutLog } from "features/workout-log/workout-log.index.js";
 
 /* ==========================================================================
    CONFIG HEADER - Collapsible header logic
 
    Handles config header rendering, click-outside behavior, session cycling,
-   and dynamic focus display updates.
+   dynamic focus display updates, and Quick Button animation feedback.
 
    🔒 CEMENT: Click-outside cancellation
    - Clicking outside config dropdown reverts changes (same as Cancel button)
    - Uses snapshot to restore previous session/day settings
    - Preserves logged workout history during restoration
+
+   Quick Button animations (on "Let's Go!" confirmation only):
+   - Detects which config values changed (plan/focus/session)
+   - Triggers grow-snap animation on corresponding Quick Buttons
+   - Animations run simultaneously for multiple changes
+   - No animations on Cancel (state restoration)
+
+   Dependencies: appState, ui, selectorService, persistenceService,
+                 workoutProgressionService, selectorAnimationService,
+                 workoutService, active-exercise-card, workout-log
+   Used by: actionHandlers.js (config header actions)
    ========================================================================== */
 
 // Click-outside handler for auto-collapsing config-header
@@ -39,34 +55,78 @@ export function initializeConfigHeader(updateFunction) {
  * Preserves logged workout history during restoration
  */
 export function cancelConfigChanges() {
+  // Stop pulse animation when canceling (config is closing)
+  stopLetsGoButtonPulse(appState);
+
+  // Clear any locks and flags that might prevent closing
+  appState.ui.configHeaderLocked = false;
+  ignoreNextOutsideClick = false;
+
+  // Close any open selectors inside config header
+  selectorService.closeAll();
+
   if (appState.ui.configHeaderSnapshot) {
     const snapshot = appState.ui.configHeaderSnapshot;
-    const needsRestore =
+
+    // Check if any session settings changed
+    const sessionChanged =
       appState.session.currentDayName !== snapshot.currentDayName ||
       appState.session.currentTimeOptionName !== snapshot.currentTimeOptionName;
 
+    // Check if dual-mode state changed
+    const dualModeChanged =
+      appState.superset.isActive !== snapshot.superset.isActive ||
+      appState.superset.day1 !== snapshot.superset.day1 ||
+      appState.superset.day2 !== snapshot.superset.day2 ||
+      appState.partner.isActive !== snapshot.partner.isActive ||
+      appState.partner.user1Day !== snapshot.partner.user1Day ||
+      appState.partner.user2Day !== snapshot.partner.user2Day;
+
+    const needsRestore = sessionChanged || dualModeChanged;
+
     appState.ui.isConfigHeaderExpanded = false;
     appState.ui.configHeaderSnapshot = null;
-    notifyConfigHeaderToggled();
 
     if (needsRestore) {
-      // Restore snapshot values
+      // Restore session values
       appState.session.currentDayName = snapshot.currentDayName;
       appState.session.currentTimeOptionName = snapshot.currentTimeOptionName;
       appState.session.currentSessionColorClass = snapshot.currentSessionColorClass;
 
-      // Use preserving logs to restore session without losing logged history
-      if (updateActiveWorkoutPreservingLogs) {
-        updateActiveWorkoutPreservingLogs();
-      } else {
-        renderConfigHeader();
+      // Restore dual-mode state
+      if (snapshot.superset) {
+        appState.superset.isActive = snapshot.superset.isActive;
+        appState.superset.day1 = snapshot.superset.day1;
+        appState.superset.day2 = snapshot.superset.day2;
+        appState.superset.bonusMinutes = snapshot.superset.bonusMinutes;
+        appState.superset.timeDeductionSetIndexes = snapshot.superset.timeDeductionSetIndexes;
       }
+
+      if (snapshot.partner) {
+        appState.partner.isActive = snapshot.partner.isActive;
+        appState.partner.user1Day = snapshot.partner.user1Day;
+        appState.partner.user2Day = snapshot.partner.user2Day;
+      }
+
+      // Restore workout log if session or dual-mode changed
+      // Session changes affect workout log (different exercises per time option)
+      if ((sessionChanged || dualModeChanged) && snapshot.workoutLog) {
+        appState.session.workoutLog = snapshot.workoutLog;
+        recalculateCurrentStateAfterLogChange();
+        updateWorkoutTimeRemaining();
+        renderActiveExerciseCard();
+        renderWorkoutLog();
+      }
+
+      // Just close the config header - no need to regenerate workout
+      // State is already restored from snapshot, preserving all animations
+      renderConfigHeader();
     } else {
+      // No state changes to restore, just close the config header
       renderConfigHeader();
     }
   } else {
     appState.ui.isConfigHeaderExpanded = false;
-    notifyConfigHeaderToggled();
     renderConfigHeader();
   }
 
@@ -122,7 +182,7 @@ function handleClickOutside(event) {
 let clickListenerAttached = false;
 
 /* === RENDERING === */
-export function renderConfigHeader() {
+export function renderConfigHeader(animationFlags = null) {
   ui.configSection.innerHTML = getConfigHeaderTemplate();
 
   // Attach click-outside listener once
@@ -137,6 +197,32 @@ export function renderConfigHeader() {
     setTimeout(() => {
       ignoreNextOutsideClick = false;
     }, 0);
+  }
+
+  // Trigger Quick Button animations if changes detected (on "Let's Go!" close)
+  if (animationFlags && (animationFlags.animatePlan || animationFlags.animateFocus || animationFlags.animateSession)) {
+    // Wait for render to complete, then animate
+    requestAnimationFrame(() => {
+      const planButton = document.querySelector('.icon-bar-item.icon-plan-wide');
+      const focusButton = document.querySelector('.icon-bar-item.icon-display');
+      const sessionButton = document.querySelector('.icon-bar-item.icon-session-wide');
+
+      // Apply animation class to changed buttons simultaneously
+      if (animationFlags.animatePlan && planButton) {
+        planButton.classList.add('is-animating-quick-button');
+        setTimeout(() => planButton.classList.remove('is-animating-quick-button'), 600);
+      }
+
+      if (animationFlags.animateFocus && focusButton) {
+        focusButton.classList.add('is-animating-quick-button');
+        setTimeout(() => focusButton.classList.remove('is-animating-quick-button'), 600);
+      }
+
+      if (animationFlags.animateSession && sessionButton) {
+        sessionButton.classList.add('is-animating-quick-button');
+        setTimeout(() => sessionButton.classList.remove('is-animating-quick-button'), 600);
+      }
+    });
   }
 }
 

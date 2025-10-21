@@ -55,16 +55,11 @@
   padding: 4px 0;
 }
 
-/* === DROPDOWN ITEM LAYOUT === */
-.options-list li .selector-content {
-  display: block;
-  width: 100%;
-}
-
-/* === DROPDOWN TEXT LINES === */
-/* CEMENT: Two-line layout for exercise names, days, descriptions */
-.options-list li .item-main-line,
-.options-list li .item-sub-line {
+/* === SELECTOR SUMMARY TEXT LINES === */
+/* CEMENT: Truncation for summary (closed selector) - mirrors dropdown truncation */
+/* Note: These rules apply to simple text lines, NOT flex-line-container layouts */
+.selector-content .item-main-line:not(.flex-line-container),
+.selector-content .item-sub-line:not(.flex-line-container) {
   display: block;
   text-align: center;
   width: 100%;
@@ -74,7 +69,56 @@
   white-space: nowrap;
 }
 
-.options-list li .item-main-line {
+/* CEMENT: Truncating spans with color-matched ellipsis (applies to summary) */
+.selector-content .item-main-line > span.truncate-text,
+.selector-content .item-sub-line > span.truncate-text {
+  display: inline-block;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+.selector-content .item-main-line > span:not(.truncate-text),
+.selector-content .item-sub-line > span:not(.truncate-text) {
+  display: inline;
+  white-space: nowrap;
+}
+
+/* CEMENT: Flex container for summary text (allows truncation in flex layouts) */
+.selector-content .item-main-line.flex-line-container,
+.selector-content .flex-line-container {
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+  justify-content: center;
+  min-width: 0;
+}
+
+/* === DROPDOWN ITEM LAYOUT === */
+.options-list li .selector-content {
+  display: block;
+  width: 100%;
+}
+
+/* === DROPDOWN TEXT LINES === */
+/* CEMENT: Two-line layout for exercise names, days, descriptions */
+/* Note: These rules apply to simple text lines, NOT flex-line-container layouts */
+.options-list li .item-main-line:not(.flex-line-container),
+.options-list li .item-sub-line:not(.flex-line-container) {
+  display: block;
+  text-align: center;
+  width: 100%;
+  line-height: 1.2;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Only add margin-bottom when there's a sub-line following */
+.options-list li .item-main-line:not(:last-child) {
   margin-bottom: 6px;
 }
 
@@ -100,10 +144,16 @@
   white-space: nowrap;
 }
 
-/* === DROPDOWN FLEX OVERRIDE === */
+/* === DROPDOWN FLEX LAYOUT === */
+/* CEMENT: Flex container in dropdown - allows truncation with flex-priority pattern */
+.options-list li .item-main-line.flex-line-container,
 .options-list li .flex-line-container {
-  display: block;
+  display: flex;
   text-align: center;
+  width: 100%;
+  overflow: hidden;
+  justify-content: center;
+  min-width: 0;
 }
 
 .options-list li .flex-separator {
@@ -117,7 +167,7 @@
 
 .item-main-line .data-highlight {
   font-weight: 600;
-  transition: transform 0.3s ease, color 0.3s ease;
+  /* NO TRANSITIONS - Violates SSS philosophy: All UI changes must be immediate */
 }
 
 .item-sub-line {
@@ -135,6 +185,7 @@
   width: 100%;
   overflow: hidden;
   justify-content: center;
+  min-width: 0;
 }
 
 .flex-priority {
@@ -144,6 +195,15 @@
 
 .flex-separator {
   flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* CEMENT: Truncating span in flex layout - allows shrinking with color-matched ellipsis */
+.flex-line-container > .truncate-text {
+  flex-shrink: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 

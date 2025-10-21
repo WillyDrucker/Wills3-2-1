@@ -1,5 +1,5 @@
 /* ==========================================================================
-   APD/CLAUDE v5.5.5 - RESET CONFIRMATION MODAL
+   RESET CONFIRMATION MODAL
 
    Confirmation window for config-card Reset button.
    Warns user about clearing Today's Workout logs when sets are logged.
@@ -55,7 +55,7 @@
   align-items: center;
   justify-content: center;
   line-height: 1;
-  padding: 8px 12px;
+  padding: var(--space-s) 12px; /* 7px vertical (matches button text), 12px horizontal (standard button padding) */
 }
 
 .reset-confirmation-card .button-save-line1,
@@ -64,5 +64,5 @@
 }
 
 .reset-confirmation-card .button-save-line1 {
-  margin-bottom: 2px;
+  margin-bottom: var(--space-xs); /* 2px */
 }

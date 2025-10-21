@@ -15,9 +15,9 @@ export function getDaySelectorHTML(isAnySetLogged, selectorId = "day-selector-de
   if (superset.isActive) {
     const day1Info = appState.weeklyPlan[superset.day1];
     const day2Info = appState.weeklyPlan[superset.day2];
-    summaryHtml = `<div class="selector-content"><div class="item-main-line flex-line-container"><span class="flex-priority">Superset:&nbsp;</span><span class="flex-priority data-highlight text-plan">${day1Info.title}</span><span class="flex-priority text-on-surface-medium">&nbsp;&amp;</span><span class="truncate-text data-highlight text-warning">&nbsp;${day2Info.title}</span></div></div>`;
+    summaryHtml = `<div class="selector-content"><div class="item-main-line flex-line-container"><span class="flex-priority">Superset:&nbsp;</span><span class="flex-priority data-highlight text-plan" data-animation-target="true">${day1Info.title}</span><span class="flex-priority text-on-surface-medium">&nbsp;&amp;</span><span class="truncate-text data-highlight text-warning" data-animation-target="true">&nbsp;${day2Info.title}</span></div></div>`;
   } else if (partner.isActive) {
-    summaryHtml = `<div class="selector-content"><div class="item-main-line flex-line-container"><span class="flex-priority">Partner:&nbsp;</span><span class="flex-priority data-highlight text-plan">${partner.user1Name}</span><span class="flex-priority text-on-surface-medium">&nbsp;&amp;</span><span class="truncate-text data-highlight text-primary">&nbsp;${partner.user2Name}</span></div></div>`;
+    summaryHtml = `<div class="selector-content"><div class="item-main-line flex-line-container"><span class="flex-priority">Partner:&nbsp;</span><span class="flex-priority data-highlight text-plan" data-animation-target="true">${partner.user1Name}</span><span class="flex-priority text-on-surface-medium">&nbsp;&amp;</span><span class="truncate-text data-highlight text-primary" data-animation-target="true">&nbsp;${partner.user2Name}</span></div></div>`;
   } else {
     const { currentDayName } = session;
     const dayInfo = appState.weeklyPlan[currentDayName];
@@ -27,7 +27,7 @@ export function getDaySelectorHTML(isAnySetLogged, selectorId = "day-selector-de
       dayInfo.title === "Rest"
         ? dayInfo.title
         : `${dayInfo.title} (${dayInfo.type})`;
-    summaryHtml = `<div class="selector-content"><div class="item-main-line flex-line-container"><span class="flex-priority">${currentDayName}:&nbsp;</span><span class="truncate-text data-highlight ${colorClass}">${display}</span></div></div>`;
+    summaryHtml = `<div class="selector-content"><div class="item-main-line flex-line-container"><span class="flex-priority text-info">${currentDayName}:&nbsp;</span><span class="truncate-text data-highlight ${colorClass}" data-animation-target="true">${display}</span></div></div>`;
   }
   const allDays = [
     "Sunday",

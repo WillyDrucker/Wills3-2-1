@@ -1,28 +1,39 @@
 /* ==========================================================================
-   MODALS - Global container and backdrop styles
+   MODALS GLOBAL CONTAINER
 
-   CEMENT: Fixed-position overlay system with fade transitions
-   - Full viewport overlay with z-index 1000
-   - Centered content with 16px top, 10px left/right (var(--app-side-margin))
-   - Fade in/out transitions (0.3s opacity + visibility)
-   - Hidden state: opacity 0, visibility hidden (allows transitions)
+   Fixed-position overlay system with fade transitions and vertical centering.
+
+   Purpose:
+   - Provides consistent modal container styling for all confirmation windows
+   - All modals are vertically and horizontally centered
+   - Full viewport overlay with backdrop
+   - Smooth fade in/out transitions
 
    Architecture:
-   - Container: Fixed position, full screen, flex centered
+   - Container: Fixed position, full screen, flex centered (justify-content + align-items)
    - Content: Feature-specific styles in component files
-   - Backdrop: Semi-transparent background (blur effect optional)
+   - Backdrop: Semi-transparent background (rgba(0, 0, 0, 0.85))
    - Transitions: 0.3s ease for opacity and visibility
+   - Hidden state: opacity 0, visibility hidden (allows smooth transitions)
+
+   🔒 CEMENT: Global Modal Centering Standard
+   - ALL confirmation modals use align-items: center for vertical centering
+   - This includes: Reset, New Workout, Superset, Partner modals
+   - Individual modals should NOT override alignment
+   - Ensures consistent UX across all confirmation windows
 
    Modal types:
-   1. .superset-modal-container - Exercise superset configuration
-   2. #partner-modal-container - Partner exercise selection
-   3. #reset-confirmation-modal-container - Workout reset confirmation
+   1. .superset-modal-container - Superset workout configuration
+   2. #partner-modal-container - Partner workout selection
+   3. #reset-confirmation-modal-container - Config-card Reset confirmation
+   4. #new-workout-modal-container - Post-workout Begin New Workout confirmation
+   5. .login-reset-modal-container - Login page password reset modal
 
    Dependencies:
-   Global: _variables.css (spacing tokens)
-   Feature: Component-specific modal content styles
+   - _variables.css: --app-side-margin (10px)
+   - Feature-specific: Modal content styles in component files
 
-   Used by: /features/config-card (superset, partner, reset modals)
+   Used by: All confirmation modal features
    ========================================================================== */
 
 /* === MODAL CONTAINERS BASE === */
@@ -30,7 +41,8 @@
 .superset-modal-container,
 #partner-modal-container,
 #reset-confirmation-modal-container,
-#new-workout-modal-container {
+#new-workout-modal-container,
+.login-reset-modal-container {
   position: fixed;
   top: 0;
   left: 0;
@@ -39,27 +51,17 @@
   z-index: 1000;
   display: flex;
   justify-content: center;
+  align-items: center; /* All confirmation modals centered vertically */
   padding: 16px var(--app-side-margin); /* Global: 16px top, 10px left/right standard */
   transition: opacity 0.3s ease, visibility 0.3s;
-}
-
-/* Top-aligned modals (superset, partner) */
-.superset-modal-container,
-#partner-modal-container {
-  align-items: flex-start; /* Top alignment for selector modals */
-}
-
-/* Center-aligned modals (confirmation windows) */
-#reset-confirmation-modal-container,
-#new-workout-modal-container {
-  align-items: center; /* Vertical centering for confirmation modals */
 }
 
 /* Hidden state */
 .superset-modal-container.is-hidden,
 #partner-modal-container.is-hidden,
 #reset-confirmation-modal-container.is-hidden,
-#new-workout-modal-container.is-hidden {
+#new-workout-modal-container.is-hidden,
+.login-reset-modal-container.is-hidden {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;

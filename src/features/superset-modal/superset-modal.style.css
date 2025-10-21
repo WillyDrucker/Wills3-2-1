@@ -1,75 +1,227 @@
 /* ==========================================================================
-   SUPERSET MODAL - Styling
+   SUPERSET MODAL
 
    Modal dialog for configuring superset workouts with two-day selection.
-   Green/yellow color scheme differentiates day 1 and day 2 selectors.
+   Triggered from config-card Superset button.
 
-   🔒 CEMENT: Instant modal appearance
-   - Transition removed with !important (overrides global modal fade-in)
-   - Selection feedback animations (green/yellow 2s flash)
+   Purpose:
+   - Allows user to select two workout days to combine in superset mode
+   - Green/yellow color scheme differentiates day 1 (green) and day 2 (yellow)
+   - Calculates time savings from overlapping rest periods
+   - Enforces mutual exclusivity with partner mode
 
-   Architecture: Centered modal overlay with card container
+   Base Styles:
+   Inherits all base styling from _confirmation-modals.css:
+   - Title: 2.5rem/700 centered
+   - Card: max-width 400px, blue border, standard padding
+   - Button layout: Two-button flex with 16px gap
+   - 16px spacing rhythm throughout
+
+   Custom Features:
+   - Instant modal appearance (transition: none overrides global fade-in)
    - Two day selectors with chronologically ordered workout days
-   - Cancel and Superset! action buttons
+   - Selection feedback animations (white → green/yellow flash → stay colored)
+     - Primary Focus: Flashes green, stays green (uses workout log animation pattern)
+     - Secondary Focus: Flashes yellow, stays yellow (uses workout log animation pattern)
+   - "Primary Focus" and "Secondary Focus" labels (1.25rem/600, left-aligned)
+   - Precise spacing: 16px → label → 7px → selector → 16px → next label
+
+   Architecture:
+   Title → 16px → "Primary Focus" → 7px → Day 1 Selector (green) → 16px →
+   "Secondary Focus" → 7px → Day 2 Selector (yellow) → 16px → Cancel/Superset! buttons
 
    Dependencies:
-   Global: _variables.css (--card-padding-top, --card-padding-sides, --header-margin-bottom,
-           --modal-section-spacing, --space-m, --modal-button-spacing)
-   Global: _card-headers.css, _card-foundations.css, _action-button-groups.css, _modals.css
+   - _confirmation-modals.css: Base confirmation modal pattern
+   - _modals.css: Modal container system
+   - _card-headers.css: "With" header styling
+   - _variables.css: Spacing tokens (--modal-section-spacing, --space-m)
 
-   Used by: Superset modal overlay (triggered from config header)
+   Used by: Config-card Superset button, dual-mode workout system
    ========================================================================== */
 
 /* Global dependencies */
-@import url("../../styles/components/_card-headers.css");
-@import url("../../styles/components/_card-foundations.css");
-@import url("../../styles/components/_action-button-groups.css");
 @import url("../../styles/components/_modals.css");
+@import url("../../styles/components/_card-headers.css");
+@import url("../../styles/components/_action-button-groups.css");
+@import url("../../styles/components/_confirmation-modals.css");
 
-/* === MODAL CONTAINER === */
+/* ==========================================================================
+   SUPERSET-SPECIFIC STYLES ONLY
+   All base confirmation modal styles come from _confirmation-modals.css
+   ========================================================================== */
+
+/* === MODAL CONTAINER OVERRIDE === */
 /* 🔒 CEMENT: Instant appearance - !important overrides global modal fade-in */
 .superset-modal-container {
   transition: none !important;
 }
 
-/* === MODAL SPACING === */
-/* Standard card padding from global patterns */
-.superset-modal-content.card {
-  padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
-  box-sizing: border-box;
+/* === FOCUS LABELS === */
+/* Override center alignment from global - left align to match selectors */
+.superset-card .confirmation-modal-question {
+  text-align: left;
+  margin-left: 0;
+  margin-right: 0;
 }
 
-/* === HEADERS === */
-/* Centered modal headers with standard spacing */
-.superset-modal-content .card-header {
-  margin-bottom: var(--header-margin-bottom); /* 4px + descender = 7px visual */
-  text-align: center;
+/* "Primary Focus" - First label after title */
+.superset-card .confirmation-modal-question:first-of-type {
+  margin-top: 9px; /* 7px base + 2px compensation = 16px visual from title */
+  margin-bottom: var(--header-margin-bottom); /* 4px + 3px descender = 7px visual to selector */
 }
 
-/* Headers after elements need section spacing */
-.superset-modal-content .card-header.with-header {
-  margin-top: var(--modal-section-spacing); /* 13px = 16px visual */
+/* "Secondary Focus" - Second label between selectors */
+.superset-card .superset-workout-label {
+  margin-top: 14px; /* 16px visual from selector */
+  margin-bottom: var(--header-margin-bottom); /* 4px + 3px descender = 7px visual to selector */
 }
 
 /* === SELECTORS === */
-.superset-modal-content .app-selector {
+.superset-card .app-selector {
   margin-bottom: 0; /* Stack handles spacing */
+  /* Force GPU rendering at all times to prevent rendering mode shifts */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  position: relative; /* Establish positioning context for z-index */
+  z-index: 1; /* Base z-index */
 }
 
-/* === ACTION BUTTONS === */
-/* Two-button layout from global */
-.superset-modal-actions {
+/* Selector display acts like summary - clickable to toggle */
+.superset-card .app-selector .selector-display {
+  background-color: var(--background-dark);
+  box-shadow: inset 0 0 0 2px var(--primary-blue);
+  border-radius: var(--border-radius);
+  min-height: var(--control-height); /* Global: 50px */
   display: flex;
-  gap: var(--space-m);              /* Global: 16px */
-  margin-top: var(--modal-button-spacing); /* Global: 16px */
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+/* Hide options list by default */
+.superset-card .app-selector .options-list {
+  display: none;
+}
+
+/* Show options list when selector is open */
+.superset-card .app-selector.is-open .options-list {
+  display: block;
+}
+
+/* When selector opens, raise z-index so dropdown appears above siblings */
+.superset-card .app-selector.is-open {
+  z-index: 10; /* Above other selectors */
+}
+
+/* Square bottom corners when open to connect to dropdown */
+.superset-card .app-selector.is-open .selector-display {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* Secondary Focus selector needs 16px to buttons */
+.superset-card #superset-secondary-focus-selector {
+  margin-bottom: var(--space-m); /* 16px to buttons */
 }
 
 /* === ANIMATIONS === */
-/* Selection feedback - green/yellow flash */
-.is-animating-selection-green {
-  animation: selection-feedback-green 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+
+/* Selector grow/snap animation - based on workout log stamp */
+@keyframes selector-grow-snap {
+  0% {
+    transform: scale(1);
+  }
+  90% {  /* 900ms grow phase */
+    transform: scale(1.15);
+  }
+  100% { /* 100ms snap back */
+    transform: scale(1);
+  }
 }
 
-.is-animating-selection-yellow {
-  animation: selection-feedback-yellow 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+/* Apply grow animation to selector container */
+.app-selector.is-animating-selector {
+  animation: selector-grow-snap 1s ease-out forwards;
+  transform-origin: center center;
+  will-change: transform; /* GPU acceleration */
+}
+
+/* Green color transition - olive to green (matches yellow transition pattern) */
+@keyframes selector-green-glow-transition {
+  0% {
+    color: var(--text-olive-deviation); /* Start olive - same as yellow */
+    text-shadow: 0 0 8px var(--text-green-plan); /* Start with visible green glow */
+  }
+  100% {
+    color: var(--text-green-plan); /* End at green */
+    text-shadow: 0 0 20px var(--text-green-plan); /* Larger green glow */
+  }
+}
+
+/* Yellow color transition - olive to yellow (works perfectly) */
+@keyframes selector-yellow-glow-transition {
+  0% {
+    color: var(--text-olive-deviation); /* Start olive */
+    text-shadow: 0 0 8px var(--text-yellow-maintenance); /* Start with visible yellow glow */
+  }
+  100% {
+    color: var(--text-yellow-maintenance); /* End at yellow */
+    text-shadow: 0 0 20px var(--text-yellow-maintenance); /* Larger yellow glow */
+  }
+}
+
+/* Olive glow transition - stays olive but adds glow (for non-today days) */
+@keyframes selector-olive-glow-transition {
+  0% {
+    color: var(--text-olive-deviation); /* Start olive */
+    text-shadow: 0 0 8px var(--text-olive-deviation); /* Start with visible olive glow */
+  }
+  100% {
+    color: var(--text-olive-deviation); /* Stay olive */
+    text-shadow: 0 0 20px var(--text-olive-deviation); /* Larger olive glow */
+  }
+}
+
+/* Primary Focus - transitions to green with green glow in parallel with grow */
+/* Higher specificity (.data-highlight.is-transitioning-to-green = 2 classes) overrides .data-highlight.text-plan */
+.data-highlight.is-transitioning-to-green,
+.is-transitioning-to-green {
+  animation: selector-green-glow-transition 1000ms ease-out forwards;
+  will-change: color, text-shadow; /* GPU acceleration */
+}
+
+/* Secondary Focus - transitions to yellow with yellow glow in parallel with grow */
+/* Higher specificity (.data-highlight.is-transitioning-to-yellow = 2 classes) overrides .data-highlight.text-warning */
+.data-highlight.is-transitioning-to-yellow,
+.is-transitioning-to-yellow {
+  animation: selector-yellow-glow-transition 1000ms ease-out forwards;
+  will-change: color, text-shadow; /* GPU acceleration */
+}
+
+/* Olive glow - adds glow to olive text (for config-card non-today selections) */
+.data-highlight.is-transitioning-to-olive,
+.is-transitioning-to-olive {
+  animation: selector-olive-glow-transition 1000ms ease-out forwards;
+  will-change: color, text-shadow; /* GPU acceleration */
+}
+
+/* Blue color transition - olive to blue (for partner mode) */
+@keyframes selector-blue-glow-transition {
+  0% {
+    color: var(--text-olive-deviation); /* Start olive */
+    text-shadow: 0 0 8px var(--primary-blue); /* Start with visible blue glow */
+  }
+  100% {
+    color: var(--primary-blue); /* End at blue */
+    text-shadow: 0 0 20px var(--primary-blue); /* Larger blue glow */
+  }
+}
+
+/* Blue glow - adds glow to blue text (for partner mode user2) */
+.data-highlight.is-transitioning-to-blue,
+.is-transitioning-to-blue {
+  animation: selector-blue-glow-transition 1000ms ease-out forwards;
+  will-change: color, text-shadow; /* GPU acceleration */
 }

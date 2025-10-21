@@ -25,6 +25,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  cursor: default !important; /* NO HOVER EFFECTS - Touch-first design, no mouse-over cursor changes */
 }
 
 html {

@@ -18,59 +18,57 @@
 export function getResetPasswordTemplate() {
   return `
     <div class="reset-password-page">
-      <div class="reset-password-card card">
-        <div class="card-content-container">
-          <h1 class="reset-password-title">Reset Password</h1>
+      <div class="card confirmation-modal-card reset-password-card">
+        <h2 class="confirmation-modal-title">Reset Password</h2>
 
-          <p class="reset-password-description">Enter your new password below to complete the reset process.</p>
+        <p class="confirmation-modal-description">Enter your new password below to complete the reset process.</p>
 
-          <div class="reset-password-form">
-            <!-- Hidden fake fields to prevent Chrome autofill -->
-            <input type="text" style="position:absolute;top:-9999px;left:-9999px" tabindex="-1" autocomplete="off" aria-hidden="true" />
-            <input type="password" style="position:absolute;top:-9999px;left:-9999px" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <div class="reset-password-form">
+          <!-- Hidden fake fields to prevent Chrome autofill -->
+          <input type="text" style="position:absolute;top:-9999px;left:-9999px" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          <input type="password" style="position:absolute;top:-9999px;left:-9999px" tabindex="-1" autocomplete="off" aria-hidden="true" />
 
-            <div class="reset-password-input-group">
-              <label class="reset-password-label">New Password</label>
-              <input
-                type="password"
-                id="new-password"
-                name="user_reset_pwd_${Date.now()}"
-                class="reset-password-input"
-                placeholder="••••••••"
-                autocomplete="off"
-                data-lpignore="true"
-                data-form-type="other"
-                minlength="6"
-                required
-              />
-            </div>
-
-            <div class="reset-password-input-group">
-              <label class="reset-password-label">Confirm Password</label>
-              <input
-                type="password"
-                id="confirm-password"
-                name="user_confirm_pwd_${Date.now()}"
-                class="reset-password-input"
-                placeholder="••••••••"
-                autocomplete="off"
-                data-lpignore="true"
-                data-form-type="other"
-                minlength="6"
-                required
-              />
-            </div>
-
-            <div id="reset-password-error" class="reset-password-error is-hidden"></div>
-
-            <button
-              type="button"
-              id="reset-password-btn"
-              class="action-button button-log reset-password-button"
-            >
-              Update Password
-            </button>
+          <div class="reset-password-input-group">
+            <label class="confirmation-modal-question">New Password</label>
+            <input
+              type="password"
+              id="new-password"
+              name="user_reset_pwd_${Date.now()}"
+              class="reset-password-input"
+              placeholder="••••••••"
+              autocomplete="off"
+              data-lpignore="true"
+              data-form-type="other"
+              minlength="6"
+              required
+            />
           </div>
+
+          <div class="reset-password-input-group">
+            <label class="confirmation-modal-question">Confirm Password</label>
+            <input
+              type="password"
+              id="confirm-password"
+              name="user_confirm_pwd_${Date.now()}"
+              class="reset-password-input"
+              placeholder="••••••••"
+              autocomplete="off"
+              data-lpignore="true"
+              data-form-type="other"
+              minlength="6"
+              required
+            />
+          </div>
+
+          <div id="reset-password-error" class="reset-password-error is-hidden"></div>
+
+          <button
+            type="button"
+            id="reset-password-btn"
+            class="action-button button-log reset-password-button"
+          >
+            Update Password
+          </button>
         </div>
       </div>
 

@@ -2,20 +2,24 @@
    ANIMATIONS GENERAL - Utility animations for global components
 
    CEMENT: Reusable keyframe animations for common UI feedback patterns
-   - Border/text glow: Blue glow effect for active/hover states
+   - Border/text glow: Blue/green glow effect for active/hover states
    - Button pulse: Red pulse for error states and destructive actions
    - Segment fill: Smooth width transition for progress indicators
+   - Grow/snap scale: Scale animations for UI element feedback
 
    Animations defined:
    1. glow-border - Border color + box-shadow pulse (transparent → blue → transparent)
-   2. text-glow - Text color pulse (dark blue → blue → dark blue)
-   3. button-red-pulse - Background pulse with opacity (dark → red → dark)
-   4. segment-fill-animate - Width transition (0% → 100%)
+   2. glow-border-green - Border color + box-shadow pulse (transparent → green → transparent)
+   3. text-glow - Text color pulse (dark blue → blue → dark blue)
+   4. button-red-pulse - Background pulse with opacity (dark → red → dark)
+   5. segment-fill-animate - Width transition (0% → 100%)
+   6. selector-grow-snap - Standard grow/snap (1000ms: 900ms grow + 100ms snap)
+   7. quick-button-grow-snap - Snappy grow/snap (600ms: 480ms grow + 120ms snap)
 
    Dependencies:
-   Global: _variables.css (--primary-blue, --primary-blue-dark, --background-dark, --skip-red)
+   Global: _variables.css (--primary-blue, --primary-blue-dark, --background-dark, --skip-red, --log-green)
 
-   Used by: Buttons, prompts, progress bars, selectors (error state)
+   Used by: Buttons, prompts, progress bars, selectors, Quick Buttons, modals
    ========================================================================== */
 
 /* === GENERAL ANIMATIONS === */
@@ -29,6 +33,18 @@
   50% {
     border-color: var(--primary-blue);
     box-shadow: 0 0 10px var(--primary-blue), 0 0 12px var(--primary-blue);
+  }
+}
+
+@keyframes glow-border-green {
+  0%,
+  100% {
+    border-color: transparent;
+    box-shadow: 0 0 3px transparent;
+  }
+  50% {
+    border-color: var(--log-green);
+    box-shadow: 0 0 10px var(--log-green), 0 0 12px var(--log-green);
   }
 }
 
@@ -59,5 +75,32 @@
   }
   to {
     width: 100%;
+  }
+}
+
+/* === GROW/SNAP SCALE ANIMATIONS === */
+/* Standard grow-snap for selectors and larger UI elements */
+@keyframes selector-grow-snap {
+  0% {
+    transform: scale(1);
+  }
+  90% {  /* 900ms grow phase */
+    transform: scale(1.15);
+  }
+  100% { /* 100ms snap back */
+    transform: scale(1);
+  }
+}
+
+/* Snappy grow-snap for Quick Buttons and compact UI elements */
+@keyframes quick-button-grow-snap {
+  0% {
+    transform: scale(1);
+  }
+  80% {  /* 480ms grow phase */
+    transform: scale(1.15);
+  }
+  100% { /* 120ms snap back */
+    transform: scale(1);
   }
 }

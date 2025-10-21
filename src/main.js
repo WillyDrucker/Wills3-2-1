@@ -85,9 +85,8 @@ function updateActiveWorkoutPreservingLogs() {
   workoutProgressionService.recalculateCurrentStateAfterLogChange();
   updateWorkoutTimeRemaining();
 
-  // Minimal render preserves animations
+  // Minimal render: Targeted updates preserve animations
   setTimeout(() => {
-    renderConfigHeader();
     renderSessionDisplay();
     renderFocusDisplay();
     renderActiveExerciseCard();

@@ -43,6 +43,7 @@
   padding: 10px 16px;
   cursor: pointer;
   list-style: none;
+  min-width: 0; /* CEMENT: Critical for flex truncation - allows child content to shrink below content size */
 }
 
 .app-selector summary::-webkit-details-marker {

@@ -1,90 +1,247 @@
 /* ==========================================================================
-   PARTNER MODAL - Styling
+   PARTNER MODAL
 
    Modal dialog for configuring partner workouts with two-user selection.
-   Green/blue color scheme differentiates User 1 and User 2 (partner).
+   Triggered from config-card Partner button.
 
-   🔒 CEMENT: Instant modal appearance
-   - Transition removed with !important (overrides global modal fade-in)
-   - Divider spacing: 16px visual both sides (18px top, 15px bottom)
-   - Compensated spacing around divider for visual consistency
+   Purpose:
+   - Allows two users to select their workout days for partner mode
+   - Green/blue color scheme differentiates User 1 (green) and User 2/Partner (blue)
+   - Visual divider separates the two user sections
+   - Enforces mutual exclusivity with superset mode
 
-   Architecture: Centered modal overlay with card container
-   - User profile displays (muted selectors)
-   - Visual divider separates users
-   - Day selectors for each user
-   - Cancel and Partner Up! action buttons
+   Base Styles:
+   Inherits all base styling from _confirmation-modals.css:
+   - Title: 2.5rem/700 centered
+   - Card: max-width 400px, blue border, standard padding
+   - Button layout: Two-button flex with 16px gap
+   - 16px spacing rhythm throughout
+
+   Custom Features:
+   - Instant modal appearance (transition: none overrides global fade-in)
+   - Two user sections with muted profile selectors (read-only display, full-color text)
+   - Active day selectors for each user with grow/color animations
+   - Selection feedback animations (olive → green/blue flash → stay colored)
+     - User 1 Focus: Flashes green, stays green (uses workout log animation pattern)
+     - Partner Focus: Flashes blue, stays blue (uses workout log animation pattern)
+   - Visual divider with compensated spacing (16px visual both sides)
+   - User profile text with two-toned styling (label + value)
+   - "Current User Profile", "Current User Focus", "Partner Profile", "Partner Focus" labels (1.25rem/600, left-aligned)
+   - Precise spacing: 16px → label → 7px → selector → 16px → next label
+
+   Architecture:
+   Title → 16px → "Current User Profile" → 7px → User 1 Profile (muted, green) → 16px →
+   "Current User Focus" → 7px → User 1 Day Selector (active, green) → 16px →
+   Divider → 16px → "Partner Profile" → 7px → User 2 Profile (muted, blue) → 16px →
+   "Partner Focus" → 7px → User 2 Day Selector (active, blue) → 16px → Cancel/Partner Up! buttons
 
    Dependencies:
-   Global: _variables.css (--card-padding-top, --card-padding-sides, --header-margin-bottom,
-           --modal-section-spacing, --on-surface-medium, --space-xxs, --space-m, --modal-button-spacing)
-   Global: _card-headers.css, _card-foundations.css, _action-button-groups.css, _modals.css
+   - _confirmation-modals.css: Base confirmation modal pattern
+   - _modals.css: Modal container system, modal-divider styling
+   - _card-headers.css: "With" header styling
+   - _variables.css: Spacing tokens (--modal-section-spacing, --space-m, --header-margin-bottom)
 
-   Used by: Partner modal overlay (triggered from config header)
+   Used by: Config-card Partner button, dual-mode workout system
    ========================================================================== */
 
 /* Global dependencies */
-@import url("../../styles/components/_card-headers.css");
-@import url("../../styles/components/_card-foundations.css");
-@import url("../../styles/components/_action-button-groups.css");
 @import url("../../styles/components/_modals.css");
+@import url("../../styles/components/_card-headers.css");
+@import url("../../styles/components/_action-button-groups.css");
+@import url("../../styles/components/_confirmation-modals.css");
 
-/* === MODAL CONTAINER === */
+/* ==========================================================================
+   PARTNER-SPECIFIC STYLES ONLY
+   All base confirmation modal styles come from _confirmation-modals.css
+   ========================================================================== */
+
+/* === MODAL CONTAINER OVERRIDE === */
 /* 🔒 CEMENT: Instant appearance - !important overrides global modal fade-in */
 #partner-modal-container {
   transition: none !important;
 }
 
-/* === MODAL SPACING === */
-/* Standard card padding from global patterns */
-#partner-modal-container .card {
-  padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
-  box-sizing: border-box;
+/* === FOCUS LABELS === */
+/* Override center alignment from global - left align to match selectors */
+.partner-card .confirmation-modal-question {
+  text-align: left;
+  margin-left: 0;
+  margin-right: 0;
 }
 
-/* === HEADERS === */
-/* Centered modal headers with standard spacing */
-#partner-modal-container .card-header {
-  margin-bottom: var(--header-margin-bottom); /* 4px + descender = 7px visual */
-  text-align: center;
+/* "Current User Profile" - First label after title */
+.partner-card .confirmation-modal-question:first-of-type {
+  margin-top: 8px; /* 16px visual from title */
+  margin-bottom: var(--header-margin-bottom); /* 4px + 3px descender = 7px visual to selector */
 }
 
-/* Headers after elements need section spacing */
-#partner-modal-container .card-header.with-header {
-  margin-top: var(--modal-section-spacing); /* 13px = 16px visual */
+/* Labels between selectors */
+.partner-card .partner-section-label {
+  margin-top: 14px; /* 16px visual from selector */
+  margin-bottom: var(--header-margin-bottom); /* 4px + 3px descender = 7px visual to selector */
+}
+
+/* Label after divider needs more space */
+.partner-card .modal-divider + .confirmation-modal-question {
+  margin-top: 16px; /* 16px visual from divider */
 }
 
 /* === SELECTORS === */
-#partner-modal-container .app-selector {
-  margin-bottom: 0;
+.partner-card .app-selector {
+  margin-bottom: 0; /* Stack handles spacing */
+  /* Force GPU rendering at all times to prevent rendering mode shifts */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  position: relative; /* Establish positioning context for z-index */
+  z-index: 1; /* Base z-index */
 }
 
-/* Selector before divider - fine-tune spacing for 16px visual */
-#partner-modal-container .app-selector:has(+ .modal-divider) {
-  margin-bottom: -2px; /* Compensate for header descender = 16px visual to divider */
+/* === CUSTOM SELECTOR DISPLAY === */
+/* Selector display acts like summary - clickable to toggle (for day selectors only) */
+.partner-card .app-selector .selector-display {
+  background-color: var(--background-dark);
+  box-shadow: inset 0 0 0 2px var(--primary-blue);
+  border-radius: var(--border-radius);
+  min-height: var(--control-height); /* Global: 50px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+/* Hide options list by default */
+.partner-card .app-selector .options-list {
+  display: none;
+}
+
+/* Show options list when selector is open */
+.partner-card .app-selector.is-open .options-list {
+  display: block;
+}
+
+/* When selector opens, raise z-index so dropdown appears above siblings */
+.partner-card .app-selector.is-open {
+  z-index: 10; /* Above other selectors */
+}
+
+/* Square bottom corners when open to connect to dropdown */
+.partner-card .app-selector.is-open .selector-display {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* Current User Focus selector needs 16px to divider */
+.partner-card #partner-user1-day-selector {
+  margin-bottom: 18px; /* 16px visual to divider */
 }
 
 /* === DIVIDER === */
 /* 🔒 CEMENT: 16px visual spacing both sides of divider for balance */
-#partner-modal-container .modal-divider {
-  margin: 18px 0 15px 0; /* 18px top, 15px bottom = 16px visual both sides */
+.partner-card .modal-divider {
+  margin: 13px 0 13px 0; /* 13px both sides = 16px visual */
 }
 
-/* Header after divider - compensate for divider spacing */
-#partner-modal-container .modal-divider + .card-header {
-  margin-top: 1px; /* Fine-tune to achieve 16px visual */
+/* Partner Focus selector needs 16px to buttons */
+.partner-card #partner-user2-day-selector {
+  margin-bottom: var(--space-m); /* 16px to buttons */
+}
+
+/* === BALANCED TEXT LAYOUT === */
+/* Two-line stacked text layout for profile selectors */
+.partner-card .selector-content.balanced-text {
+  display: block;
+  text-align: center;
+  padding: var(--selector-multiline-padding-top) 0 var(--selector-multiline-padding-bottom) 0;
+  line-height: var(--selector-multiline-line-height);
+}
+
+.partner-card .selector-content.balanced-text span {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+.partner-card .selector-content.balanced-text span:first-child {
+  margin-bottom: var(--selector-multiline-line-gap);
 }
 
 /* === USER PROFILES === */
-/* Two-toned profile text */
-.item-main-line .text-on-surface-medium {
-  color: var(--on-surface-medium);
-  margin-right: var(--space-xxs); /* Global: 4px */
+/* Profile selectors forced to 50px height to match all other selectors */
+#partner-user1-profile-selector > summary,
+#partner-user2-profile-selector > summary {
+  height: 50px; /* Override min-height to enforce consistent 50px height */
 }
 
-/* === ACTION BUTTONS === */
-#partner-modal-container .superset-modal-actions {
-  display: flex;
-  gap: var(--space-m);              /* Global: 16px */
-  margin-top: var(--modal-button-spacing); /* Global: 16px */
+/* Profile selector exception - content stays visible (full color) even when muted */
+/* Selectors remain muted (background/border) but text displays at full brightness */
+#partner-user1-profile-selector.app-selector.is-muted > summary .selector-content,
+#partner-user1-profile-selector.app-selector.is-muted[open] > summary .selector-content,
+#partner-user2-profile-selector.app-selector.is-muted > summary .selector-content,
+#partner-user2-profile-selector.app-selector.is-muted[open] > summary .selector-content {
+  filter: none;
+  opacity: 1;
+}
+
+/* === ANIMATIONS === */
+
+/* Selector grow/snap animation - based on workout log stamp */
+@keyframes selector-grow-snap {
+  0% {
+    transform: scale(1);
+  }
+  90% {  /* 900ms grow phase */
+    transform: scale(1.15);
+  }
+  100% { /* 100ms snap back */
+    transform: scale(1);
+  }
+}
+
+/* Apply grow animation to selector container */
+.app-selector.is-animating-selector {
+  animation: selector-grow-snap 1s ease-out forwards;
+  transform-origin: center center;
+  will-change: transform; /* GPU acceleration */
+}
+
+/* Green color transition - olive to green (matches superset pattern) */
+@keyframes selector-green-glow-transition {
+  0% {
+    color: var(--text-olive-deviation); /* Start olive */
+    text-shadow: 0 0 8px var(--text-green-plan); /* Start with visible green glow */
+  }
+  100% {
+    color: var(--text-green-plan); /* End at green */
+    text-shadow: 0 0 20px var(--text-green-plan); /* Larger green glow */
+  }
+}
+
+/* Blue color transition - olive to blue (Partner User 2) */
+@keyframes selector-blue-glow-transition {
+  0% {
+    color: var(--text-olive-deviation); /* Start olive */
+    text-shadow: 0 0 8px var(--primary-blue); /* Start with visible blue glow */
+  }
+  100% {
+    color: var(--primary-blue); /* End at blue */
+    text-shadow: 0 0 20px var(--primary-blue); /* Larger blue glow */
+  }
+}
+
+/* User 1 Focus - transitions to green with green glow in parallel with grow */
+/* Higher specificity overrides .data-highlight.text-plan */
+.data-highlight.is-transitioning-to-green,
+.is-transitioning-to-green {
+  animation: selector-green-glow-transition 1000ms ease-out forwards;
+  will-change: color, text-shadow; /* GPU acceleration */
+}
+
+/* Partner Focus - transitions to blue with blue glow in parallel with grow */
+/* Higher specificity overrides .data-highlight.text-primary */
+.data-highlight.is-transitioning-to-blue,
+.is-transitioning-to-blue {
+  animation: selector-blue-glow-transition 1000ms ease-out forwards;
+  will-change: color, text-shadow; /* GPU acceleration */
 }

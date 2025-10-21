@@ -1,5 +1,5 @@
 /* ==========================================================================
-   APD/CLAUDE v5.5.5 - CONFIRMATION MODALS GLOBAL STANDARD
+   CONFIRMATION MODALS GLOBAL STANDARD
 
    SINGLE SOURCE OF TRUTH for all confirmation modal styling patterns.
 
@@ -16,7 +16,7 @@
    BUTTONS: Flex 2-button or Grid 3-button layouts
 
    Spacing Rhythm (16px visual):
-   - Card top → Title: 16px (8px padding compensates for font ascender)
+   - Card top → Title: 16px (14px padding compensates for font ascender)
    - Title → Description: 16px (7px margin compensates for font metrics)
    - Description → Question: 16px (9px margin compensates for line-height 1.2)
    - Question → Buttons: 16px (13px margin compensates for font metrics)
@@ -44,7 +44,7 @@
 /* === MODAL CARD BASE === */
 /* Apply to all confirmation modal cards */
 .confirmation-modal-card {
-  padding: 8px var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
+  padding: 14px 16px 16px 16px; /* Top: 14px for 16px visual with title font metrics, Sides/Bottom: 16px (compensates for 2px border) */
   border: 2px solid var(--primary-blue); /* Standard blue border */
   max-width: 400px; /* Consistent max width */
   width: 100%;

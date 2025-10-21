@@ -27,6 +27,10 @@
    Used by: login-page.index.js
    ========================================================================== */
 
+/* Global dependencies */
+@import url("../../styles/components/_modals.css");
+@import url("../../styles/components/_confirmation-modals.css");
+
 /* === PAGE CONTAINER === */
 .login-page {
   display: flex;
@@ -296,77 +300,31 @@
 }
 
 /* === RESET PASSWORD LINK MODAL === */
-/* Fullscreen overlay for "Forgot Password?" flow - sends reset link via email */
-.reset-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.8); /* Dark overlay to focus attention */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000; /* Above all page content */
-  padding: var(--app-side-margin); /* Global: 10px - standard app edge margin */
-}
-
-.reset-modal.is-hidden {
-  display: none;
-}
-
-.reset-modal-content {
-  width: 100%;
-  max-width: 400px;
-  padding: var(--card-padding-top) var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides); /* 11px top, 14px sides (14px + 2px border = 16px visual) */
-}
-
-.reset-modal-title {
-  font-size: var(--font-size-h1); /* Global: 2.5rem - "Reset Password Link" title */
-  font-weight: 700;
-  line-height: 1;
-  text-shadow: var(--text-shadow-subtle); /* Global: 0 2px 4px rgba(0, 0, 0, 0.8) */
-  text-align: center;
-  color: var(--text-primary);
-  margin: -3px 0 6px 0; /* Negative top margin compensates for card padding + font ascender = 16px visual from top */
-}
-
-.reset-modal-description {
-  font-size: 1rem;
-  text-align: center;
-  color: var(--text-secondary);
-  margin: 0 0 7px 0; /* Compensates for line-height - achieves 16px visual to Email label */
-  line-height: 1.4;
-}
+/* Uses global confirmation modal standards from _confirmation-modals.css */
 
 .reset-input-group {
   display: flex;
   flex-direction: column;
-  gap: 4px; /* With label descender = 7px visual */
+  gap: 0; /* Label has its own margin-bottom */
   margin-bottom: var(--space-m);
 }
 
-.reset-label {
-  font-size: var(--font-size-h2); /* 1.25rem - matches login page Email/Password labels */
-  font-weight: 600;
-  line-height: 1;
-  color: var(--text-primary);
-  margin: 0; /* Gap handles spacing */
+.reset-input-group .confirmation-modal-question {
+  text-align: left; /* Left-align label */
+  margin-bottom: 4px; /* 4px + 3px descender = 7px visual to input */
 }
 
-.reset-button-group {
-  display: flex;
-  gap: var(--space-m);
-}
-
-.reset-button-group .action-button {
-  flex: 1;
+/* Button text wrapping for long text */
+.button-text-wrap {
+  display: block;
+  white-space: normal;
+  line-height: 1.2;
+  text-align: center;
 }
 
 /* === ERROR FLASH ANIMATION === */
 /* Applied on validation failure - 3 pulses for visual feedback */
-.login-button-group .action-button.button-is-flashing,
-.reset-button-group .action-button.button-is-flashing {
+.login-button-group .action-button.button-is-flashing {
   animation: button-red-pulse 560ms linear 3; /* 560ms × 3 = 1680ms total */
 }
 

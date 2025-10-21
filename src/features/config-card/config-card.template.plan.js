@@ -19,9 +19,9 @@ export function getPlanSelectorHTML(isAnySetLogged, selectorId = "workout-setup-
   if (superset.isActive) {
     const day1Info = appState.weeklyPlan[superset.day1];
     const day2Info = appState.weeklyPlan[superset.day2];
-    summaryHtml = `<div class="selector-content"><div class="item-main-line flex-line-container"><div class="flex-truncate-group-rigid"><span class="flex-priority">Superset:&nbsp;</span><span class="data-highlight text-plan">${day1Info.title}</span><span class="flex-priority text-on-surface-medium">&nbsp;&amp;</span></div><span class="truncate-text data-highlight text-warning">&nbsp;${day2Info.title}</span></div></div>`;
+    summaryHtml = `<div class="selector-content"><div class="item-main-line flex-line-container"><div class="flex-truncate-group-rigid"><span class="flex-priority">Superset:&nbsp;</span><span class="data-highlight text-plan" data-animation-target="true">${day1Info.title}</span><span class="flex-priority text-on-surface-medium">&nbsp;&amp;</span></div><span class="truncate-text data-highlight text-warning" data-animation-target="true">&nbsp;${day2Info.title}</span></div></div>`;
   } else if (partner.isActive) {
-    summaryHtml = `<div class="selector-content"><div class="item-main-line flex-line-container"><div class="flex-truncate-group-rigid"><span class="flex-priority">Partner:&nbsp;</span><span class="data-highlight text-plan">${partner.user1Name}</span><span class="flex-priority text-on-surface-medium">&nbsp;&amp;</span></div><span class="truncate-text data-highlight text-primary">&nbsp;${partner.user2Name}</span></div></div>`;
+    summaryHtml = `<div class="selector-content"><div class="item-main-line flex-line-container"><div class="flex-truncate-group-rigid"><span class="flex-priority">Partner:&nbsp;</span><span class="data-highlight text-plan" data-animation-target="true">${partner.user1Name}</span><span class="flex-priority text-on-surface-medium">&nbsp;&amp;</span></div><span class="truncate-text data-highlight text-primary" data-animation-target="true">&nbsp;${partner.user2Name}</span></div></div>`;
   } else {
     const currentPlan =
       workoutPlans.find((p) => p.name === session.currentWorkoutPlanName) ||

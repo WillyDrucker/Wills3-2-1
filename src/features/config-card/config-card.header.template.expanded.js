@@ -110,13 +110,13 @@ export function getExpandedTemplate() {
   if (superset.isActive) {
     const day1Info = appState.weeklyPlan[superset.day1];
     const day2Info = appState.weeklyPlan[superset.day2];
-    summaryHtml = `<div class="selector-content multi-line"><div class="item-main-line flex-line-container"><div class="flex-truncate-group-rigid"><span class="flex-priority">Superset:&nbsp;</span><span class="data-highlight text-plan">${day1Info.title}</span><span class="flex-priority text-on-surface-medium">&nbsp;&amp;</span></div><span class="truncate-text data-highlight text-warning">&nbsp;${day2Info.title}</span></div></div>`;
+    summaryHtml = `<div class="selector-content multi-line"><div class="item-main-line flex-line-container"><div class="flex-truncate-group-rigid"><span class="flex-priority">Superset:&nbsp;</span><span class="data-highlight text-plan" data-animation-target="true">${day1Info.title}</span><span class="flex-priority text-on-surface-medium">&nbsp;&amp;</span></div><span class="truncate-text data-highlight text-warning" data-animation-target="true">&nbsp;${day2Info.title}</span></div></div>`;
   } else if (partner.isActive) {
-    summaryHtml = `<div class="selector-content multi-line"><div class="item-main-line flex-line-container"><div class="flex-truncate-group-rigid"><span class="flex-priority">Partner:&nbsp;</span><span class="data-highlight text-plan">${partner.user1Name}</span><span class="flex-priority text-on-surface-medium">&nbsp;&amp;</span></div><span class="truncate-text data-highlight text-primary">&nbsp;${partner.user2Name}</span></div></div>`;
+    summaryHtml = `<div class="selector-content multi-line"><div class="item-main-line flex-line-container"><div class="flex-truncate-group-rigid"><span class="flex-priority">Partner:&nbsp;</span><span class="data-highlight text-plan" data-animation-target="true">${partner.user1Name}</span><span class="flex-priority text-on-surface-medium">&nbsp;&amp;</span></div><span class="truncate-text data-highlight text-primary" data-animation-target="true">&nbsp;${partner.user2Name}</span></div></div>`;
   } else {
     // Normal mode: Single-line format with full plan name and duration
     const currentPlan = workoutPlans.find((p) => p.name === session.currentWorkoutPlanName) || workoutPlans[0];
-    summaryHtml = `<div class="selector-content"><span class="truncate-text">${currentPlan.name.replace(':', '')}: <span class="data-highlight text-plan">${currentPlan.duration}</span></span></div>`;
+    summaryHtml = `<div class="selector-content"><span class="truncate-text">${currentPlan.name.replace(':', '')}: <span class="data-highlight text-plan" data-animation-target="true">${currentPlan.duration}</span></span></div>`;
   }
 
   // Build options list
@@ -146,6 +146,7 @@ export function getExpandedTemplate() {
   const isSessionCyclingDisabled = isSessionCyclingLocked();
 
   return `
+    <div class="config-header-backdrop"></div>
     <div class="card" id="config-header">
       <div class="card-content-container">
         <div class="config-header-group expanded">

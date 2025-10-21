@@ -24,7 +24,7 @@ export function getLoginPageTemplate() {
 
           <div class="login-form">
             <div class="login-input-group">
-              <label class="login-label">Email</label>
+              <label for="login-email" class="login-label">Email</label>
               <input
                 type="email"
                 id="login-email"
@@ -36,7 +36,7 @@ export function getLoginPageTemplate() {
             </div>
 
             <div class="login-input-group">
-              <label class="login-label">Password</label>
+              <label for="login-password" class="login-label">Password</label>
               <input
                 type="password"
                 id="login-password"
@@ -98,13 +98,14 @@ export function getLoginPageTemplate() {
       </div>
 
       <!-- Password Reset Modal -->
-      <div id="reset-password-modal" class="reset-modal is-hidden">
-        <div class="reset-modal-content card">
-          <h2 class="reset-modal-title">Reset Link</h2>
-          <p class="reset-modal-description">Enter your email address and we'll send you a link to reset your password.</p>
+      <div id="reset-password-modal" class="login-reset-modal-container is-hidden">
+        <div class="superset-modal-backdrop" id="reset-modal-backdrop"></div>
+        <div class="superset-modal-content card confirmation-modal-card login-reset-card">
+          <h2 class="confirmation-modal-title">Reset Link</h2>
+          <p class="confirmation-modal-description">Enter your email address and we'll send you a link to reset your password.</p>
 
           <div class="reset-input-group">
-            <label class="reset-label">Email</label>
+            <label for="reset-email" class="confirmation-modal-question">Email</label>
             <input
               type="email"
               id="reset-email"
@@ -117,9 +118,9 @@ export function getLoginPageTemplate() {
 
           <div id="reset-error" class="login-error is-hidden"></div>
 
-          <div class="reset-button-group">
-            <button type="button" id="reset-cancel-btn" class="action-button button-secondary">Cancel</button>
-            <button type="button" id="reset-send-btn" class="action-button button-log">Send Reset Link</button>
+          <div class="confirmation-modal-actions">
+            <button type="button" id="reset-cancel-btn" class="action-button button-cancel">Cancel</button>
+            <button type="button" id="reset-send-btn" class="action-button button-log"><span class="button-text-wrap">Send<br>Reset Link</span></button>
           </div>
         </div>
       </div>

@@ -11,78 +11,68 @@ Will's 3-2-1 is a browser-based workout tracking application using vanilla JavaS
 **Philosophy**: SUPER STUPID SIMPLE (SSS) - The user experience must be effortless and guided. REMOVE, DON'T ADD - Simplify or remove complexity when possible.
 
 **UI/UX Rules**:
-- **NO HOVER EFFECTS**: Zero mouse-over effects anywhere in the application. Touch-first design.
-- **NO TRANSITIONS/DELAYS**: All UI changes must be immediate. No CSS transitions or animation delays. This is a workout app - everything must be big, thick, bold, and instant for performance.
+- **NO HOVER EFFECTS**: Zero mouse-over effects. Touch-first design.
+- **NO MOUSE EVENTS**: Use click, pointerdown, or touch events only.
+- **NO TRANSITIONS/DELAYS**: All UI changes immediate. Big, thick, bold, instant.
+- **NO SETTIMEOUT HACKS**: Find proper event/architectural solutions.
 
-## Quick Start
+## Quick Reference
 
-**Run application**: `python -m http.server 8000` then open `localhost:8000`
-**No build required** - ES modules run natively in modern browsers
+**Run**: `python -m http.server 8000` → `localhost:8000`
+**Standards**: Read `CLAUDE_STANDARDS.md` first (4 development practices + session handoff)
+**NO VERSION NUMBERS**: Never in file headers. Git tracks versions.
 
-## Core Architecture
+## Architecture
 
-**State Management**: Centralized `appState` in `src/state.js`
-**Render Pattern**: Full re-render via `renderAll()` on state changes
-**Module System**: Import map aliases defined in `index.html`
+**State**: Centralized `appState` in `src/state.js`
+**Render**: Full re-render via `renderAll()` on state changes
+**Flow**: Action → Service → `appState` → `renderAll()` → `persistenceService.saveState()`
+**Modules**: Import map aliases in `index.html`
 
-## Critical Standards
-
-1. **Read CLAUDE_STANDARDS.md first** - Contains all 5 development practices
-2. **Check CLAUDE_SESSION_HANDOFF.md** - For current work status and session changes
-3. **Review CLAUDE_PROJECT_NOTES.md** - For version history and critical discoveries
-
-## Project Files Reference
-
-**Configuration**:
-- `src/config.js` - Application constants and API endpoints
-- `.claude/settings.local.json` - Claude Code permissions
-
-**File Structure**:
+**Structure**:
 ```
 src/
 ├── features/      - UI components (.index.js, .template.js, .style.css)
 ├── services/      - Business logic and state mutations
-├── styles/        - Tokenized CSS system
+├── styles/        - Tokenized CSS system (global-first, 16px rhythm)
 └── shared/        - DOM refs (ui.js) and utilities
 ```
 
-**Component Pattern**: Each feature has index.js (logic), template.js (HTML), style.css (styles)
+## GitHub Workflow
 
-**State Flow**: User action → Service method → `appState` mutation → `renderAll()` → `persistenceService.saveState()`
-
-## GitHub Issue Tracking
-
-**Issue Creation** (Keep lean):
-- Concise descriptions (2-3 sentences max)
-- High-level acceptance criteria only
-- No code diffs during creation
-
-**Issue Types**:
-- **Bug**: Critical bugs, broken functionality
-- **Feature**: New features or enhancements
-- **Task**: Refactoring, documentation, standards application
-
-**Issue Updates** (After fix confirmed):
-- Add minimal solution summary
-- Add code diff highlighting the fix (file + line numbers)
-- **DO NOT** show iterative code changes - repository tracks that
-- If issue snowballs, add more depth but stay lean
-
-**Issue Closure**:
-- **DO NOT close** until user explicitly confirms
-- User tests and verifies before closing
-- Include issue number in commit messages
+**Issue Creation**: Concise (2-3 sentences), high-level acceptance criteria only, no code diffs.
+**Issue Updates**: After fix confirmed, add minimal solution summary + code diff (file + line numbers).
+**Issue Closure**: Wait for user confirmation before closing.
+**Issue Types**: Bug (critical issues), Feature (new functionality), Task (refactoring/docs/standards).
 
 ## Notification System
 
-**Beep Notifications**: Claude will play a notification beep to signal completion of planning or implementation phases. This helps with multi-project workflow management.
+**Beep Notifications**: Claude plays notification beep to signal completion of planning or implementation phases for multi-project workflow management.
 
-**Beep Command**: `powershell -Command "[System.Console]::Beep(800, 500)"` - 800Hz frequency, 500ms duration
-
-**Volume Note**: Windows Console.Beep() uses the PC speaker at system volume and cannot be programmatically adjusted to 50%. Volume is controlled by system settings only.
+**Beep Command**: `powershell -Command "[System.Console]::Beep(800, 500)"`
+- 800Hz frequency, 500ms duration
+- Uses PC speaker at system volume (cannot be programmatically adjusted)
 
 **When Used**:
 - End of planning mode (last checklist item before ExitPlanMode)
 - End of implementation (last solution checklist item completed)
 
 **Status**: PERMANENT FEATURE - Always use beep notifications for workflow completion signals
+
+---
+
+## Recent Session Notes
+
+### v6.24 - Quick Button Animations & Standards (2025-01-21)
+
+**Key Implementations**:
+1. Quick Button grow animations on "Let's Go!" confirmation (Plan/Focus/Session)
+2. "Let's Go!" pulse on session changes (smart non-interruption)
+3. Single-click Cancel with proper state restoration
+4. Backdrop click blocking to prevent accidental interactions
+
+**Standards Applied**: All modified files updated with comprehensive headers, global animations moved to `_animations-general.css`, no `!important` flags, semantic naming throughout.
+
+**Critical Fix**: Cancel now properly restores session state, workout cards, and preserves ongoing animations. Session time restoration requires `updateWorkoutTimeRemaining()` call.
+
+See `CLAUDE_STANDARDS.md` RECENT SESSIONS for detailed technical notes.
