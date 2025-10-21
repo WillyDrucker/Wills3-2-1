@@ -1,5 +1,5 @@
 /* ==========================================================================
-   APD/CLAUDE v5.5.5 - NEW WORKOUT MODAL TEMPLATE
+   NEW WORKOUT MODAL - HTML Template
 
    Generates new workout confirmation modal HTML.
    Triggered from workout-results-card "Begin Another Workout" button.

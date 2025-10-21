@@ -1,5 +1,5 @@
 /* ==========================================================================
-   APD/CLAUDE v5.5.5 - NEW WORKOUT MODAL INDEX
+   NEW WORKOUT MODAL - Business Logic
 
    Business logic for new workout confirmation modal.
    Shown after workout completion when user clicks "Begin Another Workout".

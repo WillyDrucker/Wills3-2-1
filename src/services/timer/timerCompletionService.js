@@ -10,7 +10,7 @@
    - 5-second defensive cleanup catches stale animation flags
    - Only clears animation if triggered by same cycle ID
 
-   🔒 CEMENT: Header reset on completion (v5.0.2)
+   🔒 CEMENT: Header reset on completion
    - "Current Exercise" header restored whenever any timer completes/skips
    - Single source of truth for header state reset
 
@@ -33,7 +33,7 @@ export function handleCompletion(restState, options = {}) {
   if (restState.timerId) clearInterval(restState.timerId);
   restState.timerId = null;
 
-  /* 🔒 CEMENT: Header reset (v5.0.2) - Single source of truth */
+  /* 🔒 CEMENT: Header reset - Single source of truth */
   appState.session.activeCardHeaderMessage = "Current Exercise";
 
   const log = appState.session.workoutLog[restState.triggeringSetIndex];

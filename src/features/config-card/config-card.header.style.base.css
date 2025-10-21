@@ -1,0 +1,99 @@
+/* ==========================================================================
+   CONFIG HEADER - Base Styles
+
+   Foundation styles for config header card:
+   - Card border and spacing (always blue, distinguishes from other cards)
+   - Card padding with compensation for blue border
+   - Header line layout (title + clock)
+   - Selector base styles (50px height constraint)
+
+   CEMENT: Custom top padding compensates for blue border
+   - 13px padding + 2px border + 1px = 16px visual
+   - Achieves consistent spacing with other cards
+
+   CEMENT: 50px hard constraint on selectors
+   - Prevents layout shift between collapsed/expanded states
+   - min-height, max-height, height all set to --control-height
+
+   Dependencies: _card-foundations.css, _card-headers.css, _selectors.css
+   Used by: config-card.header.style.css (main stylesheet)
+   ========================================================================== */
+
+/* === CARD FOUNDATION === */
+/* CEMENT: Always blue border - distinguishes from other cards, never transparent */
+#config-header {
+  margin: 0 0 var(--space-m) 0; /* Global: 16px bottom */
+  border: var(--card-border-width) solid var(--primary-blue);
+  transition: border-radius 0.3s ease;
+  position: relative;
+  z-index: 100; /* Above other cards when expanded */
+  box-shadow: none;
+}
+
+/* === CARD PADDING === */
+/* CEMENT: Custom top padding compensates for blue border, achieves 16px visual */
+#config-header .card-content-container {
+  padding: 13px var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides); /* 13px + 2px border + 1px = 16px visual */
+  box-sizing: border-box;
+  transition: padding 0.3s ease;
+}
+
+#config-header .config-header-group.collapsed ~ * {
+  overflow: hidden;
+}
+
+#config-header:has(.config-header-group.collapsed) .card-content-container {
+  padding-bottom: 12px; /* Reduced padding when collapsed */
+}
+
+/* === HEADER === */
+#config-header .card-header-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--header-margin-bottom); /* Global: 7px visual */
+  position: relative;
+}
+
+#config-header .card-header {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--on-surface-light);
+  margin: 0;
+  padding: 0;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+#config-header .card-header-clock {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--on-surface-light);
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+/* === CONFIG GROUP === */
+#config-header .config-header-group {
+  margin: 0;
+  padding: 0;
+}
+
+/* === SELECTOR BASE STYLES === */
+/* CEMENT: 50px hard constraint prevents layout shift between states */
+#config-header .app-selector summary {
+  min-height: var(--control-height);
+  max-height: var(--control-height);
+  height: var(--control-height);
+  outline: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#config-header .app-selector[open] > summary {
+  box-shadow: inset 0 0 0 2px var(--primary-blue);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}

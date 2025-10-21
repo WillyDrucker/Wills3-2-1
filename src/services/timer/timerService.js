@@ -4,7 +4,7 @@
    Creates and manages rest timer intervals for normal and dual-mode workouts.
    Handles timer initialization, tick updates, and segment completion animations.
 
-   🔒 CEMENT: "Next Exercise Up" header logic (v5.0.2)
+   🔒 CEMENT: "Next Exercise Up" header logic
    - Normal mode: Header changes immediately when timer starts
    - Dual mode: Header only changes when OTHER side timer is already running
    - Ensures user clarity on which exercise is truly "next up"
@@ -102,7 +102,7 @@ export function createTimerInterval(restState, side = null, handleCompletion) {
 export function startTimer(restState, type, side = null, handleCompletion) {
   if (restState.timerId) clearInterval(restState.timerId);
 
-  /* 🔒 CEMENT: Dynamic "Next Exercise Up" header logic (v5.0.2) */
+  /* 🔒 CEMENT: Dynamic "Next Exercise Up" header logic */
   if (!side) {
     appState.session.activeCardHeaderMessage = "Next Exercise Up";
   } else {

@@ -4,7 +4,7 @@
    Manages workout completion state detection and active card message updates.
    Determines when workout is complete and what message to show user.
 
-   🔒 CEMENT: "Begin Exercise" message logic (v5.0.2)
+   🔒 CEMENT: "Begin Exercise" message logic
    - "Begin Exercise - Log Results" for first set
    - "Begin Next Set" when returning to same muscle group
    - "Begin Next Exercise" when starting new muscle group

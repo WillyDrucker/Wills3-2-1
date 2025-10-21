@@ -72,7 +72,7 @@ body.is-selector-open details:not([open]) {
 }
 
 /*
-  CEMENTED (v5.0.6 - Architectural Fix):
+  CEMENTED:
   The `:not(.workout-log-item-container)` pseudo-class is the key to decoupling.
   It applies the generic "squaring" mute effect to all standard selectors, but
   EXCLUDES the workout log, allowing its component-specific styles to take precedence.
@@ -129,7 +129,7 @@ body.is-selector-open
 .text-primary {
   color: var(--primary-blue);
 }
-/* CEMENTED FIX (v5.1.2): New utility class for informational text. */
+/* CEMENTED FIX: New utility class for informational text. */
 .text-info {
   color: var(--on-surface-medium);
 }

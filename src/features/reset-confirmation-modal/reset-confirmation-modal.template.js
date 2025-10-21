@@ -1,5 +1,5 @@
 /* ==========================================================================
-   APD/CLAUDE v5.5.5 - RESET CONFIRMATION MODAL TEMPLATE
+   RESET CONFIRMATION MODAL - HTML Template
 
    Generates dynamic reset confirmation modal HTML based on logged sets count.
    Triggered from config-card Reset button.
