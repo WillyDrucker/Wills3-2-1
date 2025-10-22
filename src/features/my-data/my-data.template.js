@@ -4,10 +4,13 @@
    Generates My Data page HTML with performance card, history calendar,
    tab selector, week navigator, and admin-only Clear Today's Data button.
 
-   Architecture: Admin-only features
-   - Clear Today's Data button visible only for willy.drucker@gmail.com
+   Architecture:
+   - Week navigation: Full-width chevron buttons (50x32) below selector
+   - Calendar range text centered between chevrons
+   - Chevron icons match config-card session selector style (32x32 stroke-based)
+   - Admin-only: Clear Today's Data button for willy.drucker@gmail.com
    - Email check via appState.auth.user.email
-   - Button wired in my-data.index.js render function
+   - Button event listeners wired in my-data.index.js render function
 
    Dependencies: appState, ui, createSelectorHTML, getWorkoutCalendarHTML,
                  getWeekRange
@@ -86,20 +89,22 @@ export function getMyDataPageTemplate() {
     </div>
     <div class="card my-data-card history-card" id="workout-history-card">
         <div class="card-content-container">
-            <div class="history-week-header">
-                <div class="card-title history-week-title">History</div>
-                <div class="week-navigator">
-                    <button class="week-nav-button week-nav-prev" data-action="previousWeek">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-                    </button>
-                    <span class="week-range-text text-plan">${weekRange}</span>
-                    <button class="week-nav-button week-nav-next" data-action="nextWeek" ${nextButtonDisabled}>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
-                    </button>
-                </div>
-            </div>
+            <div class="card-title history-week-title">History</div>
             <div class="selector-container history-selector-container">
                 ${getHistorySelectorHTML()}
+            </div>
+            <div class="week-navigator">
+                <button class="week-nav-button week-nav-prev week-chevron week-chevron-left">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <path d="M20 24L12 16L20 8" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <span class="week-range-text text-plan">${weekRange}</span>
+                <button class="week-nav-button week-nav-next week-chevron week-chevron-right" ${nextButtonDisabled}>
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <path d="M12 8L20 16L12 24" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
             </div>
             ${logContentHtml}
         </div>

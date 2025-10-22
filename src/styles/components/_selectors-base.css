@@ -68,7 +68,7 @@
   padding: 4px;
   position: absolute;
   width: 100%;
-  z-index: 100;
+  z-index: 200; /* Above workout log edit panel (z-index: 100) */
 }
 
 /* CEMENT: Standard 50px option height matches control height token */

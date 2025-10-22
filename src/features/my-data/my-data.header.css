@@ -1,44 +1,62 @@
 /* ==========================================================================
    MY DATA - Header with Week Navigation
 
-   History card header with week range selector and navigation controls.
-   Responsive truncation for week range display at narrow viewports.
+   History card header with "History" title and full-width week navigation.
+   Week navigation positioned below "My Workouts" selector with chevron
+   buttons spanning left-to-right margins and centered calendar range text.
 
-   🔒 CEMENT: Responsive truncation architecture
-   - Week range text uses text-overflow ellipsis for narrow viewports
-   - Week title position adjustment compensates for font bearing
+   Architecture:
+   - History title: 16px from card top (11px padding + 1px padding-top + font metrics)
+   - History title: 7px to selector (4px margin-bottom + font metrics)
+   - Week navigator: Below selector, 16px spacing above/below
+   - Chevron buttons: 50x32px at full width (left: 0, right: 0)
+   - Chevron icons: 32x32 stroke-based (matches config-card session chevrons)
+   - Week range text: Centered, z-index 1 (above chevrons)
+
+   🔒 CEMENT: Spacing measurements
+   - All spacing verified visually with pixel measurements
+   - Fine-tuned to account for font rendering and anti-aliasing
 
    Dependencies:
-   Global: _variables.css (--font-size-h2, --space-s, --on-surface-light,
-           --text-green-plan, --border-radius, --history-header-left)
+   Global: _variables.css (--font-size-h2, --space-m, --space-s, --on-surface-light,
+           --text-green-plan, --border-radius, --history-header-left, --background-dark,
+           --on-surface-disabled, --on-surface-medium)
    Parent: my-data.style.css
 
-   Used by: History card header
+   Used by: History card (my-data.template.js)
    ========================================================================== */
 
-/* === HISTORY WEEK HEADER === */
-.history-week-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: var(--font-size-h2);
-  margin-bottom: var(--space-s);
-}
-
 /* === WEEK TITLE === */
+/* 🔒 CEMENT: History title - 16px from card top, 7px to selector */
 .history-week-title {
   font-size: var(--font-size-h2);
   font-weight: 600;
   line-height: 1;
   color: var(--on-surface-light);
   margin: 0;
+  margin-bottom: 4px; /* 4px = 7px visual to selector */
   padding: 0;
+  padding-top: 1px; /* Fine-tune: 11px card-padding + 1px = 12px, with font metrics = 16px visual from card top */
   position: relative;
   left: var(--history-header-left);
 }
 
+/* === WEEK NAVIGATOR === */
+/* 🔒 CEMENT: Full-width chevron navigation below selector - centered text */
+.week-navigator {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: var(--space-m); /* 16px above from selector */
+  margin-bottom: 15px; /* 15px = 16px visual to calendar content */
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  height: 32px;
+}
+
 /* === WEEK RANGE TEXT === */
-/* 🔒 CEMENT: Truncation for responsive week range display */
+/* 🔒 CEMENT: Week range text centered between full-width chevrons */
 .week-range-text {
   font-size: var(--font-size-h2);
   font-weight: 600;
@@ -46,45 +64,56 @@
   color: var(--text-green-plan);
   margin: 0;
   padding: 0;
-  display: inline-block;
-  vertical-align: middle;
-  min-width: 0;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* === WEEK NAVIGATOR === */
-.week-navigator {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: var(--space-s); /* Global: 7px */
-  vertical-align: middle;
+  justify-content: center;
+  white-space: nowrap;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+  z-index: 1; /* Above chevron buttons */
 }
 
 /* === NAVIGATION BUTTONS === */
-.week-nav-button {
-  width: 32px;
-  height: 14px;
+/* 🔒 CEMENT: 50x32 chevron buttons at full width - matches config-card session chevrons */
+.week-chevron {
+  position: absolute;
+  width: 50px;
+  height: 32px;
+  min-width: 50px;
+  min-height: 32px;
+  padding: 0;
+  margin: 0;
+  background: var(--background-dark);
+  box-shadow: inset 0 0 0 1px var(--on-surface-disabled),
+              0 2px 6px rgba(0, 0, 0, 0.3);
+  border: none;
   border-radius: var(--border-radius);
-  display: inline-flex;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
   align-items: center;
   justify-content: center;
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  color: #000;
-  cursor: pointer;
+  flex-shrink: 0;
 }
 
-.week-nav-button:disabled {
-  background: #2a2a2a;
-  border-color: #333;
-  color: #666;
+/* SVG icons: 32x32 with stroke-width 3 to match config-card session chevrons */
+
+.week-chevron-left {
+  left: 0; /* At left edge of card content */
+}
+
+.week-chevron-right {
+  right: 0; /* At right edge of card content */
+}
+
+.week-chevron:disabled {
+  box-shadow: inset 0 0 0 1px var(--on-surface-disabled),
+              0 2px 6px rgba(0, 0, 0, 0.3);
+  color: var(--on-surface-medium);
   cursor: default;
+  opacity: 0.5;
 }
 
-.week-nav-button svg {
-  width: 20px;
-  height: 20px;
+.week-chevron svg {
+  width: 32px;
+  height: 32px;
 }

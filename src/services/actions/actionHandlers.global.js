@@ -9,13 +9,12 @@
    - Animation replay
    - Data management (nuke everything)
    - Mode switching (normal mode)
-   - History navigation (My Data week cycling)
 
    These actions are used across multiple pages and features, not tied
    to specific components or workflows.
 
-   Dependencies: side-nav, authService, fullscreen, scrollService,
-                 navigationService, persistenceService, my-data
+   Dependencies: side-nav, authService, fullscreen, navigationService,
+                 persistenceService, config-card, selectorService
    Used by: actionHandlers.index.js (combined action map)
    ========================================================================== */
 
@@ -28,10 +27,6 @@ import {
   handleOpenSideNav,
   handleCloseSideNav,
 } from "features/side-nav/side-nav.index.js";
-import {
-  handlePreviousWeek,
-  handleNextWeek,
-} from "features/my-data/my-data.index.js";
 import { resetToDefaults } from "features/config-card/config-card.index.js";
 
 /**
@@ -103,10 +98,5 @@ export function getGlobalHandlers(coreActions) {
       coreActions.updateActiveWorkoutAndLog();
       coreActions.renderAll();
     },
-
-    // === HISTORY NAVIGATION ===
-    previousWeek: handlePreviousWeek,
-
-    nextWeek: handleNextWeek,
   };
 }

@@ -12,8 +12,10 @@
    - Week offset management: Prevents navigation below 0 (current week)
 
    🔒 CEMENT: Week navigation wiring
-   - Direct event listeners for calendar week buttons (no delegate reliance)
+   - Direct event listeners for calendar week buttons (no data-action attributes)
+   - Prevents duplicate event handling (no action delegation)
    - Prevents week offset going below 0 (current week)
+   - Uses class selectors (.week-nav-prev, .week-nav-next) for direct targeting
 
    Dependencies: appState, ui, getMyDataPageTemplate, persistenceService,
                  workoutSyncService
@@ -68,10 +70,11 @@ export async function renderMyDataPage() {
 
   /* 🔒 CEMENT: Direct week navigation wiring (no reliance on external delegates) */
   const container = ui.mainContent;
-  container.querySelectorAll('.week-nav-button[data-action="previousWeek"]')
-    .forEach(btn => btn.addEventListener('click', handlePreviousWeek));
-  container.querySelectorAll('.week-nav-button[data-action="nextWeek"]')
-    .forEach(btn => btn.addEventListener('click', handleNextWeek));
+  const prevButton = container.querySelector('.week-nav-prev');
+  const nextButton = container.querySelector('.week-nav-next');
+
+  if (prevButton) prevButton.addEventListener('click', handlePreviousWeek);
+  if (nextButton) nextButton.addEventListener('click', handleNextWeek);
 
   // Admin-only: Wire up Clear Daily Data button
   const clearButton = container.querySelector('.clear-daily-data-button');

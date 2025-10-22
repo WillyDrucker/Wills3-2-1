@@ -1,23 +1,34 @@
 /* ==========================================================================
    MY DATA - History Card Spacing
 
-   🔒 CEMENT: Nuclear reset enables precise spacing control
-   - Reset all elements to 0 for precise control
-   - Selectively restore spacing with specific overrides
-   - All spacing managed here to win cascade battles
+   Manages precise spacing throughout the history calendar view using a nuclear
+   reset pattern. All elements reset to margin: 0, padding: 0, then selectively
+   restored with !important flags to override the reset.
 
    Architecture: Calendar view with workout history
-   - Day headers with 7px spacing to exercises
-   - Exercise blocks with 16px spacing
-   - Set rows with 7px spacing
-   - Dividers with 16px visual spacing
+   - History title: 16px from card top, 7px to selector (managed in my-data.header.css)
+   - Week navigator: 16px from selector, 16px to calendar (managed in my-data.header.css)
+   - Day headers: 7px spacing to exercises
+   - Exercise blocks: 16px spacing between
+   - Set rows: 7px spacing between
+   - Dividers: 16px visual spacing
+
+   🔒 CEMENT: Nuclear reset pattern with !important overrides
+   - All elements reset to 0 (margin, padding, line-height)
+   - Header elements (title, navigator) use !important to override nuclear reset
+   - Fine-tuned spacing accounts for font metrics and anti-aliasing:
+     * History title: 4px margin-bottom = 7px visual to selector
+     * Week navigator: 15px margin-bottom = 16px visual to calendar content
+     * Day headers: 3px margin = 7px visual with line-height
+     * Exercise blocks: 12px margin = 16px visual with 4px line-height
 
    Dependencies:
    Global: _variables.css (--header-margin-bottom, --history-exercise-spacing,
            --space-m, --space-s, --history-day-header-spacing)
    Parent: my-data.style.css
+   Sibling: my-data.header.css (History title and week navigator styling)
 
-   Used by: History calendar view
+   Used by: History calendar view (my-data.template.js)
    ========================================================================== */
 
 /* === HISTORY CARD CASCADE MANAGEMENT === */
@@ -31,9 +42,20 @@
 /* === SELECTIVE SPACING RESTORATION === */
 /* 🔒 CEMENT: All measurements verified for visual consistency */
 
-/* Headers and navigation */
-.history-card .history-week-header {
-  margin-bottom: var(--header-margin-bottom); /* 4px + descender = 7px visual */
+/* History title */
+.history-card .history-week-title {
+  /* Spacing handled in my-data.header.css */
+  /* 16px from card top: 11px card-padding + 1px padding-top + font metrics */
+  /* 7px to selector: 4px margin-bottom */
+  padding-top: 1px !important; /* Override nuclear reset */
+  margin-bottom: 4px !important; /* Override nuclear reset - 4px = 7px visual to selector */
+}
+
+/* Week navigator */
+.history-card .week-navigator {
+  /* Spacing handled in my-data.header.css - must override nuclear reset */
+  margin-top: var(--space-m) !important; /* 16px from selector */
+  margin-bottom: 15px !important; /* 15px = 16px visual to calendar content */
 }
 
 /* Day headers - first exercise should be 7px below */
@@ -112,5 +134,5 @@
 /* === SELECTOR === */
 /* Selector container */
 .history-selector-container {
-  margin-bottom: 15px; /* TODO: Tokenize = calc(var(--space-m) - 1px) */
+  margin-bottom: 0; /* Week navigator now handles spacing below with its margin-top */
 }

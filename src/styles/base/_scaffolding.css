@@ -35,6 +35,9 @@
   max-width: 390px;
   margin: 0 auto;
   padding: 0 var(--app-side-margin);
+  /* DO NOT REMOVE: CSS containment optimization (attempted fix for DevTools lag - see main.js) */
+  /* Changed from 'layout style' to 'style' to prevent stacking context isolation */
+  contain: style; /* Isolate style - prevents style recalculation thrashing */
 }
 
 /* === BASE CARD === */
@@ -45,6 +48,10 @@
   margin-bottom: var(--space-m);
   border: 2px solid transparent;
   scroll-margin-top: var(--space-m); /* Offset when scrolling to card */
+  /* DO NOT REMOVE: CSS containment optimization (attempted fix for DevTools lag - see main.js) */
+  /* Changed from 'layout style' to 'style' to prevent stacking context isolation */
+  /* This allows selector dropdowns to overlay subsequent cards */
+  contain: style; /* Prevent style recalculation thrashing */
 }
 
 /* === CARD CONTENT WRAPPER === */

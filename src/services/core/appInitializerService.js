@@ -91,6 +91,15 @@ export async function initialize(dependencies) {
   modalService.initialize(renderAll);
   fullscreen.initialize(renderSideNav);
   clockService.initialize({ renderActiveCardHeader, renderConfigHeaderLine });
+
+  // Initialize action service BEFORE rendering to prevent touch event delays
+  actionService.initialize({
+    renderAll,
+    updateActiveWorkoutAndLog,
+    updateActiveWorkoutPreservingLogs,
+    resetSessionAndLogs: boundReset,
+  });
+
   document.addEventListener(
     "fullscreenchange",
     fullscreen.handleFullScreenChange
@@ -143,6 +152,9 @@ export async function initialize(dependencies) {
 
     resumeTimersFromState();
     renderAll();
+
+    // Force layout completion to prevent deferred work blocking first interaction
+    document.body.offsetHeight;
   } else {
     appState.session.currentDayName = appState.todayDayName;
     appState.session.currentTimerColorClass = "text-plan";
@@ -151,13 +163,6 @@ export async function initialize(dependencies) {
 
   requestAnimationFrame(() => {
     document.body.classList.add("start-glow-animations");
-  });
-
-  actionService.initialize({
-    renderAll,
-    updateActiveWorkoutAndLog,
-    updateActiveWorkoutPreservingLogs,
-    resetSessionAndLogs: boundReset,
   });
 
   initializeActiveCardEventListeners();

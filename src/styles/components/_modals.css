@@ -54,6 +54,9 @@
   align-items: center; /* All confirmation modals centered vertically */
   padding: 16px var(--app-side-margin); /* Global: 16px top, 10px left/right standard */
   transition: opacity 0.3s ease, visibility 0.3s;
+  /* DO NOT REMOVE: CSS containment optimization (attempted fix for DevTools lag - see main.js) */
+  /* Changed from 'layout style' to 'style' to prevent stacking context isolation */
+  contain: style; /* Isolate style recalculations from page */
 }
 
 /* Hidden state */

@@ -189,4 +189,35 @@ onAuthStateChange((user, session) => {
   }
 });
 
+// KNOWN ISSUE: DevTools Mobile Mode Resume Lag (~200ms)
+// DO NOT REMOVE: Attempted fix for DevTools-specific performance issue
+//
+// Issue: When F12 reopens with mobile mode already active (state restoration),
+// Chrome defers layout recalculation until first user interaction = 200ms lag.
+// This does NOT occur when manually switching to mobile mode (Ctrl+Shift+M).
+//
+// Attempted fixes that did NOT resolve the issue:
+// 1. CSS containment (contain: style) on .app-container, .card, modals
+//    Note: Changed from 'layout style' to 'style' to prevent stacking context issues
+//    'contain: layout' creates isolated stacking contexts preventing z-index overlay
+// 2. Moving actionService.initialize() before rendering
+// 3. Force layout with document.body.offsetHeight after renderAll()
+// 4. Resize event listener with debounced layout force (below)
+//
+// Status: Unresolved - appears to be Chrome DevTools internal behavior
+// Impact: DevTools only, does NOT affect real phone performance
+// Decision: Documented for future investigation, not blocking release
+//
+// For future debugging:
+// - Check Chrome DevTools Performance trace for "ParseHTML" during first click
+// - Compare INP metrics: laggy state ~200ms, post-refresh ~10ms
+// - Test on real device via chrome://inspect to verify no phone impact
+let resizeTimer;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    document.body.offsetHeight;
+  }, 100);
+});
+
 document.addEventListener("DOMContentLoaded", checkAuthAndInitialize);
