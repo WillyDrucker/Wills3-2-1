@@ -30,6 +30,7 @@ import { recalculateCurrentStateAfterLogChange } from "services/workout/workoutP
 import { triggerLetsGoButtonPulse, animateSelectors } from "services/ui/selectorAnimationService.js";
 import { renderConfigHeader } from "features/config-card/config-card.header.index.js";
 import { handleCloseSideNav } from "features/side-nav/side-nav.index.js";
+import { refreshMyDataPageDisplay } from "features/my-data/my-data.index.js";
 import {
   handleConfirmSuperset,
 } from "features/superset-modal/superset-modal.index.js";
@@ -38,6 +39,7 @@ import {
 } from "features/partner-modal/partner-modal.index.js";
 import { handleConfirmReset } from "features/reset-confirmation-modal/reset-confirmation-modal.index.js";
 import { handleConfirmNewWorkout } from "features/new-workout-modal/new-workout-modal.index.js";
+import { markCurrentWorkoutCommitted, updateHistoricalLog, deleteHistoricalLog } from "services/data/historyService.js";
 import {
   handleResetWorkoutDefaults,
   handleResetWorkoutAndClearLogs,
@@ -274,6 +276,8 @@ export function getModalHandlers(coreActions) {
     },
 
     saveMyDataAndReset: () => {
+      // Mark current workout as committed before resetting
+      markCurrentWorkoutCommitted();
       handleConfirmReset();
       // Reset session/logs but keep database entries (saves workout to My Data)
       coreActions.resetSessionAndLogs();
@@ -287,9 +291,163 @@ export function getModalHandlers(coreActions) {
     closeNewWorkoutModal: () => modalService.close(),
 
     confirmNewWorkout: () => {
+      // Mark current workout as committed before resetting
+      markCurrentWorkoutCommitted();
       handleConfirmNewWorkout();
       // Reset session/logs but keep database entries (workout preserved in My Data)
       coreActions.resetSessionAndLogs();
+    },
+
+    // === HISTORY WORKOUT SELECTOR INTERACTION ===
+    // Select a workout session - two-step behavior: close current, then click again to open new
+    // Click-inside-to-close: Clicking anywhere in active selector closes it (except Edit button)
+    selectHistoryWorkout: (event) => {
+      // Prevent default to avoid view jumping
+      event.preventDefault();
+
+      // Check if Edit button was clicked - if so, let it handle the action
+      if (event.target.closest(".history-edit-button")) {
+        return; // Edit button handles its own logic
+      }
+
+      const selector = event.target.closest(".workout-session-selector");
+      if (selector) {
+        const workoutId = Number(selector.dataset.workoutId);
+
+        // TWO-STEP BEHAVIOR: If there's already an active selection (any selector)
+        // First click closes it, user must click again to open new selector
+        if (appState.ui.selectedHistoryWorkoutId !== null) {
+          // If clicking the already-active selector, close it (click-inside-to-close)
+          // If clicking a different selector, also close the current one (two-step)
+          appState.ui.selectedHistoryWorkoutId = null;
+        } else {
+          // No active selection, open this selector
+          appState.ui.selectedHistoryWorkoutId = workoutId;
+        }
+
+        // Fast re-render without database reload
+        refreshMyDataPageDisplay();
+      }
+    },
+
+    // Cancel workout selection - closes popped selector
+    cancelHistorySelection: () => {
+      appState.ui.selectedHistoryWorkoutId = null;
+      // Fast re-render without database reload
+      refreshMyDataPageDisplay();
+    },
+
+    // === EDIT WORKOUT MODAL ===
+    // Triggered from Edit button on active workout selector
+    // Opens modal for editing historical workout logs
+    openEditWorkoutModal: (event) => {
+      // Prevent default to avoid scroll jumping
+      event.preventDefault();
+      event.stopPropagation();
+
+      const button = event.target.closest(".history-edit-button");
+      if (button) {
+        const workoutId = Number(button.dataset.workoutId);
+        appState.ui.selectedWorkoutId = workoutId;
+
+        // Clear history selector selection when opening modal
+        appState.ui.selectedHistoryWorkoutId = null;
+
+        // Open modal (scroll preservation handled by refreshMyDataPageDisplay)
+        modalService.open("editWorkout");
+      }
+    },
+
+    closeEditWorkoutModal: () => {
+      appState.ui.selectedWorkoutId = null;
+      // Close modal (scroll preservation handled by refreshMyDataPageDisplay)
+      modalService.close();
+    },
+
+    cancelWorkoutLog: (event) => {
+      // Close the details element (edit panel)
+      const details = event.target.closest("details");
+      if (details) details.open = false;
+    },
+
+    updateWorkoutLog: (event) => {
+      const button = event.target;
+      const workoutId = Number(button.dataset.workoutId);
+      const setNumber = Number(button.dataset.setNumber);
+      const supersetSide = button.dataset.supersetSide || "";
+
+      // Find the details element (parent of edit panel)
+      const details = button.closest("details");
+      if (!details) return;
+
+      // Find the input fields
+      const logIndex = `${workoutId}-${setNumber}-${supersetSide || "normal"}`;
+      const repsInput = document.getElementById(`reps-edit-${logIndex}-input`);
+      const weightInput = document.getElementById(`weight-edit-${logIndex}-input`);
+
+      if (!repsInput || !weightInput) {
+        console.error("Input fields not found for log:", logIndex);
+        return;
+      }
+
+      const reps = Number(repsInput.value);
+      const weight = Number(weightInput.value);
+
+      // Update the log in history
+      updateHistoricalLog(workoutId, setNumber, supersetSide, reps, weight);
+
+      // Close the edit panel
+      details.open = false;
+
+      // Re-render to show updated values
+      coreActions.renderAll();
+    },
+
+    deleteWorkoutLog: (event) => {
+      const button = event.target;
+      const workoutId = Number(button.dataset.workoutId);
+      const setNumber = Number(button.dataset.setNumber);
+      const supersetSide = button.dataset.supersetSide || "";
+
+      // Store context for Delete Log modal
+      appState.ui.deleteLogContext = {
+        workoutId,
+        setNumber,
+        supersetSide,
+      };
+
+      // Open Delete Log confirmation modal
+      modalService.open("deleteLog");
+    },
+
+    closeDeleteLogModal: () => {
+      appState.ui.deleteLogContext = null;
+      modalService.close();
+    },
+
+    confirmDeleteLog: () => {
+      const context = appState.ui.deleteLogContext;
+      if (!context) {
+        console.error("Delete log context not found");
+        return;
+      }
+
+      const { workoutId, setNumber, supersetSide } = context;
+
+      // Delete the log (returns true if entire workout was deleted)
+      const wasWorkoutDeleted = deleteHistoricalLog(workoutId, setNumber, supersetSide);
+
+      // Close Delete Log modal
+      appState.ui.deleteLogContext = null;
+      modalService.close();
+
+      // If entire workout was deleted, also close Update History modal
+      if (wasWorkoutDeleted) {
+        appState.ui.selectedWorkoutId = null;
+      }
+
+      // Re-render to show updated state
+      coreActions.renderAll();
     },
 
     // === VIDEO PLAYER ===

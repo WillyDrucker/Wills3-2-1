@@ -148,23 +148,24 @@
   margin-bottom: var(--space-m); /* 16px to buttons */
 }
 
-/* === BALANCED TEXT LAYOUT === */
-/* Two-line stacked text layout for profile selectors */
-.partner-card .selector-content.balanced-text {
+/* === WRAP THEN TRUNCATE PATTERN === */
+/* Hybrid layout: wraps to multiple lines first, then truncates each line if needed */
+.partner-card .selector-content.wrap-then-truncate {
   display: block;
   text-align: center;
   padding: var(--selector-multiline-padding-top) 0 var(--selector-multiline-padding-bottom) 0;
   line-height: var(--selector-multiline-line-height);
+  white-space: normal; /* Allow wrapping between spans */
+  overflow: hidden; /* Enable truncation context */
 }
 
-.partner-card .selector-content.balanced-text span {
-  display: block;
-  margin: 0;
-  padding: 0;
-}
-
-.partner-card .selector-content.balanced-text span:first-child {
-  margin-bottom: var(--selector-multiline-line-gap);
+.partner-card .selector-content.wrap-then-truncate span {
+  display: inline-block; /* Inline flow (wraps naturally), block formatting (allows truncation) */
+  max-width: 100%; /* Full width when wrapped to own line */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; /* Truncate within each span if too long */
+  vertical-align: bottom; /* Align baselines when on same line */
 }
 
 /* === USER PROFILES === */

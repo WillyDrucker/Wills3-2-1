@@ -27,6 +27,7 @@ export function getWorkoutCalendarHTML() {
 
   return `
     <div class="workout-log-content-area history-content-area">
+        <div class="modal-divider history-divider"></div>
         <div class="calendar-view-container history-calendar ${containerClass}">
             ${daySectionsHtml}
         </div>

@@ -79,9 +79,9 @@ export function buildExerciseBlocksHTML(orderedExercises, session, hasWideResult
 
           const totalSets = firstLog.exercise.sets;
 
-          const setInfoHtml = `<span class="log-item-set-info-value history-set-value data-highlight ${session.sessionColorClass}">${log.setNumber}</span>
-              <span class="log-item-set-info-label history-set-label">&nbsp;of&nbsp;</span>
-              <span class="log-item-set-info-value history-set-value data-highlight ${session.sessionColorClass}">${totalSets}</span>`;
+          /* Add "Set: " prefix for committed workouts (inside selector) */
+          const setPrefix = session.isCommitted ? `<span class="log-item-set-info-label history-set-label text-on-surface-medium">Set: </span>` : '';
+          const setInfoHtml = `${setPrefix}<span class="log-item-set-info-value history-set-value data-highlight ${session.sessionColorClass}">${log.setNumber}</span><span class="log-item-set-info-label history-set-label"> of </span><span class="log-item-set-info-value history-set-value data-highlight ${session.sessionColorClass}">${totalSets}</span>`;
 
           return `<div class="history-exercise-set-row history-set-row">
                     <div class="history-set-left">${setInfoHtml}</div>

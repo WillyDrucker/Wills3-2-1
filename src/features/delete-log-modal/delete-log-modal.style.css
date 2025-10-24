@@ -1,0 +1,19 @@
+/* ==========================================================================
+   DELETE LOG MODAL - Styling
+
+   Extends confirmation modal base styles for Delete Log modal.
+   Uses standard confirmation modal pattern with red Yes button.
+
+   Architecture:
+   - Extends _confirmation-modals.css base classes
+   - Uses button-rest-skip class for red Yes button
+   - 16px spacing rhythm throughout
+
+   Dependencies: _confirmation-modals.css, _variables.css
+   Used by: Delete Log modal (delete-log-modal.template.js)
+   ========================================================================== */
+
+/* === DELETE LOG MODAL === */
+/* Uses base confirmation modal styles - no additional styling needed */
+/* All layout handled by _confirmation-modals.css */
+/* Button styling handled by _action-button-groups.css */

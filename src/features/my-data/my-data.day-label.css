@@ -1,0 +1,88 @@
+/* ==========================================================================
+   MY DATA - Day Label Styling
+
+   Two-line label system for workout sessions in My Data calendar view.
+   Line 1 shows day/date (once per day), Line 2 shows body part/completion (per workout).
+
+   Architecture: Two-line label system
+   - Line 1 (Day/Date): "Thursday   Oct 23" - shown once per day (first workout only)
+     * 1.25rem, 600 weight - matches "Current Plan" label
+     * 16px from divider, 7px to Line 2
+   - Line 2 (Body Part/Completion): "Chest          Completed: 9:45 AM" - shown for each workout
+     * 1rem, 600 weight - matches exercise name styling
+     * 7px to selector below
+     * For subsequent same-day workouts: 16px from previous selector
+
+   Dependencies: _variables.css (font-size-h2, font-size-body-m, colors)
+   Used by: my-data.templates.calendarDay.js (two-line label generation)
+   ========================================================================== */
+
+/* === LINE 1: DAY/DATE HEADER === */
+/* Shown once per day for first workout */
+.history-day-date-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0;
+  line-height: 1;
+  /* Margin controlled by history-spacing.css */
+}
+
+/* Day name text */
+.history-day-date-text {
+  font-size: var(--font-size-h2); /* 1.25rem */
+  font-weight: 600;
+  line-height: 1;
+  color: var(--on-surface-light);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+/* Date text - right aligned */
+.history-day-date-date {
+  font-size: var(--font-size-h2); /* 1.25rem */
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+/* === LINE 2: BODY PART / COMPLETION LINE === */
+/* Shown for every workout */
+.history-body-part-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0;
+  line-height: 1;
+  /* Margin controlled by history-spacing.css */
+}
+
+/* Body part text - left aligned */
+.history-body-part-text {
+  font-size: var(--font-size-body-m); /* 1rem */
+  font-weight: 600;
+  line-height: 1;
+  color: var(--on-surface-light);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+/* Completion timestamp - right aligned */
+.history-completion-text {
+  font-size: var(--font-size-body-m); /* 1rem */
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+/* Completion label "Completed:" - gray */
+.history-completion-label {
+  color: var(--on-surface-medium) !important; /* Informational gray */
+}
+
+/* Completion timestamp value - green */
+.history-completion-value {
+  color: var(--log-green) !important; /* Green for logged/completed state */
+}

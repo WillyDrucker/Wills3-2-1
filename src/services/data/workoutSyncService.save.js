@@ -67,6 +67,9 @@ async function performSave(workout) {
       session_color_class: workout.sessionColorClass,
       body_part: workout.bodyPart,
       body_part_color_key: workout.bodyPartColorKey,
+      body_part_2_color_key: workout.bodyPart2ColorKey || null,
+      is_committed: workout.isCommitted || false,
+      completed_timestamp: workout.completedTimestamp || null,
     };
 
     if (existingWorkout) {

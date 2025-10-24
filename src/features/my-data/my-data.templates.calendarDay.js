@@ -4,6 +4,15 @@
    Processes a single day for calendar view: finds workouts, groups exercises,
    orders by type (normal/left/right superset), builds HTML sections.
 
+   Architecture: Calendar day rendering - Two-line label system
+   - Line 1 (Day/Date): "Thursday   Oct 23" - shown once per day (first workout only)
+   - Line 2 (Body Part/Completion): "Chest          Completed: 9:45 AM" - shown for each workout
+   - All workout sessions wrapped in blue border selector with black background (no headers inside)
+   - Workouts sorted chronologically (oldest first)
+   - Unlogged workouts use muted border (is-muted class)
+   - Sandwich dividers separate days
+   - Handles Superset mode with dual color-coded body parts
+
    Dependencies: appState, colorCodeMap, isDateInFuture, buildExerciseBlocksHTML
    Used by: my-data.templates.calendarView.js
    ========================================================================== */
@@ -13,17 +22,33 @@ import { colorCodeMap } from "config";
 import { isDateInFuture } from "utils";
 import { buildExerciseBlocksHTML } from "./my-data.templates.calendarExercise.js";
 
+/* Helper function to format timestamp as 12-hour time with AM/PM */
+function formatCompletionTime(timestamp) {
+  if (!timestamp) return "";
+
+  const date = new Date(timestamp);
+  let hours = date.getHours();
+  const minutes = date.getMinutes();
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+
+  hours = hours % 12;
+  hours = hours ? hours : 12; // 0 should be 12
+  const minutesStr = minutes < 10 ? '0' + minutes : minutes;
+
+  return `${hours}:${minutesStr} ${ampm}`;
+}
+
 export function buildDaySectionHTML(day, index, daysOfWeek, hasWideResults) {
   const dayStart = day.date.setHours(0, 0, 0, 0);
   const dayEnd = day.date.setHours(23, 59, 59, 999);
 
-  /* Find all workout sessions for this day */
-  const workoutsForDay = appState.user.history.workouts.filter(
-    (session) => {
+  /* Find all workout sessions for this day, sorted chronologically (oldest first) */
+  const workoutsForDay = appState.user.history.workouts
+    .filter((session) => {
       const sessionDate = new Date(session.timestamp).getTime();
       return sessionDate >= dayStart && sessionDate <= dayEnd;
-    }
-  );
+    })
+    .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
 
   let dayContentHtml = "";
   let isPlaceholder = true;
@@ -31,25 +56,43 @@ export function buildDaySectionHTML(day, index, daysOfWeek, hasWideResults) {
   if (workoutsForDay.length > 0) {
     isPlaceholder = false;
 
-    /* Process each workout session */
-    dayContentHtml = workoutsForDay
-      .map((session, sessionIndex) => {
-        /* Color coding for body parts */
-        const bodyPartColorClass =
-          colorCodeMap[session.bodyPartColorKey] || "text-plan";
-        const bodyPart2ColorClass =
-          colorCodeMap[session.bodyPart2ColorKey] || "text-warning";
+    /* Helper to generate day/date header (shown once per day) */
+    const generateDayDateHeader = () => {
+      return `<div class="history-day-date-header">
+        <span class="history-day-date-text">${day.dayName}</span>
+        <span class="history-day-date-date data-highlight text-plan">${day.dateString}</span>
+      </div>`;
+    };
 
-        /* Build header with color-coded body parts */
-        let sessionHeaderHtml;
-        if (session.bodyPart.includes("&")) {
-          const [part1, part2] = session.bodyPart.split("&");
-          sessionHeaderHtml = `<div class="day-name day-workout-name">${
-            day.dayName
-          }: <span class="${bodyPartColorClass}">${part1.trim()}</span><span class="text-on-surface-medium"> & </span><span class="${bodyPart2ColorClass}">${part2.trim()}</span></div>`;
-        } else {
-          sessionHeaderHtml = `<div class="day-name day-workout-name">${day.dayName}: <span class="${bodyPartColorClass}">${session.bodyPart}</span></div>`;
-        }
+    /* Helper to generate body part line with completion time (shown for each workout) */
+    const generateBodyPartLine = (session) => {
+      const bodyPartColorClass = colorCodeMap[session.bodyPartColorKey] || "text-plan";
+      const bodyPart2ColorClass = colorCodeMap[session.bodyPart2ColorKey] || "text-warning";
+      const completionTime = formatCompletionTime(session.completedTimestamp);
+
+      let bodyPartText;
+      if (session.bodyPart.includes("&")) {
+        const [part1, part2] = session.bodyPart.split("&");
+        bodyPartText = `<span class="${bodyPartColorClass}">${part1.trim()}</span><span class="text-on-surface-medium"> & </span><span class="${bodyPart2ColorClass}">${part2.trim()}</span>`;
+      } else {
+        bodyPartText = `<span class="${bodyPartColorClass}">${session.bodyPart}</span>`;
+      }
+
+      return `<div class="history-body-part-line">
+        <span class="history-body-part-text">${bodyPartText}</span>
+        <span class="history-completion-text"><span class="history-completion-label">Completed:</span> <span class="history-completion-value">${completionTime}</span></span>
+      </div>`;
+    };
+
+    /* Process each workout session - first gets day/date header, all get body part line */
+    const workoutBlocksHtml = workoutsForDay
+      .map((session, sessionIndex) => {
+
+        /* Generate day/date header only for first workout */
+        const dayDateHeaderHtml = sessionIndex === 0 ? generateDayDateHeader() : '';
+
+        /* Generate body part line for this workout */
+        const bodyPartLineHtml = generateBodyPartLine(session);
 
         /* Group exercises by name with metadata */
         const exercisesGrouped = session.logs.reduce((acc, log) => {
@@ -94,38 +137,67 @@ export function buildDaySectionHTML(day, index, daysOfWeek, hasWideResults) {
         /* Build exercise HTML blocks */
         const exerciseBlocksHtml = buildExerciseBlocksHTML(orderedExercises, session, hasWideResults);
 
-        /* Add session divider if multiple workouts in same day */
-        const sessionSeparator =
-          sessionIndex < workoutsForDay.length - 1
-            ? '<hr class="history-session-divider">'
-            : "";
+        /* Add data attributes for committed workouts (interactive) */
+        const dataAttrs = session.isCommitted
+          ? `data-workout-id="${session.id}" data-action="selectHistoryWorkout"`
+          : '';
 
-        return `<div class="day-card-header history-day-header">
-                    ${sessionHeaderHtml}
-                    <span class="date-text history-date-text data-highlight text-plan">${day.dateString}</span>
-                </div>
-                <div class="exercise-list-group history-exercise-list">
+        /* Render Cancel/Edit buttons when selector is active */
+        const isActive = appState.ui.selectedHistoryWorkoutId === session.id;
+        const hasActiveSelection = appState.ui.selectedHistoryWorkoutId !== null;
+        const isMuted = hasActiveSelection && !isActive && session.isCommitted;
+
+        const activeClass = isActive ? ' is-active' : '';
+        const mutedClass = isMuted ? ' is-muted' : '';
+        const buttonsHtml = isActive && session.isCommitted
+          ? `<div class="history-edit-buttons">
+               <button class="history-cancel-button" data-action="cancelHistorySelection">Cancel</button>
+               <button class="history-edit-button" data-action="openEditWorkoutModal" data-workout-id="${session.id}">Edit</button>
+             </div>`
+          : '';
+
+        /* Return day/date header (first only) + body part line + workout selector */
+        return `${dayDateHeaderHtml}${bodyPartLineHtml}<div class="workout-session-selector${activeClass}${mutedClass}" ${dataAttrs}>
+                  <div class="exercise-list-group history-exercise-list">
                     ${exerciseBlocksHtml}
-                </div>
-                ${sessionSeparator}`;
+                  </div>
+                  ${buttonsHtml}
+                </div>`;
+
       })
       .join("");
+
+    /* All workout blocks (label + selector pairs) combined */
+    dayContentHtml = workoutBlocksHtml;
   } else {
-    /* Show placeholder for empty days */
-    const dayHeaderHtml = `<div class="day-card-header history-day-header"><div class="day-name day-empty-name">${day.dayName}</div><span class="date-text history-date-text data-highlight text-plan">${day.dateString}</span></div>`;
+    /* Show placeholder for empty days - day/date header + body part line + muted selector */
+    const dayDateHeaderHtml = `<div class="history-day-date-header">
+      <span class="history-day-date-text">${day.dayName}</span>
+      <span class="history-day-date-date data-highlight text-plan">${day.dateString}</span>
+    </div>`;
+
     const placeholderText = isDateInFuture(day.date)
       ? "Remaining Workout Day"
       : "No Workouts Logged";
+
+    const bodyPartLineHtml = `<div class="history-body-part-line">
+      <span class="history-body-part-text"></span>
+      <span class="history-completion-text"></span>
+    </div>`;
+
     dayContentHtml = `
-        ${dayHeaderHtml}
-        <p class="day-card-placeholder-text history-placeholder-text">${placeholderText}</p>
+        ${dayDateHeaderHtml}
+        ${bodyPartLineHtml}
+        <div class="workout-session-selector is-muted">
+          <p class="day-card-placeholder-text history-placeholder-text">${placeholderText}</p>
+        </div>
     `;
   }
 
-  /* Day divider between days */
+  /* Sandwich divider between days */
   const separator =
     index < daysOfWeek.length - 1
-      ? '<div class="modal-divider history-day-divider"></div>'
+      ? '<div class="modal-divider history-divider"></div>'
       : "";
 
   return `<div class="day-section history-day-section">${dayContentHtml}</div>${separator}`;

@@ -57,16 +57,13 @@ export async function handleClearDailyData() {
   }
 }
 
-export async function renderMyDataPage() {
-  // Load workout history from database
-  if (appState.auth?.isAuthenticated) {
-    const { workouts } = await loadWorkoutsFromDatabase();
-    appState.user.history.workouts = workouts;
-  }
+export function refreshMyDataPageDisplay() {
+  // Preserve scroll position before re-rendering
+  const mainContent = document.getElementById("main-content");
+  const savedScrollPosition = mainContent ? mainContent.scrollTop : 0;
 
-  ui.configSection.innerHTML = "";
+  // Re-render template without reloading from database (fast, for selector interactions)
   ui.mainContent.innerHTML = getMyDataPageTemplate();
-  ui.workoutFooter.innerHTML = "";
 
   /* 🔒 CEMENT: Direct week navigation wiring (no reliance on external delegates) */
   const container = ui.mainContent;
@@ -80,5 +77,48 @@ export async function renderMyDataPage() {
   const clearButton = container.querySelector('.clear-daily-data-button');
   if (clearButton) {
     clearButton.addEventListener('click', handleClearDailyData);
+  }
+
+  // Add click-outside-to-close listener for active workout selectors
+  setupOutsideClickListener();
+
+  // Restore scroll position after re-rendering (preserves position during modal open/close)
+  if (mainContent && savedScrollPosition > 0) {
+    mainContent.scrollTop = savedScrollPosition;
+  }
+}
+
+export async function renderMyDataPage() {
+  // Load workout history from database (slow, for initial load and data refresh)
+  if (appState.auth?.isAuthenticated) {
+    const { workouts } = await loadWorkoutsFromDatabase();
+    appState.user.history.workouts = workouts;
+  }
+
+  ui.configSection.innerHTML = "";
+  refreshMyDataPageDisplay();
+  ui.workoutFooter.innerHTML = "";
+}
+
+// Click outside active selector to close it
+function setupOutsideClickListener() {
+  // Remove any existing listener first
+  document.removeEventListener('click', handleOutsideClick);
+
+  // Add new listener
+  document.addEventListener('click', handleOutsideClick);
+}
+
+function handleOutsideClick(event) {
+  // Only handle if there's an active selection
+  if (!appState.ui.selectedHistoryWorkoutId) return;
+
+  // Check if click is outside all workout selectors
+  const clickedSelector = event.target.closest('.workout-session-selector');
+
+  // If clicked outside all selectors, close the active one
+  if (!clickedSelector) {
+    appState.ui.selectedHistoryWorkoutId = null;
+    refreshMyDataPageDisplay();
   }
 }

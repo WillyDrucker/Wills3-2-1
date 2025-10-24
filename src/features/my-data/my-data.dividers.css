@@ -1,42 +1,31 @@
 /* ==========================================================================
    MY DATA - Dividers
 
-   Day dividers with 6px sandwich effect and session dividers with 2px line.
-   Consistent spacing between sections.
+   Sandwich dividers separate days in calendar view with 6px visual effect.
+   Session dividers removed - selectors provide separation for same-day workouts.
 
    🔒 CEMENT: Sandwich shadow effect
    - Box-shadow creates 6px visual height (2px line + 2px shadows each side)
    - Spacing handled in my-data.history-spacing.css due to reset cascade
+   - Single unified class for all sandwich dividers (top and between days)
 
    Dependencies:
    Global: None (uses hard-coded values for visual effect)
    Parent: my-data.style.css, my-data.history-spacing.css (spacing)
 
-   Used by: History calendar view (day and session separators)
+   Used by: History calendar view (day separators)
    ========================================================================== */
 
-/* === DAY DIVIDER === */
-/* 6px sandwich effect between days */
-.history-day-divider {
+/* === HISTORY DIVIDERS === */
+/* 6px sandwich effect divider - used above calendar and between days */
+.history-divider {
   height: 2px;
   width: 100%;
-  margin: 0;
+  margin: 0; /* Spacing handled in my-data.history-spacing.css */
   padding: 0;
   border: none;
   background: #000000;
-  box-shadow: 
+  box-shadow:
     0 -2px 0 0 rgba(255, 255, 255, 0.1),
     0 2px 0 0 rgba(255, 255, 255, 0.1);
-  /* Spacing handled in main file due to reset cascade */
-}
-
-/* === SESSION DIVIDER === */
-/* Simple 2px line between multiple workouts in same day */
-.history-session-divider {
-  height: 2px;
-  width: 100%;
-  margin: 13px 0 15px 0; /* Creates visual 16px both sides */
-  padding: 0;
-  border: none;
-  background: rgba(255, 255, 255, 0.1);
 }

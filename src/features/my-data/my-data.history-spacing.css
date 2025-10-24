@@ -5,22 +5,26 @@
    reset pattern. All elements reset to margin: 0, padding: 0, then selectively
    restored with !important flags to override the reset.
 
-   Architecture: Calendar view with workout history
+   Architecture: Calendar view with workout history - Two-line label system
+   - Line 1 (Day/Date): 16px from divider, 7px to Line 2 (shown once per day)
+   - Line 2 (Body Part/Completion): 7px to selector (shown for each workout)
+   - Subsequent same-day workouts: Line 2 has 16px from previous selector
+   - All workout sessions wrapped in .workout-session-selector (9px internal padding)
+   - Sandwich dividers separate days (16px visual spacing top)
    - History title: 16px from card top, 7px to selector (managed in my-data.header.css)
    - Week navigator: 16px from selector, 16px to calendar (managed in my-data.header.css)
-   - Day headers: 7px spacing to exercises
-   - Exercise blocks: 16px spacing between
-   - Set rows: 7px spacing between
-   - Dividers: 16px visual spacing
+   - Exercise blocks: 16px spacing between (inside selectors)
+   - Set rows: 7px spacing between, 50px indent (inside selectors)
 
    🔒 CEMENT: Nuclear reset pattern with !important overrides
    - All elements reset to 0 (margin, padding, line-height)
    - Header elements (title, navigator) use !important to override nuclear reset
-   - Fine-tuned spacing accounts for font metrics and anti-aliasing:
+   - Fine-tuned spacing accounts for font metrics and line-height:
      * History title: 4px margin-bottom = 7px visual to selector
      * Week navigator: 15px margin-bottom = 16px visual to calendar content
      * Day headers: 3px margin = 7px visual with line-height
      * Exercise blocks: 12px margin = 16px visual with 4px line-height
+     * All direct values (no calc() with negative numbers)
 
    Dependencies:
    Global: _variables.css (--header-margin-bottom, --history-exercise-spacing,
@@ -58,64 +62,75 @@
   margin-bottom: 15px !important; /* 15px = 16px visual to calendar content */
 }
 
-/* Day headers - first exercise should be 7px below */
-.history-card .history-day-header {
-  margin-bottom: var(--history-exercise-spacing); /* 3px + line-height = 7px visual */
+/* === LINE 1: DAY/DATE HEADER === */
+/* Shown once per day (first workout only) - 16px from divider, 7px to Line 2 */
+.history-card .history-day-date-header {
+  margin-top: 16px !important; /* 16px from divider */
+  margin-bottom: 3px !important; /* 3px = 7px visual to body part line */
 }
 
-/* When day header is followed by placeholder instead of exercises */
-.history-card .history-day-header:has(+ .history-placeholder-text) {
-  margin-bottom: calc(var(--space-m) - 4px); /* 12px = 16px visual to placeholder */
+/* === LINE 2: BODY PART / COMPLETION LINE === */
+/* First body part line (after day/date header) - 7px to selector */
+.history-card .history-body-part-line {
+  margin-top: 0 !important; /* Day/date header provides spacing */
+  margin-bottom: 4px !important; /* 4px = 7px visual to selector */
 }
 
-/* Placeholder text */
-.history-card .history-placeholder-text,
-.history-card .day-card-placeholder-text {
-  margin: 0;
-  margin-bottom: calc(var(--space-m) - 1px); /* 15px + italic = 16px visual to divider */
-  padding: 0; /* Overrides global 40px padding */
+/* Subsequent body part lines (after workout selector) - 16px spacing for multiple same-day workouts */
+.history-card .workout-session-selector + .history-body-part-line {
+  margin-top: 15px !important; /* 15px = 16px visual from previous selector */
 }
 
-/* Last day placeholder (Sunday) - no divider after, so space to card bottom */
-.history-card .history-day-section:last-child .history-placeholder-text {
-  margin-bottom: 0; /* Card padding handles spacing to bottom */
+/* === WORKOUT SELECTORS === */
+/* Workout selector after body part line - spacing handled by Line 2 margin-bottom */
+.history-card .workout-session-selector {
+  margin-top: 0 !important; /* Body part line provides spacing */
+  margin-bottom: 0 !important; /* Next body part line or divider provides spacing */
+}
+
+/* Placeholder text inside workout-session-selector - no margin (padding handles spacing) */
+.history-card .workout-session-selector .history-placeholder-text {
+  margin: 0 !important;
+  padding: 0 !important; /* Overrides global 40px padding */
 }
 
 /* === DIVIDERS === */
-.history-card .history-day-divider {
-  margin-bottom: var(--history-day-header-spacing); /* 17px = 16px visual to next day */
-}
-
-.history-card .history-session-divider {
-  margin: 13px 0 15px 0; /* 16px visual both sides */
+/* All history dividers - uniform 16px visual spacing top */
+.history-card .history-divider {
+  margin: 18px 0 0 0 !important; /* 18px top | 0 bottom (day/date header margin-top controls spacing below) */
 }
 
 /* === EXERCISE BLOCKS === */
 /* 🔒 CEMENT: 16px between exercises */
 .history-card .history-exercise-block {
-  margin: 0 0 calc(var(--space-m) - 4px) 0; /* 12px + 4px line = 16px visual between */
+  margin: 0 0 12px 0; /* 12px + 4px line-height = 16px visual between */
 }
 
-/* Last exercise before divider */
-.history-card .history-exercise-block:last-child {
-  margin-bottom: var(--space-m); /* 16px to divider */
+/* First exercise inside workout-session-selector - negative margin to achieve 9px visual */
+.history-card .workout-session-selector .history-exercise-block:first-child {
+  margin-top: -1px !important; /* Pull up to achieve 9px visual from top border */
 }
 
-/* Adjust when followed by session divider */
-.history-card .history-exercise-list:has(+ .history-session-divider) .history-exercise-block:last-child {
-  margin-bottom: 13px; /* Compensate for session divider margins */
+/* Last exercise inside workout-session-selector - negative margin to achieve 9px visual */
+.history-card .workout-session-selector .history-exercise-block:last-child {
+  margin-bottom: -3px !important; /* Pull up to achieve 9px visual from bottom border */
+}
+
+/* Set rows inside workout-session-selector - 50px indent */
+.history-card .workout-session-selector .history-set-left {
+  margin-left: 41px !important; /* 41px + 9px padding = 50px visual indent */
 }
 
 /* === EXERCISE NAMES === */
 /* 🔒 CEMENT: 7px to first set row */
 .history-card .history-exercise-name {
-  margin: 0 0 calc(var(--space-s) - 4px) 0; /* 3px + 4px line = 7px visual */
+  margin: 0 0 3px 0; /* 3px + 4px line-height = 7px visual */
 }
 
 /* === SET ROWS === */
 /* 🔒 CEMENT: 7px between rows */
 .history-card .history-set-row {
-  margin: 0 0 calc(var(--space-s) - 4px) 0; /* 3px + 4px line = 7px visual */
+  margin: 0 0 3px 0; /* 3px + 4px line-height = 7px visual */
 }
 
 .history-card .history-set-row:last-child {

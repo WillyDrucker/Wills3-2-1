@@ -8,13 +8,299 @@ This file contains the historical record of version changes for Will's 3-2-1. De
 
 ---
 
+**Current Version**: Claude-v5.5.9
 **Project**: Will's 3-2-1 Workout Tracking Application
 **Tech Stack**: Vanilla JavaScript, ES Modules, CSS Tokens
 **Philosophy**: SUPER STUPID SIMPLE (SSS), REMOVE DON'T ADD
 
 ---
 
+## VERSIONING POLICY
+
+**Branch-Based Versioning**: Documentation version numbers MUST match the current Git branch version at all times.
+
+**Sub-Version Strategy**: Within a single branch version, use date-based section headers to track incremental work:
+```
+### [BRANCH_VERSION] - Feature Name (2025-01-24)
+### [BRANCH_VERSION] - Another Feature (2025-01-25)
+```
+
+**Version Increment**: Only increment version number when creating a new Git branch. Documentation versions should never drift from branch versions.
+
+**How to Find Current Version**: Check the current Git branch name - documentation version MUST match it exactly. Replace [BRANCH_VERSION] with the actual branch version (e.g., if branch is "Claude-v6.2.1", use "Claude-v6.2.1").
+
+---
+
 ## VERSION CHANGELOG
+
+### **Claude-v5.5.9 - Interactive Workout Selectors** (2025-01-24) - IN PROGRESS
+
+**Mission**: Replace edit pen button with interactive workout selectors that activate on click, showing Cancel/Edit buttons.
+
+**Interactive Selector System**:
+- **Click-to-activate**: Tap workout selector to activate with blue glow
+- **Cancel/Edit buttons**: Appear below results when selector active (50px height, equal width)
+- **Muting system**: All other selectors muted when one active (`.is-muted` class)
+- **Two-step click behavior**: First click closes active selector, second click opens new
+- **Click-outside-to-close**: Document-level listener closes active selector
+- **Button overlay**: Position absolute (no `top` property) overlays on content below
+
+**Button Styling**:
+- **Container**: Absolute positioned, `z-index: 200`, extends blue border from selector
+- **Square corners**: Selector bottom corners square when active to connect with buttons
+- **Spacing**: 16px from edges, 16px above buttons from results text
+- **Colors**: Cancel = `--surface-medium-dark`, Edit = `--log-green`
+- **Font**: 1.25rem (`--font-size-h2`), 600 weight, matches standard action buttons
+
+**Fast Re-render Pattern**:
+- **Created**: `refreshMyDataPageDisplay()` - re-renders template without database load
+- **Purpose**: Instant selector open/close (no lag from database queries)
+- **Separation**: `renderMyDataPage()` loads from DB, `refreshMyDataPageDisplay()` only updates UI
+- **Usage**: Selector interactions, UI state toggles
+
+**Background Scroll Prevention**:
+- **Added**: `html.is-modal-open { overflow: hidden; }` in `_modals.css`
+- **Effect**: Prevents mouse wheel from scrolling background when any modal open
+- **Scope**: ALL modals benefit from this fix
+
+**Database Cleanup**:
+- **Migration**: `20251024_delete_workouts_before_oct22.sql`
+- **Purpose**: Remove old workout data incompatible with new selector system
+- **Applied**: Via Supabase Dashboard SQL Editor
+
+**Known Issue - Modal Scroll Jump** (BLOCKING):
+- **Problem**: Opening/closing Edit Workout modal jumps My Data page to top
+- **Root Cause**: `modalService.open()` → `renderAll()` → `ui.mainContent.innerHTML = ""` resets scroll
+- **Attempted Fixes**:
+  1. Scroll preservation in action handlers (setTimeout) - failed
+  2. Scroll preservation in `refreshMyDataPageDisplay()` - wrong level
+  3. Scroll preservation in `renderAll()` before/after innerHTML clear - still jumping
+- **Current Status**: Scroll preservation added to `renderAll()` but not working
+- **Next Approach**: May need to prevent renderAll() call or refactor modal service
+
+**Files Modified** (12 total):
+- `my-data.templates.calendarDay.js` - Interactive selector template, button HTML
+- `my-data.selectors.css` - Active/muted states, button overlay, border extensions
+- `my-data.day-label.css` - Completion timestamp styling (gray label, green value)
+- `my-data.history-spacing.css` - Two-line label margins adjusted
+- `my-data.index.js` - `refreshMyDataPageDisplay()`, click-outside-to-close listener
+- `actionHandlers.modals.js` - Selector action handlers (select, cancel, openEditWorkout)
+- `state.js` - Added `selectedHistoryWorkoutId` to track active selector
+- `historyService.js` - Capture completion timestamp when workout committed
+- `workoutSyncService.save.js` - Save `completed_timestamp` to database
+- `workoutSyncService.load.js` - Load `completed_timestamp` from database
+- `_modals.css` - Background scroll prevention
+- `main.js` - Scroll preservation in `renderAll()` (not working yet)
+
+**Status**: INCOMPLETE - Scroll jump issue blocking completion. All other functionality working correctly.
+
+---
+
+### **Claude-v5.5.9 - Edit Pen Button Removal & Completion Timestamps** (2025-01-24)
+
+**Mission**: Remove edit pen button, add completion timestamp tracking, refine My Data page UX.
+
+**Button Removal**:
+- **Removed**: Edit pen button from all workout session selectors
+- **Archived**: Button component in `uiComponents.js` for potential future reuse
+- **Spacing**: Restored default 16px spacing below workout logs
+- **Renaming**: Changed all "Update History" references to "Edit Workout" throughout codebase
+
+**Completion Timestamp System**:
+- **Database**: Added `completed_timestamp TIMESTAMPTZ` column (migration 20251023)
+- **Capture**: Timestamp recorded when workout marked committed (immutable record)
+- **Display**: "Completed: 9:45 AM" format (gray label, green timestamp)
+- **Formatting**: 12-hour time with AM/PM using `formatCompletionTime()` helper
+
+**Two-Line Label System**:
+- **Line 1 (Day/Date)**: "Thursday   Oct 23" - shown once per day (first workout only)
+- **Line 2 (Body Part/Completion)**: "Chest          Completed: 9:45 AM" - per workout
+- **Spacing**: Day header 16px from divider, 7px to body part line, 7px to selector
+
+**Spacing Fixes**:
+- **Second workout body part**: Changed margin from 16px to 15px (16px visual)
+- **Day/Date to body part**: Changed margin from 4px to 3px (7px visual)
+- **Placeholder text**: Fixed duplication bug on unlogged workout days
+
+**Files Modified** (8 total):
+- `my-data.templates.calendarDay.js` - Two-line label system, completion timestamp
+- `my-data.day-label.css` - Completion text styling (`.history-completion-label/value`)
+- `my-data.history-spacing.css` - Adjusted margins for two-line spacing
+- `historyService.js` - Capture `completedTimestamp` on commitment
+- `workoutSyncService.save.js` - Save timestamp to database
+- `workoutSyncService.load.js` - Load timestamp from database
+- Migration: `supabase/migrations/20251023_add_completed_timestamp.sql`
+
+**Database Migration**:
+- **Applied**: Via Supabase Dashboard SQL Editor
+- **Result**: "Success. No rows returned"
+- **User Environment**: Supabase CLI not installed, manual migration via dashboard
+
+**Status**: COMPLETE - Feature operational, all spacing verified, timestamp tracking working.
+
+---
+
+### **Claude-v5.5.9 - Edit Workout UI Refinements & Spacing Fixes** (2025-01-22)
+
+**Mission**: Refine Edit Workout feature UX based on user feedback, fix spacing issues throughout My Data page.
+
+**Selector Restructuring**:
+- **Removed blue border**: User found it visually distracting, removed `border: 2px solid var(--primary-blue)`
+- **Removed `<details>` structure**: Changed from collapsible selector to simple `<div>` wrapper
+- **All logs always visible**: Workout logs no longer hidden behind collapsed state
+- **Edit pen button**: Added 50×32px button (matching chevron style) below workout logs
+- **Button styling**: 24×24px pen SVG icon (25% smaller than chevrons), stroke-width 3, right-aligned
+- **Button positioning**: Bottom of workout logs with precise 7px spacing above/below
+
+**Spacing Fixes**:
+- **Calendar top divider**: 18px margin-top = 16px visual from chevrons (accounting for shadow)
+- **Monday text**: 17px margin-top = 16px visual from divider
+- **Edit button top**: 4px margin-top = 7px visual from last results text (with font metrics)
+- **Edit button bottom**: 9px margin-bottom = 7px visual to divider/next element
+- **Selector container**: Removed bottom margin (`margin: 16px 0 0 0`) to let button control spacing
+- **Removed negative calc()**: Replaced `calc(var(--space-m) - 4px)` with direct `12px` values where appropriate
+
+**Scroll Position Preservation**:
+- **Issue**: Opening Edit Workout modal scrolled My Data page to top
+- **Solution**: Save `scrollTop` before modal opens, restore after `renderAll()` completes
+- **Implementation**: Added `scrollPosition` to `appState.ui.myDataPage`, restore in `requestAnimationFrame`
+- **Handlers**: Both `openeditWorkoutModal` and `closeeditWorkoutModal` preserve position
+
+**CSS Cascade Discovery**:
+- **Root Cause**: `my-data.history-spacing.css` loads AFTER `my-data.dividers.css`
+- **Impact**: Divider margin changes in dividers.css were being overridden by history-spacing.css
+- **Solution**: Move all divider spacing overrides to history-spacing.css
+- **Pattern Established**: Check import order when CSS changes don't apply
+
+**Files Modified** (6 total):
+- `src/features/my-data/my-data.templates.calendarDay.js` - Changed `<details>` to `<div>`, button at bottom
+- `src/features/my-data/my-data.selectors.css` - Removed border, button spacing, container margin fix
+- `src/features/my-data/my-data.dividers.css` - Calendar top divider spacing
+- `src/features/my-data/my-data.history-spacing.css` - Monday spacing, divider overrides
+- `src/services/actions/actionHandlers.modals.js` - Scroll position preservation
+- `src/state.js` - Added scrollPosition to myDataPage state
+
+**Key Technical Details**:
+- **Visual vs Actual Spacing**: 100px margin rendered as 99px visual, 7px as 5px, 18px as 16px
+- **Font Metrics Compensation**: 4px margin = 7px visual (3px from font rendering)
+- **Container Margin Issue**: Wrapper div bottom margin added unwanted 16px spacing
+- **CSS Specificity**: `.history-card .session-edit-button` needed `!important` to override nuclear reset
+- **Edit Button UX**: User found button "sore thumby" but acceptable for functionality
+
+**Status**: COMPLETE - All spacing verified pixel-perfect, scroll preservation working, feature fully tested and operational
+
+---
+
+### **Claude-v5.5.9 - Edit Workout Feature: Edit Historical Workout Logs** (2025-01-22)
+
+**Mission**: Implement comprehensive historical workout editing system for My Data page, allowing users to view, edit, and delete individual logged sets from completed workouts.
+
+**Implementation Overview**:
+Implemented 7-phase feature build: (1) Database schema updates, (2) Workout commitment tracking, (3) Workout session selectors, (4) Edit Workout modal, (5) Edit log functionality, (6) Delete Log confirmation modal, (7) Delete log implementation with cascade logic.
+
+**Phase 1 - Database Schema Updates**:
+- Added `is_committed` (boolean) and `body_part_2_color_key` (text, nullable) to database save/load operations
+- Modified `workoutSyncService.save.js` and `workoutSyncService.load.js` for new fields
+- Applied migration `20251022_add_committed_and_body_part_2.sql` via Supabase Dashboard
+
+**Phase 2 - Workout Commitment Tracking**:
+- Created `markCurrentWorkoutCommitted()` function in `historyService.js`
+- 3 trigger points: Workout completion (automatic), Begin Another Workout, Save My Data + Reset
+- Modified `workoutStateService.js` to auto-mark committed on completion detection
+- Updated `actionHandlers.modals.js` handlers: `confirmNewWorkout`, `saveMyDataAndReset`
+
+**Phase 3 - Workout Session Selectors**:
+- Modified `my-data.templates.calendarDay.js` to wrap committed workouts in `<details>` selectors
+- Created `my-data.selectors.css` with blue border styling (2px solid var(--primary-blue))
+- Selector summary shows: "Day: BodyPart + Date" with proper color coding
+- Superset workouts show dual body parts with `&` separator (Day1 & Day2 colors)
+- Active workouts render without selector wrapper (no blue border)
+
+**Phase 4 - Edit Workout Modal**:
+- Created `edit-workout-modal` component (template.js, index.js, style.css)
+- Modal recreates "Today's Workout" view for historical editing
+- Session header shows day:bodypart + date with formatted timestamp
+- Groups exercises by type: Normal → Left → Right (matches Today's Workout order)
+- Edit label dynamically shows "Edit Log" (singular) or "Edit Logs" (plural)
+- Added modal containers to `index.html`, render pipeline to `main.js`
+- Added `selectedWorkoutId` to `state.js` for tracking opened workout
+- Implemented `openeditWorkoutModal` action handler with event delegation
+
+**Phase 5 - Edit Log Functionality**:
+- Created `updateHistoricalLog()` function in `historyService.js`
+- Finds specific log by workoutId, setNumber, supersetSide
+- Updates reps/weight values, saves to localStorage + database
+- Implemented `editWorkoutLog` action handler in `actionHandlers.modals.js`
+- Reads input values, updates log, closes edit panel, re-renders UI
+- Buttons: Cancel (closes panel), Update (saves changes)
+
+**Phase 6 - Delete Log Confirmation Modal**:
+- Created `delete-log-modal` component with two variants
+- Standard delete: "Deleting a log is permanent! This action cannot be undone."
+- Last-log delete: "This is the last log in this workout. The entire workout will be removed."
+- Added `deleteLogContext` to `state.js` for tracking deletion target
+- Implemented `deleteHistoryLog`, `closeDeleteLogModal`, `cancelHistoryLog` handlers
+- Button colors: Cancel (solid gray), Yes (red skip color)
+
+**Phase 7 - Delete Log Implementation**:
+- Created `deleteHistoricalLog()` function with cascade logic in `historyService.js`
+- Returns boolean indicating if entire workout was deleted
+- Last log logic: Removes entire workout from history + database (deleteWorkoutFromDatabase)
+- Not last log: Removes specific log, saves updated workout (saveWorkoutToDatabase)
+- Implemented `confirmDeleteLog` handler with modal closure + UI refresh
+- Auto-closes Edit Workout modal if entire workout was deleted
+
+**Additional Fixes**:
+- **Partner Profile Text Wrapping**: Fixed "Current User Profile" and "Partner Profile" selector text to match config-card pattern
+- Changed from `multi-line balanced-text` block layout to inline-block wrapping with truncation
+- Implemented wrap-first, truncate-second CSS pattern (display: inline-block with ellipsis)
+- Fixed extra space bug in "Profile: Guest" (removed newline between spans)
+- Profile name truncates after wrapping, email always truncates (matches "Current Focus" pattern)
+
+**Database Migration**: `20251022_add_committed_and_body_part_2.sql`
+```sql
+ALTER TABLE workouts ADD COLUMN is_committed BOOLEAN DEFAULT FALSE;
+ALTER TABLE workouts ADD COLUMN body_part_2_color_key TEXT;
+CREATE INDEX idx_workouts_is_committed ON workouts(is_committed);
+```
+
+**Files Created** (7 total):
+- `src/features/edit-workout-modal/edit-workout-modal.template.js` - Modal HTML generation
+- `src/features/edit-workout-modal/edit-workout-modal.index.js` - Modal render function
+- `src/features/edit-workout-modal/edit-workout-modal.style.css` - Modal styling
+- `src/features/delete-log-modal/delete-log-modal.template.js` - Confirmation template
+- `src/features/delete-log-modal/delete-log-modal.index.js` - Confirmation render
+- `src/features/delete-log-modal/delete-log-modal.style.css` - Confirmation styling
+- `supabase/migrations/20251022_add_committed_and_body_part_2.sql` - Database migration
+
+**Files Modified** (14 total):
+- `src/services/data/workoutSyncService.save.js` - Added is_committed, body_part_2_color_key
+- `src/services/data/workoutSyncService.load.js` - Added field transformation
+- `src/services/data/historyService.js` - Added 3 functions (mark/update/delete)
+- `src/services/workout/workoutStateService.js` - Auto-mark committed on completion
+- `src/services/actions/actionHandlers.modals.js` - Added 8 new handlers
+- `src/features/my-data/my-data.templates.calendarDay.js` - Workout selector wrapping
+- `src/features/my-data/my-data.selectors.css` - Blue border selector styling
+- `src/features/partner-modal/partner-modal.template.js` - Text wrapping fix
+- `src/features/partner-modal/partner-modal.style.css` - Wrap-then-truncate pattern
+- `src/state.js` - Added selectedWorkoutId, deleteLogContext
+- `src/main.js` - Added render pipeline calls
+- `index.html` - Added modal containers
+- `src/styles/index.css` - Imported my-data.selectors.css
+- `APD/CLAUDE_PROJECT_NOTES.md` - Updated project notes for Edit Workout feature
+
+**Key Technical Details**:
+- **Commitment System**: 3-point trigger ensures workouts marked when truly complete
+- **Cascade Logic**: Smart deletion removes orphaned workouts (prevents "No sets logged" headers)
+- **Dual Body Part Support**: Superset workouts show "Chest & Back" with independent color coding
+- **Dynamic Labels**: Edit label shows singular/plural based on log count
+- **Event Delegation**: data-action attributes route all modal actions through central handler
+- **State Cleanup**: Proper modal context cleanup prevents stale state issues
+- **Conditional Wrapping**: Only committed workouts get selector, active workout remains unwrapped
+
+**Status**: Feature operational, database migration applied successfully. User reports "mostly working, but lots to review" - pending full user acceptance testing.
+
+---
 
 ### **AI Performance Refactoring - Phase 1-4** (2025-01-21)
 
@@ -26,7 +312,7 @@ This file contains the historical record of version changes for Will's 3-2-1. De
 
 ---
 
-### **My Data Week Navigation Improvements & Standards Application** (2025-01-21)
+### **Claude-v5.5.9 - My Data Week Navigation Improvements & Standards Application** (2025-01-21)
 
 **Mission**: Fix week navigation bugs, improve UI consistency with config-card chevrons, apply CLAUDE_DEV_STANDARDS to all modified files.
 

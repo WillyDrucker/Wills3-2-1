@@ -1,0 +1,151 @@
+/* ==========================================================================
+   MY DATA - Workout Session Selectors
+
+   Styling for workout session selectors on My Data page.
+   Wraps all workout sessions in blue border selector with black background.
+
+   Architecture:
+   - Blue border: 2px inset box-shadow matching app-selector style
+   - Black background: var(--background-dark)
+   - All workout sessions get selector wrapper (logged, partial, or empty)
+   - Unlogged workouts use muted border color (is-muted class)
+   - Text inside remains unmuted for readability
+
+   Dependencies: _variables.css (colors, spacing, typography, border-radius)
+   Used by: my-data.templates.calendarDay.js (all workout sessions)
+   ========================================================================== */
+
+/* === WORKOUT SESSION SELECTOR === */
+/* Matches app-selector blue border style from _selectors-base.css */
+.workout-session-selector {
+  background-color: var(--background-dark);
+  box-shadow: inset 0 0 0 2px var(--primary-blue);
+  border-radius: var(--border-radius);
+  padding: 9px; /* Internal spacing for black background area */
+  margin: 0; /* Spacing controlled by history-spacing.css based on context */
+  transition: none; /* SSS: No transitions */
+}
+
+/* Active state for selected workout - popped out/highlighted */
+.workout-session-selector.is-active {
+  box-shadow: inset 0 0 0 2px var(--primary-blue), 0 0 20px rgba(29, 161, 242, 0.3); /* Brighter glow */
+  cursor: default;
+  position: relative; /* Required for absolute positioning of buttons */
+  z-index: 10; /* Raise above other selectors for overlay effect */
+  border-bottom-left-radius: 0; /* Square bottom corners to connect with button container */
+  border-bottom-right-radius: 0;
+  /* No padding/margin - buttons are absolutely positioned and out of document flow */
+}
+
+/* Muted state for unlogged workouts - muted blue border, text stays normal */
+.workout-session-selector.is-muted {
+  box-shadow: inset 0 0 0 2px var(--muted-border-color); /* Dark blue muted border */
+  cursor: default; /* Non-interactive */
+  pointer-events: none; /* Disabled */
+}
+
+/* Interactive selectors (committed workouts) */
+.workout-session-selector[data-action="selectHistoryWorkout"] {
+  cursor: pointer;
+}
+
+/* === EDIT BUTTONS === */
+/* Button container - absolutely positioned, like options-list pattern (no 'top' property) */
+.history-edit-buttons {
+  position: absolute;
+  /* No 'top' property - stays at natural position but out of document flow */
+  left: 0;
+  right: 0;
+  width: 100%; /* Match options-list pattern */
+  padding: 16px; /* 16px spacing on all sides */
+  display: flex;
+  gap: var(--space-m); /* 16px between buttons */
+  z-index: 200; /* Same as options-list - above all content */
+  background-color: var(--background-dark); /* Extend black background */
+  box-shadow: inset 2px 0 0 var(--primary-blue), inset -2px 0 0 var(--primary-blue), inset 0 -2px 0 var(--primary-blue); /* Blue border on left, right, bottom */
+  border-bottom-left-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+}
+
+/* Cancel button - matches standard action button styling */
+.history-cancel-button {
+  flex: 1; /* Equal width with Edit button */
+  height: var(--control-height); /* 50px standard button height */
+  background-color: var(--surface-medium-dark); /* Standard cancel color */
+  color: var(--on-surface-light);
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-h2); /* 1.25rem - matches Superset confirmation buttons */
+  font-weight: 600;
+  cursor: pointer;
+  transition: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.history-cancel-button:active {
+  transform: scale(0.98);
+}
+
+/* Edit button - matches standard action button styling */
+.history-edit-button {
+  flex: 1; /* Equal width with Cancel button */
+  height: var(--control-height); /* 50px standard button height */
+  background-color: var(--log-green); /* Standard confirm/log color */
+  color: var(--text-on-action-color);
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-h2); /* 1.25rem - matches Superset confirmation buttons */
+  font-weight: 600;
+  cursor: pointer;
+  transition: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.history-edit-button:active {
+  transform: scale(0.98);
+}
+
+/* === ARCHIVED: EDIT BUTTON === */
+/*
+ * Removed 2025-10-23 - Saved in uiComponents.js for potential future reuse
+ *
+ * .session-edit-button {
+ *   width: 50px;
+ *   height: 32px;
+ *   min-width: 50px;
+ *   min-height: 32px;
+ *   padding: 0 !important;
+ *   margin: 4px 0 9px auto !important;
+ *   background: var(--background-dark);
+ *   box-shadow: inset 0 0 0 1px var(--on-surface-disabled), 0 2px 6px rgba(0, 0, 0, 0.3);
+ *   border: none;
+ *   border-radius: var(--border-radius);
+ *   color: #ffffff;
+ *   cursor: pointer;
+ *   display: flex;
+ *   align-items: center;
+ *   justify-content: center;
+ *   flex-shrink: 0;
+ *   transition: none;
+ * }
+ *
+ * .session-edit-button:disabled {
+ *   box-shadow: inset 0 0 0 1px var(--on-surface-disabled), 0 2px 6px rgba(0, 0, 0, 0.3);
+ *   color: var(--on-surface-medium);
+ *   cursor: default;
+ *   opacity: 0.5;
+ * }
+ *
+ * .session-edit-button svg {
+ *   width: 24px;
+ *   height: 24px;
+ * }
+ */

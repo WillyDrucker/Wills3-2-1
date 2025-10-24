@@ -50,6 +50,8 @@
 @import url("../features/reset-confirmation-modal/reset-confirmation-modal.style.css");
 @import url("../features/new-workout-modal/new-workout-modal.style.css");
 @import url("../features/reset-modal/reset-modal.style.css");
+@import url("../features/edit-workout-modal/edit-workout-modal.style.css");
+@import url("../features/delete-log-modal/delete-log-modal.style.css");
 
 /* Pages */
 @import url("../features/login-page/login-page.style.css");

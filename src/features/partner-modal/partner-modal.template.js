@@ -13,15 +13,22 @@
    Architecture:
    - Title: "Partner" (uses confirmation-modal-title) → 16px space
    - "Current User Profile" label (uses confirmation-modal-question, 1.25rem/600, left-aligned) → 7px space
-   - User 1 Profile: Green text (text-plan), muted selector (read-only display) → 16px space
+   - User 1 Profile: Green text (text-plan), muted selector, wrap-then-truncate (Profile: + email/name) → 16px space
    - "Current User Focus" label (uses confirmation-modal-question, 1.25rem/600, left-aligned) → 7px space
    - User 1 Focus: Green text highlight, active day selector → 16px space
    - Divider: Visual separation between users (modal-divider) → 16px space
    - "Partner Profile" label (uses confirmation-modal-question, 1.25rem/600, left-aligned) → 7px space
-   - Partner Profile: Blue text (text-primary), muted selector (read-only display) → 16px space
+   - Partner Profile: Blue text (text-primary), muted selector, wrap-then-truncate (Profile: + name) → 16px space
    - "Partner Focus" label (uses confirmation-modal-question, 1.25rem/600, left-aligned) → 7px space
    - Partner Focus: Blue text highlight, active day selector → 16px space
    - Button group: Cancel/Partner Up! (uses confirmation-modal-actions)
+
+   Profile Selector Pattern (wrap-then-truncate):
+   - Hybrid layout: wraps to multiple lines first, truncates each line if needed
+   - "Profile:" label and email/name are inline-block spans
+   - Short text (e.g., "Profile: Guest") stays on one line
+   - Medium text (e.g., "Profile: john.doe@example.com") wraps to two lines
+   - Long text (e.g., "Profile: verylongemail@example.com") wraps AND truncates with ellipsis
 
    Day Options Logic:
    - Today appears first if available
@@ -89,9 +96,8 @@ export function getPartnerModalTemplate() {
         <p class="confirmation-modal-question">Current User Profile</p>
         <details class="app-selector is-muted" id="partner-user1-profile-selector">
             <summary>
-                <div class="selector-content">
-                    <span class="truncate-text text-on-surface-medium">Profile:</span>
-                    <span class="truncate-text data-highlight text-plan">${currentUserName}</span>
+                <div class="selector-content wrap-then-truncate">
+                    <span class="text-on-surface-medium">Profile:&nbsp;</span><span class="data-highlight text-plan">${currentUserName}</span>
                 </div>
             </summary>
             <ul class="options-list"></ul>
@@ -110,9 +116,8 @@ export function getPartnerModalTemplate() {
         <p class="confirmation-modal-question partner-section-label">Partner Profile</p>
         <details class="app-selector is-muted" id="partner-user2-profile-selector">
             <summary>
-                <div class="selector-content">
-                    <span class="truncate-text text-on-surface-medium">Profile:</span>
-                    <span class="truncate-text data-highlight text-primary">${partnerUserName}</span>
+                <div class="selector-content wrap-then-truncate">
+                    <span class="text-on-surface-medium">Profile:&nbsp;</span><span class="data-highlight text-primary">${partnerUserName}</span>
                 </div>
             </summary>
             <ul class="options-list"></ul>

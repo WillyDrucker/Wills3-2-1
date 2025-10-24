@@ -38,6 +38,8 @@ import { renderMyDataPage } from "features/my-data/my-data.index.js";
 import { renderSideNav } from "features/side-nav/side-nav.index.js";
 import { renderResetConfirmationModal } from "features/reset-confirmation-modal/reset-confirmation-modal.index.js";
 import { renderNewWorkoutModal } from "features/new-workout-modal/new-workout-modal.index.js";
+import { renderEditWorkoutModal } from "features/edit-workout-modal/edit-workout-modal.index.js";
+import { renderDeleteLogModal } from "features/delete-log-modal/delete-log-modal.index.js";
 import { renderResetOptionsModal } from "features/reset-modal/reset-modal.index.js";
 import { renderVideoPlayer } from "features/video-player/video-player.index.js";
 import { renderSupersetModal } from "features/superset-modal/superset-modal.index.js";
@@ -97,6 +99,13 @@ function updateActiveWorkoutPreservingLogs() {
 }
 
 function renderAll() {
+  // Preserve scroll position on My Data page before clearing innerHTML
+  let savedScrollPosition = 0;
+  if (appState.ui.currentPage === "myData") {
+    const mainContent = document.getElementById("main-content");
+    savedScrollPosition = mainContent ? mainContent.scrollTop : 0;
+  }
+
   ui.configSection.innerHTML = "";
   ui.mainContent.innerHTML = "";
   ui.workoutFooter.innerHTML = "";
@@ -120,6 +129,8 @@ function renderAll() {
   renderSideNav();
   renderResetConfirmationModal();
   renderNewWorkoutModal();
+  renderEditWorkoutModal();
+  renderDeleteLogModal();
   renderResetOptionsModal();
   renderSupersetModal();
   renderPartnerModal();
@@ -127,6 +138,14 @@ function renderAll() {
   renderVideoPlayer();
   if (appState.session.playCompletionAnimation) {
     appState.session.playCompletionAnimation = false;
+  }
+
+  // Restore scroll position on My Data page after all rendering complete
+  if (appState.ui.currentPage === "myData" && savedScrollPosition > 0) {
+    const mainContent = document.getElementById("main-content");
+    if (mainContent) {
+      mainContent.scrollTop = savedScrollPosition;
+    }
   }
 }
 

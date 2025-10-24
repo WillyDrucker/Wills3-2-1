@@ -7,12 +7,12 @@
    Architecture: Entry point with imports
    - Performance card with metrics display
    - History calendar with 7-day workout view
-   - Component files: header, calendar, history-items, dividers, performance, history-spacing
+   - Component files: header, calendar, history-items, dividers, performance, history-spacing, selectors
 
    Dependencies:
    Global: _variables.css (--space-m, --card-border-width, --card-padding-top, --card-padding-sides)
    Global: _card-headers.css, _card-foundations.css, _action-button-groups.css
-   Local: Component CSS files (header, calendar, history-items, dividers, performance, history-spacing)
+   Local: Component CSS files (header, calendar, history-items, dividers, performance, history-spacing, selectors)
 
    Used by: My Data page display
    ========================================================================== */
@@ -27,8 +27,10 @@
 @import url("./my-data.calendar.css");
 @import url("./my-data.history-items.css");
 @import url("./my-data.dividers.css");
+@import url("./my-data.day-label.css");
 @import url("./my-data.performance.css");
 @import url("./my-data.history-spacing.css");
+@import url("./my-data.selectors.css");
 
 /* === CARD FOUNDATION === */
 .my-data-card {

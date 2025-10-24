@@ -189,3 +189,137 @@ export function removeLog(logEntry) {
     }
   }
 }
+
+/**
+ * Mark current workout session as committed
+ *
+ * Purpose: Sets isCommitted flag and captures completion timestamp when workout is complete.
+ * Called when user reaches workout complete screen, starts new workout, or saves via reset.
+ *
+ * Committed workouts become selectable in My Data history for editing individual logs.
+ * Completion timestamp is displayed in My Data to show when workout was finished.
+ */
+export function markCurrentWorkoutCommitted() {
+  const { user, session } = appState;
+  const workout = user.history.workouts.find((w) => w.id === session.id);
+
+  if (workout && !workout.isCommitted) {
+    workout.isCommitted = true;
+    workout.completedTimestamp = new Date().toISOString();
+    persistenceService.saveState();
+
+    // Save to database if authenticated
+    if (appState.auth?.isAuthenticated) {
+      saveWorkoutToDatabase(workout).catch((error) => {
+        console.error("Failed to mark workout committed in database:", error);
+      });
+    }
+  }
+}
+
+/**
+ * Update a historical log entry from Edit Workout modal
+ *
+ * Purpose: Allows editing reps/weight for completed workout logs in My Data.
+ * Finds specific log by workout ID, set number, and superset side, updates values,
+ * then saves to both localStorage and database.
+ *
+ * @param {number} workoutId - ID of the workout session
+ * @param {number} setNumber - Set number within the workout
+ * @param {string} supersetSide - 'left', 'right', or '' for normal mode
+ * @param {number} reps - New reps value
+ * @param {number} weight - New weight value
+ */
+export function updateHistoricalLog(workoutId, setNumber, supersetSide, reps, weight) {
+  const { user } = appState;
+  const workout = user.history.workouts.find((w) => w.id === workoutId);
+
+  if (!workout) {
+    console.error("Workout not found:", workoutId);
+    return;
+  }
+
+  // Find the specific log entry
+  const log = workout.logs.find(
+    (l) =>
+      l.setNumber === setNumber &&
+      (l.supersetSide || "") === supersetSide
+  );
+
+  if (!log) {
+    console.error("Log not found:", { workoutId, setNumber, supersetSide });
+    return;
+  }
+
+  // Update the log values
+  log.reps = Number(reps);
+  log.weight = Number(weight);
+
+  persistenceService.saveState();
+
+  // Save to database if authenticated
+  if (appState.auth?.isAuthenticated) {
+    saveWorkoutToDatabase(workout).catch((error) => {
+      console.error("Failed to update historical log in database:", error);
+    });
+  }
+}
+
+/**
+ * Delete a historical log entry from Edit Workout modal
+ *
+ * Purpose: Removes a specific log from a completed workout. If it's the last log,
+ * deletes the entire workout from history and database.
+ *
+ * Cascade Logic:
+ * - Last log: Deletes entire workout from database and removes from history
+ * - Not last log: Removes log from workout.logs array and saves updated workout
+ *
+ * @param {number} workoutId - ID of the workout session
+ * @param {number} setNumber - Set number within the workout
+ * @param {string} supersetSide - 'left', 'right', or '' for normal mode
+ * @returns {boolean} - True if entire workout was deleted, false if just one log removed
+ */
+export function deleteHistoricalLog(workoutId, setNumber, supersetSide) {
+  const { user } = appState;
+  const workoutIndex = user.history.workouts.findIndex((w) => w.id === workoutId);
+
+  if (workoutIndex === -1) {
+    console.error("Workout not found:", workoutId);
+    return false;
+  }
+
+  const workout = user.history.workouts[workoutIndex];
+
+  // Remove the specific log
+  workout.logs = workout.logs.filter(
+    (l) =>
+      !(l.setNumber === setNumber && (l.supersetSide || "") === supersetSide)
+  );
+
+  const isLastLog = workout.logs.length === 0;
+
+  if (isLastLog) {
+    // Remove entire workout from history
+    user.history.workouts.splice(workoutIndex, 1);
+  }
+
+  persistenceService.saveState();
+
+  // Handle database update if authenticated
+  if (appState.auth?.isAuthenticated) {
+    if (isLastLog) {
+      // Delete entire workout from database
+      deleteWorkoutFromDatabase(workoutId).catch((error) => {
+        console.error("Failed to delete workout from database:", error);
+      });
+    } else {
+      // Save updated workout (with removed log) to database
+      saveWorkoutToDatabase(workout).catch((error) => {
+        console.error("Failed to save updated workout to database:", error);
+      });
+    }
+  }
+
+  return isLastLog;
+}

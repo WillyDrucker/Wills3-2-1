@@ -122,6 +122,9 @@ export function getInitialAppState() {
       wasConfigHeaderExpandedBeforeModal: false,
       isLetsGoButtonPulsing: false,
       activeModal: null,
+      selectedWorkoutId: null,
+      selectedHistoryWorkoutId: null,
+      deleteLogContext: null,
       modal: {
         elementToFocusOnClose: null,
       },
@@ -152,6 +155,7 @@ export function getInitialAppState() {
       myDataPage: {
         selectedTab: "Workouts",
         weekOffset: 0,
+        scrollPosition: 0,
       },
     },
 

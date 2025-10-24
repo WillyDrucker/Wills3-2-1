@@ -10,11 +10,12 @@
    - "Begin Next Exercise" when starting new muscle group
    - "Last Exercise!" when only one pending set remains
 
-   Dependencies: appState
+   Dependencies: appState, historyService
    Used by: workoutProgressionService, timerService
    ========================================================================== */
 
 import { appState } from "state";
+import { markCurrentWorkoutCommitted } from "services/data/historyService.js";
 
 /* === COMPLETION STATE MANAGEMENT === */
 export function updateWorkoutCompletionState() {
@@ -32,6 +33,8 @@ export function updateWorkoutCompletionState() {
     if (!wasAlreadyComplete && appState.session.workoutLog.length > 0) {
       appState.session.isWorkoutComplete = true;
       appState.session.playCompletionAnimation = true;
+      // Mark workout as committed when complete
+      markCurrentWorkoutCommitted();
     }
   } else {
     appState.session.isWorkoutComplete = false;

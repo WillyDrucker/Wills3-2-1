@@ -42,7 +42,8 @@
       "Bash(gh label list:*)",
       "Bash(del \"C:\\Dev\\Wills321\\src\\features\\login-page\\login-page.index.new.js\")",
       "Read(//c/Users/WD/Downloads/**)",
-      "Bash(del \"C:\\Dev\\Wills321\\APD\\CLAUDE_STANDARDS.md\")"
+      "Bash(del \"C:\\Dev\\Wills321\\APD\\CLAUDE_STANDARDS.md\")",
+      "Bash(supabase db push:*)"
     ],
     "deny": [],
     "ask": []

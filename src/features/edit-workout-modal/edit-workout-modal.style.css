@@ -1,0 +1,79 @@
+/* ==========================================================================
+   EDIT WORKOUT MODAL - Styling
+
+   Extends confirmation modal base styles for Edit Workout modal.
+   Provides scrollable log list and session header styling.
+
+   Architecture:
+   - Extends _confirmation-modals.css base classes
+   - Scrollable log list with max-height
+   - Session header between title and edit label
+   - Reuses workout-log item styles
+   - 16px spacing rhythm throughout
+
+   Dependencies: _confirmation-modals.css, workout-log styles, _variables.css
+   Used by: Edit Workout modal (edit-workout-modal.template.js)
+   ========================================================================== */
+
+/* === SESSION HEADER === */
+.edit-workout-session-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin: 16px 0 9px 0; /* 16px from title, 9px = ~16px visual to question */
+  padding: 0;
+}
+
+.edit-workout-session-header .session-day-bodypart {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--on-surface);
+}
+
+.edit-workout-session-header .session-date {
+  font-size: 1rem;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+/* === LOG LIST === */
+.edit-workout-log-list {
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin: 16px 0 0 0; /* 16px from "Edit Log(s)" label */
+  padding: 0;
+}
+
+/* Spacing for log items */
+.edit-workout-item-container {
+  margin-bottom: 8px; /* Spacing between log items */
+}
+
+.edit-workout-item-container:last-child {
+  margin-bottom: 0;
+}
+
+/* === LOG ITEM REUSE === */
+/* Reuses workout-log-item styles from workout-log.style.css */
+/* No additional styling needed - classes are inherited */
+
+/* === SCROLLBAR STYLING === */
+.edit-workout-log-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.edit-workout-log-list::-webkit-scrollbar-track {
+  background: var(--surface-variant);
+  border-radius: 4px;
+}
+
+.edit-workout-log-list::-webkit-scrollbar-thumb {
+  background: var(--on-surface-medium);
+  border-radius: 4px;
+}
+
+.edit-workout-log-list::-webkit-scrollbar-thumb:hover {
+  background: var(--on-surface);
+}

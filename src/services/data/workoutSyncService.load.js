@@ -54,6 +54,9 @@ export async function loadWorkoutsFromDatabase() {
       sessionColorClass: workout.session_color_class,
       bodyPart: workout.body_part,
       bodyPartColorKey: workout.body_part_color_key,
+      bodyPart2ColorKey: workout.body_part_2_color_key,
+      isCommitted: workout.is_committed || false,
+      completedTimestamp: workout.completed_timestamp || null,
       logs: workout.workout_logs.map((log) => ({
         exercise: log.exercise_data,
         setNumber: log.set_number,
@@ -109,6 +112,9 @@ export async function getLastBodyPartLifts(bodyPart, limit = 5) {
       sessionColorClass: workout.session_color_class,
       bodyPart: workout.body_part,
       bodyPartColorKey: workout.body_part_color_key,
+      bodyPart2ColorKey: workout.body_part_2_color_key,
+      isCommitted: workout.is_committed || false,
+      completedTimestamp: workout.completed_timestamp || null,
       logs: workout.workout_logs.map((log) => ({
         exercise: log.exercise_data,
         setNumber: log.set_number,

@@ -9,14 +9,22 @@ This file contains only critical architectural patterns and current session stat
 
 **Documentation Flow**: Anything too detailed for SESSION_HANDOFF should be summarized here with full details provided in CLAUDE_PROJECT_NOTES.md. Anything too big for PROJECT_NOTES can go into CLAUDE_ACTIVE.md as an extension.
 
+**Versioning Policy**: Documentation version numbers MUST match the current Git branch version. Only increment when creating a new branch. See CLAUDE_PROJECT_NOTES.md for full versioning policy.
+
 ---
 
 ## Current Session State
 
-**Status**: Standards application complete for My Data week navigation changes
-- Applied CLAUDE_DEV_STANDARDS to 6 files (my-data.template.js, my-data.index.js, my-data.header.css, my-data.history-spacing.css, actionHandlers.global.js, scrollService.js)
-- Added CEMENT comment guidance to CLAUDE_DEV_STANDARDS.md (Standard #6)
-- All file headers updated with proper architecture documentation
+**Status**: Interactive Workout Selectors (Claude-v5.5.9) - IN PROGRESS
+- Interactive workout selectors with Cancel/Edit buttons working
+- Button overlay system complete (position absolute pattern)
+- Fast re-render pattern implemented (no database lag)
+- Background scroll prevention working
+- **BLOCKING ISSUE**: Modal scroll jump persisting despite multiple fix attempts
+  - Opening/closing Edit Workout modal jumps My Data page to top
+  - Root cause: `renderAll()` clears innerHTML before scroll can be saved
+  - May require modal service refactor or alternative approach
+- See CLAUDE_ACTIVE.md for detailed technical notes and attempted solutions
 
 ---
 
@@ -70,6 +78,100 @@ export function getConfigHandlers(coreActions) {
   };
 }
 ```
+
+### 6. Workout Commitment Tracking Pattern
+Mark workouts as committed when reaching milestones to enable editing:
+```javascript
+// Trigger points:
+// 1. Workout completion (automatic via workoutStateService.js)
+// 2. Begin Another Workout (via confirmNewWorkout handler)
+// 3. Save My Data + Reset (via saveMyDataAndReset handler)
+
+export function markCurrentWorkoutCommitted() {
+  const workout = user.history.workouts.find((w) => w.id === session.id);
+  if (workout && !workout.isCommitted) {
+    workout.isCommitted = true;
+    persistenceService.saveState();
+    saveWorkoutToDatabase(workout); // Database sync
+  }
+}
+```
+
+### 7. CSS Cascade Order Pattern (My Data Spacing)
+**Critical**: `my-data.history-spacing.css` loads AFTER `my-data.dividers.css` in the import chain. Any spacing overrides for dividers MUST be placed in history-spacing.css, not dividers.css, or they will be overridden.
+
+```css
+/* In my-data.style.css - Import order determines cascade */
+@import url("./my-data.dividers.css");        /* Loads first */
+@import url("./my-data.history-spacing.css"); /* Loads second - wins conflicts */
+```
+
+**Pattern**: When adding spacing fixes for My Data calendar elements, check history-spacing.css first. Rules there override dividers.css due to load order.
+
+### 8. Cascade Deletion Pattern (Historical Logs)
+Smart deletion that removes entire workout when last log is deleted:
+```javascript
+export function deleteHistoricalLog(workoutId, setNumber, supersetSide) {
+  const workout = user.history.workouts[workoutIndex];
+  workout.logs = workout.logs.filter(/* remove specific log */);
+
+  const isLastLog = workout.logs.length === 0;
+
+  if (isLastLog) {
+    user.history.workouts.splice(workoutIndex, 1); // Remove entire workout
+    deleteWorkoutFromDatabase(workoutId); // Database cascade delete
+  } else {
+    saveWorkoutToDatabase(workout); // Save updated workout
+  }
+
+  return isLastLog; // Signal if workout was deleted
+}
+```
+
+### 9. Fast Re-render Pattern (UI-Only Updates)
+Separate template re-render from database reload for instant interactions:
+```javascript
+export function refreshMyDataPageDisplay() {
+  // Re-render template WITHOUT reloading from database (fast, for selector interactions)
+  ui.mainContent.innerHTML = getMyDataPageTemplate();
+  // ... wire up event listeners ...
+}
+
+export async function renderMyDataPage() {
+  // Load workout history from database (slow, for initial load and data refresh)
+  if (appState.auth?.isAuthenticated) {
+    const { workouts } = await loadWorkoutsFromDatabase();
+    appState.user.history.workouts = workouts;
+  }
+  refreshMyDataPageDisplay(); // Then render template
+}
+```
+
+**Use Cases**:
+- Opening/closing selectors without data changes
+- UI state toggles (active/muted states)
+- Any interaction that doesn't modify appState data
+
+### 10. Options-List Overlay Pattern (Absolute Positioning)
+Pattern for overlaying content without pushing page layout:
+```css
+.overlay-container {
+  position: absolute;
+  /* NO 'top' property - stays at natural position but out of document flow */
+  left: 0;
+  right: 0;
+  width: 100%; /* Full width of parent */
+  z-index: 200; /* Above all content */
+}
+```
+
+**Key Points**:
+- `position: absolute` removes from document flow (no layout push)
+- Omitting `top` property keeps natural vertical position
+- `z-index: 200` ensures overlay above content below
+- Parent needs `position: relative` for positioning context
+
+**Examples**: `.options-list` in selectors, `.history-edit-buttons` in My Data
 
 ---
 
