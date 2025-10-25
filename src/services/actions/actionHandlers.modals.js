@@ -606,12 +606,19 @@ export function getModalHandlers(coreActions) {
 
     // Capture edit panel state before details elements close (called on mousedown)
     prepareCancelEditWorkout: () => {
+      console.log("prepareCancelEditWorkout - starting");
+
       // Store which panels are currently open BEFORE they close from the click
       const hasOriginal = appState.ui.editWorkout.originalWorkout !== null;
-      if (!hasOriginal) return;
+      if (!hasOriginal) {
+        console.log("  No original workout, skipping");
+        return;
+      }
 
       const { selectedWorkoutId, editWorkout } = appState.ui;
       const { originalWorkout } = editWorkout;
+
+      console.log("  Checking for open panels...");
 
       // Store current state of open panels (before they close)
       const openPanelStates = [];
@@ -622,26 +629,47 @@ export function getModalHandlers(coreActions) {
         const repsInput = document.getElementById(`reps-edit-${logIndex}-input`);
         const weightInput = document.getElementById(`weight-edit-${logIndex}-input`);
 
-        if (repsInput && weightInput) {
-          const detailsElement = repsInput.closest('details');
-          const isPanelOpen = detailsElement && detailsElement.hasAttribute('open');
+        console.log(`  Log ${i} (${originalLog.exercise?.exercise_name} Set ${originalLog.setNumber}):`, {
+          logIndex,
+          repsInputFound: !!repsInput,
+          weightInputFound: !!weightInput
+        });
 
-          if (isPanelOpen) {
-            openPanelStates.push({
+        if (repsInput && weightInput) {
+          const inputReps = Number(repsInput.value);
+          const inputWeight = Number(weightInput.value);
+          const originalReps = Number(originalLog.reps);
+          const originalWeight = Number(originalLog.weight);
+
+          console.log(`    Input values:`, {
+            currentInputValues: { reps: inputReps, weight: inputWeight },
+            originalValues: { reps: originalReps, weight: originalWeight },
+            hasDifference: inputReps !== originalReps || inputWeight !== originalWeight
+          });
+
+          // Check if input differs from original (uncommitted change)
+          // Don't check if panel is open - panel may have closed when user moved mouse away
+          if (inputReps !== originalReps || inputWeight !== originalWeight) {
+            const state = {
               index: i,
               logIndex,
-              reps: Number(repsInput.value),
-              weight: Number(weightInput.value),
-              originalReps: Number(originalLog.reps),
-              originalWeight: Number(originalLog.weight)
-            });
+              exercise: originalLog.exercise?.exercise_name,
+              reps: inputReps,
+              weight: inputWeight,
+              originalReps: originalReps,
+              originalWeight: originalWeight
+            };
+            openPanelStates.push(state);
+            console.log(`    ✓ Capturing uncommitted change:`, state);
+          } else {
+            console.log(`    ✗ No changes, skipping`);
           }
         }
       }
 
       // Store in state for cancelEditWorkout to use
       appState.ui.editWorkout.openPanelStates = openPanelStates;
-      console.log("Captured open panel states:", openPanelStates);
+      console.log("Final captured open panel states:", openPanelStates);
     },
 
     cancelEditWorkout: () => {

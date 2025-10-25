@@ -134,13 +134,24 @@
   box-sizing: border-box; /* Include padding in height calculation */
 }
 
-/* Cancel button - regular action button */
+/* Cancel Workout button - stacked text (like Delete/Update buttons) */
 .edit-workout-cancel-button {
   background-color: var(--surface-medium-dark);
   color: var(--text-primary);
+  flex-direction: column; /* Stack text vertically */
+  line-height: 1;
 }
 
-/* Delete Workout button - red with stacked text (like Save My Data) */
+.edit-workout-cancel-button .button-cancel-line1,
+.edit-workout-cancel-button .button-cancel-line2 {
+  display: block;
+}
+
+.edit-workout-cancel-button .button-cancel-line1 {
+  margin-bottom: var(--space-xs); /* 2px gap between lines */
+}
+
+/* Delete Workout button - red with stacked text */
 .edit-workout-delete-button {
   background-color: var(--text-red-skip);
   color: var(--text-on-action-color);
@@ -157,8 +168,19 @@
   margin-bottom: var(--space-xs); /* 2px gap between lines */
 }
 
-/* Update button - green */
+/* Update Workout button - green with stacked text */
 .edit-workout-update-button {
   background-color: var(--log-green);
   color: var(--text-on-action-color);
+  flex-direction: column; /* Stack text vertically */
+  line-height: 1;
+}
+
+.edit-workout-update-button .button-update-line1,
+.edit-workout-update-button .button-update-line2 {
+  display: block;
+}
+
+.edit-workout-update-button .button-update-line1 {
+  margin-bottom: var(--space-xs); /* 2px gap between lines */
 }

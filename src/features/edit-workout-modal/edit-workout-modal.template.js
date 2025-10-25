@@ -160,12 +160,18 @@ export function getEditWorkoutModalTemplate(workout) {
       </div>
 
       <div class="edit-workout-button-group">
-        <button class="edit-workout-cancel-button" data-action="cancelEditWorkout" data-mousedown-action="prepareCancelEditWorkout">Cancel</button>
+        <button class="edit-workout-cancel-button" data-action="cancelEditWorkout" data-mousedown-action="prepareCancelEditWorkout">
+          <span class="button-cancel-line1">Cancel</span>
+          <span class="button-cancel-line2">Workout</span>
+        </button>
         <button class="edit-workout-delete-button" data-action="openDeleteWorkoutModal">
           <span class="button-delete-line1">Delete</span>
           <span class="button-delete-line2">Workout</span>
         </button>
-        <button class="edit-workout-update-button" data-action="updateWorkout">Update</button>
+        <button class="edit-workout-update-button" data-action="updateWorkout">
+          <span class="button-update-line1">Update</span>
+          <span class="button-update-line2">Workout</span>
+        </button>
       </div>
     </div>
   `;
