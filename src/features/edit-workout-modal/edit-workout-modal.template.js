@@ -284,7 +284,7 @@ function getHistoricalLogItemHTML(log, workout, currentPlan, uniqueIndex) {
                 <div class="edit-log-buttons">
                   <button class="action-button button-cancel" data-action="cancelWorkoutLog">Cancel</button>
                   <button class="action-button button-clear-set" data-action="deleteWorkoutLog" data-workout-id="${workout.id}" data-set-number="${setNumber}" data-superset-side="${log.supersetSide || ""}">Delete</button>
-                  <button class="action-button button-update-log" data-action="updateWorkoutLog" data-workout-id="${workout.id}" data-set-number="${setNumber}" data-superset-side="${log.supersetSide || ""}">Update</button>
+                  <button class="action-button button-update-log" data-action="updateWorkoutLog" data-workout-id="${workout.id}" data-set-number="${setNumber}" data-superset-side="${log.supersetSide || ""}" data-log-index="${uniqueIndex}">Update</button>
                 </div>
               </div>
             </details>`;

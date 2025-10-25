@@ -425,18 +425,19 @@ export function getModalHandlers(coreActions) {
       const workoutId = Number(button.dataset.workoutId);
       const setNumber = Number(button.dataset.setNumber);
       const supersetSide = button.dataset.supersetSide || "";
+      const logIndex = Number(button.dataset.logIndex); // New: unique index
 
       // Find the details element (parent of edit panel)
       const details = button.closest("details");
       if (!details) return;
 
-      // Find the input fields
-      const logIndex = `${workoutId}-${setNumber}-${supersetSide || "normal"}`;
-      const repsInput = document.getElementById(`reps-edit-${logIndex}-input`);
-      const weightInput = document.getElementById(`weight-edit-${logIndex}-input`);
+      // Find the input fields using unique index-based ID
+      const logId = `${workoutId}-${logIndex}`;
+      const repsInput = document.getElementById(`reps-edit-${logId}-input`);
+      const weightInput = document.getElementById(`weight-edit-${logId}-input`);
 
       if (!repsInput || !weightInput) {
-        console.error("Input fields not found for log:", logIndex);
+        console.error("Input fields not found for log:", logId);
         return;
       }
 
