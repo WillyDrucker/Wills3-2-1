@@ -31,6 +31,7 @@ import { triggerLetsGoButtonPulse, animateSelectors } from "services/ui/selector
 import { renderConfigHeader } from "features/config-card/config-card.header.index.js";
 import { handleCloseSideNav } from "features/side-nav/side-nav.index.js";
 import { refreshMyDataPageDisplay } from "features/my-data/my-data.index.js";
+import { renderEditWorkoutModal } from "features/edit-workout-modal/edit-workout-modal.index.js";
 import {
   handleConfirmSuperset,
 } from "features/superset-modal/superset-modal.index.js";
@@ -450,8 +451,8 @@ export function getModalHandlers(coreActions) {
       // Close the edit panel
       details.open = false;
 
-      // Re-render to show updated values
-      coreActions.renderAll();
+      // Re-render only the Edit Workout modal (don't trigger full page render)
+      renderEditWorkoutModal();
     },
 
     deleteWorkoutLog: (event) => {

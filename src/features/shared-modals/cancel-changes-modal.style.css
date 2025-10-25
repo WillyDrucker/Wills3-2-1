@@ -41,8 +41,8 @@
    All base confirmation modal styles come from _confirmation-modals.css
    ========================================================================== */
 
-/* === RED YES BUTTON - Cancel Changes specific === */
+/* === GREEN YES BUTTON - Cancel Changes specific === */
 .cancel-changes-card .button-cancel-yes {
-  background-color: var(--text-red-skip);
+  background-color: var(--log-green);
   color: var(--text-on-action-color);
 }
