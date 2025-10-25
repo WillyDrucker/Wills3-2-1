@@ -579,7 +579,7 @@ export function getModalHandlers(coreActions) {
         }
       }
 
-      // Check uncommitted input field changes (changes in open edit panels that haven't been saved)
+      // Check uncommitted input field changes (changes in OPEN edit panels that haven't been saved)
       for (let i = 0; i < originalWorkout.logs.length; i++) {
         const originalLog = originalWorkout.logs[i];
         const logIndex = `${selectedWorkoutId}-${originalLog.setNumber}-${originalLog.supersetSide || "normal"}`;
@@ -588,21 +588,27 @@ export function getModalHandlers(coreActions) {
         const weightInput = document.getElementById(`weight-edit-${logIndex}-input`);
 
         if (repsInput && weightInput) {
-          const inputReps = Number(repsInput.value);
-          const inputWeight = Number(weightInput.value);
-          const originalReps = Number(originalLog.reps);
-          const originalWeight = Number(originalLog.weight);
+          // Only check if the edit panel is currently open
+          const detailsElement = repsInput.closest('details');
+          const isPanelOpen = detailsElement && detailsElement.hasAttribute('open');
 
-          // Check if input differs from original (uncommitted change)
-          if (inputReps !== originalReps || inputWeight !== originalWeight) {
-            console.log("Uncommitted input change detected:", {
-              index: i,
-              exercise: originalLog.exercise?.exercise_name || "unknown",
-              set: originalLog.setNumber,
-              inputValues: { reps: inputReps, weight: inputWeight },
-              originalValues: { reps: originalReps, weight: originalWeight }
-            });
-            changeCount++;
+          if (isPanelOpen) {
+            const inputReps = Number(repsInput.value);
+            const inputWeight = Number(weightInput.value);
+            const originalReps = Number(originalLog.reps);
+            const originalWeight = Number(originalLog.weight);
+
+            // Check if input differs from original (uncommitted change)
+            if (inputReps !== originalReps || inputWeight !== originalWeight) {
+              console.log("Uncommitted input change detected:", {
+                index: i,
+                exercise: originalLog.exercise?.exercise_name || "unknown",
+                set: originalLog.setNumber,
+                inputValues: { reps: inputReps, weight: inputWeight },
+                originalValues: { reps: originalReps, weight: originalWeight }
+              });
+              changeCount++;
+            }
           }
         }
       }
