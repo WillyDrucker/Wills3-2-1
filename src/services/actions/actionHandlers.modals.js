@@ -646,8 +646,10 @@ export function getModalHandlers(coreActions) {
       // Clear workout ID after modal closes
       appState.ui.selectedWorkoutId = null;
 
-      // Re-render to show updated My Data page
-      coreActions.renderAll();
+      // Refresh My Data display without full render (modal close already rendered)
+      if (appState.ui.currentPage === "myData") {
+        refreshMyDataPageDisplay();
+      }
     },
 
     cancelDeleteWorkout: () => {
@@ -732,8 +734,10 @@ export function getModalHandlers(coreActions) {
       // Clear workout ID after modal closes
       appState.ui.selectedWorkoutId = null;
 
-      // Re-render to show updated My Data page
-      coreActions.renderAll();
+      // Refresh My Data display without full render (modal close already rendered)
+      if (appState.ui.currentPage === "myData") {
+        refreshMyDataPageDisplay();
+      }
     },
 
     // === VIDEO PLAYER ===
