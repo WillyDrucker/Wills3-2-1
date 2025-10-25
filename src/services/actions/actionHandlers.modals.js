@@ -358,6 +358,16 @@ export function getModalHandlers(coreActions) {
         // Store original workout state for change tracking (deep clone with normalized numbers)
         const workout = appState.user.history.workouts.find((w) => w.id === workoutId);
         if (workout) {
+          console.log("RAW workout from state (before clone):", {
+            id: workoutId,
+            firstLog: workout.logs[0] ? {
+              reps: workout.logs[0].reps,
+              weight: workout.logs[0].weight,
+              types: [typeof workout.logs[0].reps, typeof workout.logs[0].weight]
+            } : null,
+            allLogsWeights: workout.logs.map(l => `Set ${l.setNumber}: ${l.weight} (${typeof l.weight})`)
+          });
+
           // Deep clone and normalize reps/weight to numbers
           const clonedWorkout = JSON.parse(JSON.stringify(workout));
           clonedWorkout.logs = clonedWorkout.logs.map(log => ({
@@ -375,7 +385,8 @@ export function getModalHandlers(coreActions) {
               reps: clonedWorkout.logs[0].reps,
               weight: clonedWorkout.logs[0].weight,
               types: [typeof clonedWorkout.logs[0].reps, typeof clonedWorkout.logs[0].weight]
-            } : null
+            } : null,
+            allLogsWeights: clonedWorkout.logs.map(l => `Set ${l.setNumber}: ${l.weight}`)
           });
         }
 
@@ -500,6 +511,15 @@ export function getModalHandlers(coreActions) {
       let currentWorkout = appState.user.history.workouts.find((w) => w.id === selectedWorkoutId);
       if (!currentWorkout) return false;
 
+      console.log("RAW current workout from state (before normalization):", {
+        firstLog: currentWorkout.logs[0] ? {
+          reps: currentWorkout.logs[0].reps,
+          weight: currentWorkout.logs[0].weight,
+          types: [typeof currentWorkout.logs[0].reps, typeof currentWorkout.logs[0].weight]
+        } : null,
+        allLogsWeights: currentWorkout.logs.map(l => `Set ${l.setNumber}: ${l.weight} (${typeof l.weight})`)
+      });
+
       // Normalize current workout as well (create a copy to avoid mutating state)
       currentWorkout = {
         ...currentWorkout,
@@ -520,7 +540,9 @@ export function getModalHandlers(coreActions) {
           reps: currentWorkout.logs[0].reps,
           weight: currentWorkout.logs[0].weight,
           types: [typeof currentWorkout.logs[0].reps, typeof currentWorkout.logs[0].weight]
-        } : null
+        } : null,
+        originalAllWeights: originalWorkout.logs.map(l => `Set ${l.setNumber}: ${l.weight}`),
+        currentAllWeights: currentWorkout.logs.map(l => `Set ${l.setNumber}: ${l.weight}`)
       });
 
       // Check if number of logs changed (deletion)
@@ -533,18 +555,10 @@ export function getModalHandlers(coreActions) {
       }
 
       // Check if any log values changed (reps/weight)
+      // Compare by index since we're comparing the same workout (logs should be in same order)
       for (let i = 0; i < currentWorkout.logs.length; i++) {
         const currentLog = currentWorkout.logs[i];
-        const originalLog = originalWorkout.logs.find(
-          (l) =>
-            l.setNumber === currentLog.setNumber &&
-            (l.supersetSide || "") === (currentLog.supersetSide || "")
-        );
-
-        if (!originalLog) {
-          console.log("Change detected: log structure changed", { currentLog });
-          return true;
-        }
+        const originalLog = originalWorkout.logs[i]; // Compare by index, not by setNumber
 
         // Use loose equality to handle number vs string comparisons
         const originalRepsNum = Number(originalLog.reps);
@@ -554,6 +568,8 @@ export function getModalHandlers(coreActions) {
 
         if (currentRepsNum !== originalRepsNum || currentWeightNum !== originalWeightNum) {
           console.log("Change detected: reps/weight changed", {
+            index: i,
+            exercise: currentLog.exercise?.exercise_name || "unknown",
             set: currentLog.setNumber,
             original: {
               reps: originalLog.reps,
@@ -708,8 +724,8 @@ export function getModalHandlers(coreActions) {
       appState.ui.editWorkout.originalWorkout = null;
       appState.ui.editWorkout.hasChanges = false;
 
-      // Close Cancel Changes modal (will also close Edit Workout modal via stack)
-      modalService.close();
+      // Close all modals (Cancel Changes + Edit Workout) and return to My Data
+      modalService.closeAll();
 
       // Clear workout ID after modals are closed
       appState.ui.selectedWorkoutId = null;

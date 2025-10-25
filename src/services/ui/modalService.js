@@ -75,6 +75,20 @@ export function open(modalName, allowStacking = false, skipPageRender = false) {
 }
 
 /**
+ * Close all modals in the stack and fully close modal system
+ * Used when you want to close nested modals completely instead of returning to previous modal
+ */
+export function closeAll() {
+  if (!appState.ui.activeModal) return;
+
+  // Clear the modal stack
+  modalStack = [];
+
+  // Now call regular close which will fully close since stack is empty
+  close();
+}
+
+/**
  * CEMENTED
  * The definitive function for closing any active generic modal. It centralizes
  * all teardown logic, including state changes, UI updates, and focus restoration.
