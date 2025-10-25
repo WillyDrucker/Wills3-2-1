@@ -448,6 +448,15 @@ export function getModalHandlers(coreActions) {
       // Update the log in history
       updateHistoricalLog(workoutId, setNumber, supersetSide, reps, weight);
 
+      // Update the original snapshot so this change isn't counted again
+      if (appState.ui.editWorkout.originalWorkout) {
+        const originalLog = appState.ui.editWorkout.originalWorkout.logs[logIndex];
+        if (originalLog) {
+          originalLog.reps = reps;
+          originalLog.weight = weight;
+        }
+      }
+
       // Close the edit panel
       details.open = false;
 
