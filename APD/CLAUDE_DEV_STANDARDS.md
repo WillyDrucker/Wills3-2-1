@@ -38,6 +38,9 @@ Code comments should include clear section headers to organize code logically. U
 - **Slowly phasing out** - Prefer clear documentation over CEMENT markers
 - When updating files, convert CEMENT to detailed explanation where appropriate
 
+### 7. GIT BRANCH SYNCHRONIZATION
+Always work on the same branch shown in VS Code's bottom-left corner. Verify with `git branch --show-current` at session start.
+
 ## FILE HEADERS
 
 **CSS Files**:
