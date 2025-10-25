@@ -39,7 +39,7 @@ import {
 } from "features/partner-modal/partner-modal.index.js";
 import { handleConfirmReset } from "features/reset-confirmation-modal/reset-confirmation-modal.index.js";
 import { handleConfirmNewWorkout } from "features/new-workout-modal/new-workout-modal.index.js";
-import { markCurrentWorkoutCommitted, updateHistoricalLog, deleteHistoricalLog } from "services/data/historyService.js";
+import { markCurrentWorkoutCommitted, updateHistoricalLog, deleteHistoricalLog, deleteEntireWorkout, restoreEntireWorkout } from "services/data/historyService.js";
 import {
   handleResetWorkoutDefaults,
   handleResetWorkoutAndClearLogs,
@@ -245,6 +245,11 @@ export function getModalHandlers(coreActions) {
     closeResetConfirmationModal: () => modalService.close(),
 
     confirmReset: () => {
+      // Delete current workout from history and database before resetting
+      const currentSessionId = appState.session.id;
+      if (currentSessionId) {
+        deleteEntireWorkout(currentSessionId);
+      }
       handleConfirmReset();
       coreActions.resetSessionAndLogs();
     },
@@ -350,18 +355,52 @@ export function getModalHandlers(coreActions) {
         const workoutId = Number(button.dataset.workoutId);
         appState.ui.selectedWorkoutId = workoutId;
 
+        // Store original workout state for change tracking (deep clone with normalized numbers)
+        const workout = appState.user.history.workouts.find((w) => w.id === workoutId);
+        if (workout) {
+          // Deep clone and normalize reps/weight to numbers
+          const clonedWorkout = JSON.parse(JSON.stringify(workout));
+          clonedWorkout.logs = clonedWorkout.logs.map(log => ({
+            ...log,
+            reps: Number(log.reps),
+            weight: Number(log.weight)
+          }));
+
+          appState.ui.editWorkout.originalWorkout = clonedWorkout;
+          appState.ui.editWorkout.hasChanges = false;
+
+          console.log("Stored original workout with normalized values:", {
+            id: workoutId,
+            firstLog: clonedWorkout.logs[0] ? {
+              reps: clonedWorkout.logs[0].reps,
+              weight: clonedWorkout.logs[0].weight,
+              types: [typeof clonedWorkout.logs[0].reps, typeof clonedWorkout.logs[0].weight]
+            } : null
+          });
+        }
+
         // Clear history selector selection when opening modal
         appState.ui.selectedHistoryWorkoutId = null;
 
-        // Open modal (scroll preservation handled by refreshMyDataPageDisplay)
-        modalService.open("editWorkout");
+        // Open modal with skipPageRender to avoid reloading My Data page
+        modalService.open("editWorkout", false, true);
       }
     },
 
     closeEditWorkoutModal: () => {
-      appState.ui.selectedWorkoutId = null;
-      // Close modal (scroll preservation handled by refreshMyDataPageDisplay)
+      // Clear selector and edit state
+      appState.ui.selectedHistoryWorkoutId = null;
+      appState.ui.editWorkout.originalWorkout = null;
+      appState.ui.editWorkout.hasChanges = false;
+
+      // Close modal first (needs selectedWorkoutId for final render)
       modalService.close();
+
+      // Then clear workout ID and refresh display
+      appState.ui.selectedWorkoutId = null;
+      if (appState.ui.currentPage === "myData") {
+        refreshMyDataPageDisplay();
+      }
     },
 
     cancelWorkoutLog: (event) => {
@@ -447,6 +486,253 @@ export function getModalHandlers(coreActions) {
       }
 
       // Re-render to show updated state
+      coreActions.renderAll();
+    },
+
+    // === EDIT WORKOUT MODAL ENHANCEMENTS ===
+    // Check if workout has been modified (logs deleted or reps/weight changed)
+    hasEditWorkoutChanges: () => {
+      const { selectedWorkoutId, editWorkout } = appState.ui;
+      const { originalWorkout } = editWorkout;
+
+      if (!selectedWorkoutId || !originalWorkout) return false;
+
+      let currentWorkout = appState.user.history.workouts.find((w) => w.id === selectedWorkoutId);
+      if (!currentWorkout) return false;
+
+      // Normalize current workout as well (create a copy to avoid mutating state)
+      currentWorkout = {
+        ...currentWorkout,
+        logs: currentWorkout.logs.map(log => ({
+          ...log,
+          reps: Number(log.reps),
+          weight: Number(log.weight)
+        }))
+      };
+
+      console.log("Comparing workouts:", {
+        originalFirstLog: originalWorkout.logs[0] ? {
+          reps: originalWorkout.logs[0].reps,
+          weight: originalWorkout.logs[0].weight,
+          types: [typeof originalWorkout.logs[0].reps, typeof originalWorkout.logs[0].weight]
+        } : null,
+        currentFirstLog: currentWorkout.logs[0] ? {
+          reps: currentWorkout.logs[0].reps,
+          weight: currentWorkout.logs[0].weight,
+          types: [typeof currentWorkout.logs[0].reps, typeof currentWorkout.logs[0].weight]
+        } : null
+      });
+
+      // Check if number of logs changed (deletion)
+      if (currentWorkout.logs.length !== originalWorkout.logs.length) {
+        console.log("Change detected: log count changed", {
+          original: originalWorkout.logs.length,
+          current: currentWorkout.logs.length
+        });
+        return true;
+      }
+
+      // Check if any log values changed (reps/weight)
+      for (let i = 0; i < currentWorkout.logs.length; i++) {
+        const currentLog = currentWorkout.logs[i];
+        const originalLog = originalWorkout.logs.find(
+          (l) =>
+            l.setNumber === currentLog.setNumber &&
+            (l.supersetSide || "") === (currentLog.supersetSide || "")
+        );
+
+        if (!originalLog) {
+          console.log("Change detected: log structure changed", { currentLog });
+          return true;
+        }
+
+        // Use loose equality to handle number vs string comparisons
+        const originalRepsNum = Number(originalLog.reps);
+        const originalWeightNum = Number(originalLog.weight);
+        const currentRepsNum = Number(currentLog.reps);
+        const currentWeightNum = Number(currentLog.weight);
+
+        if (currentRepsNum !== originalRepsNum || currentWeightNum !== originalWeightNum) {
+          console.log("Change detected: reps/weight changed", {
+            set: currentLog.setNumber,
+            original: {
+              reps: originalLog.reps,
+              weight: originalLog.weight,
+              types: [typeof originalLog.reps, typeof originalLog.weight],
+              asNumbers: [originalRepsNum, originalWeightNum]
+            },
+            current: {
+              reps: currentLog.reps,
+              weight: currentLog.weight,
+              types: [typeof currentLog.reps, typeof currentLog.weight],
+              asNumbers: [currentRepsNum, currentWeightNum]
+            },
+            comparison: {
+              repsEqual: currentRepsNum === originalRepsNum,
+              weightEqual: currentWeightNum === originalWeightNum,
+              repsStrictEqual: currentLog.reps === originalLog.reps,
+              weightStrictEqual: currentLog.weight === originalLog.weight
+            }
+          });
+          return true;
+        }
+      }
+
+      return false;
+    },
+
+    cancelEditWorkout: () => {
+      // Check for unsaved changes (only if original workout was stored)
+      const hasOriginal = appState.ui.editWorkout.originalWorkout !== null;
+
+      console.log("cancelEditWorkout - checking for changes", {
+        hasOriginal,
+        selectedWorkoutId: appState.ui.selectedWorkoutId
+      });
+
+      const hasChanges = hasOriginal && getModalHandlers(coreActions).hasEditWorkoutChanges();
+
+      console.log("cancelEditWorkout - result:", { hasChanges });
+
+      if (hasChanges) {
+        // Open Cancel Changes modal (stacked on top of Edit Workout modal)
+        modalService.open("cancelChanges", true, true);
+      } else {
+        // No changes (or no original to compare), close normally
+        // Clear selector state but keep workout ID until after modal closes
+        appState.ui.selectedHistoryWorkoutId = null;
+        appState.ui.editWorkout.originalWorkout = null;
+        appState.ui.editWorkout.hasChanges = false;
+
+        // Close modal first (needs selectedWorkoutId for final render)
+        modalService.close();
+
+        // Then clear workout ID and refresh display
+        appState.ui.selectedWorkoutId = null;
+        if (appState.ui.currentPage === "myData") {
+          refreshMyDataPageDisplay();
+        }
+      }
+    },
+
+    handleEditWorkoutBackdropClick: () => {
+      // Same behavior as Cancel button
+      getModalHandlers(coreActions).cancelEditWorkout();
+    },
+
+    openDeleteWorkoutModal: () => {
+      // Open Delete Workout confirmation modal (stacked on top of Edit Workout modal)
+      modalService.open("deleteWorkout", true, true);
+    },
+
+    confirmDeleteWorkout: () => {
+      const workoutId = appState.ui.selectedWorkoutId;
+      if (!workoutId) {
+        console.error("No workout selected for deletion");
+        return;
+      }
+
+      // Delete entire workout from history and database
+      deleteEntireWorkout(workoutId);
+
+      // Clear selector and edit state
+      appState.ui.selectedHistoryWorkoutId = null;
+      appState.ui.editWorkout.originalWorkout = null;
+      appState.ui.editWorkout.hasChanges = false;
+
+      // Close Delete Workout modal (will also close Edit Workout modal via stack)
+      modalService.close();
+
+      // Clear workout ID after modal closes
+      appState.ui.selectedWorkoutId = null;
+
+      // Re-render to show updated My Data page
+      coreActions.renderAll();
+    },
+
+    cancelDeleteWorkout: () => {
+      // Close Delete Workout modal, return to Edit Workout modal
+      modalService.close();
+    },
+
+    declineCancelChanges: () => {
+      // Close Cancel Changes modal, return to Edit Workout modal
+      modalService.close();
+    },
+
+    confirmCancelChanges: () => {
+      const { selectedWorkoutId, editWorkout } = appState.ui;
+      const { originalWorkout } = editWorkout;
+
+      console.log("confirmCancelChanges - starting", {
+        selectedWorkoutId,
+        hasOriginal: !!originalWorkout
+      });
+
+      if (!selectedWorkoutId || !originalWorkout) {
+        console.error("Cannot restore workout - missing original state", {
+          selectedWorkoutId,
+          hasOriginal: !!originalWorkout
+        });
+        modalService.close();
+        return;
+      }
+
+      console.log("Before restore:", {
+        originalFirstLog: originalWorkout.logs[0] ? {
+          reps: originalWorkout.logs[0].reps,
+          weight: originalWorkout.logs[0].weight
+        } : null
+      });
+
+      // Restore workout using historyService (updates state and database)
+      const restored = restoreEntireWorkout(selectedWorkoutId, originalWorkout);
+
+      if (!restored) {
+        console.error("Failed to restore workout");
+        modalService.close();
+        return;
+      }
+
+      console.log("After restore - checking state:", {
+        restoredFirstLog: appState.user.history.workouts.find(w => w.id === selectedWorkoutId)?.logs[0] ? {
+          reps: appState.user.history.workouts.find(w => w.id === selectedWorkoutId).logs[0].reps,
+          weight: appState.user.history.workouts.find(w => w.id === selectedWorkoutId).logs[0].weight
+        } : null
+      });
+
+      // Clear selector and edit state
+      appState.ui.selectedHistoryWorkoutId = null;
+      appState.ui.editWorkout.originalWorkout = null;
+      appState.ui.editWorkout.hasChanges = false;
+
+      // Close Cancel Changes modal (will also close Edit Workout modal via stack)
+      modalService.close();
+
+      // Clear workout ID after modals are closed
+      appState.ui.selectedWorkoutId = null;
+
+      // Refresh My Data display without full render (modal close already rendered)
+      if (appState.ui.currentPage === "myData") {
+        refreshMyDataPageDisplay();
+      }
+    },
+
+    updateWorkout: () => {
+      // Mark that changes have been made (for tracking purposes)
+      appState.ui.editWorkout.hasChanges = true;
+
+      // Clear selector and edit state
+      appState.ui.selectedHistoryWorkoutId = null;
+      appState.ui.editWorkout.originalWorkout = null;
+
+      // Close Edit Workout modal
+      modalService.close();
+
+      // Clear workout ID after modal closes
+      appState.ui.selectedWorkoutId = null;
+
+      // Re-render to show updated My Data page
       coreActions.renderAll();
     },
 

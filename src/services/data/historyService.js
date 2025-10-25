@@ -323,3 +323,70 @@ export function deleteHistoricalLog(workoutId, setNumber, supersetSide) {
 
   return isLastLog;
 }
+
+/**
+ * Delete entire workout session from history
+ * Removes workout from appState and database
+ * @param {number} workoutId - ID of workout to delete
+ * @returns {boolean} - True if deleted successfully, false otherwise
+ */
+export function deleteEntireWorkout(workoutId) {
+  const { user } = appState;
+  const workoutIndex = user.history.workouts.findIndex((w) => w.id === workoutId);
+
+  if (workoutIndex === -1) {
+    console.error("Workout not found:", workoutId);
+    return false;
+  }
+
+  // Remove entire workout from history
+  user.history.workouts.splice(workoutIndex, 1);
+
+  persistenceService.saveState();
+
+  // Handle database deletion if authenticated
+  if (appState.auth?.isAuthenticated) {
+    deleteWorkoutFromDatabase(workoutId).catch((error) => {
+      console.error("Failed to delete workout from database:", error);
+    });
+  }
+
+  return true;
+}
+
+/**
+ * Restore entire workout from backup (used when canceling changes in Edit Workout modal)
+ * Updates workout in history and syncs to database
+ * @param {number} workoutId - ID of workout to restore
+ * @param {Object} restoredWorkout - The complete workout object to restore
+ * @returns {boolean} - True if restored successfully, false otherwise
+ */
+export function restoreEntireWorkout(workoutId, restoredWorkout) {
+  const { user } = appState;
+  const workoutIndex = user.history.workouts.findIndex((w) => w.id === workoutId);
+
+  if (workoutIndex === -1) {
+    console.error("Workout not found for restore:", workoutId);
+    return false;
+  }
+
+  console.log("Restoring entire workout:", {
+    workoutIndex,
+    workoutId,
+    logsCount: restoredWorkout.logs.length
+  });
+
+  // Replace entire workout (deep clone to avoid reference issues)
+  user.history.workouts[workoutIndex] = JSON.parse(JSON.stringify(restoredWorkout));
+
+  persistenceService.saveState();
+
+  // Save restored workout to database if authenticated
+  if (appState.auth?.isAuthenticated) {
+    saveWorkoutToDatabase(user.history.workouts[workoutIndex]).catch((error) => {
+      console.error("Failed to restore workout to database:", error);
+    });
+  }
+
+  return true;
+}
