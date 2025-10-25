@@ -47,11 +47,18 @@ export function renderEditWorkoutModal() {
 
     if (workout) {
       container.innerHTML = getEditWorkoutModalTemplate(workout);
+
+      // Clear selector-open class after re-render to prevent orphaned muting
+      // When a details element is destroyed during re-render, its open state is lost
+      // but the body class persists, causing CSS muting on all closed panels
+      document.body.classList.remove('is-selector-open');
     } else {
       console.error("Workout not found for Edit Workout modal:", workoutId);
       modalService.close();
     }
   } else {
     container.innerHTML = "";
+    // Clear selector-open class when modal is hidden
+    document.body.classList.remove('is-selector-open');
   }
 }

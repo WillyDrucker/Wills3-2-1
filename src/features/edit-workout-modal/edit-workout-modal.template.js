@@ -132,6 +132,13 @@ export function getEditWorkoutModalTemplate(workout) {
     }
   }
 
+  // Sort exercises within each group by their original workout position
+  // This preserves the muscle group order (Major1 first, etc.) from "Today's Workout"
+  const sortByPosition = (a, b) => a.data.exercise.position - b.data.exercise.position;
+  normalExercises.sort(sortByPosition);
+  leftExercises.sort(sortByPosition);
+  rightExercises.sort(sortByPosition);
+
   // Combine in proper order
   const orderedExercises = [
     ...normalExercises,
