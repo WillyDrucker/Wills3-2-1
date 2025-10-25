@@ -128,6 +128,7 @@ export function getInitialAppState() {
       editWorkout: {
         originalWorkout: null, // Deep clone of workout before editing
         hasChanges: false, // Track if user made any changes
+        changeCount: 0, // Number of changes detected (for display in Cancel modal)
       },
       modal: {
         elementToFocusOnClose: null,

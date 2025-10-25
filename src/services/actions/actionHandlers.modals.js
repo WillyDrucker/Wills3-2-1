@@ -501,15 +501,18 @@ export function getModalHandlers(coreActions) {
     },
 
     // === EDIT WORKOUT MODAL ENHANCEMENTS ===
-    // Check if workout has been modified (logs deleted or reps/weight changed)
+    // Check if workout has been modified (logs deleted, state changes, or uncommitted input changes)
+    // Returns object: { hasChanges: boolean, changeCount: number }
     hasEditWorkoutChanges: () => {
       const { selectedWorkoutId, editWorkout } = appState.ui;
       const { originalWorkout } = editWorkout;
 
-      if (!selectedWorkoutId || !originalWorkout) return false;
+      if (!selectedWorkoutId || !originalWorkout) return { hasChanges: false, changeCount: 0 };
 
       let currentWorkout = appState.user.history.workouts.find((w) => w.id === selectedWorkoutId);
-      if (!currentWorkout) return false;
+      if (!currentWorkout) return { hasChanges: false, changeCount: 0 };
+
+      let changeCount = 0;
 
       console.log("RAW current workout from state (before normalization):", {
         firstLog: currentWorkout.logs[0] ? {
@@ -545,56 +548,69 @@ export function getModalHandlers(coreActions) {
         currentAllWeights: currentWorkout.logs.map(l => `Set ${l.setNumber}: ${l.weight}`)
       });
 
-      // Check if number of logs changed (deletion)
-      if (currentWorkout.logs.length !== originalWorkout.logs.length) {
+      // Check if number of logs changed (deletion) - each deleted log counts as 1 change
+      const deletedCount = Math.abs(currentWorkout.logs.length - originalWorkout.logs.length);
+      if (deletedCount > 0) {
         console.log("Change detected: log count changed", {
           original: originalWorkout.logs.length,
-          current: currentWorkout.logs.length
+          current: currentWorkout.logs.length,
+          deletedCount
         });
-        return true;
+        changeCount += deletedCount;
       }
 
-      // Check if any log values changed (reps/weight)
-      // Compare by index since we're comparing the same workout (logs should be in same order)
-      for (let i = 0; i < currentWorkout.logs.length; i++) {
+      // Check state changes (logs that were updated and saved)
+      for (let i = 0; i < Math.min(currentWorkout.logs.length, originalWorkout.logs.length); i++) {
         const currentLog = currentWorkout.logs[i];
-        const originalLog = originalWorkout.logs[i]; // Compare by index, not by setNumber
+        const originalLog = originalWorkout.logs[i];
 
-        // Use loose equality to handle number vs string comparisons
         const originalRepsNum = Number(originalLog.reps);
         const originalWeightNum = Number(originalLog.weight);
         const currentRepsNum = Number(currentLog.reps);
         const currentWeightNum = Number(currentLog.weight);
 
         if (currentRepsNum !== originalRepsNum || currentWeightNum !== originalWeightNum) {
-          console.log("Change detected: reps/weight changed", {
+          console.log("State change detected:", {
             index: i,
             exercise: currentLog.exercise?.exercise_name || "unknown",
-            set: currentLog.setNumber,
-            original: {
-              reps: originalLog.reps,
-              weight: originalLog.weight,
-              types: [typeof originalLog.reps, typeof originalLog.weight],
-              asNumbers: [originalRepsNum, originalWeightNum]
-            },
-            current: {
-              reps: currentLog.reps,
-              weight: currentLog.weight,
-              types: [typeof currentLog.reps, typeof currentLog.weight],
-              asNumbers: [currentRepsNum, currentWeightNum]
-            },
-            comparison: {
-              repsEqual: currentRepsNum === originalRepsNum,
-              weightEqual: currentWeightNum === originalWeightNum,
-              repsStrictEqual: currentLog.reps === originalLog.reps,
-              weightStrictEqual: currentLog.weight === originalLog.weight
-            }
+            set: currentLog.setNumber
           });
-          return true;
+          changeCount++;
         }
       }
 
-      return false;
+      // Check uncommitted input field changes (changes in open edit panels that haven't been saved)
+      for (let i = 0; i < originalWorkout.logs.length; i++) {
+        const originalLog = originalWorkout.logs[i];
+        const logIndex = `${selectedWorkoutId}-${originalLog.setNumber}-${originalLog.supersetSide || "normal"}`;
+
+        const repsInput = document.getElementById(`reps-edit-${logIndex}-input`);
+        const weightInput = document.getElementById(`weight-edit-${logIndex}-input`);
+
+        if (repsInput && weightInput) {
+          const inputReps = Number(repsInput.value);
+          const inputWeight = Number(weightInput.value);
+          const originalReps = Number(originalLog.reps);
+          const originalWeight = Number(originalLog.weight);
+
+          // Check if input differs from original (uncommitted change)
+          if (inputReps !== originalReps || inputWeight !== originalWeight) {
+            console.log("Uncommitted input change detected:", {
+              index: i,
+              exercise: originalLog.exercise?.exercise_name || "unknown",
+              set: originalLog.setNumber,
+              inputValues: { reps: inputReps, weight: inputWeight },
+              originalValues: { reps: originalReps, weight: originalWeight }
+            });
+            changeCount++;
+          }
+        }
+      }
+
+      const hasChanges = changeCount > 0;
+      console.log("Total changes:", { hasChanges, changeCount });
+
+      return { hasChanges, changeCount };
     },
 
     cancelEditWorkout: () => {
@@ -606,11 +622,14 @@ export function getModalHandlers(coreActions) {
         selectedWorkoutId: appState.ui.selectedWorkoutId
       });
 
-      const hasChanges = hasOriginal && getModalHandlers(coreActions).hasEditWorkoutChanges();
+      const changeResult = hasOriginal ? getModalHandlers(coreActions).hasEditWorkoutChanges() : { hasChanges: false, changeCount: 0 };
 
-      console.log("cancelEditWorkout - result:", { hasChanges });
+      console.log("cancelEditWorkout - result:", changeResult);
 
-      if (hasChanges) {
+      if (changeResult.hasChanges) {
+        // Store change count for Cancel Changes modal to display
+        appState.ui.editWorkout.changeCount = changeResult.changeCount;
+
         // Open Cancel Changes modal (stacked on top of Edit Workout modal)
         modalService.open("cancelChanges", true, true);
       } else {
@@ -619,6 +638,7 @@ export function getModalHandlers(coreActions) {
         appState.ui.selectedHistoryWorkoutId = null;
         appState.ui.editWorkout.originalWorkout = null;
         appState.ui.editWorkout.hasChanges = false;
+        appState.ui.editWorkout.changeCount = 0;
 
         // Close modal first (needs selectedWorkoutId for final render)
         modalService.close();
@@ -723,6 +743,7 @@ export function getModalHandlers(coreActions) {
       appState.ui.selectedHistoryWorkoutId = null;
       appState.ui.editWorkout.originalWorkout = null;
       appState.ui.editWorkout.hasChanges = false;
+      appState.ui.editWorkout.changeCount = 0;
 
       // Close all modals (Cancel Changes + Edit Workout) and return to My Data
       modalService.closeAll();
