@@ -129,6 +129,7 @@ export function getInitialAppState() {
         originalWorkout: null, // Deep clone of workout before editing
         hasChanges: false, // Track if user made any changes
         changeCount: 0, // Number of changes detected (for display in Cancel modal)
+        openPanelStates: null, // Captured state of open panels before details close
       },
       modal: {
         elementToFocusOnClose: null,

@@ -579,7 +579,42 @@ export function getModalHandlers(coreActions) {
         }
       }
 
-      // Check uncommitted input field changes (changes in OPEN edit panels that haven't been saved)
+      // Check uncommitted input field changes using captured panel states
+      // (captured on mousedown before details elements close)
+      const openPanelStates = editWorkout.openPanelStates || [];
+      console.log("Checking uncommitted input changes from captured states:", openPanelStates);
+
+      for (const panelState of openPanelStates) {
+        if (panelState.reps !== panelState.originalReps || panelState.weight !== panelState.originalWeight) {
+          const originalLog = originalWorkout.logs[panelState.index];
+          console.log("Uncommitted input change detected:", {
+            index: panelState.index,
+            exercise: originalLog.exercise?.exercise_name || "unknown",
+            set: originalLog.setNumber,
+            inputValues: { reps: panelState.reps, weight: panelState.weight },
+            originalValues: { reps: panelState.originalReps, weight: panelState.originalWeight }
+          });
+          changeCount++;
+        }
+      }
+
+      const hasChanges = changeCount > 0;
+      console.log("Total changes:", { hasChanges, changeCount });
+
+      return { hasChanges, changeCount };
+    },
+
+    // Capture edit panel state before details elements close (called on mousedown)
+    prepareCancelEditWorkout: () => {
+      // Store which panels are currently open BEFORE they close from the click
+      const hasOriginal = appState.ui.editWorkout.originalWorkout !== null;
+      if (!hasOriginal) return;
+
+      const { selectedWorkoutId, editWorkout } = appState.ui;
+      const { originalWorkout } = editWorkout;
+
+      // Store current state of open panels (before they close)
+      const openPanelStates = [];
       for (let i = 0; i < originalWorkout.logs.length; i++) {
         const originalLog = originalWorkout.logs[i];
         const logIndex = `${selectedWorkoutId}-${originalLog.setNumber}-${originalLog.supersetSide || "normal"}`;
@@ -588,35 +623,25 @@ export function getModalHandlers(coreActions) {
         const weightInput = document.getElementById(`weight-edit-${logIndex}-input`);
 
         if (repsInput && weightInput) {
-          // Only check if the edit panel is currently open
           const detailsElement = repsInput.closest('details');
           const isPanelOpen = detailsElement && detailsElement.hasAttribute('open');
 
           if (isPanelOpen) {
-            const inputReps = Number(repsInput.value);
-            const inputWeight = Number(weightInput.value);
-            const originalReps = Number(originalLog.reps);
-            const originalWeight = Number(originalLog.weight);
-
-            // Check if input differs from original (uncommitted change)
-            if (inputReps !== originalReps || inputWeight !== originalWeight) {
-              console.log("Uncommitted input change detected:", {
-                index: i,
-                exercise: originalLog.exercise?.exercise_name || "unknown",
-                set: originalLog.setNumber,
-                inputValues: { reps: inputReps, weight: inputWeight },
-                originalValues: { reps: originalReps, weight: originalWeight }
-              });
-              changeCount++;
-            }
+            openPanelStates.push({
+              index: i,
+              logIndex,
+              reps: Number(repsInput.value),
+              weight: Number(weightInput.value),
+              originalReps: Number(originalLog.reps),
+              originalWeight: Number(originalLog.weight)
+            });
           }
         }
       }
 
-      const hasChanges = changeCount > 0;
-      console.log("Total changes:", { hasChanges, changeCount });
-
-      return { hasChanges, changeCount };
+      // Store in state for cancelEditWorkout to use
+      appState.ui.editWorkout.openPanelStates = openPanelStates;
+      console.log("Captured open panel states:", openPanelStates);
     },
 
     cancelEditWorkout: () => {
@@ -631,6 +656,9 @@ export function getModalHandlers(coreActions) {
       const changeResult = hasOriginal ? getModalHandlers(coreActions).hasEditWorkoutChanges() : { hasChanges: false, changeCount: 0 };
 
       console.log("cancelEditWorkout - result:", changeResult);
+
+      // Clear captured panel states after use
+      appState.ui.editWorkout.openPanelStates = null;
 
       if (changeResult.hasChanges) {
         // Store change count for Cancel Changes modal to display
@@ -658,7 +686,8 @@ export function getModalHandlers(coreActions) {
     },
 
     handleEditWorkoutBackdropClick: () => {
-      // Same behavior as Cancel button
+      // First capture panel state, then cancel
+      getModalHandlers(coreActions).prepareCancelEditWorkout();
       getModalHandlers(coreActions).cancelEditWorkout();
     },
 

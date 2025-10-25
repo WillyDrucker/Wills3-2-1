@@ -34,6 +34,25 @@ export function initialize(dependencies) {
   const actions = actionHandlers.getActionHandlers();
   const selectorHandlers = actionHandlers.getSelectorHandlers();
 
+  /* === MOUSEDOWN DELEGATION === */
+  /* Handle mousedown actions (for actions that need to capture state before details close) */
+  document.body.addEventListener("mousedown", (event) => {
+    try {
+      const target = event.target;
+      const actionTarget = target.closest("[data-mousedown-action]");
+
+      if (actionTarget) {
+        const { mousedownAction } = actionTarget.dataset;
+
+        if (actions[mousedownAction]) {
+          actions[mousedownAction](event);
+        }
+      }
+    } catch (error) {
+      console.error("An error occurred in the mousedown event listener:", error);
+    }
+  });
+
   /* === CLICK DELEGATION === */
   document.body.addEventListener("click", (event) => {
     try {
