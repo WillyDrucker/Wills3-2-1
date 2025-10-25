@@ -18,10 +18,13 @@ import * as focusTrapService from "lib/focusTrap.js";
 import * as selectorService from "services/ui/selectorService.js";
 
 let _renderAll = null;
+let _renderModalsOnly = null;
 let modalStack = []; // Track modal stack for nested modals
+let currentModalSkipsPageRender = false; // Track if current modal used skipPageRender
 
-export function initialize(renderAll) {
+export function initialize(renderAll, renderModalsOnly) {
   _renderAll = renderAll;
+  _renderModalsOnly = renderModalsOnly;
 }
 
 /**
@@ -31,8 +34,9 @@ export function initialize(renderAll) {
  * features (focus trapping).
  * @param {string} modalName - The name of the modal to open (e.g., 'superset').
  * @param {boolean} allowStacking - If true, allows opening modal on top of existing modal
+ * @param {boolean} skipPageRender - If true, only renders modals without reloading the page
  */
-export function open(modalName, allowStacking = false) {
+export function open(modalName, allowStacking = false, skipPageRender = false) {
   // If stacking is not allowed and there's already a modal, prevent opening
   if (!allowStacking && appState.ui.activeModal) return;
 
@@ -49,7 +53,15 @@ export function open(modalName, allowStacking = false) {
   document.documentElement.classList.add("is-modal-open");
   document.documentElement.setAttribute("data-active-modal", modalName);
 
-  _renderAll();
+  // Track if this modal skips page render (for close() to use)
+  currentModalSkipsPageRender = skipPageRender;
+
+  // Render modals only (fast, no page reload) or full page render
+  if (skipPageRender && _renderModalsOnly) {
+    _renderModalsOnly();
+  } else {
+    _renderAll();
+  }
 
   // Activate focus trap after the DOM has been updated
   requestAnimationFrame(() => {
@@ -92,11 +104,21 @@ export function close() {
   }
 
   // No stacked modals, fully close
+  const wasSkippingPageRender = currentModalSkipsPageRender;
+
   appState.ui.activeModal = null;
   document.documentElement.classList.remove("is-modal-open");
   document.documentElement.removeAttribute("data-active-modal");
 
-  _renderAll();
+  // Reset the skip flag
+  currentModalSkipsPageRender = false;
+
+  // Render modals only (fast, no page reload) or full page render
+  if (wasSkippingPageRender && _renderModalsOnly) {
+    _renderModalsOnly();
+  } else {
+    _renderAll();
+  }
 
   focusTrapService.deactivate();
   appState.ui.modal.elementToFocusOnClose?.focus();

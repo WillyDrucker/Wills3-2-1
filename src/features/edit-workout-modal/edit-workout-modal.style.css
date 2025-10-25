@@ -15,34 +15,83 @@
    Used by: Edit Workout modal (edit-workout-modal.template.js)
    ========================================================================== */
 
-/* === SESSION HEADER === */
-.edit-workout-session-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  margin: 16px 0 9px 0; /* 16px from title, 9px = ~16px visual to question */
+/* === HEADER - Two-line format matching My Data page EXACTLY === */
+.edit-workout-header {
+  margin: 16px 0 0 0; /* 16px from title, children control their own bottom spacing */
   padding: 0;
 }
 
-.edit-workout-session-header .session-day-bodypart {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--on-surface);
+/* Line 1: Day/Date container - EXACT match to My Data history-day-date-header */
+.edit-workout-day-date {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0;
+  line-height: 1;
+  margin-bottom: 3px; /* 3px + ~4px font metrics = 7px visual */
 }
 
-.edit-workout-session-header .session-date {
-  font-size: 1rem;
-  font-weight: 500;
+/* Day text - EXACT match to My Data history-day-date-text */
+.edit-workout-day-text {
+  font-size: var(--font-size-h2); /* 1.25rem */
+  font-weight: 600;
+  line-height: 1;
+  color: var(--on-surface-light); /* White */
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+/* Date text - EXACT match to My Data history-day-date-date */
+.edit-workout-date-text {
+  font-size: var(--font-size-h2); /* 1.25rem */
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
   flex-shrink: 0;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+/* Line 2: Bodypart/Completion container - EXACT match to My Data history-body-part-line */
+.edit-workout-bodypart-completion {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0;
+  line-height: 1;
+  margin-bottom: 5px; /* 5px + ~2px font metrics = 7px visual */
+}
+
+/* Body part text - EXACT match to My Data history-body-part-text */
+.edit-workout-bodypart-text {
+  font-size: var(--font-size-body-m); /* 1rem */
+  font-weight: 600;
+  line-height: 1;
+  color: var(--on-surface-light);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+/* Completion text wrapper */
+.edit-workout-completion-text {
+  font-size: var(--font-size-body-m); /* 1rem */
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+/* Completion label styling - matches My Data */
+.edit-workout-completion-text .history-completion-label {
+  color: var(--on-surface-medium) !important;
+}
+
+.edit-workout-completion-text .history-completion-value {
+  color: var(--log-green) !important;
 }
 
 /* === LOG LIST === */
 .edit-workout-log-list {
-  max-height: 400px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  margin: 16px 0 0 0; /* 16px from "Edit Log(s)" label */
+  /* No max-height or overflow - let edit panels overlay freely like Today's Workout */
+  margin: 0; /* No margin - first log is 7px below header via header margin-bottom */
   padding: 0;
 }
 
@@ -59,21 +108,57 @@
 /* Reuses workout-log-item styles from workout-log.style.css */
 /* No additional styling needed - classes are inherited */
 
-/* === SCROLLBAR STYLING === */
-.edit-workout-log-list::-webkit-scrollbar {
-  width: 8px;
+/* === BUTTON GROUP === */
+.edit-workout-button-group {
+  display: flex;
+  gap: 16px; /* 16px between buttons */
+  margin: 16px 0 0 0; /* 16px from log list */
+  padding: 0;
 }
 
-.edit-workout-log-list::-webkit-scrollbar-track {
-  background: var(--surface-variant);
-  border-radius: 4px;
+/* All buttons - equal width, 50px height, consistent styling */
+.edit-workout-cancel-button,
+.edit-workout-delete-button,
+.edit-workout-update-button {
+  flex: 1; /* Equal width */
+  height: 50px; /* var(--control-height) - enforced for all */
+  font-size: 1.25rem; /* var(--font-size-h2) */
+  font-weight: 600;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  border: none;
+  transition: none; /* SSS: No transitions */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box; /* Include padding in height calculation */
 }
 
-.edit-workout-log-list::-webkit-scrollbar-thumb {
-  background: var(--on-surface-medium);
-  border-radius: 4px;
+/* Cancel button - regular action button */
+.edit-workout-cancel-button {
+  background-color: var(--surface-medium-dark);
+  color: var(--text-primary);
 }
 
-.edit-workout-log-list::-webkit-scrollbar-thumb:hover {
-  background: var(--on-surface);
+/* Delete Workout button - red with stacked text (like Save My Data) */
+.edit-workout-delete-button {
+  background-color: var(--text-red-skip);
+  color: var(--text-on-action-color);
+  flex-direction: column; /* Stack text vertically */
+  line-height: 1;
+}
+
+.edit-workout-delete-button .button-delete-line1,
+.edit-workout-delete-button .button-delete-line2 {
+  display: block;
+}
+
+.edit-workout-delete-button .button-delete-line1 {
+  margin-bottom: var(--space-xs); /* 2px gap between lines */
+}
+
+/* Update button - green */
+.edit-workout-update-button {
+  background-color: var(--log-green);
+  color: var(--text-on-action-color);
 }

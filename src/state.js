@@ -125,6 +125,10 @@ export function getInitialAppState() {
       selectedWorkoutId: null,
       selectedHistoryWorkoutId: null,
       deleteLogContext: null,
+      editWorkout: {
+        originalWorkout: null, // Deep clone of workout before editing
+        hasChanges: false, // Track if user made any changes
+      },
       modal: {
         elementToFocusOnClose: null,
       },

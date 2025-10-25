@@ -79,6 +79,7 @@ function resetSessionAndLogs() {
 export async function initialize(dependencies) {
   const {
     renderAll,
+    renderModalsOnly,
     updateActiveWorkoutAndLog,
     updateActiveWorkoutPreservingLogs,
     renderError,
@@ -88,7 +89,7 @@ export async function initialize(dependencies) {
   const boundReset = resetSessionAndLogs.bind({ updateActiveWorkoutAndLog });
 
   initializeTimerService(dependencies);
-  modalService.initialize(renderAll);
+  modalService.initialize(renderAll, renderModalsOnly);
   fullscreen.initialize(renderSideNav);
   clockService.initialize({ renderActiveCardHeader, renderConfigHeaderLine });
 

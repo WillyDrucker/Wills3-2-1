@@ -40,6 +40,8 @@ import { renderResetConfirmationModal } from "features/reset-confirmation-modal/
 import { renderNewWorkoutModal } from "features/new-workout-modal/new-workout-modal.index.js";
 import { renderEditWorkoutModal } from "features/edit-workout-modal/edit-workout-modal.index.js";
 import { renderDeleteLogModal } from "features/delete-log-modal/delete-log-modal.index.js";
+import { renderDeleteWorkoutModal } from "features/delete-workout-modal/delete-workout-modal.index.js";
+import { renderCancelChangesModal } from "features/shared-modals/cancel-changes-modal.index.js";
 import { renderResetOptionsModal } from "features/reset-modal/reset-modal.index.js";
 import { renderVideoPlayer } from "features/video-player/video-player.index.js";
 import { renderSupersetModal } from "features/superset-modal/superset-modal.index.js";
@@ -131,6 +133,8 @@ function renderAll() {
   renderNewWorkoutModal();
   renderEditWorkoutModal();
   renderDeleteLogModal();
+  renderDeleteWorkoutModal();
+  renderCancelChangesModal();
   renderResetOptionsModal();
   renderSupersetModal();
   renderPartnerModal();
@@ -147,6 +151,22 @@ function renderAll() {
       mainContent.scrollTop = savedScrollPosition;
     }
   }
+}
+
+function renderModalsOnly() {
+  // Render only modals without touching page content
+  // Used by modalService when skipPageRender = true to avoid reloading the page
+  renderResetConfirmationModal();
+  renderNewWorkoutModal();
+  renderEditWorkoutModal();
+  renderDeleteLogModal();
+  renderDeleteWorkoutModal();
+  renderCancelChangesModal();
+  renderResetOptionsModal();
+  renderSupersetModal();
+  renderPartnerModal();
+  renderConfigModal();
+  renderVideoPlayer();
 }
 
 function renderError(message) {
@@ -169,6 +189,7 @@ async function checkAuthAndInitialize() {
 
     appInitializerService.initialize({
       renderAll,
+      renderModalsOnly,
       updateActiveWorkoutAndLog,
       updateActiveWorkoutPreservingLogs,
       renderError,
@@ -192,6 +213,7 @@ window.addEventListener("auth-success", () => {
 
   appInitializerService.initialize({
     renderAll,
+    renderModalsOnly,
     updateActiveWorkoutAndLog,
     updateActiveWorkoutPreservingLogs,
     renderError,

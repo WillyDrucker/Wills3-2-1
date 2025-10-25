@@ -82,9 +82,14 @@ export function refreshMyDataPageDisplay() {
   // Add click-outside-to-close listener for active workout selectors
   setupOutsideClickListener();
 
-  // Restore scroll position after re-rendering (preserves position during modal open/close)
-  if (mainContent && savedScrollPosition > 0) {
-    mainContent.scrollTop = savedScrollPosition;
+  // Restore scroll position after browser completes layout (requestAnimationFrame ensures timing)
+  if (savedScrollPosition > 0) {
+    requestAnimationFrame(() => {
+      const mainContent = document.getElementById("main-content");
+      if (mainContent) {
+        mainContent.scrollTop = savedScrollPosition;
+      }
+    });
   }
 }
 
@@ -112,6 +117,9 @@ function setupOutsideClickListener() {
 function handleOutsideClick(event) {
   // Only handle if there's an active selection
   if (!appState.ui.selectedHistoryWorkoutId) return;
+
+  // Don't handle clicks when a modal is open (prevents interference with modal interactions)
+  if (appState.ui.activeModal) return;
 
   // Check if click is outside all workout selectors
   const clickedSelector = event.target.closest('.workout-session-selector');

@@ -1,0 +1,48 @@
+/* ==========================================================================
+   CANCEL CHANGES CONFIRMATION MODAL
+
+   Generic confirmation window for canceling with unsaved changes.
+   Warns user that changes will be discarded.
+
+   Purpose:
+   - Confirms discarding unsaved changes
+   - Provides No (return to editing) and Yes (discard) options
+   - Reusable across multiple features
+
+   Base Styles:
+   Inherits all base styling from _confirmation-modals.css:
+   - Title: 2.5rem/700 centered
+   - Description: 1rem/600 (All changes will be lost)
+   - Question: 1.25rem/600 (Discard all changes?)
+   - Buttons: 50px height, 1.25rem text
+   - 16px spacing rhythm throughout
+   - Blue border, centered layout
+
+   Custom Features:
+   - Red "Yes" button (button-cancel-yes)
+   - No special animations
+
+   Dependencies:
+   - _confirmation-modals.css: Base confirmation modal pattern
+   - _buttons.css: action-button styling (50px, 1.25rem)
+   - _variables.css: Color tokens (--text-red-skip)
+   - _modals.css: Modal container system
+
+   Used by: Edit Workout modal → Cancel with changes flow
+   ========================================================================== */
+
+@import url("../../styles/components/_modals.css");
+@import url("../../styles/components/_card-headers.css");
+@import url("../../styles/components/_action-button-groups.css");
+@import url("../../styles/components/_confirmation-modals.css");
+
+/* ==========================================================================
+   CANCEL CHANGES-SPECIFIC STYLES ONLY
+   All base confirmation modal styles come from _confirmation-modals.css
+   ========================================================================== */
+
+/* === RED YES BUTTON - Cancel Changes specific === */
+.cancel-changes-card .button-cancel-yes {
+  background-color: var(--text-red-skip);
+  color: var(--text-on-action-color);
+}

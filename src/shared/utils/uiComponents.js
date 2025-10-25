@@ -51,6 +51,12 @@ export const ui = {
   deleteLogModalContainer: document.getElementById(
     "delete-log-modal-container"
   ),
+  deleteWorkoutModalContainer: document.getElementById(
+    "delete-workout-modal-container"
+  ),
+  cancelChangesModalContainer: document.getElementById(
+    "cancel-changes-modal-container"
+  ),
 };
 
 /**

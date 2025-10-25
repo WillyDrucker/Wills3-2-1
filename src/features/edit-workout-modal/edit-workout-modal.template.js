@@ -22,6 +22,22 @@ import { colorCodeMap, programConfig } from "config";
 import { isDumbbellExercise, pluralize } from "utils";
 import { createNumberInputHTML } from "ui";
 
+/* Helper function to format timestamp as 12-hour time with AM/PM */
+function formatCompletionTime(timestamp) {
+  if (!timestamp) return "";
+
+  const date = new Date(timestamp);
+  let hours = date.getHours();
+  const minutes = date.getMinutes();
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+
+  hours = hours % 12;
+  hours = hours ? hours : 12; // 0 should be 12
+  const minutesStr = minutes < 10 ? '0' + minutes : minutes;
+
+  return `${hours}:${minutesStr} ${ampm}`;
+}
+
 /**
  * Generate Edit Workout modal HTML for a specific workout session
  * @param {Object} workout - Workout session from appState.user.history.workouts
@@ -31,14 +47,17 @@ export function getEditWorkoutModalTemplate(workout) {
   if (!workout) return "";
 
   const currentPlan = programConfig[workout.planName];
-  const logCount = workout.logs.length;
-  const editLabel = logCount === 1 ? "Edit Log" : "Edit Logs";
 
-  // Build session header with day:bodypart + date
+  // Build date strings
   const sessionDate = new Date(workout.timestamp);
   const dateString = sessionDate.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
+  });
+
+  // Day of week (e.g., "Thursday")
+  const dayOfWeek = sessionDate.toLocaleDateString("en-US", {
+    weekday: "long",
   });
 
   // Extract day name from first log
@@ -60,9 +79,22 @@ export function getEditWorkoutModalTemplate(workout) {
     bodyPartHtml = `<span class="${bodyPartColorClass}">${workout.bodyPart}</span>`;
   }
 
-  const sessionHeaderHtml = `<div class="edit-workout-session-header">
-    <span class="session-day-bodypart">${dayName}: ${bodyPartHtml}</span>
-    <span class="session-date data-highlight text-plan">${dateString}</span>
+  // Format completion timestamp
+  const completionTimeStr = formatCompletionTime(workout.completedTimestamp);
+  const completionHtml = completionTimeStr
+    ? `<span class="history-completion-label">Completed:</span> <span class="history-completion-value">${completionTimeStr}</span>`
+    : '';
+
+  // Build two-line header (day/date + bodypart/completion) - EXACT match to My Data structure
+  const sessionHeaderHtml = `<div class="edit-workout-header">
+    <div class="edit-workout-day-date">
+      <span class="edit-workout-day-text">${dayOfWeek}</span>
+      <span class="edit-workout-date-text data-highlight text-plan">${dateString}</span>
+    </div>
+    <div class="edit-workout-bodypart-completion">
+      <span class="edit-workout-bodypart-text">${bodyPartHtml}</span>
+      <span class="edit-workout-completion-text">${completionHtml}</span>
+    </div>
   </div>`;
 
   // Group exercises by name with metadata (same logic as My Data calendar)
@@ -117,16 +149,23 @@ export function getEditWorkoutModalTemplate(workout) {
     .join("");
 
   return `
-    <div class="superset-modal-backdrop" data-action="closeEditWorkoutModal"></div>
+    <div class="superset-modal-backdrop" data-action="handleEditWorkoutBackdropClick"></div>
     <div class="superset-modal-content card confirmation-modal-card edit-workout-card">
       <h2 class="confirmation-modal-title">Edit Workout</h2>
 
       ${sessionHeaderHtml}
 
-      <p class="confirmation-modal-question">${editLabel}</p>
-
       <div class="edit-workout-log-list">
         ${logItemsHtml}
+      </div>
+
+      <div class="edit-workout-button-group">
+        <button class="edit-workout-cancel-button" data-action="cancelEditWorkout">Cancel</button>
+        <button class="edit-workout-delete-button" data-action="openDeleteWorkoutModal">
+          <span class="button-delete-line1">Delete</span>
+          <span class="button-delete-line2">Workout</span>
+        </button>
+        <button class="edit-workout-update-button" data-action="updateWorkout">Update</button>
       </div>
     </div>
   `;

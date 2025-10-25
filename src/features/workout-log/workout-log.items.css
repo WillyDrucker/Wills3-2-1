@@ -45,7 +45,7 @@
   border: var(--card-border-width) solid transparent;
   border-radius: var(--border-radius);
   height: var(--selector-height); /* Tokenized: 50px */
-  padding: 0 12px; /* 🔒 CEMENT: Specific padding for log items */
+  padding: 0 9px; /* 9px rhythm matches My Data workout selector */
   position: relative;
   box-sizing: border-box;
   contain: layout style;
@@ -72,8 +72,8 @@
 .log-item-line-1,
 .log-item-line-2 {
   position: absolute;
-  left: 12px; /* Matches parent padding */
-  right: 12px; /* Matches parent padding */
+  left: 7px; /* 7px + 2px border = 9px total (matches My Data workout selector) */
+  right: 7px; /* 7px + 2px border = 9px total (matches My Data workout selector) */
   display: flex;
   justify-content: space-between;
   align-items: center;

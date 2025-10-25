@@ -26,6 +26,9 @@ import { getWeekRange } from "utils";
 function getHistorySelectorHTML() {
   const { selectedTab } = appState.ui.myDataPage;
 
+  // Mute this selector if a workout session selector is active (One-Selector-To-Rule-Them-All)
+  const isWorkoutSelectorActive = appState.ui.selectedHistoryWorkoutId !== null;
+
   const summaryHtml = `<div class="selector-content history-selector-content">
     <div class="item-main-line truncate-text">
       <span class="text-on-surface-medium">My&nbsp;</span><span class="data-highlight text-plan">${selectedTab}</span>
@@ -49,7 +52,8 @@ function getHistorySelectorHTML() {
   return createSelectorHTML(
     "history-selector-details",
     summaryHtml,
-    optionsHtml
+    optionsHtml,
+    isWorkoutSelectorActive // Disable selector if workout session selector is active
   );
 }
 

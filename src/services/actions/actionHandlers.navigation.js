@@ -22,6 +22,16 @@
 import * as navigationService from "services/core/navigationService.js";
 import * as persistenceService from "services/core/persistenceService.js";
 import { handleCloseSideNav } from "features/side-nav/side-nav.index.js";
+import { appState } from "state";
+
+/**
+ * Clear My Data page selector state when navigating away
+ * Implements "One-Selector-To-Rule-Them-All" - close all selectors on page navigation
+ */
+function clearMyDataSelectors() {
+  appState.ui.selectedHistoryWorkoutId = null;
+  appState.ui.selectedWorkoutId = null;
+}
 
 /**
  * Get navigation action handlers
@@ -31,24 +41,28 @@ import { handleCloseSideNav } from "features/side-nav/side-nav.index.js";
 export function getNavigationHandlers(coreActions) {
   return {
     goHome: () => {
+      clearMyDataSelectors();
       navigationService.goToPage("home");
       coreActions.renderAll();
       persistenceService.saveState();
     },
 
     goToWorkout: () => {
+      clearMyDataSelectors();
       navigationService.goToPage("workout");
       coreActions.renderAll();
       persistenceService.saveState();
     },
 
     goToMyData: () => {
+      // Don't clear selectors when navigating TO My Data page
       navigationService.goToPage("myData");
       coreActions.renderAll();
       persistenceService.saveState();
     },
 
     goToProfile: () => {
+      clearMyDataSelectors();
       navigationService.goToPage("profile");
       // Close side nav when navigating to profile
       handleCloseSideNav();

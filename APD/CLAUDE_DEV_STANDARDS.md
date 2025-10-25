@@ -73,3 +73,16 @@ Code comments should include clear section headers to organize code logically. U
 **Animation Performance**: GPU-accelerated with `will-change`, NO `!important` in keyframes.
 
 **Component Pattern**: `feature.index.js`, `feature.template.js`, `feature.style.css`
+
+**One-Selector-To-Rule-Them-All**: Exclusive selector interaction pattern
+- **Rule**: Only ONE selector active at a time across the entire application
+- **External Muting**: When a selector opens, ALL external selectors are muted/disabled
+- **Internal Freedom**: Selectors within the same component group can remain active
+- **Nesting**: When a nested selector opens, its siblings become external and get muted
+- **Examples**:
+  - Config-card selector open → Current Exercise selector (external) muted
+  - Config-card selector open → Current Plan/Focus selectors (internal) can open
+  - Current Plan selector open → Current Focus selector (sibling) now muted
+  - Workout session selector open → My Workouts selector (external) muted
+- **Implementation**: Use `isSelectorDisabled` parameter in `createSelectorHTML()` and `.is-muted` CSS class
+- **Navigation**: Clear all selector state when navigating between pages

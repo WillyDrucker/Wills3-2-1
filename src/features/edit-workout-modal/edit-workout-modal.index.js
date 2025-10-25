@@ -33,6 +33,14 @@ export function renderEditWorkoutModal() {
   if (isActive) {
     // Find the selected workout from history
     const workoutId = appState.ui.selectedWorkoutId;
+
+    // Guard against null/undefined workout ID
+    if (!workoutId) {
+      console.warn("Edit Workout modal is active but no workout ID is selected");
+      container.innerHTML = "";
+      return;
+    }
+
     const workout = appState.user.history.workouts.find(
       (w) => w.id === workoutId
     );
