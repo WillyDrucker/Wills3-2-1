@@ -448,25 +448,11 @@ export function getModalHandlers(coreActions) {
       // Update the log in history
       updateHistoricalLog(workoutId, setNumber, supersetSide, reps, weight);
 
-      // Update the original snapshot so this change isn't counted again
-      if (appState.ui.editWorkout.originalWorkout) {
-        const originalLog = appState.ui.editWorkout.originalWorkout.logs[logIndex];
-        if (originalLog) {
-          console.log("🔄 Updating original snapshot after Update button:", {
-            logIndex,
-            exercise: originalLog.exercise?.exercise_name || "unknown",
-            set: originalLog.setNumber,
-            before: { reps: originalLog.reps, weight: originalLog.weight },
-            after: { reps, weight }
-          });
-          originalLog.reps = reps;
-          originalLog.weight = weight;
-        } else {
-          console.warn("⚠️ Could not find originalLog at index:", logIndex);
-        }
-      } else {
-        console.warn("⚠️ No originalWorkout found to update snapshot");
-      }
+      console.log("✓ Log updated in history:", {
+        logIndex,
+        set: setNumber,
+        values: { reps, weight }
+      });
 
       // Close the edit panel
       details.open = false;
@@ -603,18 +589,19 @@ export function getModalHandlers(coreActions) {
 
       // Check uncommitted input field changes using captured panel states
       // (captured on mousedown before details elements close)
+      // These are input values that differ from CURRENT workout state (not yet saved via Update)
       const openPanelStates = editWorkout.openPanelStates || [];
       console.log("Checking uncommitted input changes from captured states:", openPanelStates);
 
       for (const panelState of openPanelStates) {
-        if (panelState.reps !== panelState.originalReps || panelState.weight !== panelState.originalWeight) {
-          const originalLog = originalWorkout.logs[panelState.index];
+        if (panelState.reps !== panelState.currentReps || panelState.weight !== panelState.currentWeight) {
+          const currentLog = currentWorkout.logs[panelState.index];
           console.log("Uncommitted input change detected:", {
             index: panelState.index,
-            exercise: originalLog.exercise?.exercise_name || "unknown",
-            set: originalLog.setNumber,
+            exercise: currentLog.exercise?.exercise_name || "unknown",
+            set: currentLog.setNumber,
             inputValues: { reps: panelState.reps, weight: panelState.weight },
-            originalValues: { reps: panelState.originalReps, weight: panelState.originalWeight }
+            currentStateValues: { reps: panelState.currentReps, weight: panelState.currentWeight }
           });
           changeCount++;
         }
@@ -640,19 +627,27 @@ export function getModalHandlers(coreActions) {
       const { selectedWorkoutId, editWorkout } = appState.ui;
       const { originalWorkout } = editWorkout;
 
-      console.log("  Checking for open panels...");
+      // Get current workout state from history
+      const currentWorkout = appState.user.history.workouts.find((w) => w.id === selectedWorkoutId);
+      if (!currentWorkout) {
+        console.log("  Current workout not found, skipping");
+        return;
+      }
 
-      // Store current state of open panels (before they close)
+      console.log("  Checking for uncommitted input changes...");
+
+      // Check for uncommitted input changes (input fields that differ from CURRENT workout state)
+      // This prevents double-counting: if user clicked Update, input now matches current state
       const openPanelStates = [];
-      for (let i = 0; i < originalWorkout.logs.length; i++) {
-        const originalLog = originalWorkout.logs[i];
+      for (let i = 0; i < currentWorkout.logs.length; i++) {
+        const currentLog = currentWorkout.logs[i];
         // Use index-based ID (matches template)
         const logId = `${selectedWorkoutId}-${i}`;
 
         const repsInput = document.getElementById(`reps-edit-${logId}-input`);
         const weightInput = document.getElementById(`weight-edit-${logId}-input`);
 
-        console.log(`  Log ${i} (${originalLog.exercise?.exercise_name} Set ${originalLog.setNumber}):`, {
+        console.log(`  Log ${i} (${currentLog.exercise?.exercise_name} Set ${currentLog.setNumber}):`, {
           logId,
           repsInputFound: !!repsInput,
           weightInputFound: !!weightInput
@@ -661,31 +656,31 @@ export function getModalHandlers(coreActions) {
         if (repsInput && weightInput) {
           const inputReps = Number(repsInput.value);
           const inputWeight = Number(weightInput.value);
-          const originalReps = Number(originalLog.reps);
-          const originalWeight = Number(originalLog.weight);
+          const currentReps = Number(currentLog.reps);
+          const currentWeight = Number(currentLog.weight);
 
           console.log(`    Input values:`, {
-            currentInputValues: { reps: inputReps, weight: inputWeight },
-            originalValues: { reps: originalReps, weight: originalWeight },
-            hasDifference: inputReps !== originalReps || inputWeight !== originalWeight
+            inputValues: { reps: inputReps, weight: inputWeight },
+            currentStateValues: { reps: currentReps, weight: currentWeight },
+            hasDifference: inputReps !== currentReps || inputWeight !== currentWeight
           });
 
-          // Check if input differs from original (uncommitted change)
-          // Don't check if panel is open - panel may have closed when user moved mouse away
-          if (inputReps !== originalReps || inputWeight !== originalWeight) {
+          // Check if input differs from CURRENT state (uncommitted change)
+          // If user clicked Update, input will match current state, so no uncommitted change
+          if (inputReps !== currentReps || inputWeight !== currentWeight) {
             const state = {
               index: i,
               logId,
-              exercise: originalLog.exercise?.exercise_name,
+              exercise: currentLog.exercise?.exercise_name,
               reps: inputReps,
               weight: inputWeight,
-              originalReps: originalReps,
-              originalWeight: originalWeight
+              currentReps: currentReps,
+              currentWeight: currentWeight
             };
             openPanelStates.push(state);
             console.log(`    ✓ Capturing uncommitted change:`, state);
           } else {
-            console.log(`    ✗ No changes, skipping`);
+            console.log(`    ✗ No uncommitted changes, skipping`);
           }
         }
       }
