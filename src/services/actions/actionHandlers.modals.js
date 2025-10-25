@@ -624,13 +624,14 @@ export function getModalHandlers(coreActions) {
       const openPanelStates = [];
       for (let i = 0; i < originalWorkout.logs.length; i++) {
         const originalLog = originalWorkout.logs[i];
-        const logIndex = `${selectedWorkoutId}-${originalLog.setNumber}-${originalLog.supersetSide || "normal"}`;
+        // Use index-based ID (matches template)
+        const logId = `${selectedWorkoutId}-${i}`;
 
-        const repsInput = document.getElementById(`reps-edit-${logIndex}-input`);
-        const weightInput = document.getElementById(`weight-edit-${logIndex}-input`);
+        const repsInput = document.getElementById(`reps-edit-${logId}-input`);
+        const weightInput = document.getElementById(`weight-edit-${logId}-input`);
 
         console.log(`  Log ${i} (${originalLog.exercise?.exercise_name} Set ${originalLog.setNumber}):`, {
-          logIndex,
+          logId,
           repsInputFound: !!repsInput,
           weightInputFound: !!weightInput
         });
@@ -652,7 +653,7 @@ export function getModalHandlers(coreActions) {
           if (inputReps !== originalReps || inputWeight !== originalWeight) {
             const state = {
               index: i,
-              logIndex,
+              logId,
               exercise: originalLog.exercise?.exercise_name,
               reps: inputReps,
               weight: inputWeight,

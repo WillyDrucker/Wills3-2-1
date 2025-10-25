@@ -139,11 +139,12 @@ export function getEditWorkoutModalTemplate(workout) {
     ...rightExercises,
   ];
 
-  // Build log items HTML
+  // Build log items HTML with unique indices
+  let logIndex = 0;
   const logItemsHtml = orderedExercises
     .map(({ name: exerciseName, data: exerciseData }) => {
       return exerciseData.logs
-        .map((log) => getHistoricalLogItemHTML(log, workout, currentPlan))
+        .map((log) => getHistoricalLogItemHTML(log, workout, currentPlan, logIndex++))
         .join("");
     })
     .join("");
@@ -180,8 +181,9 @@ export function getEditWorkoutModalTemplate(workout) {
 /**
  * Generate individual historical log item HTML with edit panel
  * Reuses workout-log structure but adapted for historical editing
+ * @param {number} uniqueIndex - Unique index across all logs in workout (prevents duplicate IDs)
  */
-function getHistoricalLogItemHTML(log, workout, currentPlan) {
+function getHistoricalLogItemHTML(log, workout, currentPlan, uniqueIndex) {
   const { exercise, setNumber, status, weight, reps } = log;
 
   // Color based on superset side or exercise type
@@ -265,8 +267,8 @@ function getHistoricalLogItemHTML(log, workout, currentPlan) {
     ? "Reps (Per Hand)"
     : 'Reps (Target: <span class="text-plan">10</span>)';
 
-  // Create unique index for this log item
-  const logIndex = `${workout.id}-${setNumber}-${log.supersetSide || "normal"}`;
+  // Create unique ID using workout ID and unique index (prevents duplicate IDs across exercises)
+  const logId = `${workout.id}-${uniqueIndex}`;
 
   return `<details class="${containerClass}" data-workout-id="${workout.id}" data-set-number="${setNumber}" data-superset-side="${log.supersetSide || ""}">
               <summary>${finalLogDisplayHtml}</summary>
@@ -276,8 +278,8 @@ function getHistoricalLogItemHTML(log, workout, currentPlan) {
                   <div class="input-label">${weightLabel}</div>
                 </div>
                 <div class="input-controls-grid">
-                  ${createNumberInputHTML(`reps-edit-${logIndex}`, reps, true, logIndex)}
-                  ${createNumberInputHTML(`weight-edit-${logIndex}`, weight, true, logIndex)}
+                  ${createNumberInputHTML(`reps-edit-${logId}`, reps, true, logId)}
+                  ${createNumberInputHTML(`weight-edit-${logId}`, weight, true, logId)}
                 </div>
                 <div class="edit-log-buttons">
                   <button class="action-button button-cancel" data-action="cancelWorkoutLog">Cancel</button>
