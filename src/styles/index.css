@@ -52,6 +52,7 @@
 @import url("../features/reset-modal/reset-modal.style.css");
 @import url("../features/edit-workout-modal/edit-workout-modal.style.css");
 @import url("../features/delete-log-modal/delete-log-modal.style.css");
+@import url("../features/shared-modals/cancel-changes-modal.style.css");
 
 /* Pages */
 @import url("../features/login-page/login-page.style.css");

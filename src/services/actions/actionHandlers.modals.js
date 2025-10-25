@@ -452,9 +452,20 @@ export function getModalHandlers(coreActions) {
       if (appState.ui.editWorkout.originalWorkout) {
         const originalLog = appState.ui.editWorkout.originalWorkout.logs[logIndex];
         if (originalLog) {
+          console.log("🔄 Updating original snapshot after Update button:", {
+            logIndex,
+            exercise: originalLog.exercise?.exercise_name || "unknown",
+            set: originalLog.setNumber,
+            before: { reps: originalLog.reps, weight: originalLog.weight },
+            after: { reps, weight }
+          });
           originalLog.reps = reps;
           originalLog.weight = weight;
+        } else {
+          console.warn("⚠️ Could not find originalLog at index:", logIndex);
         }
+      } else {
+        console.warn("⚠️ No originalWorkout found to update snapshot");
       }
 
       // Close the edit panel
