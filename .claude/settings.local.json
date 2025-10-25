@@ -43,7 +43,10 @@
       "Bash(del \"C:\\Dev\\Wills321\\src\\features\\login-page\\login-page.index.new.js\")",
       "Read(//c/Users/WD/Downloads/**)",
       "Bash(del \"C:\\Dev\\Wills321\\APD\\CLAUDE_STANDARDS.md\")",
-      "Bash(supabase db push:*)"
+      "Bash(supabase db push:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(git checkout:*)",
+      "Bash(git merge:*)"
     ],
     "deny": [],
     "ask": []
