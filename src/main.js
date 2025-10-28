@@ -101,11 +101,13 @@ function updateActiveWorkoutPreservingLogs() {
 }
 
 function renderAll() {
+  console.trace("🔄 renderAll() called from:");
   // Preserve scroll position on My Data page before clearing innerHTML
   let savedScrollPosition = 0;
   if (appState.ui.currentPage === "myData") {
-    const mainContent = document.getElementById("main-content");
-    savedScrollPosition = mainContent ? mainContent.scrollTop : 0;
+    // Read scroll from document element (page-level scroll)
+    savedScrollPosition = document.documentElement.scrollTop || document.body.scrollTop || 0;
+    console.log("📍 USING current scroll:", savedScrollPosition);
   }
 
   ui.configSection.innerHTML = "";
@@ -145,11 +147,11 @@ function renderAll() {
   }
 
   // Restore scroll position on My Data page after all rendering complete
+  // Use requestAnimationFrame to ensure browser has finished layout calculations
   if (appState.ui.currentPage === "myData" && savedScrollPosition > 0) {
-    const mainContent = document.getElementById("main-content");
-    if (mainContent) {
-      mainContent.scrollTop = savedScrollPosition;
-    }
+    requestAnimationFrame(() => {
+      window.scrollTo(0, savedScrollPosition);
+    });
   }
 }
 

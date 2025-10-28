@@ -18,7 +18,7 @@
    ========================================================================== */
 
 import { appState } from "state";
-import { colorCodeMap } from "config";
+import { colorCodeMap, muscleGroupSortOrder } from "config";
 import { isDateInFuture } from "utils";
 import { buildExerciseBlocksHTML } from "./my-data.templates.calendarExercise.js";
 
@@ -130,6 +130,17 @@ export function buildDaySectionHTML(day, index, daysOfWeek, hasWideResults) {
             normalExercises.push({ name: exerciseName, data: exerciseData });
           }
         }
+
+        /* Sort exercises within each group by muscle_group (same as Edit Workout modal) */
+        /* Uses muscleGroupSortOrder: Major1 (1) → Minor1 (2) → Major2 (3) → Minor2 (4) → Tertiary (5) */
+        const sortByMuscleGroup = (a, b) => {
+          const sortA = muscleGroupSortOrder[a.data.exercise.muscle_group] || 99;
+          const sortB = muscleGroupSortOrder[b.data.exercise.muscle_group] || 99;
+          return sortA - sortB;
+        };
+        normalExercises.sort(sortByMuscleGroup);
+        leftExercises.sort(sortByMuscleGroup);
+        rightExercises.sort(sortByMuscleGroup);
 
         /* Combine in proper order */
         const orderedExercises = [...normalExercises, ...leftExercises, ...rightExercises];

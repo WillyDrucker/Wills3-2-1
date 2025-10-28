@@ -41,6 +41,9 @@ Code comments should include clear section headers to organize code logically. U
 ### 7. GIT BRANCH SYNCHRONIZATION
 Always work on the same branch shown in VS Code's bottom-left corner. Verify with `git branch --show-current` at session start.
 
+### 8. COMMIT POLICY
+Do not commit changes unless explicitly requested by the user. Let the user review changes in VS Code and handle commits themselves.
+
 ## FILE HEADERS
 
 **CSS Files**:

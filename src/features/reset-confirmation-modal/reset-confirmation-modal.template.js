@@ -45,8 +45,8 @@ export function getResetConfirmationModalTemplate(loggedSetsCount = 0) {
   const countWarningText = loggedSetsCount === 0
     ? ""
     : loggedSetsCount === 1
-    ? 'There is <span style="color: var(--log-green)">1</span> exercise set logged!'
-    : `There are <span style="color: var(--log-green)">${loggedSetsCount}</span> exercise sets logged!`;
+    ? 'There is <span class="modal-number-animated">1</span> exercise set logged!'
+    : `There are <span class="modal-number-animated">${loggedSetsCount}</span> exercise sets logged!`;
 
   // Determine question text based on logged sets
   const questionText = loggedSetsCount === 0

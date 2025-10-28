@@ -41,6 +41,27 @@
    All base confirmation modal styles come from _confirmation-modals.css
    ========================================================================== */
 
+/* === Z-INDEX STACKING === */
+/* Cancel Changes modal stacks on top of Edit Workout modal */
+/* Higher z-index ensures it appears above parent modal */
+#cancel-changes-modal-container {
+  z-index: 1100; /* Higher than Edit Workout modal (1000) */
+}
+
+/* Single backdrop for all layers beneath child modal */
+/* This backdrop provides the ONLY darkening layer when Cancel Changes is open */
+/* Mutes both Edit Workout and My Data uniformly - no double-muting */
+#cancel-changes-modal-container .superset-modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.85) !important; /* Standard backdrop darkness */
+}
+
+/* === ANIMATION COLOR === */
+/* Set green flash color for Cancel Changes modal's animated text (change count) */
+/* Uses global modal-text-grow-flash animation from _confirmation-modals.css */
+.cancel-changes-card {
+  --animation-flash-color: var(--text-green-plan); /* Green success color */
+}
+
 /* === GREEN YES BUTTON - Cancel Changes specific === */
 .cancel-changes-card .button-cancel-yes {
   background-color: var(--log-green);

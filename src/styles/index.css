@@ -27,6 +27,7 @@
 @import url("./components/_selectors.css");
 @import url("./components/_modals.css");
 @import url("./components/_card-headers.css");
+@import url("./components/_workout-session-headers.css");
 @import url("./components/_card-foundations.css");
 @import url("./components/_action-button-groups.css");
 
@@ -52,6 +53,7 @@
 @import url("../features/reset-modal/reset-modal.style.css");
 @import url("../features/edit-workout-modal/edit-workout-modal.style.css");
 @import url("../features/delete-log-modal/delete-log-modal.style.css");
+@import url("../features/delete-workout-modal/delete-workout-modal.style.css");
 @import url("../features/shared-modals/cancel-changes-modal.style.css");
 
 /* Pages */

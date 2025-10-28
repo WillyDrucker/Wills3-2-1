@@ -40,9 +40,12 @@ export function open(modalName, allowStacking = false, skipPageRender = false) {
   // If stacking is not allowed and there's already a modal, prevent opening
   if (!allowStacking && appState.ui.activeModal) return;
 
-  // If stacking is allowed, push current modal to stack
+  // If stacking is allowed, push current modal AND its render strategy to stack
   if (allowStacking && appState.ui.activeModal) {
-    modalStack.push(appState.ui.activeModal);
+    modalStack.push({
+      name: appState.ui.activeModal,
+      skipPageRender: currentModalSkipsPageRender
+    });
   }
 
   selectorService.closeAll();
@@ -77,12 +80,18 @@ export function open(modalName, allowStacking = false, skipPageRender = false) {
 /**
  * Close all modals in the stack and fully close modal system
  * Used when you want to close nested modals completely instead of returning to previous modal
+ * @param {boolean} forceFullRender - If true, forces full page render even if modal used skipPageRender
  */
-export function closeAll() {
+export function closeAll(forceFullRender = false) {
   if (!appState.ui.activeModal) return;
 
   // Clear the modal stack
   modalStack = [];
+
+  // Force full page render if requested (needed after data modifications like delete/update)
+  if (forceFullRender) {
+    currentModalSkipsPageRender = false;
+  }
 
   // Now call regular close which will fully close since stack is empty
   close();
@@ -93,22 +102,38 @@ export function closeAll() {
  * The definitive function for closing any active generic modal. It centralizes
  * all teardown logic, including state changes, UI updates, and focus restoration.
  * If there are stacked modals, returns to the previous modal in the stack.
+ * @param {boolean} forceFullRender - If true, forces full page render even if modal used skipPageRender
  */
-export function close() {
+export function close(forceFullRender = false) {
   if (!appState.ui.activeModal) return;
+
+  // Force full page render if requested
+  if (forceFullRender) {
+    currentModalSkipsPageRender = false;
+  }
 
   // If there are stacked modals, pop the previous modal and reopen it
   if (modalStack.length > 0) {
-    const previousModal = modalStack.pop();
-    appState.ui.activeModal = previousModal;
-    document.documentElement.setAttribute("data-active-modal", previousModal);
+    const previousModalInfo = modalStack.pop();
+    // Handle both old format (string) and new format (object) for backwards compatibility
+    const previousModalName = typeof previousModalInfo === 'string' ? previousModalInfo : previousModalInfo.name;
+    const previousSkipPageRender = typeof previousModalInfo === 'object' ? previousModalInfo.skipPageRender : false;
 
-    _renderAll();
+    appState.ui.activeModal = previousModalName;
+    document.documentElement.setAttribute("data-active-modal", previousModalName);
+    currentModalSkipsPageRender = previousSkipPageRender;
+
+    // Use the same render strategy that was used to open the previous modal
+    if (previousSkipPageRender && _renderModalsOnly) {
+      _renderModalsOnly();
+    } else {
+      _renderAll();
+    }
 
     // Reactivate focus trap for previous modal
     requestAnimationFrame(() => {
       const modalContent = document.querySelector(
-        `[data-modal-name="${previousModal}"] .superset-modal-content`
+        `[data-modal-name="${previousModalName}"] .superset-modal-content`
       );
       if (modalContent) {
         focusTrapService.activate(modalContent);

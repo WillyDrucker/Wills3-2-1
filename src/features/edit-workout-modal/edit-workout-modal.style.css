@@ -15,77 +15,38 @@
    Used by: Edit Workout modal (edit-workout-modal.template.js)
    ========================================================================== */
 
-/* === HEADER - Two-line format matching My Data page EXACTLY === */
+/* === PARENT MODAL MUTED STATE === */
+/* When child modal (Delete Log, Delete Workout, Cancel Changes) is open on top */
+.is-parent-modal-muted {
+  pointer-events: none; /* Prevent interaction, clicks pass through to child modal */
+}
+
+/* Hide Edit Workout's backdrop when child modal is active */
+/* Child modal's backdrop will provide the ONLY darkening layer */
+.is-parent-modal-muted .superset-modal-backdrop {
+  display: none; /* Remove backdrop - prevents double-muting */
+}
+
+/* Edit Workout content stays full opacity - child modal's backdrop does the muting */
+.is-parent-modal-muted .superset-modal-content {
+  z-index: 1; /* Lower than child modal content (z-index: 2) */
+  opacity: 1; /* No dimming - child backdrop handles it */
+}
+
+/* === HEADER - Feature-specific container === */
+/* Inherits all session header styling from _workout-session-headers.css */
 .edit-workout-header {
-  margin: 16px 0 0 0; /* 16px from title, children control their own bottom spacing */
+  margin: 16px 0 0 0; /* 16px from title */
   padding: 0;
 }
 
-/* Line 1: Day/Date container - EXACT match to My Data history-day-date-header */
-.edit-workout-day-date {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding: 0;
-  line-height: 1;
+/* Context-specific spacing for session header lines */
+.edit-workout-header .workout-session-day-date {
   margin-bottom: 3px; /* 3px + ~4px font metrics = 7px visual */
 }
 
-/* Day text - EXACT match to My Data history-day-date-text */
-.edit-workout-day-text {
-  font-size: var(--font-size-h2); /* 1.25rem */
-  font-weight: 600;
-  line-height: 1;
-  color: var(--on-surface-light); /* White */
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
-}
-
-/* Date text - EXACT match to My Data history-day-date-date */
-.edit-workout-date-text {
-  font-size: var(--font-size-h2); /* 1.25rem */
-  font-weight: 600;
-  line-height: 1;
-  white-space: nowrap;
-  flex-shrink: 0;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
-}
-
-/* Line 2: Bodypart/Completion container - EXACT match to My Data history-body-part-line */
-.edit-workout-bodypart-completion {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding: 0;
-  line-height: 1;
+.edit-workout-header .workout-session-bodypart-line {
   margin-bottom: 5px; /* 5px + ~2px font metrics = 7px visual */
-}
-
-/* Body part text - EXACT match to My Data history-body-part-text */
-.edit-workout-bodypart-text {
-  font-size: var(--font-size-body-m); /* 1rem */
-  font-weight: 600;
-  line-height: 1;
-  color: var(--on-surface-light);
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
-}
-
-/* Completion text wrapper */
-.edit-workout-completion-text {
-  font-size: var(--font-size-body-m); /* 1rem */
-  font-weight: 600;
-  line-height: 1;
-  white-space: nowrap;
-  flex-shrink: 0;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
-}
-
-/* Completion label styling - matches My Data */
-.edit-workout-completion-text .history-completion-label {
-  color: var(--on-surface-medium) !important;
-}
-
-.edit-workout-completion-text .history-completion-value {
-  color: var(--log-green) !important;
 }
 
 /* === LOG LIST === */
@@ -121,8 +82,8 @@
 .edit-workout-delete-button,
 .edit-workout-update-button {
   flex: 1; /* Equal width */
-  height: 50px; /* var(--control-height) - enforced for all */
-  font-size: 1.25rem; /* var(--font-size-h2) */
+  height: var(--control-height); /* Tokenized: 50px */
+  font-size: var(--font-size-h2); /* Tokenized: 1.25rem */
   font-weight: 600;
   border-radius: var(--border-radius);
   cursor: pointer;

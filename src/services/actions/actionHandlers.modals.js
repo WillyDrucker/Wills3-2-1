@@ -418,7 +418,11 @@ export function getModalHandlers(coreActions) {
     cancelWorkoutLog: (event) => {
       // Close the details element (edit panel)
       const details = event.target.closest("details");
-      if (details) details.open = false;
+      if (details) {
+        details.open = false;
+        // Clear selector-open state to unmute other edit panels
+        document.body.classList.remove('is-selector-open');
+      }
     },
 
     updateWorkoutLog: (event) => {
@@ -426,7 +430,8 @@ export function getModalHandlers(coreActions) {
       const workoutId = Number(button.dataset.workoutId);
       const setNumber = Number(button.dataset.setNumber);
       const supersetSide = button.dataset.supersetSide || "";
-      const logIndex = Number(button.dataset.logIndex); // New: unique index
+      const exerciseName = button.dataset.exerciseName;
+      const logIndex = Number(button.dataset.logIndex); // Unique index for input field IDs
 
       // Find the details element (parent of edit panel)
       const details = button.closest("details");
@@ -445,11 +450,11 @@ export function getModalHandlers(coreActions) {
       const reps = Number(repsInput.value);
       const weight = Number(weightInput.value);
 
-      // Update the log in history
-      updateHistoricalLog(workoutId, setNumber, supersetSide, reps, weight);
+      // Update the log in history (now includes exerciseName for correct identification)
+      updateHistoricalLog(workoutId, setNumber, supersetSide, exerciseName, reps, weight);
 
       console.log("✓ Log updated in history:", {
-        logIndex,
+        exercise: exerciseName,
         set: setNumber,
         values: { reps, weight }
       });
@@ -462,20 +467,38 @@ export function getModalHandlers(coreActions) {
     },
 
     deleteWorkoutLog: (event) => {
-      const button = event.target;
+      // Prevent event from bubbling to backdrop and triggering backdrop click handler
+      event.stopPropagation();
+      event.preventDefault();
+
+      const button = event.target.closest('.button-clear-set');
+      if (!button) {
+        console.error("Delete button not found in event delegation");
+        return;
+      }
+
       const workoutId = Number(button.dataset.workoutId);
       const setNumber = Number(button.dataset.setNumber);
       const supersetSide = button.dataset.supersetSide || "";
+      const exerciseName = button.dataset.exerciseName;
 
       // Store context for Delete Log modal
       appState.ui.deleteLogContext = {
         workoutId,
         setNumber,
         supersetSide,
+        exerciseName,
       };
 
-      // Open Delete Log confirmation modal
-      modalService.open("deleteLog");
+      // Close the edit panel before opening modal
+      const details = button.closest("details");
+      if (details) {
+        details.open = false;
+        document.body.classList.remove('is-selector-open');
+      }
+
+      // Open Delete Log confirmation modal (stacked on Edit Workout modal)
+      modalService.open("deleteLog", true, true);
     },
 
     closeDeleteLogModal: () => {
@@ -490,22 +513,19 @@ export function getModalHandlers(coreActions) {
         return;
       }
 
-      const { workoutId, setNumber, supersetSide } = context;
+      const { workoutId, setNumber, supersetSide, exerciseName } = context;
 
       // Delete the log (returns true if entire workout was deleted)
-      const wasWorkoutDeleted = deleteHistoricalLog(workoutId, setNumber, supersetSide);
+      const wasWorkoutDeleted = deleteHistoricalLog(workoutId, setNumber, supersetSide, exerciseName);
 
-      // Close Delete Log modal
+      // Close Delete Log modal (modalService.close handles rendering)
       appState.ui.deleteLogContext = null;
       modalService.close();
 
-      // If entire workout was deleted, also close Update History modal
+      // If entire workout was deleted, clear selectedWorkoutId
       if (wasWorkoutDeleted) {
         appState.ui.selectedWorkoutId = null;
       }
-
-      // Re-render to show updated state
-      coreActions.renderAll();
     },
 
     // === EDIT WORKOUT MODAL ENHANCEMENTS ===
@@ -568,126 +588,40 @@ export function getModalHandlers(coreActions) {
       }
 
       // Check state changes (logs that were updated and saved)
-      for (let i = 0; i < Math.min(currentWorkout.logs.length, originalWorkout.logs.length); i++) {
-        const currentLog = currentWorkout.logs[i];
-        const originalLog = originalWorkout.logs[i];
+      // Use identity-based comparison instead of index-based to avoid false positives when logs are deleted
+      // Create map of original logs by identity (exercise name + set number + superset side)
+      const originalLogsMap = new Map();
+      originalWorkout.logs.forEach(log => {
+        const key = `${log.exercise.exercise_name}-${log.setNumber}-${log.supersetSide || ''}`;
+        originalLogsMap.set(key, { reps: Number(log.reps), weight: Number(log.weight) });
+      });
 
-        const originalRepsNum = Number(originalLog.reps);
-        const originalWeightNum = Number(originalLog.weight);
-        const currentRepsNum = Number(currentLog.reps);
-        const currentWeightNum = Number(currentLog.weight);
+      // Compare current logs to original by identity
+      currentWorkout.logs.forEach(log => {
+        const key = `${log.exercise.exercise_name}-${log.setNumber}-${log.supersetSide || ''}`;
+        const original = originalLogsMap.get(key);
 
-        if (currentRepsNum !== originalRepsNum || currentWeightNum !== originalWeightNum) {
-          console.log("State change detected:", {
-            index: i,
-            exercise: currentLog.exercise?.exercise_name || "unknown",
-            set: currentLog.setNumber
-          });
-          changeCount++;
+        if (original) {
+          const currentReps = Number(log.reps);
+          const currentWeight = Number(log.weight);
+
+          if (currentReps !== original.reps || currentWeight !== original.weight) {
+            console.log("State change detected:", {
+              exercise: log.exercise.exercise_name,
+              set: log.setNumber,
+              side: log.supersetSide || 'none',
+              original: { reps: original.reps, weight: original.weight },
+              current: { reps: currentReps, weight: currentWeight }
+            });
+            changeCount++;
+          }
         }
-      }
-
-      // Check uncommitted input field changes using captured panel states
-      // (captured on mousedown before details elements close)
-      // These are input values that differ from CURRENT workout state (not yet saved via Update)
-      const openPanelStates = editWorkout.openPanelStates || [];
-      console.log("Checking uncommitted input changes from captured states:", openPanelStates);
-
-      for (const panelState of openPanelStates) {
-        if (panelState.reps !== panelState.currentReps || panelState.weight !== panelState.currentWeight) {
-          const currentLog = currentWorkout.logs[panelState.index];
-          console.log("Uncommitted input change detected:", {
-            index: panelState.index,
-            exercise: currentLog.exercise?.exercise_name || "unknown",
-            set: currentLog.setNumber,
-            inputValues: { reps: panelState.reps, weight: panelState.weight },
-            currentStateValues: { reps: panelState.currentReps, weight: panelState.currentWeight }
-          });
-          changeCount++;
-        }
-      }
+      });
 
       const hasChanges = changeCount > 0;
       console.log("Total changes:", { hasChanges, changeCount });
 
       return { hasChanges, changeCount };
-    },
-
-    // Capture edit panel state before details elements close (called on mousedown)
-    prepareCancelEditWorkout: () => {
-      console.log("prepareCancelEditWorkout - starting");
-
-      // Store which panels are currently open BEFORE they close from the click
-      const hasOriginal = appState.ui.editWorkout.originalWorkout !== null;
-      if (!hasOriginal) {
-        console.log("  No original workout, skipping");
-        return;
-      }
-
-      const { selectedWorkoutId, editWorkout } = appState.ui;
-      const { originalWorkout } = editWorkout;
-
-      // Get current workout state from history
-      const currentWorkout = appState.user.history.workouts.find((w) => w.id === selectedWorkoutId);
-      if (!currentWorkout) {
-        console.log("  Current workout not found, skipping");
-        return;
-      }
-
-      console.log("  Checking for uncommitted input changes...");
-
-      // Check for uncommitted input changes (input fields that differ from CURRENT workout state)
-      // This prevents double-counting: if user clicked Update, input now matches current state
-      const openPanelStates = [];
-      for (let i = 0; i < currentWorkout.logs.length; i++) {
-        const currentLog = currentWorkout.logs[i];
-        // Use index-based ID (matches template)
-        const logId = `${selectedWorkoutId}-${i}`;
-
-        const repsInput = document.getElementById(`reps-edit-${logId}-input`);
-        const weightInput = document.getElementById(`weight-edit-${logId}-input`);
-
-        console.log(`  Log ${i} (${currentLog.exercise?.exercise_name} Set ${currentLog.setNumber}):`, {
-          logId,
-          repsInputFound: !!repsInput,
-          weightInputFound: !!weightInput
-        });
-
-        if (repsInput && weightInput) {
-          const inputReps = Number(repsInput.value);
-          const inputWeight = Number(weightInput.value);
-          const currentReps = Number(currentLog.reps);
-          const currentWeight = Number(currentLog.weight);
-
-          console.log(`    Input values:`, {
-            inputValues: { reps: inputReps, weight: inputWeight },
-            currentStateValues: { reps: currentReps, weight: currentWeight },
-            hasDifference: inputReps !== currentReps || inputWeight !== currentWeight
-          });
-
-          // Check if input differs from CURRENT state (uncommitted change)
-          // If user clicked Update, input will match current state, so no uncommitted change
-          if (inputReps !== currentReps || inputWeight !== currentWeight) {
-            const state = {
-              index: i,
-              logId,
-              exercise: currentLog.exercise?.exercise_name,
-              reps: inputReps,
-              weight: inputWeight,
-              currentReps: currentReps,
-              currentWeight: currentWeight
-            };
-            openPanelStates.push(state);
-            console.log(`    ✓ Capturing uncommitted change:`, state);
-          } else {
-            console.log(`    ✗ No uncommitted changes, skipping`);
-          }
-        }
-      }
-
-      // Store in state for cancelEditWorkout to use
-      appState.ui.editWorkout.openPanelStates = openPanelStates;
-      console.log("Final captured open panel states:", openPanelStates);
     },
 
     cancelEditWorkout: () => {
@@ -703,9 +637,6 @@ export function getModalHandlers(coreActions) {
 
       console.log("cancelEditWorkout - result:", changeResult);
 
-      // Clear captured panel states after use
-      appState.ui.editWorkout.openPanelStates = null;
-
       if (changeResult.hasChanges) {
         // Store change count for Cancel Changes modal to display
         appState.ui.editWorkout.changeCount = changeResult.changeCount;
@@ -714,26 +645,34 @@ export function getModalHandlers(coreActions) {
         modalService.open("cancelChanges", true, true);
       } else {
         // No changes (or no original to compare), close normally
-        // Clear selector state but keep workout ID until after modal closes
+        // Clear selector state BEFORE closing modal
         appState.ui.selectedHistoryWorkoutId = null;
+        appState.ui.selectedWorkoutId = null;
         appState.ui.editWorkout.originalWorkout = null;
         appState.ui.editWorkout.hasChanges = false;
         appState.ui.editWorkout.changeCount = 0;
 
-        // Close modal first (needs selectedWorkoutId for final render)
-        modalService.close();
+        // Close modal without full page render (faster, no DB reload)
+        modalService.close(false);
 
-        // Then clear workout ID and refresh display
-        appState.ui.selectedWorkoutId = null;
-        if (appState.ui.currentPage === "myData") {
-          refreshMyDataPageDisplay();
-        }
+        // Update My Data page display to close selector (preserves scroll automatically)
+        refreshMyDataPageDisplay();
       }
     },
 
-    handleEditWorkoutBackdropClick: () => {
-      // First capture panel state, then cancel
-      getModalHandlers(coreActions).prepareCancelEditWorkout();
+    handleEditWorkoutBackdropClick: (event) => {
+      // Verify the click was actually on the Edit Workout backdrop, not from a nested modal
+      // This prevents clicks from Delete Workout modal from triggering cancel flow
+      const target = event?.target;
+      const isEditWorkoutBackdrop = target?.classList.contains('superset-modal-backdrop') &&
+                                    target?.dataset.action === 'handleEditWorkoutBackdropClick';
+
+      if (!isEditWorkoutBackdrop) {
+        console.log("Ignoring backdrop click - not from Edit Workout backdrop");
+        return;
+      }
+
+      // Cancel the edit workout modal
       getModalHandlers(coreActions).cancelEditWorkout();
     },
 
@@ -754,22 +693,24 @@ export function getModalHandlers(coreActions) {
 
       // Clear selector and edit state
       appState.ui.selectedHistoryWorkoutId = null;
+      appState.ui.selectedWorkoutId = null;
       appState.ui.editWorkout.originalWorkout = null;
       appState.ui.editWorkout.hasChanges = false;
 
-      // Close Delete Workout modal (will also close Edit Workout modal via stack)
-      modalService.close();
+      // Close ALL modals without full page render (faster, no DB reload)
+      modalService.closeAll(false);
 
-      // Clear workout ID after modal closes
-      appState.ui.selectedWorkoutId = null;
-
-      // Refresh My Data display without full render (modal close already rendered)
-      if (appState.ui.currentPage === "myData") {
-        refreshMyDataPageDisplay();
-      }
+      // Update My Data page display to show deletion (preserves scroll automatically)
+      refreshMyDataPageDisplay();
     },
 
-    cancelDeleteWorkout: () => {
+    cancelDeleteWorkout: (event) => {
+      // Prevent event from bubbling to Edit Workout backdrop
+      if (event) {
+        event.stopPropagation();
+        event.stopImmediatePropagation(); // Stop all handlers
+        event.preventDefault();
+      }
       // Close Delete Workout modal, return to Edit Workout modal
       modalService.close();
     },
@@ -820,42 +761,34 @@ export function getModalHandlers(coreActions) {
         } : null
       });
 
-      // Clear selector and edit state
+      // Clear selector and edit state BEFORE closing modals
       appState.ui.selectedHistoryWorkoutId = null;
+      appState.ui.selectedWorkoutId = null;
       appState.ui.editWorkout.originalWorkout = null;
       appState.ui.editWorkout.hasChanges = false;
       appState.ui.editWorkout.changeCount = 0;
 
-      // Close all modals (Cancel Changes + Edit Workout) and return to My Data
-      modalService.closeAll();
+      // Close all modals without full page render (faster, no DB reload)
+      modalService.closeAll(false);
 
-      // Clear workout ID after modals are closed
-      appState.ui.selectedWorkoutId = null;
-
-      // Refresh My Data display without full render (modal close already rendered)
-      if (appState.ui.currentPage === "myData") {
-        refreshMyDataPageDisplay();
-      }
+      // Update My Data page display to show restored data (preserves scroll automatically)
+      refreshMyDataPageDisplay();
     },
 
     updateWorkout: () => {
       // Mark that changes have been made (for tracking purposes)
       appState.ui.editWorkout.hasChanges = true;
 
-      // Clear selector and edit state
+      // Clear selector and edit state BEFORE closing modal
       appState.ui.selectedHistoryWorkoutId = null;
+      appState.ui.selectedWorkoutId = null;
       appState.ui.editWorkout.originalWorkout = null;
 
-      // Close Edit Workout modal
-      modalService.close();
+      // Close modal without full page render (faster, no DB reload)
+      modalService.close(false);
 
-      // Clear workout ID after modal closes
-      appState.ui.selectedWorkoutId = null;
-
-      // Refresh My Data display without full render (modal close already rendered)
-      if (appState.ui.currentPage === "myData") {
-        refreshMyDataPageDisplay();
-      }
+      // Update My Data page display to show changes (preserves scroll automatically)
+      refreshMyDataPageDisplay();
     },
 
     // === VIDEO PLAYER ===

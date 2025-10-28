@@ -78,11 +78,12 @@
 }
 
 /* Completion label "Completed:" - gray */
-.history-completion-label {
-  color: var(--on-surface-medium) !important; /* Informational gray */
+/* Higher specificity via parent card class (no !important needed) */
+.history-card .history-completion-label {
+  color: var(--on-surface-medium); /* Informational gray */
 }
 
 /* Completion timestamp value - green */
-.history-completion-value {
-  color: var(--log-green) !important; /* Green for logged/completed state */
+.history-card .history-completion-value {
+  color: var(--log-green); /* Green for logged/completed state */
 }

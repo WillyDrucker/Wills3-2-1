@@ -114,3 +114,104 @@
 .confirmation-modal-actions-three .action-button {
   width: 100%; /* Fill grid column */
 }
+
+/* === GROW-FLASH ANIMATION === */
+/* Universal animation for confirmation modal text emphasis */
+/* Used for warnings (red), success messages (green), etc. */
+/* Each modal sets --animation-flash-color to customize */
+@keyframes modal-text-grow-flash {
+  0% {
+    color: var(--text-primary); /* Start white */
+    transform: scale(1);
+    text-shadow: none;
+  }
+  60% {
+    color: var(--text-primary); /* Stay white during grow */
+    transform: scale(1.15); /* Grow to 1.15x (matches workout log) */
+    text-shadow: none;
+  }
+  66.7% {
+    color: var(--text-primary); /* Stay white during snap */
+    transform: scale(1); /* Snap back */
+    text-shadow: none;
+  }
+  72.2% {
+    /* 100ms transition from white to color (66.7% + 5.5% = 72.2%) */
+    color: var(--animation-flash-color, var(--text-primary)); /* Flash to modal-specific color with glow */
+    transform: scale(1);
+    text-shadow: 0 0 8px var(--animation-flash-color, transparent);
+  }
+  85% {
+    color: var(--animation-flash-color, var(--text-primary)); /* Stay colored, remove glow */
+    transform: scale(1);
+    text-shadow: none;
+  }
+  100% {
+    color: var(--animation-flash-color, var(--text-primary)); /* Stay colored */
+    transform: scale(1);
+    text-shadow: none;
+  }
+}
+
+/* Apply to any text that should use the grow-flash animation */
+.modal-text-animated {
+  animation: modal-text-grow-flash 1.8s ease-out forwards; /* forwards keeps final state */
+  transform-origin: center center;
+}
+
+/* === GROW-FLASH ANIMATION (NUMBER VARIANT) === */
+/* Same timing as modal-text-grow-flash but color is visible immediately */
+/* Used for number-only animations (change count, logged sets count) */
+/* Skips white-to-color transition - color shows during entire animation */
+@keyframes modal-number-grow-flash {
+  0% {
+    color: var(--animation-flash-color, var(--text-primary)); /* Start colored */
+    transform: scale(1);
+    text-shadow: none;
+  }
+  60% {
+    color: var(--animation-flash-color, var(--text-primary)); /* Stay colored during grow */
+    transform: scale(1.15); /* Grow to 1.15x (matches workout log) */
+    text-shadow: none;
+  }
+  66.7% {
+    color: var(--animation-flash-color, var(--text-primary)); /* Stay colored during snap */
+    transform: scale(1); /* Snap back */
+    text-shadow: none;
+  }
+  72.2% {
+    /* Glow effect starts */
+    color: var(--animation-flash-color, var(--text-primary)); /* Add glow */
+    transform: scale(1);
+    text-shadow: 0 0 8px var(--animation-flash-color, transparent);
+  }
+  85% {
+    color: var(--animation-flash-color, var(--text-primary)); /* Stay colored, remove glow */
+    transform: scale(1);
+    text-shadow: none;
+  }
+  100% {
+    color: var(--animation-flash-color, var(--text-primary)); /* Stay colored */
+    transform: scale(1);
+    text-shadow: none;
+  }
+}
+
+/* Apply to number-only animations (change count, logged sets count) */
+.modal-number-animated {
+  animation: modal-number-grow-flash 1.8s ease-out forwards; /* forwards keeps final state */
+  transform-origin: center center;
+}
+
+/* For inline elements like <span>, enable transforms with inline-block */
+p .modal-text-animated,
+span.modal-text-animated,
+p .modal-number-animated,
+span.modal-number-animated {
+  display: inline-block; /* Required for transform to work on inline elements */
+}
+
+/* For block elements like <p>, keep block display for proper centering */
+p.modal-text-animated {
+  display: block; /* Maintains text-align: center from parent */
+}

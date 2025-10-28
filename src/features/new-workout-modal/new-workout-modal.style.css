@@ -50,42 +50,9 @@
   background-color: var(--log-green);
 }
 
-/* === SAVED TEXT ANIMATION === */
-/* Grow, snap back, THEN flash green with glow and stay green */
-@keyframes saved-text-grow-flash {
-  0% {
-    color: var(--text-primary); /* Start white */
-    transform: scale(1);
-    text-shadow: none;
-  }
-  60% {
-    color: var(--text-primary); /* Stay white during grow */
-    transform: scale(1.15); /* Grow to 1.15x (matches workout log) */
-    text-shadow: none;
-  }
-  66.7% {
-    color: var(--text-primary); /* Stay white during snap */
-    transform: scale(1); /* Snap back */
-    text-shadow: none;
-  }
-  75% {
-    color: var(--text-green-plan); /* Flash to green with glow */
-    transform: scale(1);
-    text-shadow: 0 0 8px var(--text-green-plan);
-  }
-  85% {
-    color: var(--text-green-plan); /* Stay green, remove glow */
-    transform: scale(1);
-    text-shadow: none;
-  }
-  100% {
-    color: var(--text-green-plan); /* Stay green */
-    transform: scale(1);
-    text-shadow: none;
-  }
-}
-
-.new-workout-card .saved-text-animate {
-  animation: saved-text-grow-flash 1.8s ease-out forwards; /* forwards keeps final state */
-  transform-origin: center center;
+/* === ANIMATION COLOR === */
+/* Set green flash color for New Workout modal's animated text */
+/* Uses global modal-text-grow-flash animation from _confirmation-modals.css */
+.new-workout-card {
+  --animation-flash-color: var(--text-green-plan); /* Green success color */
 }

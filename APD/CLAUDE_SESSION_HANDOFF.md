@@ -15,7 +15,15 @@ This file contains only critical architectural patterns and current session stat
 
 ## Current Session State
 
-**Status**: Interactive Workout Selectors (Claude-v5.5.9) - IN PROGRESS
+**Status**: Modal Animation System Globalization (Claude-v5.6.1) - COMPLETE
+- Global animation system with CSS custom properties implemented
+- Number-only animation variant created for immediate color visibility
+- Modal stacking visibility improvements (Edit Workout stays visible when child modals open)
+- All debugging code removed from edit-workout-modal.index.js
+- CLAUDE_DEV_STANDARDS applied to all 18 affected files
+- Documentation updated in PROJECT_NOTES and SESSION_HANDOFF
+
+**Previous Session**: Interactive Workout Selectors (Claude-v5.5.9) - IN PROGRESS
 - Interactive workout selectors with Cancel/Edit buttons working
 - Button overlay system complete (position absolute pattern)
 - Fast re-render pattern implemented (no database lag)
@@ -24,7 +32,6 @@ This file contains only critical architectural patterns and current session stat
   - Opening/closing Edit Workout modal jumps My Data page to top
   - Root cause: `renderAll()` clears innerHTML before scroll can be saved
   - May require modal service refactor or alternative approach
-- See CLAUDE_ACTIVE.md for detailed technical notes and attempted solutions
 
 ---
 
@@ -172,6 +179,45 @@ Pattern for overlaying content without pushing page layout:
 - Parent needs `position: relative` for positioning context
 
 **Examples**: `.options-list` in selectors, `.history-edit-buttons` in My Data
+
+### 11. Modal Animation System (Global + Number Variant)
+Global animation system using CSS custom properties for reusable modal animations:
+```css
+/* Global animation definition */
+@keyframes modal-text-grow-flash {
+  0% { color: var(--text-primary); transform: scale(1); }
+  60% { color: var(--text-primary); transform: scale(1.15); }
+  66.7% { color: var(--text-primary); transform: scale(1); }
+  72.2% { color: var(--animation-flash-color); text-shadow: 0 0 8px var(--animation-flash-color); }
+  85% { color: var(--animation-flash-color); text-shadow: none; }
+  100% { color: var(--animation-flash-color); }
+}
+
+/* Each modal sets its color */
+.delete-log-card {
+  --animation-flash-color: var(--text-red-skip);
+}
+.new-workout-card {
+  --animation-flash-color: var(--text-green-plan);
+}
+```
+
+**Number-Only Variant**: For number animations (change count, logged sets count), use `modal-number-grow-flash` which starts colored instead of white:
+```css
+@keyframes modal-number-grow-flash {
+  0% { color: var(--animation-flash-color); transform: scale(1); }
+  60% { color: var(--animation-flash-color); transform: scale(1.15); }
+  /* ... same timing, stays colored throughout ... */
+}
+```
+
+**Use Cases**:
+- Full-text warnings: `.modal-text-animated` (white → color transition)
+- Number-only: `.modal-number-animated` (immediate color, better visibility during grow)
+
+**Display Rules**:
+- Spans need `display: inline-block` for transforms to work
+- Paragraphs need `display: block` to maintain `text-align: center`
 
 ---
 

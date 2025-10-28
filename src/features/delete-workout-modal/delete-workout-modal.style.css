@@ -13,11 +13,12 @@
    Inherits all base styling from _confirmation-modals.css:
    - Title: 2.5rem/700 centered
    - Description: 1rem/600 line-height 1.2
+   - Question text: 1.25rem/600 centered
    - 16px spacing rhythm throughout
    - Blue border, centered layout
 
    Custom Features:
-   - Red "Yes" button (button-delete-yes)
+   - Red "Yes" button (button-rest-skip)
    - Warning text animation: Grow → Snap → Flash red with glow → Stay red
    - Animation timing: 1.8s (matches workout log animations)
 
@@ -39,47 +40,23 @@
    All base confirmation modal styles come from _confirmation-modals.css
    ========================================================================== */
 
-/* === RED YES BUTTON - Delete Workout specific === */
-.delete-workout-card .button-delete-yes {
-  background-color: var(--text-red-skip);
+/* === Z-INDEX STACKING === */
+/* Delete Workout modal stacks on top of Edit Workout modal */
+/* Higher z-index ensures it appears above parent modal */
+#delete-workout-modal-container {
+  z-index: 1100; /* Higher than Edit Workout modal (1000) */
 }
 
-/* === WARNING TEXT ANIMATION === */
-/* Grow, snap back, THEN flash red with glow and stay red */
-@keyframes permanent-warning-grow-flash {
-  0% {
-    color: var(--text-primary); /* Start white */
-    transform: scale(1);
-    text-shadow: none;
-  }
-  60% {
-    color: var(--text-primary); /* Stay white during grow */
-    transform: scale(1.15); /* Grow to 1.15x (matches workout log) */
-    text-shadow: none;
-  }
-  66.7% {
-    color: var(--text-primary); /* Stay white during snap */
-    transform: scale(1); /* Snap back */
-    text-shadow: none;
-  }
-  75% {
-    color: var(--text-red-skip); /* Flash to red with glow */
-    transform: scale(1);
-    text-shadow: 0 0 8px var(--text-red-skip);
-  }
-  85% {
-    color: var(--text-red-skip); /* Stay red, remove glow */
-    transform: scale(1);
-    text-shadow: none;
-  }
-  100% {
-    color: var(--text-red-skip); /* Stay red */
-    transform: scale(1);
-    text-shadow: none;
-  }
+/* Single backdrop for all layers beneath child modal */
+/* This backdrop provides the ONLY darkening layer when Delete Workout is open */
+/* Mutes both Edit Workout and My Data uniformly - no double-muting */
+#delete-workout-modal-container .superset-modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.85); /* Standard backdrop darkness */
 }
 
-.delete-workout-card .permanent-warning-text {
-  animation: permanent-warning-grow-flash 1.8s ease-out forwards; /* forwards keeps final state */
-  transform-origin: center center;
+/* === ANIMATION COLOR === */
+/* Set red flash color for Delete Workout modal's animated text */
+/* Uses global modal-text-grow-flash animation from _confirmation-modals.css */
+.delete-workout-card {
+  --animation-flash-color: var(--text-red-skip); /* Red warning color */
 }

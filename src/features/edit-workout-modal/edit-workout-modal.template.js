@@ -18,7 +18,7 @@
    ========================================================================== */
 
 import { appState } from "state";
-import { colorCodeMap, programConfig } from "config";
+import { colorCodeMap, programConfig, muscleGroupSortOrder } from "config";
 import { isDumbbellExercise, pluralize } from "utils";
 import { createNumberInputHTML } from "ui";
 
@@ -82,29 +82,31 @@ export function getEditWorkoutModalTemplate(workout) {
   // Format completion timestamp
   const completionTimeStr = formatCompletionTime(workout.completedTimestamp);
   const completionHtml = completionTimeStr
-    ? `<span class="history-completion-label">Completed:</span> <span class="history-completion-value">${completionTimeStr}</span>`
+    ? `<span class="workout-session-completion-label">Completed:</span> <span class="workout-session-completion-value">${completionTimeStr}</span>`
     : '';
 
-  // Build two-line header (day/date + bodypart/completion) - EXACT match to My Data structure
+  // Build two-line header using global workout-session-header classes
   const sessionHeaderHtml = `<div class="edit-workout-header">
-    <div class="edit-workout-day-date">
-      <span class="edit-workout-day-text">${dayOfWeek}</span>
-      <span class="edit-workout-date-text data-highlight text-plan">${dateString}</span>
+    <div class="workout-session-day-date">
+      <span class="workout-session-day-text">${dayOfWeek}</span>
+      <span class="workout-session-date-text data-highlight text-plan">${dateString}</span>
     </div>
-    <div class="edit-workout-bodypart-completion">
-      <span class="edit-workout-bodypart-text">${bodyPartHtml}</span>
-      <span class="edit-workout-completion-text">${completionHtml}</span>
+    <div class="workout-session-bodypart-line">
+      <span class="workout-session-bodypart-text">${bodyPartHtml}</span>
+      <span class="workout-session-completion-text">${completionHtml}</span>
     </div>
   </div>`;
 
   // Group exercises by name with metadata (same logic as My Data calendar)
-  const exercisesGrouped = workout.logs.reduce((acc, log) => {
+  // Track first occurrence index to preserve original workout order
+  const exercisesGrouped = workout.logs.reduce((acc, log, index) => {
     const key = log.exercise.exercise_name;
     if (!acc[key]) {
       acc[key] = {
         logs: [],
         supersetSide: log.supersetSide || null,
         exercise: log.exercise,
+        firstIndex: index, // Track when this exercise first appeared
       };
     }
     acc[key].logs.push(log);
@@ -132,12 +134,16 @@ export function getEditWorkoutModalTemplate(workout) {
     }
   }
 
-  // Sort exercises within each group by their original workout position
-  // This preserves the muscle group order (Major1 first, etc.) from "Today's Workout"
-  const sortByPosition = (a, b) => a.data.exercise.position - b.data.exercise.position;
-  normalExercises.sort(sortByPosition);
-  leftExercises.sort(sortByPosition);
-  rightExercises.sort(sortByPosition);
+  // Sort exercises within each group by muscle_group order (same as "Today's Workout")
+  // Uses muscleGroupSortOrder: Major1 (1) → Minor1 (2) → Major2 (3) → Minor2 (4) → Tertiary (5)
+  const sortByMuscleGroup = (a, b) => {
+    const sortA = muscleGroupSortOrder[a.data.exercise.muscle_group] || 99;
+    const sortB = muscleGroupSortOrder[b.data.exercise.muscle_group] || 99;
+    return sortA - sortB;
+  };
+  normalExercises.sort(sortByMuscleGroup);
+  leftExercises.sort(sortByMuscleGroup);
+  rightExercises.sort(sortByMuscleGroup);
 
   // Combine in proper order
   const orderedExercises = [
@@ -168,7 +174,7 @@ export function getEditWorkoutModalTemplate(workout) {
       </div>
 
       <div class="edit-workout-button-group">
-        <button class="edit-workout-cancel-button" data-action="cancelEditWorkout" data-mousedown-action="prepareCancelEditWorkout">
+        <button class="edit-workout-cancel-button" data-action="cancelEditWorkout">
           <span class="button-cancel-line1">Cancel</span>
           <span class="button-cancel-line2">Workout</span>
         </button>
@@ -290,8 +296,8 @@ function getHistoricalLogItemHTML(log, workout, currentPlan, uniqueIndex) {
                 </div>
                 <div class="edit-log-buttons">
                   <button class="action-button button-cancel" data-action="cancelWorkoutLog">Cancel</button>
-                  <button class="action-button button-clear-set" data-action="deleteWorkoutLog" data-workout-id="${workout.id}" data-set-number="${setNumber}" data-superset-side="${log.supersetSide || ""}">Delete</button>
-                  <button class="action-button button-update-log" data-action="updateWorkoutLog" data-workout-id="${workout.id}" data-set-number="${setNumber}" data-superset-side="${log.supersetSide || ""}" data-log-index="${uniqueIndex}">Update</button>
+                  <button class="action-button button-clear-set" data-action="deleteWorkoutLog" data-workout-id="${workout.id}" data-set-number="${setNumber}" data-superset-side="${log.supersetSide || ""}" data-exercise-name="${exercise.exercise_name}">Delete</button>
+                  <button class="action-button button-update-log" data-action="updateWorkoutLog" data-workout-id="${workout.id}" data-set-number="${setNumber}" data-superset-side="${log.supersetSide || ""}" data-exercise-name="${exercise.exercise_name}" data-log-index="${uniqueIndex}">Update</button>
                 </div>
               </div>
             </details>`;

@@ -42,6 +42,13 @@
    All base confirmation modal styles come from _confirmation-modals.css
    ========================================================================== */
 
+/* === ANIMATION COLOR === */
+/* Set green flash color for Reset Confirmation modal's animated text (logged sets count) */
+/* Uses global modal-text-grow-flash animation from _confirmation-modals.css */
+.reset-confirmation-card {
+  --animation-flash-color: var(--log-green); /* Green success color */
+}
+
 /* === MODAL CONTAINER OVERRIDE === */
 #reset-confirmation-modal-container {
   /* Uses .confirmation-modal-container from shared styles */

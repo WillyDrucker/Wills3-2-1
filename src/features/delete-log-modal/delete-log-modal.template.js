@@ -9,6 +9,8 @@
    - Confirmation modal pattern (backdrop + card)
    - Title: "Delete Log"
    - Dynamic description based on whether it's the last log
+   - Warning text with red grow-flash animation
+   - Question text: "Delete Log?" (1.25rem)
    - Buttons: Cancel, Yes (red button-rest-skip class)
 
    Dependencies: None (pure template function)
@@ -23,21 +25,11 @@
 export function getDeleteLogModalTemplate(isLastLog = false) {
   // Dynamic description based on last log status
   const descriptionHtml = isLastLog
-    ? `<p class="confirmation-modal-description">
-         Deleting this log is permanent!
-       </p>
-       <p class="confirmation-modal-description">
-         This is the last log in this workout.
-       </p>
-       <p class="confirmation-modal-description">
-         The entire workout will be removed.
-       </p>`
-    : `<p class="confirmation-modal-description">
-         Deleting a log is permanent!
-       </p>
-       <p class="confirmation-modal-description">
-         This action cannot be undone.
-       </p>`;
+    ? `<p class="confirmation-modal-description modal-text-animated">Deleting this log is permanent!</p>
+       <p class="confirmation-modal-description">This is the last log in this workout.</p>
+       <p class="confirmation-modal-description">The entire workout will be removed.</p>`
+    : `<p class="confirmation-modal-description modal-text-animated">Deleting a log is permanent!</p>
+       <p class="confirmation-modal-description">This action cannot be undone.</p>`;
 
   return `
     <div class="superset-modal-backdrop" data-action="closeDeleteLogModal"></div>
@@ -45,6 +37,8 @@ export function getDeleteLogModalTemplate(isLastLog = false) {
       <h2 class="confirmation-modal-title">Delete Log</h2>
 
       ${descriptionHtml}
+
+      <p class="confirmation-modal-question">Delete Log?</p>
 
       <div class="confirmation-modal-actions">
         <button class="action-button button-cancel" data-action="closeDeleteLogModal">Cancel</button>

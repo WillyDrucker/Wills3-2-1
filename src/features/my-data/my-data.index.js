@@ -58,9 +58,8 @@ export async function handleClearDailyData() {
 }
 
 export function refreshMyDataPageDisplay() {
-  // Preserve scroll position before re-rendering
-  const mainContent = document.getElementById("main-content");
-  const savedScrollPosition = mainContent ? mainContent.scrollTop : 0;
+  // Preserve scroll position before re-rendering (page-level scroll)
+  const savedScrollPosition = document.documentElement.scrollTop || document.body.scrollTop || 0;
 
   // Re-render template without reloading from database (fast, for selector interactions)
   ui.mainContent.innerHTML = getMyDataPageTemplate();
@@ -85,10 +84,8 @@ export function refreshMyDataPageDisplay() {
   // Restore scroll position after browser completes layout (requestAnimationFrame ensures timing)
   if (savedScrollPosition > 0) {
     requestAnimationFrame(() => {
-      const mainContent = document.getElementById("main-content");
-      if (mainContent) {
-        mainContent.scrollTop = savedScrollPosition;
-      }
+      // Use window.scrollTo() which is more reliable than direct scrollTop assignment
+      window.scrollTo(0, savedScrollPosition);
     });
   }
 }

@@ -8,7 +8,7 @@ This file contains the historical record of version changes for Will's 3-2-1. De
 
 ---
 
-**Current Version**: Claude-v5.5.9
+**Current Version**: Claude-v5.6.1
 **Project**: Will's 3-2-1 Workout Tracking Application
 **Tech Stack**: Vanilla JavaScript, ES Modules, CSS Tokens
 **Philosophy**: SUPER STUPID SIMPLE (SSS), REMOVE DON'T ADD
@@ -32,6 +32,90 @@ This file contains the historical record of version changes for Will's 3-2-1. De
 ---
 
 ## VERSION CHANGELOG
+
+### **Claude-v5.6.1 - Modal Animation System Globalization** (2025-01-27) - COMPLETE
+
+**Mission**: Globalize modal animation system, create number-only animation variant, improve modal stacking visibility, remove debugging code, apply CLAUDE_DEV_STANDARDS to all affected files.
+
+**Global Animation System**:
+- **Consolidated animations**: Merged three duplicate animations (permanent-warning-grow-flash, permanent-warning-grow-flash-red, saved-text-grow-flash) into single global `modal-text-grow-flash` animation
+- **CSS custom properties**: Uses `--animation-flash-color` variable for dynamic color customization per modal
+- **Universal timing**: 1.8s total duration with precise keyframe percentages (0% → 60% → 66.7% → 72.2% → 85% → 100%)
+- **Color transition**: 100ms white-to-color transition at 66.7%-72.2% keyframes
+- **Animation sequence**: Grow to 1.15x → Snap back to 1x → Transition to color → Glow effect → Stay colored
+- **Transform support**: Automatic `display: inline-block` for `<span>` elements, `display: block` for `<p>` elements
+
+**Number-Only Animation Variant**:
+- **Created**: `modal-number-grow-flash` animation for number-only instances (change count, logged sets count)
+- **Immediate color**: Starts with final color (no white-to-color transition) - number visible during entire animation
+- **Same timing**: Maintains 1.8s duration with identical grow/snap/glow sequence
+- **Use cases**: Cancel Changes modal (change count), Reset Confirmation modal (logged sets count)
+- **Class**: `.modal-number-animated` for number spans, `.modal-text-animated` for full-text paragraphs
+
+**Modal Stacking Visibility**:
+- **Parent modal persistence**: Edit Workout modal stays visible (but muted) when child modals open
+- **Three-layer hierarchy**: My Data page < Edit Workout modal (muted) < Child modal (active)
+- **Single-level muting**: One backdrop provides uniform darkening - no double-muting
+- **Backdrop management**: Parent modal's backdrop hidden when child active, child's backdrop provides only darkening layer
+- **Child modals**: Delete Log, Delete Workout, Cancel Changes (all stack at z-index: 1100)
+- **Pointer events**: Parent modal blocks interaction with `pointer-events: none` when muted
+
+**Animation Colors**:
+- **Red warnings**: Delete Log, Delete Workout (`--text-red-skip`)
+- **Green success**: New Workout, Cancel Changes, Reset Confirmation (`--text-green-plan`, `--log-green`)
+- **Dynamic per modal**: Each modal sets `--animation-flash-color` CSS custom property
+
+**Debugging Code Removal**:
+- **Removed**: Console.log input value checking block from `edit-workout-modal.index.js` (lines 74-88)
+- **Removed**: Console.warn statement for missing workout ID (line 59)
+- **Kept**: Legitimate console.error statements for error handling (delete-log-modal, my-data)
+
+**Files Modified** (18 total):
+
+**Global Styles** (1 file):
+- `_confirmation-modals.css` - Added global animation system with dual animation variants
+
+**Delete Log Modal** (3 files):
+- `delete-log-modal.template.js` - Changed to `.modal-text-animated` class, removed whitespace
+- `delete-log-modal.style.css` - Removed duplicate animation, added `--animation-flash-color` red
+- `delete-log-modal.index.js` - No changes (already compliant)
+
+**Delete Workout Modal** (3 files):
+- `delete-workout-modal.template.js` - Changed class, capitalized question text
+- `delete-workout-modal.style.css` - Removed 30+ lines duplicate animation code
+- `delete-workout-modal.index.js` - No changes (already compliant)
+
+**New Workout Modal** (3 files):
+- `new-workout-modal.template.js` - Changed class, removed whitespace for centering
+- `new-workout-modal.style.css` - Removed duplicate animation, added `--animation-flash-color` green
+- `new-workout-modal.index.js` - No changes (already compliant)
+
+**Cancel Changes Modal** (3 files):
+- `cancel-changes-modal.template.js` - Applied `.modal-number-animated` to change count, capitalized question
+- `cancel-changes-modal.style.css` - Added `--animation-flash-color` green, backdrop `!important` fix
+- `cancel-changes-modal.index.js` - No changes (already compliant)
+
+**Reset Confirmation Modal** (3 files):
+- `reset-confirmation-modal.template.js` - Applied `.modal-number-animated` to logged sets count
+- `reset-confirmation-modal.style.css` - Added `--animation-flash-color` green
+- `reset-confirmation-modal.index.js` - No changes (already compliant)
+
+**Edit Workout Modal** (3 files):
+- `edit-workout-modal.index.js` - Removed debugging console.log code
+- `edit-workout-modal.style.css` - No changes (already compliant)
+- `edit-workout-modal.template.js` - No changes (already compliant)
+
+**Key Technical Details**:
+- **CSS Custom Properties**: `--animation-flash-color` allows one animation definition to serve all modals with different colors
+- **Keyframe Precision**: 66.7% = snap back, 72.2% = 100ms later (5.5% of 1800ms), 85% = glow removed
+- **Display Context**: Inline-block enables transforms on spans, block maintains text-align on paragraphs
+- **Template Whitespace**: Removed leading spaces in template strings that caused left-alignment despite CSS
+- **Backdrop Strategy**: Hide parent's backdrop, child's backdrop provides single uniform muting layer
+- **Animation Variants**: Full-text uses white-to-color transition (more dramatic), numbers show color immediately (better visibility during grow)
+
+**Status**: COMPLETE - All debugging code removed, standards applied to 18 files, animation system globalized with dual variants, modal stacking working perfectly.
+
+---
 
 ### **Claude-v5.5.9 - Interactive Workout Selectors** (2025-01-24) - IN PROGRESS
 

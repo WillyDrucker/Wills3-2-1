@@ -7,6 +7,8 @@
    Architecture:
    - Extends _confirmation-modals.css base classes
    - Uses button-rest-skip class for red Yes button
+   - Question text: "Delete Log?" (1.25rem/600 centered)
+   - Warning text animation: Grow → Snap → Flash red with glow → Stay red
    - 16px spacing rhythm throughout
 
    Dependencies: _confirmation-modals.css, _variables.css
@@ -14,6 +16,38 @@
    ========================================================================== */
 
 /* === DELETE LOG MODAL === */
-/* Uses base confirmation modal styles - no additional styling needed */
-/* All layout handled by _confirmation-modals.css */
+/* Uses base confirmation modal styles from _confirmation-modals.css */
 /* Button styling handled by _action-button-groups.css */
+
+/* === Z-INDEX STACKING === */
+/* Delete Log modal stacks on top of Edit Workout modal */
+/* Higher z-index ensures it appears above parent modal */
+#delete-log-modal-container {
+  z-index: 1100; /* Higher than Edit Workout modal (1000) */
+}
+
+/* Single backdrop for all layers beneath child modal */
+/* This backdrop provides the ONLY darkening layer when Delete Log is open */
+/* Mutes both Edit Workout and My Data uniformly - no double-muting */
+#delete-log-modal-container .superset-modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.85); /* Standard backdrop darkness */
+}
+
+/* === SPACING OVERRIDES === */
+/* Reduce spacing between "Deleting a log is permanent!" and "This action cannot be undone." */
+.delete-log-card .modal-text-animated {
+  margin-bottom: 0; /* Tighter spacing to next description paragraph */
+}
+
+/* Second description paragraph gets reduced top spacing for 7px visual gap */
+.delete-log-card .confirmation-modal-description:not(.modal-text-animated) {
+  margin-top: 0;
+  margin-bottom: 9px; /* Keep 16px to question text below */
+}
+
+/* === ANIMATION COLOR === */
+/* Set red flash color for Delete Log modal's animated text */
+/* Uses global modal-text-grow-flash animation from _confirmation-modals.css */
+.delete-log-card {
+  --animation-flash-color: var(--text-red-skip); /* Red warning color */
+}

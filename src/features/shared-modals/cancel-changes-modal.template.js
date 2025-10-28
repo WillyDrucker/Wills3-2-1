@@ -26,9 +26,9 @@ export function getCancelChangesModalTemplate() {
     <div class="superset-modal-content card confirmation-modal-card cancel-changes-card">
       <h2 class="confirmation-modal-title">Cancel</h2>
 
-      <p class="confirmation-modal-description">There ${changeCount === 1 ? 'is' : 'are'} <span class="text-success">${changeCount}</span> ${changeText}. All changes will be lost.</p>
+      <p class="confirmation-modal-description">There ${changeCount === 1 ? 'is' : 'are'} <span class="modal-number-animated">${changeCount}</span> ${changeText}. All changes will be lost.</p>
 
-      <p class="confirmation-modal-question">Discard all changes?</p>
+      <p class="confirmation-modal-question">Discard All Changes?</p>
 
       <div class="confirmation-modal-actions">
         <button class="action-button button-cancel" data-action="declineCancelChanges">No</button>

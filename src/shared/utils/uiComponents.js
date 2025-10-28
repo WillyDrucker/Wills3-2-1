@@ -74,7 +74,7 @@ export function createNumberInputHTML(
   return `
       <div class="number-input-container">
         <button type="button" data-action="decrement" data-input-id="${id}" ${dataAttr}><span class="decrement-button-symbol">-</span></button>
-        <input type="number" id="${id}-input" value="${value}" min="0" max="999" readonly ${dataAttr}>
+        <input type="number" id="${id}-input" value="${value}" min="0" max="999" readonly autocomplete="off" ${dataAttr}>
         <button type="button" data-action="increment" data-input-id="${id}" ${dataAttr}>+</button>
       </div>`;
 }

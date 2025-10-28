@@ -1,0 +1,100 @@
+/* ==========================================================================
+   WORKOUT SESSION HEADERS - Global Component
+
+   Shared header styling for workout session displays across the application.
+   Two-line header pattern: Day/Date line + Body Part/Completion line.
+
+   Purpose:
+   - Single source of truth for workout session header styling
+   - Used in: Today's Workout, Edit Workout Modal, My Data calendar
+   - Eliminates duplicate code between features
+
+   Architecture: Two-line header system
+   - Line 1 (Day/Date): 1.25rem, 600 weight, white with text-shadow
+   - Line 2 (Body Part/Completion): 1rem, 600 weight, white with text-shadow
+   - Completion labels: Gray label + Green value (semantic color coding)
+
+   Spacing:
+   - 7px visual spacing between lines (achieved via margin + font metrics)
+   - Controlled by parent components for context-specific rhythm
+
+   Dependencies:
+   - _variables.css: Font-size tokens (--font-size-h2, --font-size-body-m)
+   - _variables.css: Color tokens (--on-surface-light, --on-surface-medium, --log-green)
+
+   Used by:
+   - Edit Workout Modal (edit-workout-modal.template.js)
+   - My Data calendar (my-data.templates.calendarDay.js)
+   - Today's Workout log items (workout-log items display)
+   ========================================================================== */
+
+/* === LINE 1: DAY/DATE HEADER === */
+.workout-session-day-date {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0;
+  line-height: 1;
+  /* Margin controlled by parent context (feature-specific spacing) */
+}
+
+/* Day name text - left aligned */
+.workout-session-day-text {
+  font-size: var(--font-size-h2); /* 1.25rem */
+  font-weight: 600;
+  line-height: 1;
+  color: var(--on-surface-light); /* White */
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+/* Date text - right aligned */
+.workout-session-date-text {
+  font-size: var(--font-size-h2); /* 1.25rem */
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+/* === LINE 2: BODY PART / COMPLETION LINE === */
+.workout-session-bodypart-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0;
+  line-height: 1;
+  /* Margin controlled by parent context (feature-specific spacing) */
+}
+
+/* Body part text - left aligned */
+.workout-session-bodypart-text {
+  font-size: var(--font-size-body-m); /* 1rem */
+  font-weight: 600;
+  line-height: 1;
+  color: var(--on-surface-light);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+/* Completion timestamp wrapper - right aligned */
+.workout-session-completion-text {
+  font-size: var(--font-size-body-m); /* 1rem */
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+/* === COMPLETION TIMESTAMP STYLING === */
+/* Semantic color coding: Gray label + Green value */
+
+/* "Completed:" label - informational gray */
+.workout-session-completion-label {
+  color: var(--on-surface-medium);
+}
+
+/* Timestamp value "9:45 AM" - success green */
+.workout-session-completion-value {
+  color: var(--log-green);
+}

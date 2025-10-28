@@ -37,17 +37,11 @@ export function getNewWorkoutModalTemplate() {
         <div class="superset-modal-content card confirmation-modal-card new-workout-card">
             <h2 class="confirmation-modal-title">New Workout</h2>
 
-            <p class="confirmation-modal-description saved-text-animate">
-              Workout saved to My Data!
-            </p>
+            <p class="confirmation-modal-description modal-text-animated">Workout saved to My Data!</p>
 
-            <p class="confirmation-modal-description">
-              New Workout will reset workout settings to default and clear all logs.
-            </p>
+            <p class="confirmation-modal-description">New Workout will reset workout settings to default and clear all logs.</p>
 
-            <p class="confirmation-modal-question">
-              Begin New Workout?
-            </p>
+            <p class="confirmation-modal-question">Begin New Workout?</p>
 
             <div class="confirmation-modal-actions">
                 <button class="action-button button-cancel" data-action="closeNewWorkoutModal">Cancel</button>

@@ -221,16 +221,17 @@ export function markCurrentWorkoutCommitted() {
  * Update a historical log entry from Edit Workout modal
  *
  * Purpose: Allows editing reps/weight for completed workout logs in My Data.
- * Finds specific log by workout ID, set number, and superset side, updates values,
- * then saves to both localStorage and database.
+ * Finds specific log by workout ID, set number, superset side, and exercise name,
+ * then updates values and saves to both localStorage and database.
  *
  * @param {number} workoutId - ID of the workout session
  * @param {number} setNumber - Set number within the workout
  * @param {string} supersetSide - 'left', 'right', or '' for normal mode
+ * @param {string} exerciseName - Exercise name to identify specific log
  * @param {number} reps - New reps value
  * @param {number} weight - New weight value
  */
-export function updateHistoricalLog(workoutId, setNumber, supersetSide, reps, weight) {
+export function updateHistoricalLog(workoutId, setNumber, supersetSide, exerciseName, reps, weight) {
   const { user } = appState;
   const workout = user.history.workouts.find((w) => w.id === workoutId);
 
@@ -239,15 +240,16 @@ export function updateHistoricalLog(workoutId, setNumber, supersetSide, reps, we
     return;
   }
 
-  // Find the specific log entry
+  // Find the specific log entry (match by setNumber, supersetSide, AND exercise name)
   const log = workout.logs.find(
     (l) =>
       l.setNumber === setNumber &&
-      (l.supersetSide || "") === supersetSide
+      (l.supersetSide || "") === supersetSide &&
+      l.exercise.exercise_name === exerciseName
   );
 
   if (!log) {
-    console.error("Log not found:", { workoutId, setNumber, supersetSide });
+    console.error("Log not found:", { workoutId, setNumber, supersetSide, exerciseName });
     return;
   }
 
@@ -278,9 +280,10 @@ export function updateHistoricalLog(workoutId, setNumber, supersetSide, reps, we
  * @param {number} workoutId - ID of the workout session
  * @param {number} setNumber - Set number within the workout
  * @param {string} supersetSide - 'left', 'right', or '' for normal mode
+ * @param {string} exerciseName - Exercise name to identify specific log
  * @returns {boolean} - True if entire workout was deleted, false if just one log removed
  */
-export function deleteHistoricalLog(workoutId, setNumber, supersetSide) {
+export function deleteHistoricalLog(workoutId, setNumber, supersetSide, exerciseName) {
   const { user } = appState;
   const workoutIndex = user.history.workouts.findIndex((w) => w.id === workoutId);
 
@@ -291,10 +294,10 @@ export function deleteHistoricalLog(workoutId, setNumber, supersetSide) {
 
   const workout = user.history.workouts[workoutIndex];
 
-  // Remove the specific log
+  // Remove the specific log (match by setNumber, supersetSide, AND exercise name)
   workout.logs = workout.logs.filter(
     (l) =>
-      !(l.setNumber === setNumber && (l.supersetSide || "") === supersetSide)
+      !(l.setNumber === setNumber && (l.supersetSide || "") === supersetSide && l.exercise.exercise_name === exerciseName)
   );
 
   const isLastLog = workout.logs.length === 0;
