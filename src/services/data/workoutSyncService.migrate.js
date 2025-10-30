@@ -70,12 +70,8 @@ export async function initializeWorkoutSync() {
 
   // If user has no database workouts but has localStorage workouts, migrate them
   if (dbWorkouts.length === 0 && appState.user.history.workouts.length > 0) {
-    console.log("Migrating localStorage workouts to database...");
     const result = await migrateLocalWorkoutsToDatabase(
       appState.user.history.workouts
-    );
-    console.log(
-      `Migration complete: ${result.migrated} workouts migrated, ${result.errors.length} errors`
     );
     if (result.errors.length > 0) {
       console.error("Migration errors:", result.errors);
@@ -83,6 +79,5 @@ export async function initializeWorkoutSync() {
   } else if (dbWorkouts.length > 0) {
     // Load database workouts into appState (database is source of truth)
     appState.user.history.workouts = dbWorkouts;
-    console.log(`Loaded ${dbWorkouts.length} workouts from database`);
   }
 }

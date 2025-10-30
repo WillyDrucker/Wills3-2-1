@@ -18,8 +18,7 @@
    Used by: All services and features requiring config data
    ========================================================================== */
 
-export const EXERCISE_DATABASE_URL =
-  "https://beta.wills321.com/data/exercises.json";
+export const EXERCISE_DATABASE_URL = "/data/exercises.json";
 
 // Supabase configuration
 export const SUPABASE_URL = "https://exowzsiimszqdgswnffu.supabase.co";

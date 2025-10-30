@@ -11,14 +11,13 @@
 import { appState } from "state";
 
 export function login() {
-  console.log("login function called");
+  // Placeholder for future authentication
 }
 
 export function logout() {
-  console.log("logout function called");
+  // Placeholder for future authentication
 }
 
 export function getCurrentUser() {
-  console.log("getCurrentUser function called");
   return appState.user;
 }

@@ -373,12 +373,6 @@ export function restoreEntireWorkout(workoutId, restoredWorkout) {
     return false;
   }
 
-  console.log("Restoring entire workout:", {
-    workoutIndex,
-    workoutId,
-    logsCount: restoredWorkout.logs.length
-  });
-
   // Replace entire workout (deep clone to avoid reference issues)
   user.history.workouts[workoutIndex] = JSON.parse(JSON.stringify(restoredWorkout));
 

@@ -176,7 +176,7 @@ export function getEditWorkoutModalTemplate(workout) {
       <div class="edit-workout-button-group">
         <button class="edit-workout-cancel-button" data-action="cancelEditWorkout">
           <span class="button-cancel-line1">Cancel</span>
-          <span class="button-cancel-line2">Workout</span>
+          <span class="button-cancel-line2">Edit</span>
         </button>
         <button class="edit-workout-delete-button" data-action="openDeleteWorkoutModal">
           <span class="button-delete-line1">Delete</span>

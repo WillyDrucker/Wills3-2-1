@@ -14,104 +14,124 @@ This file can be purged and cleaned as needed. It's an extension of SESSION_HAND
 
 ## Current Session Notes
 
-### Interactive Workout Selectors - In Progress (2025-01-24)
+### Claude-v5.6.3 - Issue 48: Authentication Redirect Fix (2025-01-30)
 
-**Status**: Selector overlay behavior working, scroll jump issue persisting
+**Status**: Code fix complete - Supabase Dashboard configuration required
 
-**Current Issue - Modal Scroll Jump**:
-- Opening Edit Workout modal jumps My Data page to top
-- Closing Edit Workout modal also jumps to top
-- Problem: `modalService.open()` → `renderAll()` → clears innerHTML → resets scroll
-- Attempted fixes:
-  1. setTimeout after modal open - didn't work
-  2. Scroll preservation in refreshMyDataPageDisplay() - wrong level
-  3. Scroll preservation in renderAll() - still jumping
-- Root cause: `ui.mainContent.innerHTML = ""` at line 110 of main.js resets scroll before save
-- Need different approach - possibly prevent renderAll() for this modal
+**Problem**: Sign-up confirmation emails redirect to localhost:3000 instead of production domains (wills321.com / beta.wills321.com)
 
-**Completed Work**:
+**Root Cause**:
+1. Supabase Dashboard Site URL configured for localhost:3000
+2. signUp() code didn't include explicit emailRedirectTo option
 
-1. **Edit Pen Button Removal**:
-   - Removed edit pen button from workout selectors
-   - Archived button component in uiComponents.js for future reuse
-   - Restored 16px spacing below workout logs
+**Code Fix Applied**:
+- **File**: `src/services/authService.js` (lines 31-37)
+- **Change**: Added `emailRedirectTo` option to signUp() call
+- **Pattern**: Matches existing resetPasswordForEmail() implementation
+- **Behavior**: Dynamic redirect using `window.location.origin`
 
-2. **Completion Timestamp System**:
-   - Added `completed_timestamp` column to database (migration 20251023)
-   - Captures exact moment workout is marked committed
-   - Displays as "Completed: 9:45 AM" in gray/green styling
-   - Format: 12-hour time with AM/PM
+**Before**:
+```javascript
+const { data, error } = await supabase.auth.signUp({
+  email,
+  password,
+});
+```
 
-3. **Interactive Workout Selectors**:
-   - Click selector to activate with blue glow effect
-   - Shows Cancel and Edit buttons below results
-   - Mutes all other selectors when one active
-   - Click outside or inside selector to close
-   - Two-step click: first click closes active, second opens new
+**After**:
+```javascript
+const { data, error } = await supabase.auth.signUp({
+  email,
+  password,
+  options: {
+    emailRedirectTo: `${window.location.origin}/index.html`
+  }
+});
+```
 
-4. **Button Overlay System**:
-   - Buttons use `position: absolute` (like `.options-list` pattern)
-   - Blue border extends to surround buttons
-   - No `top` property - natural position but out of flow
-   - `z-index: 200` overlays on content below
-   - Square bottom corners on active selector connect to button container
+**Why This Works**:
+- Production sign-ups (wills321.com) → redirect to wills321.com/index.html
+- Beta sign-ups (beta.wills321.com) → redirect to beta.wills321.com/index.html
+- Local sign-ups (127.0.0.1:5500) → redirect to 127.0.0.1:5500/index.html
+- Local sign-ups (localhost:8000) → redirect to localhost:8000/index.html
 
-5. **Fast Re-render Pattern**:
-   - Created `refreshMyDataPageDisplay()` - no database load
-   - Separated from `renderMyDataPage()` which loads from DB
-   - Instant selector open/close (no lag)
-   - Click-outside-to-close using document-level listener
+---
 
-6. **Database Cleanup**:
-   - Migration `20251024_delete_workouts_before_oct22.sql`
-   - Removed old data causing selector issues
-   - Applied via Supabase Dashboard
+## REQUIRED: Manual Supabase Dashboard Configuration
 
-7. **Background Scroll Prevention**:
-   - Added `html.is-modal-open { overflow: hidden; }`
-   - Prevents mouse wheel scrolling background when modal open
-   - Applied to ALL modals via _modals.css
+**YOU MUST DO THIS** for the fix to work completely:
 
-**Files Modified** (11 total):
-- `my-data.templates.calendarDay.js` - Interactive selector template with buttons
-- `my-data.selectors.css` - Active/muted states, button overlay styling
-- `my-data.day-label.css` - Two-line label system, completion timestamp
-- `my-data.history-spacing.css` - Adjusted margins for two-line labels
-- `my-data.index.js` - refreshMyDataPageDisplay(), click-outside-to-close
-- `actionHandlers.modals.js` - Selector handlers, two-step behavior
-- `historyService.js` - Completion timestamp capture
-- `workoutSyncService.save.js` - Save completion timestamp to DB
-- `workoutSyncService.load.js` - Load completion timestamp from DB
-- `_modals.css` - Background scroll prevention
-- `main.js` - Scroll preservation in renderAll() (not working yet)
-- `state.js` - Added selectedHistoryWorkoutId
+### Step 1: Update Site URL
+**Location**: Supabase Dashboard > Authentication > URL Configuration
 
-**Technical Discoveries**:
+**Change**:
+- **Current**: `http://localhost:3000`
+- **New**: `https://wills321.com`
 
-1. **Options-List Pattern**:
-   - `.options-list` doesn't set `top` property
-   - Uses `position: absolute` with `width: 100%`
-   - Removes from flow while keeping natural position
-   - This is the correct pattern for overlay without push
+### Step 2: Add Redirect URLs to Whitelist
+**Location**: Same page - "Redirect URLs" section
 
-2. **RenderAll Flow Issue**:
-   - `modalService.open()` → `_renderAll()` → full page re-render
-   - `ui.mainContent.innerHTML = ""` resets scroll before we can save
-   - Saving scroll before renderAll doesn't work because DOM already cleared
-   - Need to prevent renderAll or use different modal approach
+**Add these URLs** (one per line):
+```
+https://wills321.com/**
+https://beta.wills321.com/**
+http://127.0.0.1:5500/**
+http://localhost:8000/**
+```
 
-3. **Click-Outside Pattern**:
-   - Document-level listener with `closest()` check
-   - Remove listener before adding to prevent duplicates
-   - Works for any absolutely positioned overlay element
+**Note**: localhost:3000 is no longer needed and can be removed from whitelist
 
-**Next Steps**:
-- Resolve scroll jump issue (may need modal service refactor)
-- Test all selector interactions after scroll fix
-- Verify completion timestamp on all workout types
-- Test database migration cleanup results
+---
 
-**Files to Watch**:
-- `main.js` - renderAll() scroll preservation attempts
-- `modalService.js` - Modal open/close behavior
-- `my-data.index.js` - My Data page rendering and scroll management
+## Testing Checklist
+
+After Supabase Dashboard configuration:
+
+1. **Production Test** (wills321.com):
+   - Sign up with new email
+   - Check confirmation email redirect URL
+   - Should be: `https://wills321.com/index.html?token=...`
+
+2. **Beta Test** (beta.wills321.com):
+   - Sign up with new email
+   - Check confirmation email redirect URL
+   - Should be: `https://beta.wills321.com/index.html?token=...`
+
+3. **Local Test** (127.0.0.1:5500):
+   - Sign up with new email
+   - Check confirmation email redirect URL
+   - Should be: `http://127.0.0.1:5500/index.html?token=...`
+
+4. **Local Test** (localhost:8000):
+   - Sign up with new email
+   - Check confirmation email redirect URL
+   - Should be: `http://localhost:8000/index.html?token=...`
+
+---
+
+## Files Modified
+
+**Code Changes** (1 file):
+- `src/services/authService.js` - Added emailRedirectTo option to signUp()
+
+**Configuration Changes** (Manual):
+- Supabase Dashboard > Authentication > URL Configuration
+  - Site URL: localhost:3000 → wills321.com
+  - Redirect URLs: Added wills321.com, beta.wills321.com, 127.0.0.1:5500, localhost:8000
+
+---
+
+## Technical Details
+
+**Pattern Used**: Dynamic redirect matching password reset implementation
+- Password reset (already working): `${window.location.origin}/reset-password.html`
+- Sign-up (now fixed): `${window.location.origin}/index.html`
+
+**Environment Support**:
+- ✅ Production (wills321.com)
+- ✅ Beta/Staging (beta.wills321.com)
+- ✅ Local IDE Server (127.0.0.1:5500)
+- ✅ Local Python Server (localhost:8000)
+- ❌ localhost:3000 (deprecated - migrating to localhost:8000)
+
+**Database**: Single Supabase database used for all environments (production, beta, local)

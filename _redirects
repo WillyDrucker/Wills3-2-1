@@ -1,0 +1,4 @@
+# SPA fallback - serve index.html for all routes
+# This prevents 404 errors when users refresh the browser on client-side routes
+# Netlify will serve index.html for any URL that doesn't match a real file
+/*    /index.html   200

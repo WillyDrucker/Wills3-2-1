@@ -8,7 +8,7 @@ This file contains the historical record of version changes for Will's 3-2-1. De
 
 ---
 
-**Current Version**: Claude-v5.6.1
+**Current Version**: Claude-v5.6.3
 **Project**: Will's 3-2-1 Workout Tracking Application
 **Tech Stack**: Vanilla JavaScript, ES Modules, CSS Tokens
 **Philosophy**: SUPER STUPID SIMPLE (SSS), REMOVE DON'T ADD
@@ -32,6 +32,65 @@ This file contains the historical record of version changes for Will's 3-2-1. De
 ---
 
 ## VERSION CHANGELOG
+
+### **Claude-v5.6.3 - Issue 48: Authentication Redirect Fix & Production Deployment** (2025-01-30) - COMPLETE
+
+**Mission**: Fix sign-up confirmation email redirect issue, prepare codebase for production deployment to Netlify, remove all debug code.
+
+**Issue 48 - Authentication Redirect Fix**:
+- **Problem**: Users signing up on wills321.com received confirmation emails redirecting to localhost:3000
+- **Root Cause**: Supabase Dashboard Site URL set to localhost:3000 + missing explicit `emailRedirectTo` in signUp() function
+- **Solution**: Added `emailRedirectTo` option to signUp() using dynamic `window.location.origin` pattern (matches existing resetPasswordForEmail implementation)
+- **User Configuration**: User updated Supabase Dashboard settings:
+  - Site URL: `localhost:3000` → `https://wills321.com`
+  - Redirect URLs: Added wildcard patterns for wills321.com, beta.wills321.com, 127.0.0.1:5500, localhost:8000
+
+**Production Deployment Preparation**:
+- **SPA Routing**: Created `_redirects` file for Netlify to prevent 404 errors on browser refresh (`/*    /index.html   200`)
+- **Exercise Database**: Updated `config.js` line 21 from absolute beta URL to relative path `/data/exercises.json`
+  - Before: `https://beta.wills321.com/data/exercises.json` (cross-domain dependency)
+  - After: `/data/exercises.json` (each environment uses its own deployed copy)
+- **Deployment Guide**: Created `NETLIFY_DEPLOYMENT_GUIDE.md` with comprehensive automation instructions (GitHub → Netlify setup, DNS configuration, branch deployments)
+
+**Debug Code Cleanup**:
+- **Removed 20+ console.log statements** from production code:
+  - `main.js` (2 logs): renderAll trace, scroll position log
+  - `actionHandlers.modals.js` (11 logs): Edit Workout modal debugging
+  - `historyService.js` (1 log): Restoring entire workout log
+  - `workoutSyncService.migrate.js` (3 logs): Migration progress messages
+  - `services/integrations/authService.js` (3 logs): Stub placeholder logs
+- **Kept legitimate messages**: Auth localStorage clear messages, error handlers, warnings
+
+**Files Modified** (7 total):
+- `src/services/authService.js` - Added emailRedirectTo to signUp() (lines 31-37)
+- `src/config.js` - Changed exercise URL to relative path (line 21)
+- `src/main.js` - Removed renderAll trace and scroll debug logs
+- `src/services/actions/actionHandlers.modals.js` - Removed 11 Edit Workout debug logs
+- `src/services/data/historyService.js` - Removed restore workout debug log
+- `src/services/data/workoutSyncService.migrate.js` - Removed 3 migration debug logs
+- `src/services/integrations/authService.js` - Removed 3 stub placeholder logs
+
+**Files Created** (2 total):
+- `_redirects` - Netlify SPA fallback configuration
+- `APD/NETLIFY_DEPLOYMENT_GUIDE.md` - Comprehensive deployment automation guide
+
+**Key Technical Details**:
+- **Dynamic Redirects**: Using `window.location.origin` makes authentication work across all environments (production, beta, local)
+- **Relative Path Benefits**: Each deployed environment (wills321.com, beta.wills321.com, localhost) uses its own exercises.json file
+- **SPA Routing**: Without `_redirects`, Netlify returns 404 for client-side routes like /workout or /myData on browser refresh
+- **Multi-Environment Support**: Single Supabase database shared across all environments with dynamic redirect URLs
+
+**Codebase Verification**:
+- ✅ No hardcoded localhost URLs in production code
+- ✅ Authentication flow working (95% confidence)
+- ✅ Multi-user session handling verified
+- ✅ File structure validated for Netlify
+- ✅ All HTML files properly configured
+- ✅ Console output clean (only legitimate user-facing messages remain)
+
+**Status**: COMPLETE - Issue 48 resolved, codebase production-ready, debug code removed, deployment guide created.
+
+---
 
 ### **Claude-v5.6.1 - Modal Animation System Globalization** (2025-01-27) - COMPLETE
 

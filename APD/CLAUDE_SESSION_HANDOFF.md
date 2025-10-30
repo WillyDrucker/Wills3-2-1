@@ -15,23 +15,21 @@ This file contains only critical architectural patterns and current session stat
 
 ## Current Session State
 
-**Status**: Modal Animation System Globalization (Claude-v5.6.1) - COMPLETE
+**Status**: Issue 48 Authentication Redirect Fix & Production Deployment (Claude-v5.6.3) - COMPLETE
+- Fixed sign-up confirmation email redirect issue (localhost:3000 → dynamic origin-based redirects)
+- Added `emailRedirectTo` to signUp() function in authService.js (lines 31-37)
+- User updated Supabase Dashboard configuration (Site URL and Redirect URLs)
+- Created `_redirects` file for Netlify SPA routing
+- Updated exercise database URL from absolute to relative path (config.js:21)
+- Removed 20+ debug console.log statements from production code
+- Created comprehensive NETLIFY_DEPLOYMENT_GUIDE.md
+- Codebase verified production-ready, ready for deployment to wills321.com and beta.wills321.com
+
+**Previous Session**: Modal Animation System Globalization (Claude-v5.6.1) - COMPLETE
 - Global animation system with CSS custom properties implemented
 - Number-only animation variant created for immediate color visibility
-- Modal stacking visibility improvements (Edit Workout stays visible when child modals open)
-- All debugging code removed from edit-workout-modal.index.js
-- CLAUDE_DEV_STANDARDS applied to all 18 affected files
-- Documentation updated in PROJECT_NOTES and SESSION_HANDOFF
-
-**Previous Session**: Interactive Workout Selectors (Claude-v5.5.9) - IN PROGRESS
-- Interactive workout selectors with Cancel/Edit buttons working
-- Button overlay system complete (position absolute pattern)
-- Fast re-render pattern implemented (no database lag)
-- Background scroll prevention working
-- **BLOCKING ISSUE**: Modal scroll jump persisting despite multiple fix attempts
-  - Opening/closing Edit Workout modal jumps My Data page to top
-  - Root cause: `renderAll()` clears innerHTML before scroll can be saved
-  - May require modal service refactor or alternative approach
+- Modal stacking visibility improvements completed
+- All debugging code removed, CLAUDE_DEV_STANDARDS applied to 18 files
 
 ---
 
