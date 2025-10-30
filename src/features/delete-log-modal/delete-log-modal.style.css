@@ -34,15 +34,27 @@
 }
 
 /* === SPACING OVERRIDES === */
-/* Reduce spacing between "Deleting a log is permanent!" and "This action cannot be undone." */
+/* Reduce spacing between "Deleting a log is permanent!" and next line */
 .delete-log-card .modal-text-animated {
   margin-bottom: 0; /* Tighter spacing to next description paragraph */
 }
 
-/* Second description paragraph gets reduced top spacing for 7px visual gap */
-.delete-log-card .confirmation-modal-description:not(.modal-text-animated) {
+/* Standard variant - Second line: "This action cannot be undone." */
+.delete-log-card .confirmation-modal-description:not(.modal-text-animated):not(.last-log-line2):not(.last-log-line3) {
   margin-top: 0;
-  margin-bottom: 9px; /* Keep 16px to question text below */
+  margin-bottom: 9px; /* Keep 16px visual to question text */
+}
+
+/* Last log variant - Line 2: "This is the last log..." (7px visual gap from line 1) */
+.delete-log-card .confirmation-modal-description.last-log-line2 {
+  margin-top: 0;
+  margin-bottom: 0; /* No gap, so next line starts immediately below (7px visual) */
+}
+
+/* Last log variant - Line 3: "The entire workout will be removed." (7px visual gap from line 2) */
+.delete-log-card .confirmation-modal-description.last-log-line3 {
+  margin-top: 0;
+  margin-bottom: 9px; /* Keep 16px visual to question text below */
 }
 
 /* === ANIMATION COLOR === */

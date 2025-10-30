@@ -492,13 +492,31 @@ export function getModalHandlers(coreActions) {
       // Delete the log (returns true if entire workout was deleted)
       const wasWorkoutDeleted = deleteHistoricalLog(workoutId, setNumber, supersetSide, exerciseName);
 
-      // Close Delete Log modal (modalService.close handles rendering)
+      // Clear delete context
       appState.ui.deleteLogContext = null;
-      modalService.close();
 
-      // If entire workout was deleted, clear selectedWorkoutId
+      // If entire workout was deleted, clear ALL selector and modal state BEFORE closing
       if (wasWorkoutDeleted) {
+        // Clear selector state (prevents selector from staying open)
+        appState.ui.selectedHistoryWorkoutId = null;
         appState.ui.selectedWorkoutId = null;
+
+        // Clear Edit Workout modal state
+        appState.ui.editWorkout.originalWorkout = null;
+        appState.ui.editWorkout.hasChanges = false;
+        appState.ui.editWorkout.changeCount = 0;
+
+        // Close Delete Log modal (returns to Edit Workout)
+        modalService.close();
+
+        // Close Edit Workout modal immediately (workout no longer exists)
+        modalService.close(false);
+
+        // Refresh My Data page to remove deleted workout selector
+        refreshMyDataPageDisplay();
+      } else {
+        // Just one log deleted, stay in Edit Workout modal
+        modalService.close();
       }
     },
 

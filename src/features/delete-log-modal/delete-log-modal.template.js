@@ -26,8 +26,8 @@ export function getDeleteLogModalTemplate(isLastLog = false) {
   // Dynamic description based on last log status
   const descriptionHtml = isLastLog
     ? `<p class="confirmation-modal-description modal-text-animated">Deleting this log is permanent!</p>
-       <p class="confirmation-modal-description">This is the last log in this workout.</p>
-       <p class="confirmation-modal-description">The entire workout will be removed.</p>`
+       <p class="confirmation-modal-description last-log-line2">This is the last log in this workout.</p>
+       <p class="confirmation-modal-description last-log-line3">The entire workout will be removed.</p>`
     : `<p class="confirmation-modal-description modal-text-animated">Deleting a log is permanent!</p>
        <p class="confirmation-modal-description">This action cannot be undone.</p>`;
 
