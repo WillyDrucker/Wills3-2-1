@@ -25,6 +25,7 @@
 
 import { resetPasswordForEmail } from "services/authService.js";
 import { showButtonError, showChecking, clearChecking, showSuccess } from "./login-page.buttonstate.js";
+import { AUTH_ERROR_DURATION, AUTH_SUCCESS_DURATION } from "./login-page.constants.js";
 
 // Rate limiting constants
 const RESET_RATE_LIMIT_KEY = "resetPasswordAttempts";
@@ -112,14 +113,14 @@ export function attachResetPasswordHandlers(
       // Check if rate limit reached after error
       setTimeout(() => {
         checkResetRateLimit(resetSendBtn);
-      }, 1700); // After error animation completes
+      }, AUTH_ERROR_DURATION); // After error animation completes
     } else {
       clearChecking(resetSendBtn);
       // Increment attempt counter on success too
       incrementResetAttempts();
       showSuccess(resetSendBtn, "Check\nEmail!");
 
-      // Close modal after 2 seconds and check rate limit
+      // Close modal and check rate limit
       setTimeout(() => {
         resetModal.classList.add("is-hidden");
         // Reset button to original state
@@ -133,7 +134,7 @@ export function attachResetPasswordHandlers(
 
         // Check if rate limit reached
         checkResetRateLimit(resetSendBtn);
-      }, 2000);
+      }, AUTH_SUCCESS_DURATION);
     }
   });
 }

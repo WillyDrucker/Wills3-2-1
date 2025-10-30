@@ -5,8 +5,8 @@
    for value (white) and unit (gray) text.
 
    🔒 CEMENT: Perfect timing and color transitions for log updates
-   - Grow/snap: 900ms grow to 1.15x, 100ms snap back (optimal feel)
-   - Color flash: Green buildup over 500ms, fade back over 500ms
+   - Grow/snap: 900ms grow to 1.15x, 100ms snap back (1000ms total, optimal feel)
+   - Color flash: 1800ms total animation (hold color 1000ms during stamp, then flash green 800ms)
    - No blackout: Uses explicit color tokens to prevent rendering artifacts
 
    Dependencies:
@@ -23,7 +23,7 @@
   0% {
     transform: scale(1);
   }
-  90% {  /* 🔒 CEMENT: 900ms grow phase for perfect feel */
+  90% {  /* 🔒 CEMENT: 900ms grow phase (1000ms total: 900ms grow + 100ms snap) */
     transform: scale(1.15);
   }
   100% { /* 🔒 CEMENT: 100ms snap back for crisp finish */
@@ -31,7 +31,7 @@
   }
 }
 
-/* 🔒 CEMENT: Combined animation - value text stays white during stamp, then flashes green */
+/* 🔒 CEMENT: Color flash animation - value text stays white during stamp, then flashes green */
 @keyframes workout-log-value-flash {
   0% { color: var(--on-surface-light); }    /* White during stamp */
   55% { color: var(--on-surface-light); }   /* Hold white (1s stamp = 55% of 1.8s total) */
@@ -39,7 +39,7 @@
   100% { color: var(--on-surface-light); }  /* Return to white */
 }
 
-/* 🔒 CEMENT: Combined animation - unit text stays gray during stamp, then flashes green */
+/* 🔒 CEMENT: Color flash animation - unit text stays gray during stamp, then flashes green */
 @keyframes workout-log-unit-flash {
   0% { color: var(--on-surface-medium); }   /* Gray during stamp */
   55% { color: var(--on-surface-medium); }  /* Hold gray (1s stamp = 55% of 1.8s total) */
@@ -51,20 +51,20 @@
 
 /* Container scaling animation */
 .workout-log-item.is-updating-log {
-  animation: workout-log-stamp 1s ease-out;
+  animation: workout-log-stamp 1000ms ease-out;
   transform-origin: center center;
 }
 
 /* Value text color animation - unified timeline with stamp */
 .workout-log-item.is-updating-log .log-item-results-value {
-  animation: workout-log-value-flash 1.8s ease-out; /* CEMENT: Same total duration for sync */
+  animation: workout-log-value-flash 1800ms ease-out; /* CEMENT: 1800ms total (holds white 1000ms, flashes 800ms) */
   backface-visibility: hidden; /* Rendering stability */
   -webkit-font-smoothing: antialiased;
 }
 
 /* Unit text color animation - unified timeline with stamp */
 .workout-log-item.is-updating-log .log-item-results-unit {
-  animation: workout-log-unit-flash 1.8s ease-out; /* CEMENT: Same total duration for sync */
+  animation: workout-log-unit-flash 1800ms ease-out; /* CEMENT: 1800ms total (holds gray 1000ms, flashes 800ms) */
   backface-visibility: hidden; /* Rendering stability */
   -webkit-font-smoothing: antialiased;
 }

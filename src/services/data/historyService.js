@@ -27,6 +27,11 @@ import * as persistenceService from "services/core/persistenceService.js";
 import { programConfig } from "config";
 import { saveWorkoutToDatabase, deleteWorkoutFromDatabase } from "./workoutSyncService.js";
 
+// Animation timing constants - matches workout-log.animations.css
+const LOG_ANIMATION_DURATION = 1800; // Total animation duration (1s stamp + 800ms color flash)
+const ANIMATION_BUFFER = 100; // Extra buffer for cleanup safety
+const LOG_ANIMATION_TOTAL = LOG_ANIMATION_DURATION + ANIMATION_BUFFER; // 1900ms
+
 function getSessionHeaderInfo() {
   const { session, weeklyPlan, allExercises } = appState;
   const currentPlan = programConfig[session.currentWorkoutPlanName];
@@ -256,6 +261,24 @@ export function updateHistoricalLog(workoutId, setNumber, supersetSide, exercise
   // Update the log values
   log.reps = Number(reps);
   log.weight = Number(weight);
+
+  // 🔒 CEMENT: Animation state tracking for Edit Workout modal log updates
+  // Defensive cleanup prevents corrupted animation state
+  const now = Date.now();
+  if (log.isAnimating && log.animationStartTime && (now - log.animationStartTime) > LOG_ANIMATION_TOTAL) {
+    log.isAnimating = false;
+    log.animationStartTime = null;
+  }
+
+  // Set animation flag and track start time
+  log.isAnimating = true;
+  log.animationStartTime = now;
+
+  // Clear animation state after animation completes
+  setTimeout(() => {
+    log.isAnimating = false;
+    log.animationStartTime = null;
+  }, LOG_ANIMATION_TOTAL);
 
   persistenceService.saveState();
 

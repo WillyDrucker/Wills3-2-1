@@ -218,6 +218,11 @@ function getHistoricalLogItemHTML(log, workout, currentPlan, uniqueIndex) {
     containerClass += " is-skipped-item";
   }
 
+  // Apply animation class if log is currently animating
+  if (log.isAnimating) {
+    itemClass += " is-updating-log";
+  }
+
   // Results display or skipped text
   let resultsHtml = "";
   if (status === "completed") {

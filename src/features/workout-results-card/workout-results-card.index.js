@@ -7,8 +7,8 @@
 
    Architecture: Button state transition
    - Initial state: Green "Workout Saved!" (button-log class, disabled)
-   - After 4000ms: Blue "Begin Another Workout" (button-finish class, enabled)
-   - Timing: 3s animation + 1s buffer = 4000ms delay
+   - After 3000ms: Blue "Begin Another Workout" (button-finish class, enabled)
+   - Timing: Button available immediately when plate animation completes
 
    🔒 CEMENT: Animation replay architecture
    - Auto-replay on render (covers page refresh/direct navigation)
@@ -21,6 +21,9 @@
 
 import { ui } from "ui";
 import { getWorkoutResultsCardTemplate } from "./workout-results-card.template.js";
+
+// Animation timing constant - matches plate stack animation duration in CSS
+const PLATE_ANIMATION_DURATION = 3000; // 3s plate stacking animation
 
 export function renderWorkoutResultsCard() {
   ui.mainContent.innerHTML = getWorkoutResultsCardTemplate();
@@ -41,7 +44,7 @@ export function renderWorkoutResultsCard() {
     }
   });
 
-  /* Change button state after animation completes (3s animation + 1s delay = 4s) */
+  /* Change button state immediately when animation completes */
   const button = ui.mainContent.querySelector(".workout-saved-button");
   if (button) {
     setTimeout(() => {
@@ -49,7 +52,7 @@ export function renderWorkoutResultsCard() {
       button.classList.remove("button-log");
       button.classList.add("button-finish");
       button.disabled = false;
-    }, 4000);
+    }, PLATE_ANIMATION_DURATION);
   }
 }
 

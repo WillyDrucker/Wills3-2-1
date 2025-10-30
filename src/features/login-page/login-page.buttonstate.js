@@ -15,9 +15,11 @@
       - Error → showButtonError (red flash animation, error message)
    3. Animation completes → restore original button text
 
-   Dependencies: None (pure DOM manipulation)
+   Dependencies: login-page.constants.js (timing constants)
    Used by: login-page.handlers.* (all auth handlers)
    ========================================================================== */
+
+import { AUTH_ERROR_DURATION } from "./login-page.constants.js";
 
 /**
  * Show error in button with red flash animation and stacked text
@@ -40,7 +42,7 @@ export function showButtonError(button, message, onComplete) {
   // Add CSS animation class (3 pulses, 560ms each = 1680ms total)
   button.classList.add("button-is-flashing");
 
-  // Remove class and restore state after animation completes (1700ms)
+  // Remove class and restore state after animation completes
   setTimeout(() => {
     button.classList.remove("button-is-flashing");
 
@@ -56,7 +58,7 @@ export function showButtonError(button, message, onComplete) {
     if (onComplete) {
       onComplete();
     }
-  }, 1700);
+  }, AUTH_ERROR_DURATION);
 }
 
 /**

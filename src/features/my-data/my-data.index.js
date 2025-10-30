@@ -28,6 +28,64 @@ import { getMyDataPageTemplate } from "./my-data.template.js";
 import * as persistenceService from "services/core/persistenceService.js";
 import { loadWorkoutsFromDatabase, clearTodaysWorkouts } from "services/data/workoutSyncService.js";
 
+/* === RESULTS ALIGNMENT UTILITY === */
+/**
+ * Aligns workout results text within each exercise group for columnar alignment
+ * Measures each column (weight, unit, x, reps, unit) and applies synchronized widths
+ * per-exercise using CSS custom properties
+ *
+ * Architecture:
+ * - Each .history-exercise-block is measured independently
+ * - Grid columns align within the exercise group only (not globally)
+ * - Handles edge cases: skipped sets, dumbbell suffix, variable digit counts
+ * - Uses requestAnimationFrame to ensure DOM measurements are accurate
+ */
+function alignExerciseResults() {
+  // Find all exercise blocks in the current view
+  const exerciseBlocks = document.querySelectorAll('.history-exercise-block');
+
+  if (exerciseBlocks.length === 0) return;
+
+  exerciseBlocks.forEach(block => {
+    // Find all results containers within this exercise (excludes skipped sets)
+    const containers = block.querySelectorAll('.history-results-container');
+
+    if (containers.length === 0) return;
+
+    // Initialize max widths for each column in this exercise
+    const maxWidths = {
+      weight: 0,   // First value (e.g., "245")
+      unit1: 0,    // Weight unit (e.g., " lbs")
+      x: 0,        // Separator (e.g., " x ")
+      reps: 0,     // Second value (e.g., "10")
+      unit2: 0     // Reps unit (e.g., " reps" or " reps (ea.)")
+    };
+
+    // Measure each container to find max column widths
+    containers.forEach(container => {
+      const children = container.children;
+
+      // Guard against unexpected DOM structure
+      if (children.length < 5) return;
+
+      // Measure each column (offsetWidth includes padding/border)
+      maxWidths.weight = Math.max(maxWidths.weight, children[0]?.offsetWidth || 0);
+      maxWidths.unit1 = Math.max(maxWidths.unit1, children[1]?.offsetWidth || 0);
+      maxWidths.x = Math.max(maxWidths.x, children[2]?.offsetWidth || 0);
+      maxWidths.reps = Math.max(maxWidths.reps, children[3]?.offsetWidth || 0);
+      maxWidths.unit2 = Math.max(maxWidths.unit2, children[4]?.offsetWidth || 0);
+    });
+
+    // Apply synchronized column widths to this exercise block only
+    // CSS variables are scoped to the block, so each exercise has independent alignment
+    block.style.setProperty('--result-weight-width', `${maxWidths.weight}px`);
+    block.style.setProperty('--result-unit1-width', `${maxWidths.unit1}px`);
+    block.style.setProperty('--result-x-width', `${maxWidths.x}px`);
+    block.style.setProperty('--result-reps-width', `${maxWidths.reps}px`);
+    block.style.setProperty('--result-unit2-width', `${maxWidths.unit2}px`);
+  });
+}
+
 export function handleHistoryTabChange(newTab) {
   if (appState.ui.myDataPage.selectedTab === newTab) return;
   appState.ui.myDataPage.selectedTab = newTab;
@@ -88,6 +146,12 @@ export function refreshMyDataPageDisplay() {
       window.scrollTo(0, savedScrollPosition);
     });
   }
+
+  // Apply results alignment after DOM is ready and layout is complete
+  // Uses requestAnimationFrame to ensure accurate measurements
+  requestAnimationFrame(() => {
+    alignExerciseResults();
+  });
 }
 
 export async function renderMyDataPage() {

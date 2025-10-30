@@ -24,12 +24,25 @@ This file contains only critical architectural patterns and current session stat
 - Removed 20+ debug console.log statements from production code
 - Created comprehensive NETLIFY_DEPLOYMENT_GUIDE.md
 - Codebase verified production-ready, ready for deployment to wills321.com and beta.wills321.com
+- **Merged v5.6.2 work** - Restored My Data results grid alignment system and all Issue 53 optimizations
 
-**Previous Session**: Modal Animation System Globalization (Claude-v5.6.1) - COMPLETE
+**Previous Session**: Issue 53 - Animation Timing & Standards Compliance (Claude-v5.6.2) - COMPLETE
+- Animation timing optimizations (selectors 600ms, text 1000ms, login 600ms)
+- Color updates (pure green #00ff00, olive #aaff00)
+- Workout Results banner removal, immediate button availability
+- Input sizing refinements (40px edit panels, 44px main inputs)
+- Login timing constants centralized in login-page.constants.js
+- CSS animation timing token created (--selector-animation-duration)
+- **My Data results grid alignment system** - CSS Grid with JavaScript column width measurements
+- All 20 modified files compliant with CLAUDE_DEV_STANDARDS
+- Issue 53 closed with comprehensive documentation
+
+**Earlier Session**: Modal Animation System Globalization (Claude-v5.6.1) - COMPLETE
 - Global animation system with CSS custom properties implemented
 - Number-only animation variant created for immediate color visibility
-- Modal stacking visibility improvements completed
-- All debugging code removed, CLAUDE_DEV_STANDARDS applied to 18 files
+- Modal stacking visibility improvements (Edit Workout stays visible when child modals open)
+- All debugging code removed from edit-workout-modal.index.js
+- CLAUDE_DEV_STANDARDS applied to all 18 affected files
 
 ---
 
@@ -216,6 +229,43 @@ Global animation system using CSS custom properties for reusable modal animation
 **Display Rules**:
 - Spans need `display: inline-block` for transforms to work
 - Paragraphs need `display: block` to maintain `text-align: center`
+
+### 12. Timing Constants Pattern (Centralized Timing)
+Centralize animation and interaction timing constants to eliminate magic numbers:
+
+**JavaScript Constants**:
+```javascript
+// Feature-specific constants file (e.g., login-page.constants.js)
+export const AUTH_CHECK_DURATION = 600;  // 600ms - Quick feedback
+export const AUTH_SUCCESS_DURATION = 600; // 600ms - Quick confirmation
+export const AUTH_TRANSITION_DURATION = 1000; // 1000ms - Smooth transitions
+export const AUTH_ERROR_DURATION = 1700; // 1700ms = 1680ms CSS + 20ms buffer
+
+// Component timing constants (in component file)
+const PLATE_ANIMATION_DURATION = 3000; // 3s plate stacking animation
+const LOG_ANIMATION_TOTAL = 1900; // 1900ms = 1800ms animation + 100ms buffer
+```
+
+**CSS Tokens**:
+```css
+/* In _variables.css */
+--selector-animation-duration: 600ms;  /* Selector grow-snap (500ms grow + 100ms snap) */
+
+/* Usage in component CSS */
+animation: selector-grow-snap var(--selector-animation-duration) ease-out forwards;
+```
+
+**Timing Philosophy**:
+- Quick feedback: 600ms (checking states, success displays)
+- Smooth transitions: 1000ms (multi-step flows, text animations)
+- Complete animations: Match CSS duration + small buffer (20-100ms)
+- Error animations: Full CSS duration for visibility (1700ms = 560ms × 3 pulses + buffer)
+
+**Pattern Benefits**:
+- Single source of truth for timing values
+- Self-documenting code (constant names explain purpose)
+- Easy to adjust timing across entire feature
+- Clear relationship between JS timeouts and CSS animations
 
 ---
 

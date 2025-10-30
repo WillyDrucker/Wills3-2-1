@@ -9,7 +9,7 @@
    5. Trigger app load on success
 
    Button State Flow:
-   - Checking (500ms) → Success ("Logged In!" 1000ms → trigger app)
+   - Checking (500ms) → Success ("Logged In!" 600ms → trigger app)
    - Checking (500ms) → Error (red flash 1680ms → restore)
 
    Dependencies: authService, validation, buttonstate
@@ -26,6 +26,7 @@ import {
   muteButton,
   unmuteButton,
 } from "./login-page.buttonstate.js";
+import { AUTH_CHECK_DURATION, AUTH_SUCCESS_DURATION } from "./login-page.constants.js";
 
 /**
  * Attach sign-in button event listener
@@ -55,11 +56,11 @@ export function attachSignInHandler(signInBtn, signUpBtn, emailInput, passwordIn
       return;
     }
 
-    // Show neutral "Checking..." state with gray background for 500ms
+    // Show neutral "Checking..." state with gray background
     showChecking(signInBtn, "Checking...");
     muteButton(signUpBtn); // Mute Sign Up button while Log In is checking
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, AUTH_CHECK_DURATION));
     const { user, error } = await signIn(email, password);
 
     if (error) {
@@ -70,12 +71,12 @@ export function attachSignInHandler(signInBtn, signUpBtn, emailInput, passwordIn
         unmuteButton(signUpBtn);
       });
     } else {
-      // Success - show "Logged In!" state for 1000ms, then trigger app load
+      // Success - show "Logged In!" state, then trigger app load
       clearChecking(signInBtn);
       showSuccess(signInBtn, "Logged In!");
       setTimeout(() => {
         window.dispatchEvent(new CustomEvent("auth-success"));
-      }, 1000);
+      }, AUTH_SUCCESS_DURATION);
     }
   });
 }

@@ -128,22 +128,9 @@
 
 /* === ANIMATIONS === */
 
-/* Selector grow/snap animation - based on workout log stamp */
-@keyframes selector-grow-snap {
-  0% {
-    transform: scale(1);
-  }
-  90% {  /* 900ms grow phase */
-    transform: scale(1.15);
-  }
-  100% { /* 100ms snap back */
-    transform: scale(1);
-  }
-}
-
 /* Apply grow animation to selector container */
 .app-selector.is-animating-selector {
-  animation: selector-grow-snap 1s ease-out forwards;
+  animation: selector-grow-snap var(--selector-animation-duration) ease-out forwards;
   transform-origin: center center;
   will-change: transform; /* GPU acceleration */
 }
@@ -188,7 +175,7 @@
 /* Higher specificity (.data-highlight.is-transitioning-to-green = 2 classes) overrides .data-highlight.text-plan */
 .data-highlight.is-transitioning-to-green,
 .is-transitioning-to-green {
-  animation: selector-green-glow-transition 1000ms ease-out forwards;
+  animation: selector-green-glow-transition var(--selector-animation-duration) ease-out forwards;
   will-change: color, text-shadow; /* GPU acceleration */
 }
 
@@ -196,14 +183,14 @@
 /* Higher specificity (.data-highlight.is-transitioning-to-yellow = 2 classes) overrides .data-highlight.text-warning */
 .data-highlight.is-transitioning-to-yellow,
 .is-transitioning-to-yellow {
-  animation: selector-yellow-glow-transition 1000ms ease-out forwards;
+  animation: selector-yellow-glow-transition var(--selector-animation-duration) ease-out forwards;
   will-change: color, text-shadow; /* GPU acceleration */
 }
 
 /* Olive glow - adds glow to olive text (for config-card non-today selections) */
 .data-highlight.is-transitioning-to-olive,
 .is-transitioning-to-olive {
-  animation: selector-olive-glow-transition 1000ms ease-out forwards;
+  animation: selector-olive-glow-transition var(--selector-animation-duration) ease-out forwards;
   will-change: color, text-shadow; /* GPU acceleration */
 }
 
@@ -222,6 +209,6 @@
 /* Blue glow - adds glow to blue text (for partner mode user2) */
 .data-highlight.is-transitioning-to-blue,
 .is-transitioning-to-blue {
-  animation: selector-blue-glow-transition 1000ms ease-out forwards;
+  animation: selector-blue-glow-transition var(--selector-animation-duration) ease-out forwards;
   will-change: color, text-shadow; /* GPU acceleration */
 }
