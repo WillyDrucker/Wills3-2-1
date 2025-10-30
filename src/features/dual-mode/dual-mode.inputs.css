@@ -72,7 +72,7 @@
   background-color: var(--background-dark);
   color: var(--on-surface-light);
   border: none;
-  width: 50px;
+  width: 44px; /* Main input buttons - wider for better touch targets during logging */
   flex-shrink: 0;
   height: 100%;
   font-size: 1.5rem;

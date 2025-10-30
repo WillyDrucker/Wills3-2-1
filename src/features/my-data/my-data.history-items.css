@@ -60,16 +60,27 @@
 }
 
 /* === RESULTS DISPLAY === */
+/* Grid-based layout for columnar alignment of results text */
+/* JavaScript sets CSS variables per-exercise to align numbers vertically */
 .history-results-container {
-  display: flex;
+  display: grid;
+  grid-template-columns:
+    var(--result-weight-width, auto)   /* Weight value (e.g., "245") */
+    var(--result-unit1-width, auto)    /* Weight unit (e.g., " lbs") */
+    var(--result-x-width, auto)        /* Separator (e.g., " x ") */
+    var(--result-reps-width, auto)     /* Reps value (e.g., "10") */
+    var(--result-unit2-width, auto);   /* Reps unit (e.g., " reps" or " reps (ea.)") */
   align-items: baseline;
+  justify-items: end; /* Right-align all grid cells */
   white-space: nowrap;
-  flex-shrink: 0;
+  flex-shrink: 0; /* Preserve compatibility with parent flex container */
+  margin-left: auto; /* Right-align entire grid within parent */
 }
 
 .history-results-value {
   font-size: 1rem;
   font-weight: 600;
+  text-align: right; /* Right-align numbers within their grid cells */
   /* No default color - allows utility classes (text-plan, etc.) to control color */
   /* Defaults to inherited text color (white) when no utility class applied */
 }
@@ -78,4 +89,5 @@
   font-size: 1rem;
   font-weight: 600;
   color: var(--on-surface-medium); /* Always gray */
+  text-align: right; /* Right-align units within their grid cells */
 }

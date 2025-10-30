@@ -6,7 +6,7 @@
 
    🔒 CEMENT: Animation state tracking with timestamp
    - Tracks animation start time for progress preservation during re-renders
-   - 5-second defensive cleanup catches stale animation flags
+   - Defensive cleanup (1900ms) catches stale animation flags
    - Dual-mode side-specific reset prevents cross-side interference
 
    Dependencies: appState, ui, getWorkoutLogTemplate, workoutService,
@@ -23,6 +23,11 @@ import {
   handleNormalRestCompletion,
   handleSupersetRestCompletion,
 } from "services/timer/timerCompletionService.js";
+
+// Animation timing constants - matches workout-log.animations.css
+const LOG_ANIMATION_DURATION = 1800; // Total animation duration (1s stamp + 800ms color flash)
+const ANIMATION_BUFFER = 100; // Extra buffer for cleanup safety
+const LOG_ANIMATION_TOTAL = LOG_ANIMATION_DURATION + ANIMATION_BUFFER; // 1900ms
 
 export function renderWorkoutLog() {
   ui.workoutFooter.innerHTML = getWorkoutLogTemplate();
@@ -43,7 +48,7 @@ export function handleUpdateLog(index, newWeight, newReps) {
   // 🔒 CEMENT: Defensive cleanup prevents corrupted animation state
   // Timeout catches stale flags that weren't properly cleared
   const now = Date.now();
-  if (log.isAnimating && log.animationStartTime && (now - log.animationStartTime) > 2200) {
+  if (log.isAnimating && log.animationStartTime && (now - log.animationStartTime) > LOG_ANIMATION_TOTAL) {
     log.isAnimating = false;
     log.animationStartTime = null;
   }
@@ -57,7 +62,7 @@ export function handleUpdateLog(index, newWeight, newReps) {
   setTimeout(() => {
     log.isAnimating = false;
     log.animationStartTime = null; // Clear tracking after animation completes
-  }, 1900); /* CEMENT: 1900ms matches animation duration (1.8s + buffer) */
+  }, LOG_ANIMATION_TOTAL);
 
   return true;
 }

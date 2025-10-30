@@ -18,6 +18,7 @@
    ========================================================================== */
 
 import { continueAsGuest } from "services/authService.js";
+import { AUTH_TRANSITION_DURATION } from "./login-page.constants.js";
 
 /**
  * Attach guest button event listener
@@ -35,9 +36,9 @@ export function attachGuestHandler(guestBtn) {
 
     continueAsGuest();
 
-    // Wait 1000ms before triggering auth-success
+    // Wait for transition before triggering auth-success
     setTimeout(() => {
       window.dispatchEvent(new CustomEvent("auth-success"));
-    }, 1000);
+    }, AUTH_TRANSITION_DURATION);
   });
 }

@@ -58,7 +58,7 @@
 
 /* Spacing for log items */
 .edit-workout-item-container {
-  margin-bottom: 8px; /* Spacing between log items */
+  margin-bottom: 4px; /* Spacing between log items */
 }
 
 .edit-workout-item-container:last-child {

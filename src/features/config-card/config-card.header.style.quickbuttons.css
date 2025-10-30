@@ -190,7 +190,7 @@
 /* Grow animation applied to Quick Buttons on "Let's Go!" confirmation */
 /* Animation defined in: src/styles/utils/_animations-general.css (quick-button-grow-snap) */
 .icon-bar-item.is-animating-quick-button {
-  animation: quick-button-grow-snap 600ms ease-out forwards;
+  animation: quick-button-grow-snap var(--selector-animation-duration) ease-out forwards;
   transform-origin: center center;
   will-change: transform;
 }

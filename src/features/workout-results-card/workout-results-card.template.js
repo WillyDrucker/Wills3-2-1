@@ -24,19 +24,6 @@ export function getWorkoutResultsCardTemplate() {
     ? "is-animating"
     : "";
 
-  // Check if current session is committed
-  const workout = appState.user.history.workouts.find((w) => w.id === appState.session.id);
-  const isCommitted = workout?.isCommitted || false;
-
-  const commitBanner = isCommitted
-    ? `<div class="workout-saved-banner">
-         <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-           <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-         </svg>
-         <span>Workout Logged!</span>
-       </div>`
-    : '';
-
   return `
       <div class="card workout-results-container" id="active-card-container">
         <div class="card-content-container">
@@ -52,7 +39,6 @@ export function getWorkoutResultsCardTemplate() {
               appState.session.currentSessionColorClass
             }">${totalSets}</span> total sets.</p>
           </div>
-          ${commitBanner}
           <div class="action-button-container">
             <button class="action-button button-log workout-saved-button" data-action="openNewWorkoutModal" disabled>Workout Saved!</button>
           </div>

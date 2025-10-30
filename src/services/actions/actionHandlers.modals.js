@@ -359,16 +359,6 @@ export function getModalHandlers(coreActions) {
         // Store original workout state for change tracking (deep clone with normalized numbers)
         const workout = appState.user.history.workouts.find((w) => w.id === workoutId);
         if (workout) {
-          console.log("RAW workout from state (before clone):", {
-            id: workoutId,
-            firstLog: workout.logs[0] ? {
-              reps: workout.logs[0].reps,
-              weight: workout.logs[0].weight,
-              types: [typeof workout.logs[0].reps, typeof workout.logs[0].weight]
-            } : null,
-            allLogsWeights: workout.logs.map(l => `Set ${l.setNumber}: ${l.weight} (${typeof l.weight})`)
-          });
-
           // Deep clone and normalize reps/weight to numbers
           const clonedWorkout = JSON.parse(JSON.stringify(workout));
           clonedWorkout.logs = clonedWorkout.logs.map(log => ({
@@ -379,16 +369,6 @@ export function getModalHandlers(coreActions) {
 
           appState.ui.editWorkout.originalWorkout = clonedWorkout;
           appState.ui.editWorkout.hasChanges = false;
-
-          console.log("Stored original workout with normalized values:", {
-            id: workoutId,
-            firstLog: clonedWorkout.logs[0] ? {
-              reps: clonedWorkout.logs[0].reps,
-              weight: clonedWorkout.logs[0].weight,
-              types: [typeof clonedWorkout.logs[0].reps, typeof clonedWorkout.logs[0].weight]
-            } : null,
-            allLogsWeights: clonedWorkout.logs.map(l => `Set ${l.setNumber}: ${l.weight}`)
-          });
         }
 
         // Clear history selector selection when opening modal
@@ -452,12 +432,6 @@ export function getModalHandlers(coreActions) {
 
       // Update the log in history (now includes exerciseName for correct identification)
       updateHistoricalLog(workoutId, setNumber, supersetSide, exerciseName, reps, weight);
-
-      console.log("✓ Log updated in history:", {
-        exercise: exerciseName,
-        set: setNumber,
-        values: { reps, weight }
-      });
 
       // Close the edit panel
       details.open = false;
@@ -542,15 +516,6 @@ export function getModalHandlers(coreActions) {
 
       let changeCount = 0;
 
-      console.log("RAW current workout from state (before normalization):", {
-        firstLog: currentWorkout.logs[0] ? {
-          reps: currentWorkout.logs[0].reps,
-          weight: currentWorkout.logs[0].weight,
-          types: [typeof currentWorkout.logs[0].reps, typeof currentWorkout.logs[0].weight]
-        } : null,
-        allLogsWeights: currentWorkout.logs.map(l => `Set ${l.setNumber}: ${l.weight} (${typeof l.weight})`)
-      });
-
       // Normalize current workout as well (create a copy to avoid mutating state)
       currentWorkout = {
         ...currentWorkout,
@@ -561,29 +526,9 @@ export function getModalHandlers(coreActions) {
         }))
       };
 
-      console.log("Comparing workouts:", {
-        originalFirstLog: originalWorkout.logs[0] ? {
-          reps: originalWorkout.logs[0].reps,
-          weight: originalWorkout.logs[0].weight,
-          types: [typeof originalWorkout.logs[0].reps, typeof originalWorkout.logs[0].weight]
-        } : null,
-        currentFirstLog: currentWorkout.logs[0] ? {
-          reps: currentWorkout.logs[0].reps,
-          weight: currentWorkout.logs[0].weight,
-          types: [typeof currentWorkout.logs[0].reps, typeof currentWorkout.logs[0].weight]
-        } : null,
-        originalAllWeights: originalWorkout.logs.map(l => `Set ${l.setNumber}: ${l.weight}`),
-        currentAllWeights: currentWorkout.logs.map(l => `Set ${l.setNumber}: ${l.weight}`)
-      });
-
       // Check if number of logs changed (deletion) - each deleted log counts as 1 change
       const deletedCount = Math.abs(currentWorkout.logs.length - originalWorkout.logs.length);
       if (deletedCount > 0) {
-        console.log("Change detected: log count changed", {
-          original: originalWorkout.logs.length,
-          current: currentWorkout.logs.length,
-          deletedCount
-        });
         changeCount += deletedCount;
       }
 
@@ -606,20 +551,12 @@ export function getModalHandlers(coreActions) {
           const currentWeight = Number(log.weight);
 
           if (currentReps !== original.reps || currentWeight !== original.weight) {
-            console.log("State change detected:", {
-              exercise: log.exercise.exercise_name,
-              set: log.setNumber,
-              side: log.supersetSide || 'none',
-              original: { reps: original.reps, weight: original.weight },
-              current: { reps: currentReps, weight: currentWeight }
-            });
             changeCount++;
           }
         }
       });
 
       const hasChanges = changeCount > 0;
-      console.log("Total changes:", { hasChanges, changeCount });
 
       return { hasChanges, changeCount };
     },
@@ -628,14 +565,7 @@ export function getModalHandlers(coreActions) {
       // Check for unsaved changes (only if original workout was stored)
       const hasOriginal = appState.ui.editWorkout.originalWorkout !== null;
 
-      console.log("cancelEditWorkout - checking for changes", {
-        hasOriginal,
-        selectedWorkoutId: appState.ui.selectedWorkoutId
-      });
-
       const changeResult = hasOriginal ? getModalHandlers(coreActions).hasEditWorkoutChanges() : { hasChanges: false, changeCount: 0 };
-
-      console.log("cancelEditWorkout - result:", changeResult);
 
       if (changeResult.hasChanges) {
         // Store change count for Cancel Changes modal to display
@@ -668,7 +598,6 @@ export function getModalHandlers(coreActions) {
                                     target?.dataset.action === 'handleEditWorkoutBackdropClick';
 
       if (!isEditWorkoutBackdrop) {
-        console.log("Ignoring backdrop click - not from Edit Workout backdrop");
         return;
       }
 
@@ -724,11 +653,6 @@ export function getModalHandlers(coreActions) {
       const { selectedWorkoutId, editWorkout } = appState.ui;
       const { originalWorkout } = editWorkout;
 
-      console.log("confirmCancelChanges - starting", {
-        selectedWorkoutId,
-        hasOriginal: !!originalWorkout
-      });
-
       if (!selectedWorkoutId || !originalWorkout) {
         console.error("Cannot restore workout - missing original state", {
           selectedWorkoutId,
@@ -738,13 +662,6 @@ export function getModalHandlers(coreActions) {
         return;
       }
 
-      console.log("Before restore:", {
-        originalFirstLog: originalWorkout.logs[0] ? {
-          reps: originalWorkout.logs[0].reps,
-          weight: originalWorkout.logs[0].weight
-        } : null
-      });
-
       // Restore workout using historyService (updates state and database)
       const restored = restoreEntireWorkout(selectedWorkoutId, originalWorkout);
 
@@ -753,13 +670,6 @@ export function getModalHandlers(coreActions) {
         modalService.close();
         return;
       }
-
-      console.log("After restore - checking state:", {
-        restoredFirstLog: appState.user.history.workouts.find(w => w.id === selectedWorkoutId)?.logs[0] ? {
-          reps: appState.user.history.workouts.find(w => w.id === selectedWorkoutId).logs[0].reps,
-          weight: appState.user.history.workouts.find(w => w.id === selectedWorkoutId).logs[0].weight
-        } : null
-      });
 
       // Clear selector and edit state BEFORE closing modals
       appState.ui.selectedHistoryWorkoutId = null;

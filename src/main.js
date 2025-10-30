@@ -101,13 +101,11 @@ function updateActiveWorkoutPreservingLogs() {
 }
 
 function renderAll() {
-  console.trace("🔄 renderAll() called from:");
   // Preserve scroll position on My Data page before clearing innerHTML
   let savedScrollPosition = 0;
   if (appState.ui.currentPage === "myData") {
     // Read scroll from document element (page-level scroll)
     savedScrollPosition = document.documentElement.scrollTop || document.body.scrollTop || 0;
-    console.log("📍 USING current scroll:", savedScrollPosition);
   }
 
   ui.configSection.innerHTML = "";

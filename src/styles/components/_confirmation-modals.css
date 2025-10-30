@@ -125,37 +125,21 @@
     transform: scale(1);
     text-shadow: none;
   }
-  60% {
-    color: var(--text-primary); /* Stay white during grow */
-    transform: scale(1.15); /* Grow to 1.15x (matches workout log) */
-    text-shadow: none;
-  }
-  66.7% {
-    color: var(--text-primary); /* Stay white during snap */
-    transform: scale(1); /* Snap back */
-    text-shadow: none;
-  }
-  72.2% {
-    /* 100ms transition from white to color (66.7% + 5.5% = 72.2%) */
-    color: var(--animation-flash-color, var(--text-primary)); /* Flash to modal-specific color with glow */
-    transform: scale(1);
-    text-shadow: 0 0 8px var(--animation-flash-color, transparent);
-  }
-  85% {
-    color: var(--animation-flash-color, var(--text-primary)); /* Stay colored, remove glow */
-    transform: scale(1);
+  90% {
+    color: var(--text-primary); /* Stay white during grow (900ms) */
+    transform: scale(1.15); /* Grow to 1.15x */
     text-shadow: none;
   }
   100% {
-    color: var(--animation-flash-color, var(--text-primary)); /* Stay colored */
+    color: var(--animation-flash-color, var(--text-primary)); /* Snap back + color change at 1000ms */
     transform: scale(1);
-    text-shadow: none;
+    text-shadow: 0 0 8px var(--animation-flash-color, transparent); /* Color flash with glow */
   }
 }
 
 /* Apply to any text that should use the grow-flash animation */
 .modal-text-animated {
-  animation: modal-text-grow-flash 1.8s ease-out forwards; /* forwards keeps final state */
+  animation: modal-text-grow-flash 1000ms ease-out forwards; /* forwards keeps final state */
   transform-origin: center center;
 }
 
@@ -165,41 +149,25 @@
 /* Skips white-to-color transition - color shows during entire animation */
 @keyframes modal-number-grow-flash {
   0% {
-    color: var(--animation-flash-color, var(--text-primary)); /* Start colored */
+    color: var(--animation-flash-color, var(--text-primary)); /* Start colored (numbers show color immediately) */
     transform: scale(1);
     text-shadow: none;
   }
-  60% {
-    color: var(--animation-flash-color, var(--text-primary)); /* Stay colored during grow */
-    transform: scale(1.15); /* Grow to 1.15x (matches workout log) */
-    text-shadow: none;
-  }
-  66.7% {
-    color: var(--animation-flash-color, var(--text-primary)); /* Stay colored during snap */
-    transform: scale(1); /* Snap back */
-    text-shadow: none;
-  }
-  72.2% {
-    /* Glow effect starts */
-    color: var(--animation-flash-color, var(--text-primary)); /* Add glow */
-    transform: scale(1);
-    text-shadow: 0 0 8px var(--animation-flash-color, transparent);
-  }
-  85% {
-    color: var(--animation-flash-color, var(--text-primary)); /* Stay colored, remove glow */
-    transform: scale(1);
+  90% {
+    color: var(--animation-flash-color, var(--text-primary)); /* Stay colored during grow (900ms) */
+    transform: scale(1.15); /* Grow to 1.15x */
     text-shadow: none;
   }
   100% {
-    color: var(--animation-flash-color, var(--text-primary)); /* Stay colored */
+    color: var(--animation-flash-color, var(--text-primary)); /* Snap back + glow at 1000ms */
     transform: scale(1);
-    text-shadow: none;
+    text-shadow: 0 0 8px var(--animation-flash-color, transparent); /* Add glow */
   }
 }
 
 /* Apply to number-only animations (change count, logged sets count) */
 .modal-number-animated {
-  animation: modal-number-grow-flash 1.8s ease-out forwards; /* forwards keeps final state */
+  animation: modal-number-grow-flash 1000ms ease-out forwards; /* forwards keeps final state */
   transform-origin: center center;
 }
 

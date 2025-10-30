@@ -42,7 +42,11 @@
   --space-m: 16px;              /* Primary rhythm - universal spacing */
   --space-l: 24px;              /* Breathing room (animation containers) */
   --space-xl: 40px;             /* Large spacing (waiting states) */
-  
+
+  /* === ANIMATION TIMING TOKENS === */
+  /* CEMENT: Standardized animation durations for consistent feel */
+  --selector-animation-duration: 600ms;  /* Selector grow-snap (500ms grow + 100ms snap) */
+
   /* === LAYOUT TOKENS === */
   /* App structure */
   --app-side-margin: 10px;      /* Edge padding */
@@ -96,15 +100,15 @@
   --primary-blue-light: #adeeff;
   --warning-orange: #ffb74d;
   --skip-red: #b30000;
-  --log-green: #00cc00;
+  --log-green: #00ff00;
   --youtube-red: #ff0000;
   --text-on-action-color: #000000;
   
   /* === COLORS: Data States === */
   /* CEMENT: Semantic colors for workout adherence */
-  --text-green-plan: #00cc00;      /* On plan */
+  --text-green-plan: #00ff00;      /* On plan - Pure Green */
   --text-yellow-maintenance: #ffff00; /* Maintenance mode */
-  --text-olive-deviation: #bfff00;    /* Minor deviation */
+  --text-olive-deviation: #aaff00;    /* Minor deviation */
   --text-orange-deviation: #ffb74d;   /* Major deviation */
   --text-red-skip: #b30000;           /* Skipped */
   

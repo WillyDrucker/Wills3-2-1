@@ -46,7 +46,8 @@
       "Bash(supabase db push:*)",
       "Bash(git rev-parse:*)",
       "Bash(git checkout:*)",
-      "Bash(git merge:*)"
+      "Bash(git merge:*)",
+      "Bash(git log:*)"
     ],
     "deny": [],
     "ask": []

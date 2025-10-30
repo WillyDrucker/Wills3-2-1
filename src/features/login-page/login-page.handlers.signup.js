@@ -35,6 +35,7 @@ import {
   muteButton,
   unmuteButton,
 } from "./login-page.buttonstate.js";
+import { AUTH_CHECK_DURATION, AUTH_SUCCESS_DURATION, AUTH_TRANSITION_DURATION } from "./login-page.constants.js";
 
 /**
  * Attach sign-up button event listener
@@ -64,11 +65,11 @@ export function attachSignUpHandler(signUpBtn, signInBtn, emailInput, passwordIn
       return;
     }
 
-    // STEP 1: Show neutral "Checking..." state with gray background for 500ms
+    // STEP 1: Show neutral "Checking..." state with gray background
     showChecking(signUpBtn, "Checking...");
     muteButton(signInBtn); // Mute Log In button while Sign Up is checking
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, AUTH_CHECK_DURATION));
     const { user: existingUser, error: signInError } = await signIn(email, password);
 
     if (existingUser) {
@@ -84,9 +85,9 @@ export function attachSignUpHandler(signUpBtn, signInBtn, emailInput, passwordIn
           showSuccess(signInBtn, "Logged In!");
           setTimeout(() => {
             window.dispatchEvent(new CustomEvent("auth-success"));
-          }, 1000);
-        }, 1000);
-      }, 1500);
+          }, AUTH_SUCCESS_DURATION);
+        }, AUTH_TRANSITION_DURATION);
+      }, AUTH_TRANSITION_DURATION);
       return;
     }
 
@@ -157,9 +158,9 @@ export function attachSignUpHandler(signUpBtn, signInBtn, emailInput, passwordIn
               showSuccess(signInBtn, "Logged In!");
               setTimeout(() => {
                 window.dispatchEvent(new CustomEvent("auth-success"));
-              }, 1000);
-            }, 1000);
-          }, 1500);
+              }, AUTH_SUCCESS_DURATION);
+            }, AUTH_TRANSITION_DURATION);
+          }, AUTH_TRANSITION_DURATION);
         } else {
           // New account created successfully
           clearChecking(signUpBtn);
@@ -167,7 +168,7 @@ export function attachSignUpHandler(signUpBtn, signInBtn, emailInput, passwordIn
           showSuccess(signUpBtn, "Check\nEmail!");
           setTimeout(() => {
             window.dispatchEvent(new CustomEvent("auth-success"));
-          }, 1500);
+          }, AUTH_SUCCESS_DURATION);
         }
       }
     }
