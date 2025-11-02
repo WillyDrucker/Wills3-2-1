@@ -108,7 +108,7 @@
   /* CEMENT: Semantic colors for workout adherence */
   --text-green-plan: #00ff00;      /* On plan - Pure Green */
   --text-yellow-maintenance: #ffff00; /* Maintenance mode */
-  --text-olive-deviation: #aaff00;    /* Minor deviation */
+  --text-olive-deviation: #77ff00;    /* Minor deviation */
   --text-orange-deviation: #ffb74d;   /* Major deviation */
   --text-red-skip: #b30000;           /* Skipped */
   

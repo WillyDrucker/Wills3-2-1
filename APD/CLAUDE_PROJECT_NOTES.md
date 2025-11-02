@@ -8,7 +8,7 @@ This file contains the historical record of version changes for Will's 3-2-1. De
 
 ---
 
-**Current Version**: Claude-v5.6.3
+**Current Version**: Claude-v5.6.4
 **Project**: Will's 3-2-1 Workout Tracking Application
 **Tech Stack**: Vanilla JavaScript, ES Modules, CSS Tokens
 **Philosophy**: SUPER STUPID SIMPLE (SSS), REMOVE DON'T ADD
@@ -32,6 +32,100 @@ This file contains the historical record of version changes for Will's 3-2-1. De
 ---
 
 ## VERSION CHANGELOG
+
+### **Claude-v5.6.4 - Epic 18 Sub-issue: Previous Exercise Results Feature** (2025-01-31) - COMPLETE
+
+**Mission**: Display historical performance data ("Last: X lbs x Y reps") on prefilled workout logs to help users track progressive overload and make informed set decisions.
+
+**Previous Exercise Results System**:
+- **Feature**: Display "Last: X lbs x Y reps" in gray italic on pending workout logs
+- **Query Function**: Created `findPreviousExerciseLog()` in historyService.js
+- **Search Logic**: Forward search through workout history array (newest at index 0)
+- **Skip-Over Behavior**: Continues searching when encountering skipped sets or missing data
+- **Matching Criteria**: Exercise name, set number, superset side, primary user (User 1 or null)
+- **Actionable Data**: Returns only completed logs with weight/reps, never skipped entries
+- **Display Logic**: Shows "Last: " prefix with results, blank when no previous data exists
+- **Template Integration**: Conditional replacement of resultsHtml for pending status logs
+- **Styling**: Gray italic text (`.log-item-previous-results`) matching historical data aesthetic
+- **Omit Details**: Removed "(ea.)" suffix from dumbbell exercise historical data for brevity
+
+**Historical Data Query Architecture**:
+- **Session ID Matching**: Skips current session (`if (workout.id === currentSessionId) continue`)
+- **Primary User Filtering**: In partner mode, matches only User 1 or null to avoid duplication
+- **Superset Side Handling**: Matches left/right/null for dual-mode isolation
+- **Skip Logic**: `if (previousLog && previousLog.status !== "skipped")` ensures actual data returned
+- **Missing Set Handling**: Handles deleted data, session length changes, first-time exercises
+- **Return Value**: Returns log object with weight/reps or null (blank display)
+
+**Critical Bug Fix - userName Property Missing**:
+- **Problem**: Previous results weren't displaying after initial implementation
+- **Root Cause**: `userName` property missing when loading workouts from database
+- **Location**: `workoutSyncService.load.js` transformation functions (lines 67, 126)
+- **Fix**: Added `userName: log.user_name || null` to both workout transformation functions
+- **Impact**: Query filter `(log.userName === null || log.userName === "User 1")` was matching undefined, failing silently
+
+**Database Loading at App Initialization**:
+- **Problem**: Workout history wasn't in appState on page load
+- **Solution**: Added async database loading for authenticated users in `appInitializerService.js`
+- **Implementation**: Call `loadWorkoutsFromDatabase()` after auth check, populate `appState.user.history.workouts`
+- **Timing**: Loads before first render to ensure previous results available immediately
+- **Console Logging**: Added "[AppInit] Loaded X workouts from database" for debugging
+
+**Nuke Everything Enhancement**:
+- **Problem**: Stale uncommitted workouts lingering in database (e.g., Oct 31 Chest workout)
+- **Solution**: Enhanced "Nuke Everything" to delete uncommitted sessions before clearing localStorage
+- **Implementation**: Created `deleteUncommittedSession()` function in `persistenceService.js`
+- **Database Query**: Delete workouts where `id = currentSessionId` AND `user_id` AND `is_committed = false`
+- **Async Pattern**: Made `nukeEverything()` async, call cleanup before `clearState()`
+- **Console Logging**: Added [Nuke] prefix for traceability (checking, deleted, or not found)
+
+**Uncommitted Workout Access**:
+- **Problem**: Stale uncommitted workouts couldn't be selected/edited in My Data
+- **Solution**: Changed selector logic to make ALL workouts selectable (not just committed)
+- **Location**: `my-data.templates.calendarDay.js` lines 151-167
+- **Change**: Removed `session.isCommitted` check from `dataAttrs` logic
+- **Effect**: Cancel/Edit buttons now appear for uncommitted workouts when selected
+- **Use Case**: Allows users to edit/remove stale workouts that weren't properly committed
+
+**Color Update**:
+- **Olive Color**: Changed from `#aaff00` to `#77ff00` in `_variables.css` line 111
+- **Reason**: User requested darker/more saturated olive for better visibility
+- **Scope**: Global token affects all olive text throughout application
+
+**User Feedback Iterations**:
+1. **Label Evolution**: "Previous Exercise Set" → "Last Lift" → "Last" → Inline "Last: " prefix
+2. **Italic Changes**: Non-italic results → Italic entire line (user preference)
+3. **Skip Behavior**: Show skipped → Skip over skipped entries (more actionable)
+4. **Suffix Removal**: Removed "(ea.)" from historical data only (not logged results)
+5. **Delete Button**: Initially added to all workouts → Removed (only wanted Edit access)
+
+**Files Modified** (7 total):
+- `src/styles/base/_variables.css` - Olive color update (line 111)
+- `src/services/data/historyService.js` - Added `findPreviousExerciseLog()` function (lines 420-473)
+- `src/features/workout-log/workout-log.templates.item.js` - Previous results display (lines 21, 143-174)
+- `src/features/workout-log/workout-log.items.css` - Previous results styling (lines 112-141)
+- `src/services/data/workoutSyncService.load.js` - Added userName property (lines 67, 126)
+- `src/services/core/appInitializerService.js` - Database loading at startup (lines 39, 143-158)
+- `src/services/core/persistenceService.js` - Nuke enhancement (lines 13, 18, 96-146)
+- `src/features/my-data/my-data.templates.calendarDay.js` - Uncommitted workout access (lines 151-167)
+
+**Key Technical Details**:
+- **Array Search Direction**: Forward search (index 0 = newest) with session ID skip, not backwards search
+- **Template Conditional**: `if (status === "pending")` wraps entire previous results query/display
+- **CSS Specificity**: `.log-item-previous-results .log-item-results-value/unit` for italic inheritance
+- **Database Transformation**: snake_case (database) → camelCase (app) with userName critical for filter
+- **Async Pattern**: Fire-and-forget database saves, synchronous localStorage saves
+- **Skip Logic Benefits**: User sees "Last: 245 lbs x 10 reps" instead of "Last: Skipped" (actionable)
+
+**Standards Compliance**:
+- Applied CLAUDE_DEV_STANDARDS.md to all 7 modified files
+- All files compliant: Proper headers, clear comments, no version numbers, semantic naming
+- Section headers (=== format), inline comments explaining logic, JSDoc documentation
+- Token-based CSS where applicable, CEMENT comments for critical patterns
+
+**Status**: COMPLETE - Previous exercise results feature operational, all bugs fixed, standards applied, user feedback incorporated.
+
+---
 
 ### **Claude-v5.6.3 - Issue 48: Authentication Redirect Fix & Production Deployment** (2025-01-30) - COMPLETE
 

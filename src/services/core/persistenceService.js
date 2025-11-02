@@ -10,11 +10,12 @@
    - Preserves user history and page state across resets
    - Cleans timer IDs before saving (non-serializable)
 
-   Dependencies: appState, getInitialAppState
+   Dependencies: appState, getInitialAppState, supabaseClient
    Used by: All state-changing operations, appInitializerService (load on startup)
    ========================================================================== */
 
 import { appState, getInitialAppState } from "state";
+import { supabase } from "lib/supabaseClient.js";
 
 const APP_STATE_KEY = "wills-321-app-state";
 
@@ -92,9 +93,54 @@ function clearState() {
   }
 }
 
-// Hard reset: remove beforeunload listener before clearing to prevent re-save
-export function nukeEverything() {
+/**
+ * Delete uncommitted workout session from database
+ * Called before nuking everything to clean up stale database entries
+ * Only deletes the current session's workout if it's not committed
+ */
+async function deleteUncommittedSession() {
+  try {
+    const userId = appState.auth?.user?.id;
+    const sessionId = appState.session?.id;
+
+    // Skip if not authenticated or no active session
+    if (!userId || !sessionId) {
+      return;
+    }
+
+    console.log('[Nuke] Checking for uncommitted workout session:', sessionId);
+
+    // Delete only the current session's workout if it exists and is not committed
+    const { data: deletedWorkouts, error } = await supabase
+      .from("workouts")
+      .delete()
+      .eq("id", sessionId)
+      .eq("user_id", userId)
+      .eq("is_committed", false)
+      .select();
+
+    if (error) {
+      console.error('[Nuke] Error deleting uncommitted workout:', error);
+      return;
+    }
+
+    if (deletedWorkouts && deletedWorkouts.length > 0) {
+      console.log('[Nuke] Deleted uncommitted workout:', deletedWorkouts[0]);
+    } else {
+      console.log('[Nuke] No uncommitted workout found to delete');
+    }
+  } catch (error) {
+    console.error('[Nuke] Unexpected error deleting uncommitted workout:', error);
+  }
+}
+
+// Hard reset: remove beforeunload listener, delete uncommitted session, clear state
+export async function nukeEverything() {
   window.removeEventListener("beforeunload", saveState);
+
+  // Delete any uncommitted workout session from database before clearing local state
+  await deleteUncommittedSession();
+
   clearState();
   window.location.href = "/";
 }

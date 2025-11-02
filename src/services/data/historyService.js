@@ -262,6 +262,12 @@ export function updateHistoricalLog(workoutId, setNumber, supersetSide, exercise
   log.reps = Number(reps);
   log.weight = Number(weight);
 
+  // If this was a skipped set, change status to completed when updating
+  // Allows users to "un-skip" a set by clicking Update in edit panel
+  if (log.status === "skipped") {
+    log.status = "completed";
+  }
+
   // 🔒 CEMENT: Animation state tracking for Edit Workout modal log updates
   // Defensive cleanup prevents corrupted animation state
   const now = Date.now();
@@ -409,4 +415,59 @@ export function restoreEntireWorkout(workoutId, restoredWorkout) {
   }
 
   return true;
+}
+
+/**
+ * Find the most recent log entry for a specific exercise
+ *
+ * Searches through workout history (newest first) to find the last time
+ * this exact exercise/set combination was performed. Skips over "skipped"
+ * entries to find actual logged data (weight/reps).
+ *
+ * This ensures users see actionable previous performance data rather than
+ * "Last: Skipped", which is more helpful for planning their next set.
+ *
+ * @param {string} exerciseName - Exercise name (e.g., "Bench Press")
+ * @param {number} setNumber - Set number within workout (1, 2, 3, etc.)
+ * @param {string|null} supersetSide - 'left', 'right', or null for normal mode
+ * @returns {Object|null} Previous log entry with status, weight, reps, or null if not found
+ *
+ * @example
+ * const prev = findPreviousExerciseLog("Bench Press", 1, null);
+ * if (prev) {
+ *   console.log(`Last time: ${prev.weight} lbs x ${prev.reps} reps`);
+ * }
+ */
+export function findPreviousExerciseLog(exerciseName, setNumber, supersetSide) {
+  const workouts = appState.user.history.workouts;
+  const currentSessionId = appState.session.id;
+
+  // Search workouts from newest to oldest (skip current session)
+  // Workouts array: [newest, 2nd newest, 3rd newest, ..., oldest]
+  for (let i = 0; i < workouts.length; i++) {
+    const workout = workouts[i];
+
+    // Skip the current session's workout
+    if (workout.id === currentSessionId) {
+      continue;
+    }
+
+    // Find matching log in this workout
+    const previousLog = workout.logs.find(log =>
+      log.exercise.exercise_name === exerciseName &&
+      log.setNumber === setNumber &&
+      (log.supersetSide || null) === (supersetSide || null) &&
+      (log.userName === null || log.userName === "User 1")  // Primary user only
+    );
+
+    // Return only if actual logged data exists (skip over missing/skipped entries)
+    // - Missing set (deleted, or different session length): previousLog is undefined → continue
+    // - Skipped set: previousLog.status === "skipped" → continue
+    // - Actual data: previousLog exists with weight/reps → return it!
+    if (previousLog && previousLog.status !== "skipped") {
+      return previousLog;
+    }
+  }
+
+  return null;
 }

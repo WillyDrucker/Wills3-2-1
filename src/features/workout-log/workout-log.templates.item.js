@@ -18,6 +18,7 @@ import { appState } from "state";
 import { programConfig, colorCodeMap } from "config";
 import { isDumbbellExercise, pluralize } from "utils";
 import { createNumberInputHTML } from "ui";
+import { findPreviousExerciseLog } from "services/data/historyService.js";
 
 export function getLogItemHTML(
   log,
@@ -135,9 +136,42 @@ export function getLogItemHTML(
   }
 
   const timestampClass = log.restWasSkipped ? "text-skip" : "";
-  const timestampHtml = timestamp
+  let timestampHtml = timestamp
     ? `<span class="log-item-timestamp ${timestampClass}"${skipAnimationDelay}>${timestamp}</span>`
     : "";
+
+  /* === PREVIOUS EXERCISE RESULTS (PENDING LOGS ONLY) === */
+  /* Query history and display last performance for this exercise/set */
+  /* Skips over skipped entries to find actual logged data (weight/reps) */
+  if (status === "pending") {
+    const previousLog = findPreviousExerciseLog(
+      exercise.exercise_name,
+      setNumber,
+      log.supersetSide || null
+    );
+
+    if (previousLog) {
+      // Prepend "Last: " to previous results text
+      // Note: (ea.) suffix is omitted for brevity in historical data
+      // Note: findPreviousExerciseLog never returns skipped entries
+      resultsHtml = `<div class="log-item-previous-results">
+          <span class="log-item-results-unit">Last:&nbsp;</span>
+          <span class="log-item-results-value">${previousLog.weight}</span>
+          <span class="log-item-results-unit">&nbsp;${pluralize(
+            previousLog.weight,
+            "lb",
+            "lbs"
+          )}</span>
+          <span class="log-item-results-unit">&nbsp;x&nbsp;</span>
+          <span class="log-item-results-value">${previousLog.reps}</span>
+          <span class="log-item-results-unit">&nbsp;${pluralize(
+            previousLog.reps,
+            "rep",
+            "reps"
+          )}</span>
+      </div>`;
+    }
+  }
 
   /* 🔒 CEMENT: Simple flex structure is foundation for pixel-perfect CSS layout */
   /* Outer .workout-log-item is flex container, allows two .log-item-line-* children */

@@ -15,29 +15,26 @@ This file contains only critical architectural patterns and current session stat
 
 ## Current Session State
 
-**Status**: Claude-v5.6.3 - COMPLETE & Production Ready
-- ✅ **Issue 48**: Authentication redirect fix (dynamic `emailRedirectTo` with `window.location.origin`)
-- ✅ **Production Deployment Prep**: `_redirects` file, relative exercise database paths, deployment guide
-- ✅ **Debug Code Cleanup**: Removed 20+ console.log statements from production code
-- ✅ **v5.6.2 Restoration**: Merged ff56e78 to restore lost work (31 files)
-  - My Data results grid alignment system (CSS Grid + JavaScript measurements)
-  - Issue 53 animation timing optimizations (20 files)
-  - Login timing constants, color updates, input sizing refinements
-- ✅ **Delete Log Modal Fixes**: 7px spacing between last-log text lines, selector state clearing
-- ✅ **Codebase Status**: Production-ready for deployment to wills321.com and beta.wills321.com
+**Status**: Claude-v5.6.4 - COMPLETE
+- ✅ **Epic 18 Sub-issue**: Previous exercise results feature (display "Last: X lbs x Y reps" on pending logs)
+- ✅ **Historical Data Query**: Created `findPreviousExerciseLog()` with smart skip logic
+- ✅ **Skip-Over Logic**: Searches past skipped sets and missing data to find actual performance
+- ✅ **Database Loading**: Added workout history loading at app initialization for authenticated users
+- ✅ **Critical Bug Fix**: Added userName property to database transformation (workoutSyncService.load.js)
+- ✅ **Nuke Everything Enhancement**: Deletes uncommitted workouts from database before clearing state
+- ✅ **Uncommitted Workout Access**: Made uncommitted workouts selectable/editable in My Data
+- ✅ **Standards Compliance**: Applied CLAUDE_DEV_STANDARDS to all 7 modified files
+- ✅ **Color Update**: Changed olive from #aaff00 to #77ff00
 
-**Previous Session**: Issue 53 - Animation Timing & Standards Compliance (Claude-v5.6.2) - COMPLETE
-- Animation timing optimizations (selectors 600ms, text 1000ms, login 600ms)
-- Color updates (pure green #00ff00, olive #aaff00)
-- Workout Results banner removal, immediate button availability
-- Input sizing refinements (40px edit panels, 44px main inputs)
-- Login timing constants centralized in login-page.constants.js
-- CSS animation timing token created (--selector-animation-duration)
-- **My Data results grid alignment system** - CSS Grid with JavaScript column width measurements
-- All 20 modified files compliant with CLAUDE_DEV_STANDARDS
-- Issue 53 closed with comprehensive documentation
+**Previous Session**: Issue 48 - Authentication Redirect Fix & Production Deployment (Claude-v5.6.3) - COMPLETE
+- Authentication redirect fix (dynamic `emailRedirectTo` with `window.location.origin`)
+- Production deployment prep (`_redirects` file, relative exercise database paths, deployment guide)
+- Debug code cleanup (removed 20+ console.log statements)
+- v5.6.2 restoration (merged ff56e78 to restore lost work from 31 files)
+- Delete Log modal fixes (7px spacing, selector state clearing)
+- Codebase production-ready for deployment
 
-**Earlier Session**: Modal Animation System Globalization (Claude-v5.6.1) - COMPLETE
+**Earlier Session**: Issue 53 - Animation Timing & Standards Compliance (Claude-v5.6.2) - COMPLETE
 - Global animation system with CSS custom properties implemented
 - Number-only animation variant created for immediate color visibility
 - Modal stacking visibility improvements (Edit Workout stays visible when child modals open)
@@ -302,6 +299,54 @@ confirmDeleteLog: () => {
 - Deleting last item in a collection
 - Removing entity that parent modal depends on
 - Any deletion that affects multiple UI layers
+
+### 14. Historical Data Query Pattern (Skip-Over Logic)
+Search workout history for previous exercise performance, skipping over skipped sets and missing data to find actual logged results:
+
+```javascript
+export function findPreviousExerciseLog(exerciseName, setNumber, supersetSide) {
+  const workouts = appState.user.history.workouts;
+  const currentSessionId = appState.session.id;
+
+  // Search workouts from newest to oldest (array: [newest, ..., oldest])
+  for (let i = 0; i < workouts.length; i++) {
+    const workout = workouts[i];
+
+    // Skip current session
+    if (workout.id === currentSessionId) continue;
+
+    // Find matching log
+    const previousLog = workout.logs.find(log =>
+      log.exercise.exercise_name === exerciseName &&
+      log.setNumber === setNumber &&
+      (log.supersetSide || null) === (supersetSide || null) &&
+      (log.userName === null || log.userName === "User 1")  // Primary user only
+    );
+
+    // Skip over skipped/missing entries, return only actual data
+    if (previousLog && previousLog.status !== "skipped") {
+      return previousLog;
+    }
+  }
+
+  return null;
+}
+```
+
+**Key Behaviors**:
+- **Forward search**: Workouts array ordered newest-first, search forward from index 0
+- **Session ID matching**: Skip current session to find previous performance
+- **Skip-over logic**: Continue searching when encountering skipped or missing sets
+- **Primary user filtering**: In partner mode, only match primary user (User 1) or null
+- **Actionable data**: Returns only completed logs with weight/reps, never skipped entries
+- **Blank on empty**: Returns null when no previous data exists (display remains blank)
+
+**Use Cases**:
+- Prefilled workout logs showing "Last: X lbs x Y reps"
+- Historical performance tracking for progressive overload
+- Any feature requiring "previous exercise" lookups
+
+**Critical Fix**: Must include `userName` property when loading workouts from database or query fails silently (userName check matches undefined).
 
 ---
 

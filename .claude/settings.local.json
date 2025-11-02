@@ -48,7 +48,8 @@
       "Bash(git checkout:*)",
       "Bash(git merge:*)",
       "Bash(git branch:*)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Bash(del C:DevWills321delete-workout.js)"
     ],
     "deny": [],
     "ask": []

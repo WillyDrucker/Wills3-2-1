@@ -88,4 +88,20 @@
 .workout-results-container .action-button-container {
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m); /* 16px spacing between buttons */
+}
+
+/* === MY DATA BUTTON (GREEN) === */
+.button-my-data {
+  background-color: var(--log-green); /* Green background */
+  color: var(--text-on-action-color); /* Black text (#000000) */
+  height: var(--control-height); /* 50px */
+  font-size: var(--font-size-h2); /* Match "Begin Another Workout" */
+  font-weight: 600; /* Match "Begin Another Workout" */
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  border: none;
+  transition: none; /* SSS: No transitions */
 }

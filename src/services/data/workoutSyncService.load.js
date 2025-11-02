@@ -64,6 +64,7 @@ export async function loadWorkoutsFromDatabase() {
         reps: log.reps,
         status: log.status,
         supersetSide: log.superset_side,
+        userName: log.user_name || null,
       })),
     }));
 
@@ -122,6 +123,7 @@ export async function getLastBodyPartLifts(bodyPart, limit = 5) {
         reps: log.reps,
         status: log.status,
         supersetSide: log.superset_side,
+        userName: log.user_name || null,
       })),
     }));
 

@@ -148,19 +148,19 @@ export function buildDaySectionHTML(day, index, daysOfWeek, hasWideResults) {
         /* Build exercise HTML blocks */
         const exerciseBlocksHtml = buildExerciseBlocksHTML(orderedExercises, session, hasWideResults);
 
-        /* Add data attributes for committed workouts (interactive) */
-        const dataAttrs = session.isCommitted
-          ? `data-workout-id="${session.id}" data-action="selectHistoryWorkout"`
-          : '';
+        /* Add data attributes for all workouts (committed and uncommitted) to make them selectable */
+        /* This allows uncommitted (stale) workouts to be edited via the Edit button */
+        const dataAttrs = `data-workout-id="${session.id}" data-action="selectHistoryWorkout"`;
 
         /* Render Cancel/Edit buttons when selector is active */
+        /* Note: Uncommitted workouts are now selectable (fixed stale workout issue) */
         const isActive = appState.ui.selectedHistoryWorkoutId === session.id;
         const hasActiveSelection = appState.ui.selectedHistoryWorkoutId !== null;
         const isMuted = hasActiveSelection && !isActive && session.isCommitted;
 
         const activeClass = isActive ? ' is-active' : '';
         const mutedClass = isMuted ? ' is-muted' : '';
-        const buttonsHtml = isActive && session.isCommitted
+        const buttonsHtml = isActive
           ? `<div class="history-edit-buttons">
                <button class="history-cancel-button" data-action="cancelHistorySelection">Cancel</button>
                <button class="history-edit-button" data-action="openEditWorkoutModal" data-workout-id="${session.id}">Edit</button>

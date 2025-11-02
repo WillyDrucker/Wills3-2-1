@@ -36,6 +36,7 @@ import { renderSideNav } from "features/side-nav/side-nav.index.js";
 import * as clockService from "services/ui/clockService.js";
 import { renderActiveCardHeader } from "features/active-exercise-card/active-exercise-card.index.js";
 import { renderConfigHeaderLine } from "features/config-card/config-card.header.index.js";
+import { loadWorkoutsFromDatabase } from "services/data/workoutSyncService.js";
 
 function initializeTimerService(dependencies) {
   timerService.initialize({
@@ -141,6 +142,17 @@ export async function initialize(dependencies) {
     // Force initial page: authenticated users → home, guest users → workout
     if (appState.auth?.isAuthenticated) {
       appState.ui.currentPage = "home";
+
+      // Load workout history from database for authenticated users
+      // This populates appState.user.history.workouts for previous exercise results feature
+      const { workouts, error } = await loadWorkoutsFromDatabase();
+      if (!error && workouts) {
+        appState.user.history.workouts = workouts;
+        persistenceService.saveState();
+        console.log('[AppInit] Loaded', workouts.length, 'workouts from database');
+      } else if (error) {
+        console.error('[AppInit] Failed to load workouts from database:', error);
+      }
     } else if (appState.auth?.isGuest) {
       appState.ui.currentPage = "workout";
     }

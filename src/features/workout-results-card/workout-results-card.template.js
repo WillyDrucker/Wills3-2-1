@@ -2,12 +2,12 @@
    WORKOUT RESULTS CARD - HTML Template
 
    Generates workout completion card HTML with plate animations, results
-   summary, and two-state action button (Saved → Begin Another Workout).
+   summary, and two action buttons.
 
-   Architecture: Button initial state
-   - Button starts as green "Workout Saved!" (button-log class)
-   - Disabled attribute prevents clicks during animation
-   - State transition handled in workout-results-card.index.js
+   Architecture:
+   - "Workout Complete!" text (static, centered with plates)
+   - "Begin Another Workout" button (blue, enabled immediately)
+   - "My Data" button (green, shows "Workout Saved!" during animation, then "My Data")
 
    Dependencies: appState, workoutMetricsService
    Used by: workout-results-card.index.js (renderWorkoutResultsCard)
@@ -40,7 +40,8 @@ export function getWorkoutResultsCardTemplate() {
             }">${totalSets}</span> total sets.</p>
           </div>
           <div class="action-button-container">
-            <button class="action-button button-log workout-saved-button" data-action="openNewWorkoutModal" disabled>Workout Saved!</button>
+            <button class="action-button button-finish" data-action="openNewWorkoutModal">Begin Another Workout</button>
+            <button class="action-button button-my-data workout-saved-button" data-action="goToMyData">Workout Saved!</button>
           </div>
         </div>
       </div>`;
