@@ -1,0 +1,124 @@
+/* ==========================================================================
+   MY PLAN - Page Styling
+
+   Styles for My Plan page including card layout, selector styling, and
+   duration information display. Follows 16px/7px spacing rhythm.
+
+   Architecture: Nuclear reset pattern with selective spacing restoration
+   - Card margins: 10px left/right (standard app margin)
+   - Internal padding: 16px visual (14px + 2px border)
+   - Title to selector: 7px visual (4px margin-bottom)
+   - Selector to duration: 1rem
+   - Duration lines: 7px vertical gap
+
+   Dependencies:
+   Global: _variables.css (spacing, colors, font-size-h2)
+   Components: _selectors-base.css
+
+   Used by: My Plan page
+   ========================================================================== */
+
+/* === NUCLEAR RESET === */
+/* Reset all margins and padding, restore selectively below */
+.my-plan-card * {
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+/* === CARD LAYOUT === */
+.my-plan-card {
+  margin-bottom: var(--space-m); /* 16px bottom - sides handled by .app-container */
+}
+
+/* === CARD TITLE === */
+.plan-card-title {
+  font-size: var(--font-size-h2); /* 1.25rem */
+  font-weight: 600;
+  color: var(--on-surface-light);
+  margin-bottom: 4px !important; /* 7px visual gap to selector */
+}
+
+/* === SELECTOR CONTAINER === */
+.plan-selector-container {
+  margin-bottom: 1rem !important; /* 1rem gap to duration section */
+}
+
+/* === SELECTOR CONTENT === */
+.plan-selector-content,
+.plan-selector-option {
+  font-size: var(--font-size-h2); /* 1.25rem */
+  font-weight: 600;
+}
+
+/* === DURATION SECTION === */
+.plan-duration-section {
+  /* Spacing controlled by selector margin-bottom (1rem above) */
+}
+
+.plan-duration-line {
+  font-size: 1rem; /* All text below selector at 1rem */
+  font-weight: 600;
+  margin-bottom: 7px !important; /* 7px gap between lines */
+}
+
+.plan-duration-line:last-child {
+  margin-bottom: 0 !important; /* No margin after last line */
+}
+
+/* === PHASE CHART SECTION === */
+/* Week-by-week phase and equipment display */
+.phase-chart-container {
+  margin-top: 7px !important; /* 7px gap from duration section above */
+}
+
+.phase-week-line {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 7px !important; /* 7px gap between phase lines */
+}
+
+.phase-week-line:last-child {
+  margin-bottom: 0 !important; /* No margin after last line */
+}
+
+/* === PLAN INFORMATION CARD === */
+.plan-info-card * {
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+.plan-info-card .card-content-container {
+  padding-top: 16px !important; /* 16px from top of card */
+}
+
+.plan-info-title {
+  font-size: var(--font-size-h2); /* 1.25rem */
+  font-weight: 600;
+  color: var(--on-surface-light);
+  margin-bottom: 7px !important; /* 7px gap to content */
+}
+
+.plan-info-content {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--on-surface-medium);
+  text-align: center; /* Center-align plan description text */
+}
+
+/* === LOADING STATE === */
+.selector-placeholder {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  color: var(--on-surface-medium);
+  text-align: center;
+  padding: 10px 16px;
+  background-color: var(--background-dark);
+  border: 2px solid var(--on-surface-disabled);
+  border-radius: var(--border-radius);
+  min-height: var(--control-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

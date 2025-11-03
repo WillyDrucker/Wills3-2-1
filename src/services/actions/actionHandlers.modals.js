@@ -145,7 +145,7 @@ export function getModalHandlers(coreActions) {
         // Trigger pulse and selector animations immediately when selector displays
         appState.ui.isLetsGoButtonPulsing = false;
         triggerLetsGoButtonPulse(appState);
-        animateSelectors(['current-plan-selector', 'config-header-day-selector']);
+        animateSelectors(['current-workout-selector', 'config-header-day-selector']);
       }, 0);
     },
 
@@ -236,7 +236,7 @@ export function getModalHandlers(coreActions) {
         // Trigger pulse and selector animations immediately when selector displays
         appState.ui.isLetsGoButtonPulsing = false;
         triggerLetsGoButtonPulse(appState);
-        animateSelectors(['current-plan-selector', 'config-header-day-selector']);
+        animateSelectors(['current-workout-selector', 'config-header-day-selector']);
       }, 0);
     },
 

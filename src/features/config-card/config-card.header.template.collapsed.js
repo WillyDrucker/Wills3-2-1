@@ -91,8 +91,8 @@ function getAbbreviatedPlanText() {
     return `<div class="plan-quick-button-stack"><span class="data-highlight text-plan">${partner.user1Name}</span><span class="data-highlight text-primary">${partner.user2Name}</span></div>`;
   } else {
     // Normal mode: "3-2-1" (gray) on top, duration (green) below
-    const currentPlan = workoutPlans.find((p) => p.name === session.currentWorkoutPlanName) || workoutPlans[0];
-    const durationParts = currentPlan.duration.split(' ');
+    const currentWorkout = workoutPlans.find((p) => p.name === session.currentWorkoutName) || workoutPlans[0];
+    const durationParts = currentWorkout.duration.split(' ');
     const durationNumber = durationParts[0];
     // Abbreviate "Weeks" to "Wks"
     const durationUnit = durationParts[1] ? durationParts[1].replace('Weeks', 'Wks').replace('weeks', 'Wks') : '';

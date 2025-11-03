@@ -8,7 +8,7 @@ This file contains the historical record of version changes for Will's 3-2-1. De
 
 ---
 
-**Current Version**: Claude-v5.6.4
+**Current Version**: Claude-v5.6.5
 **Project**: Will's 3-2-1 Workout Tracking Application
 **Tech Stack**: Vanilla JavaScript, ES Modules, CSS Tokens
 **Philosophy**: SUPER STUPID SIMPLE (SSS), REMOVE DON'T ADD
@@ -32,6 +32,99 @@ This file contains the historical record of version changes for Will's 3-2-1. De
 ---
 
 ## VERSION CHANGELOG
+
+### **Claude-v5.6.5 - Comprehensive Rename: "My Program" → "My Plan"** (2025-02-03) - COMPLETE
+
+**Mission**: Complete rename of all "My Program" references to "My Plan" across the entire codebase, mirroring the approach used in the previous "Current Plan" → "Current Workout" rename.
+
+**9-Phase Systematic Execution**:
+
+**Phase 1: User-Facing Text (3 files)**
+- home-page.template.js: Button text "My Program" → "My Plan" + comment update
+- my-program.template.js: All user-visible labels updated in selector, duration, information sections
+
+**Phase 2: File/Folder Renames (6 items)**
+- Renamed folder: `src/features/my-program/` → `src/features/my-plan/`
+- Renamed files: my-program.template.js → my-plan.template.js
+- Renamed files: my-program.style.css → my-plan.style.css
+- Renamed files: my-program.index.js → my-plan.index.js
+- Renamed data file: data/programs.json → data/plans.json
+- Renamed API client: src/api/programsClient.js → plansClient.js
+
+**Phase 3: Import Path Updates (4 files)**
+- main.js: Updated import path and function call `renderMyProgramPage` → `renderMyPlanPage`
+- index.css: Updated CSS import path to my-plan.style.css
+- my-plan.index.js: Updated internal import paths (template, API client)
+- my-plan.template.js: No changes needed (no imports)
+
+**Phase 4: State Property Renames (state.js)**
+- appState.program → appState.plan
+- appState.program.programs → appState.plan.plans
+- appState.ui.myProgramPage → appState.ui.myPlanPage
+- myProgramPage.selectedProgramId → myPlanPage.selectedPlanId
+
+**Phase 5: Variables and Functions (3 files)**
+- my-plan.template.js (~100 changes): getCurrentProgramSelectorHTML → getCurrentPlanSelectorHTML, getDurationInfoHTML updates, getProgramInformationHTML → getPlanInformationHTML, getMyProgramPageTemplate → getMyPlanPageTemplate, all variable names program → plan
+- my-plan.index.js (~80 changes): renderMyProgramPage → renderMyPlanPage, handleProgramSelection → handlePlanSelection, updateProgramDisplay → updatePlanDisplay, updatePhaseChart updates, all variable names and selectors
+- plansClient.js: fetchPrograms → fetchPlans, updated comments and URL constant reference
+
+**Phase 6: CSS Class Names (2 files)**
+- my-plan.style.css: .my-program-card → .my-plan-card, .program-card-title → .plan-card-title, .program-selector-* → .plan-selector-*, .program-duration-* → .plan-duration-*, .program-info-* → .plan-info-*
+- my-plan.template.js: All HTML class names in template strings updated to match CSS
+
+**Phase 7: Data Attributes (3 files)**
+- my-plan.template.js: data-program-id → data-plan-id
+- my-plan.index.js: dataset.programId → dataset.planId, .program-selector-option → .plan-selector-option
+- home-page.template.js: data-action="goToMyProgram" → data-action="goToMyPlan"
+
+**Phase 8: JSON Data Structure (plans.json)**
+- Updated all 9 plan objects: programExerciseOrder → planExerciseOrder
+- Updated all 9 plan objects: programInformation → planInformation
+- Maintains data integrity for plan phases, equipment, weekly reps
+
+**Phase 9: Navigation and Config (2 files)**
+- actionHandlers.navigation.js: goToMyProgram → goToMyPlan function, "myProgram" → "myPlan" page route, comment updates
+- config.js: PROGRAMS_DATABASE_URL → PLANS_DATABASE_URL constant, "/data/programs.json" → "/data/plans.json", comment "workout programs" → "workout plans"
+
+**Critical Bug Fix - Incomplete Variable Rename**:
+- **Problem**: ReferenceError: programs is not defined (my-plan.index.js:35)
+- **Root Cause**: Four references to `programs` variable weren't updated to `plans` during Phase 5
+- **Locations**: Lines 32 (conditional check), 35 (assignment), 39 (fallback), 116 (options list)
+- **Fix**: Updated all remaining `programs` references to `plans` variable
+- **Impact**: Page now loads correctly when navigating to My Plan
+
+**Standards Compliance & Documentation**:
+- Applied CLAUDE_DEV_STANDARDS to all modified files (proper headers, section organization, semantic naming)
+- Updated global selector documentation: _selectors-base.css added my-plan to "Used by" list
+- Updated global card documentation: _card-foundations.css added .my-plan-card to padding rules
+- CSS follows 16px/7px spacing rhythm with nuclear reset pattern
+- All file headers include Dependencies and "Used by" sections
+- No version numbers in headers (git tracks versions)
+
+**Files Modified (11 total)**:
+1. home-page.template.js - Button text and data action
+2. my-plan.template.js - All template strings and functions (renamed from my-program.template.js)
+3. my-plan.index.js - All logic and event handlers (renamed from my-program.index.js)
+4. my-plan.style.css - All CSS classes and selectors (renamed from my-program.style.css)
+5. plansClient.js - API function and constants (renamed from programsClient.js)
+6. state.js - State property names
+7. main.js - Import and render function call
+8. index.css - CSS import path
+9. plans.json - JSON property names (renamed from programs.json)
+10. actionHandlers.navigation.js - Action handler and route
+11. config.js - Database URL constant
+
+**Global Documentation Updates (2 files)**:
+1. _selectors-base.css - Added my-plan to usage list
+2. _card-foundations.css - Added .my-plan-card padding rules
+
+**Architectural Consistency**:
+- Follows same systematic approach as previous "Current Plan" → "Current Workout" rename
+- Maintains consistency with established naming conventions (plan over program)
+- No breaking changes to data structure (JSON schema backward compatible)
+- All state migrations preserve user data and preferences
+
+---
 
 ### **Claude-v5.6.4 - Epic 18 Sub-issue: Previous Exercise Results Feature** (2025-01-31) - COMPLETE
 

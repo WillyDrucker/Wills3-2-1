@@ -24,10 +24,10 @@ export function renderConfigCard() {
   ui.configSection.innerHTML = getConfigCardTemplate();
 }
 
-/* === PLAN CHANGE HANDLER === */
-export function handlePlanChange(newPlanName) {
-  if (appState.session.currentWorkoutPlanName === newPlanName) return;
-  appState.session.currentWorkoutPlanName = newPlanName;
+/* === WORKOUT CHANGE HANDLER === */
+export function handleWorkoutChange(newWorkoutName) {
+  if (appState.session.currentWorkoutName === newWorkoutName) return;
+  appState.session.currentWorkoutName = newWorkoutName;
 }
 
 /* === DAY CHANGE HANDLER === */
@@ -68,7 +68,7 @@ export function handleTimeChange(newTimeOption) {
 export function saveConfigState() {
   stateSnapshot = {
     // Session config
-    currentWorkoutPlanName: appState.session.currentWorkoutPlanName,
+    currentWorkoutName: appState.session.currentWorkoutName,
     currentDayName: appState.session.currentDayName,
     currentTimeOptionName: appState.session.currentTimeOptionName,
     currentTimerColorClass: appState.session.currentTimerColorClass,
@@ -91,7 +91,7 @@ export function restoreConfigState() {
   if (!stateSnapshot) return;
 
   // Restore session config
-  appState.session.currentWorkoutPlanName = stateSnapshot.currentWorkoutPlanName;
+  appState.session.currentWorkoutName = stateSnapshot.currentWorkoutName;
   appState.session.currentDayName = stateSnapshot.currentDayName;
   appState.session.currentTimeOptionName = stateSnapshot.currentTimeOptionName;
   appState.session.currentTimerColorClass = stateSnapshot.currentTimerColorClass;
@@ -120,7 +120,7 @@ export function clearConfigState() {
 /* === RESET TO DEFAULTS === */
 export function resetToDefaults() {
   // Reset to daily defaults
-  appState.session.currentWorkoutPlanName = "Will's 3-2-1:";
+  appState.session.currentWorkoutName = "Will's 3-2-1:";
   appState.session.currentDayName = appState.todayDayName;
   appState.session.currentTimeOptionName = "Recommended:";
 

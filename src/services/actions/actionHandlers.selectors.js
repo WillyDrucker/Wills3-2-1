@@ -29,7 +29,7 @@ import { canCycleToSession } from "utils";
 import { triggerLetsGoButtonPulse, animateSelector } from "services/ui/selectorAnimationService.js";
 import {
   handleDayChange,
-  handlePlanChange,
+  handleWorkoutChange,
   handleTimeChange,
 } from "features/config-card/config-card.index.js";
 import { handleExerciseSwap } from "features/active-exercise-card/active-exercise-card.index.js";
@@ -77,13 +77,13 @@ export function getSelectorHandlers(coreActions) {
       }
     },
 
-    handlePlanSelection: (plan) => {
+    handleWorkoutSelection: (workout) => {
       const wasExpanded = appState.ui.isConfigHeaderExpanded;
       if (wasExpanded) {
         appState.ui.configHeaderLocked = true;
         appState.ui.isConfigHeaderExpanded = true;
       }
-      handlePlanChange(plan);
+      handleWorkoutChange(workout);
       coreActions.updateActiveWorkoutAndLog();
 
       // Trigger Let's Go button pulse (only if not already pulsing)

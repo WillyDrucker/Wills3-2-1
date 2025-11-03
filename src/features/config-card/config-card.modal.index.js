@@ -1,6 +1,6 @@
 import { appState } from "state";
 import { ui } from "ui";
-import { getPlanSelectorHTML } from "./config-card.template.plan.js";
+import { getWorkoutSelectorHTML } from "./config-card.template.plan.js";
 import { getDaySelectorHTML } from "./config-card.template.day.js";
 import { getTimeSelectorHTML } from "./config-card.template.time.js";
 
@@ -28,8 +28,8 @@ export function renderConfigModal() {
       <div class="superset-modal-content card" id="config-modal">
         <div class="card-content-container">
           <div class="config-group">
-            <h2 class="card-header">Current Plan</h2>
-            ${getPlanSelectorHTML(isAnySetLogged, "config-modal-plan-selector", false)}
+            <h2 class="card-header">Current Workout</h2>
+            ${getWorkoutSelectorHTML(isAnySetLogged, "config-modal-workout-selector", false)}
           </div>
 
           <div class="config-group">

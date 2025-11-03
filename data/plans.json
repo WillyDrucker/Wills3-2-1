@@ -1,0 +1,223 @@
+[
+  {
+    "id": "wills-3-2-1",
+    "name": "Will's 3-2-1",
+    "totalWeeks": 15,
+    "isDefault": true,
+    "abbreviation": "3-2-1",
+    "planExerciseOrder": "program_3-2-1_order",
+    "weeklyReps": {
+      "week1": 10, "week2": 10, "week3": 10, "week4": 6, "week5": 4,
+      "week6": 2, "week7": 2, "week8": 2, "week9": 2, "week10": 4,
+      "week11": 6, "week12": 10, "week13": 12, "week14": 16, "week15": 20
+    },
+    "phases": {
+      "week1-3": "Consistency Training",
+      "week4-6": "Begin Strength Training",
+      "week7-9": "Power Training",
+      "week10-12": "End Strength Training",
+      "week13-15": "Growth Training"
+    },
+    "equipmentWeeks": {
+      "week1-3": "Free Weight",
+      "week4-6": "Free Weight",
+      "week7-9": "Free Weight",
+      "week10-12": "Free Weight",
+      "week13-15": "Free Weight"
+    },
+    "planInformation": "Will's 3-2-1 is the standard, recommended, workout program that has evolved over 30 years of lifting with strength as the primary goal.  The program is designed from the core principal that all body parts can be broken down into 3 major muscle groups, and those groups are further targetted for optimal gains.  No overtraining, no undertraining, the perfect amount needed to achieve the most performance humanly possible week-after-week.  This is a one-body-part-per-day approach, utilizing complex resting strategies, targetted exercise overlap and optimal use of time all rolled up into one super stupid simple program to follow.  This program achieves maximum health, functionality and longevity with the highest adherenace, allowing you to reach your genetic potential as everyone should."
+  },
+  {
+    "id": "wills-3-2-glp1",
+    "name": "Will's 3-2-GLP-1",
+    "totalWeeks": 11,
+    "isDefault": false,
+    "abbreviation": "3-2-GLP-1",
+    "planExerciseOrder": "program_3-2-GLP-1_order",
+    "weeklyReps": {
+      "week1": 10, "week2": 10, "week3": 10, "week4": 10, "week5": 10,
+      "week6": 10, "week7": 8, "week8": 6, "week9": 4, "week10": 10,
+      "week11": 12
+    },
+    "phases": {
+      "week1-3": "Injury Prevention",
+      "week4-6": "Consistency Training",
+      "week7-9": "Light Strenth Training",
+      "week10-12": "Light Growth Training"
+    },
+    "equipmentWeeks": {
+      "week1-3": "Pin-Loaded",
+      "week4-6": "Free Weight",
+      "week7-9": "Free Weight",
+      "week10-12": "Free Weight"
+    },
+    "planInformation": "Will's 3-2-GLP-1 is a modified version of the standard, recommended Will's 3-2-1 program, however, shifted towards growth as the primary goal after recent discoveries of GLP-1 medications.  While it is the belief of Will's 3-2-1 that strength should always be prioritized over growth for maximum health, functionality and longevity, GLP-1 medications have changed that.  The current findings are that GLP-1's effects on the brain and calorie restrictive environment create unique but solvable challenges that standard strength training does not address.  GLP-1 medications, indirectly, make an individual more susceptable to injuries and the calorie restriction puts greater demands on sparing muscle.  For those reasons, the core of Will's 3-2-1 is preserved with optimal performance gains each week, but modified for growth for GLP-1's.  You still get all the benefits of Will's 3-2-1, no overtraining, no undertraining, no wasted time or gains left on the table, truly humanly optimal, but in a GLP-1 aware program."
+  },
+  {
+    "id": "beginner",
+    "name": "Beginner",
+    "totalWeeks": 12,
+    "isDefault": false,
+    "abbreviation": "NOOB",
+    "planExerciseOrder": "program_NOOB_order",
+    "weeklyReps": {
+      "week1": 10, "week2": 10, "week3": 10, "week4": 10, "week5": 10,
+      "week6": 10, "week7": 12, "week8": 12, "week9": 10, "week10": 8,
+      "week11": 8, "week12": 10
+    },
+    "phases": {
+      "week1-4": "Consistency Training",
+      "week5-8": "Form Training",
+      "week9-12": "Light Strength Learning"
+    },
+    "equipmentWeeks": {
+      "week1-4": "Pin-Loaded",
+      "week5-8": "Plate-Loaded",
+      "week9-12": "Free Weight"
+    },
+    "planInformation": "Everyone has to start somewhere..."
+  },
+  {
+    "id": "advanced",
+    "name": "Advanced",
+    "totalWeeks": 12,
+    "isDefault": false,
+    "abbreviation": "ADV",
+    "planExerciseOrder": "program_ADV_order",
+    "weeklyReps": {
+      "week1": 10, "week2": 10, "week3": 10, "week4": 10, "week5": 8,
+      "week6": 8, "week7": 6, "week8": 6, "week9": 10, "week10": 12,
+      "week11": 16, "week12": 20
+    },
+    "phases": {
+      "week1-4": "Consistency Training",
+      "week5-8": "Light Strength Training",
+      "week9-12": "Light Growth Training"
+    },
+    "equipmentWeeks": {
+      "week1-4": "Plate-Loaded",
+      "week5-8": "Free Weight",
+      "week9-12": "Free Weight"
+    },
+    "planInformation": "Advanced is about moving beyond the machines..."
+  },
+  {
+    "id": "expert",
+    "name": "Expert",
+    "totalWeeks": 12,
+    "isDefault": false,
+    "abbreviation": "EXPERT",
+    "planExerciseOrder": "program_EXPERT_order",
+    "weeklyReps": {
+      "week1": 10, "week2": 10, "week3": 10, "week4": 6, "week5": 4,
+      "week6": 2, "week7": 2, "week8": 4, "week9": 6, "week10": 10,
+      "week11": 16, "week12": 20
+    },
+    "phases": {
+      "week1-3": "Consistency Training",
+      "week4-6": "Begin Strength Training",
+      "week7-9": "End Strength Training",
+      "week10-12": "Growth Training"
+    },
+    "equipmentWeeks": {
+      "week1-3": "Free Weight",
+      "week4-6": "Free Weight",
+      "week7-9": "Free Weight",
+      "week10-12": "Free Weight"
+    },
+    "planInformation": "Expert moves from 4 week focus to 3 week thinking..."
+  },
+  {
+    "id": "strength",
+    "name": "Strength",
+    "totalWeeks": 6,
+    "isDefault": false,
+    "abbreviation": "STRENGTH",
+    "planExerciseOrder": "program_STRENGTH_order",
+    "weeklyReps": {
+      "week1": 10, "week2": 6, "week3": 4, "week4": 4, "week5": 2, "week6": 2
+    },
+    "phases": {
+      "week1-3": "Begin Strength Training",
+      "week4-6": "Power Training"
+    },
+    "equipmentWeeks": {
+      "week1-3": "Free Weight",
+      "week4-6": "Free Weight"
+    },
+    "planInformation": "Strength is designed for the most humanly possible gains per week, without overdoing it.  More pain does not always mean more gain!"
+  },
+  {
+    "id": "growth-size",
+    "name": "Growth - Size",
+    "totalWeeks": 6,
+    "isDefault": false,
+    "abbreviation": "GROW",
+    "planExerciseOrder": "program_GROW_order",
+    "weeklyReps": {
+      "week1": 10, "week2": 12, "week3": 16, "week4": 20, "week5": 20, "week6": 12
+    },
+    "phases": {
+      "week1-3": "Begin Growth Training",
+      "week4-6": "Mass Training"
+    },
+    "equipmentWeeks": {
+      "week1-3": "Pin-Loaded",
+      "week4-6": "Free Weight"
+    },
+    "planInformation": "Growth is designed for the bodybuilder in all of us."
+  },
+  {
+    "id": "zero-to-superhero",
+    "name": "Zero to Superhero",
+    "totalWeeks": 16,
+    "isDefault": false,
+    "abbreviation": "Z-to-SH",
+    "planExerciseOrder": "program_Z-to-SH_order",
+    "weeklyReps": {
+      "week1": 10, "week2": 10, "week3": 10, "week4": 10, "week5": 12,
+      "week6": 16, "week7": 20, "week8": 10, "week9": 6, "week10": 4,
+      "week11": 4, "week12": 6, "week13": 10, "week14": 16, "week15": 4, "week16": 2
+    },
+    "phases": {
+      "week1-4": "Consistency Training",
+      "week4-6": "Light Growth Learning",
+      "week7-9": "Light Strength Learning",
+      "week10-12": "End Light Strength Training",
+      "week13-15": "Growth to Power Shocking"
+    },
+    "equipmentWeeks": {
+      "week1-4": "Pin-Loaded",
+      "week4-6": "Free Weight",
+      "week7-9": "Plate-Loaded",
+      "week10-12": "Free Weight",
+      "week13-15": "Free Weight",
+      "week16-18": "Free Weight"
+    },
+    "planInformation": "Zert-to-Superhero is an accellerated program designed to get someone who hasn't lifted or hasn't lifted in awhile into tip-top shape."
+  },
+  {
+    "id": "injured",
+    "name": "Injured",
+    "totalWeeks": 12,
+    "isDefault": false,
+    "abbreviation": "INJURY",
+    "planExerciseOrder": "program_INJURY_order",
+    "weeklyReps": {
+      "week1": 12, "week2": 12, "week3": 16, "week4": 12, "week5": 12,
+      "week6": 16, "week7": 20, "week8": 12, "week9": 10, "week10": 8,
+      "week11": 10, "week12": 20
+    },
+    "phases": {
+      "week1-4": "Light Mobility",
+      "week5-8": "Increased Mobility",
+      "week9-12": "Strength & Mobility"
+    },
+    "equipmentWeeks": {
+      "week1-4": "Pin-Loaded",
+      "week5-8": "Pin-Loaded",
+      "week9-12": "Pin-Loaded"
+    },
+    "planInformation": "Unfortunately, injuries happen.  May need to break this section out into multiple injuri classifications which may require another database of JSON of sorts."
+  }
+]

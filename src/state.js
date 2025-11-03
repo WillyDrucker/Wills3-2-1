@@ -10,9 +10,10 @@
    3. Superset: Dual-mode workout state (day1/day2)
    4. Partner: Partner workout state (user1/user2)
    5. Rest timers: Normal and superset rest timer states
-   6. UI: Page navigation, modals, video player, side nav
-   7. Auth: Authentication state (isAuthenticated, isGuest, user, session)
-   8. User: User history and persistent data
+   6. UI: Page navigation, modals, video player, side nav, My Data, My Plan
+   7. Plan: Training plans database
+   8. Auth: Authentication state (isAuthenticated, isGuest, user, session)
+   9. User: User history and persistent data
 
    CEMENT: Color class separation for independent styling
    - currentSessionColorClass: Header colors (Minutes Remaining, clock)
@@ -33,7 +34,7 @@ export function getInitialAppState() {
 
     session: {
       id: Date.now(),
-      currentWorkoutPlanName: "Will's 3-2-1:",
+      currentWorkoutName: "Will's 3-2-1:",
       currentDayName: "Sunday",
       currentTimeOptionName: "Standard:",
       currentLogIndex: 0,
@@ -162,6 +163,14 @@ export function getInitialAppState() {
         weekOffset: 0,
         scrollPosition: 0,
       },
+      myPlanPage: {
+        selectedPlanId: null,
+        startDate: null,
+      },
+    },
+
+    plan: {
+      plans: [],
     },
 
     auth: {

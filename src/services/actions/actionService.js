@@ -91,14 +91,14 @@ export function initialize(dependencies) {
 
         event.stopPropagation();
 
-        const { day, plan, time, exerciseSwap, historyTab } = listItemTarget.dataset;
+        const { day, workout, time, exerciseSwap, historyTab } = listItemTarget.dataset;
 
         if (historyTab) selectorHandlers.handleHistoryTab(historyTab);
         if (day) {
           const parentDetails = listItemTarget.closest("details");
           selectorHandlers.handleDaySelection(day, parentDetails);
         }
-        if (plan) selectorHandlers.handlePlanSelection(plan);
+        if (workout) selectorHandlers.handleWorkoutSelection(workout);
         if (time) selectorHandlers.handleTimeSelection(time);
         if (exerciseSwap) selectorHandlers.handleExerciseSwapSelection(exerciseSwap);
 

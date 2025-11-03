@@ -50,7 +50,7 @@ export function closeAllExceptConfigHeader() {
 
 // 🔒 CEMENT: Determine which selector group an element belongs to
 function getSelectorGroup(detailsElement) {
-  // Config Group: Config dropdown + internal selectors (Current Plan/Focus) + modal selectors
+  // Config Group: Config dropdown + internal selectors (Current Workout/Focus) + modal selectors
   const isInsideConfigHeader = detailsElement.closest("#config-header");
   const isInsideModal = detailsElement.closest(".superset-modal-container, .config-modal-container");
   if (isInsideConfigHeader || isInsideModal) {

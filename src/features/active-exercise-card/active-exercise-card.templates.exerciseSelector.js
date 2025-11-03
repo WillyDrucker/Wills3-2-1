@@ -55,7 +55,7 @@ function getSwapOptionHTML(opt, currentPlan) {
 
 export function getExerciseSelectorHTML(logEntry, setsForThisExercise) {
   const { exercise } = logEntry;
-  const currentPlan = programConfig[appState.session.currentWorkoutPlanName];
+  const currentPlan = programConfig[appState.session.currentWorkoutName];
   let colorClass = colorCodeMap[exercise[currentPlan.colorKey]] || "text-plan";
 
   if (appState.partner.isActive) {

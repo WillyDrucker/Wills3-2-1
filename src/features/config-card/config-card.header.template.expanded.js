@@ -85,8 +85,8 @@ function getAbbreviatedPlanText() {
   } else if (partner.isActive) {
     return `<div class="plan-quick-button-stack"><span class="data-highlight text-plan">${partner.user1Name}</span><span class="data-highlight text-primary">${partner.user2Name}</span></div>`;
   } else {
-    const currentPlan = workoutPlans.find((p) => p.name === session.currentWorkoutPlanName) || workoutPlans[0];
-    const durationParts = currentPlan.duration.split(' ');
+    const currentWorkout = workoutPlans.find((p) => p.name === session.currentWorkoutName) || workoutPlans[0];
+    const durationParts = currentWorkout.duration.split(' ');
     const durationNumber = durationParts[0];
     const durationUnit = durationParts[1] ? durationParts[1].replace('Weeks', 'Wks').replace('weeks', 'Wks') : '';
     return `<div class="plan-quick-button-stack"><span class="plan-quick-button-muted">3-2-1</span><span class="data-highlight text-plan">${durationNumber} ${durationUnit}</span></div>`;
@@ -119,8 +119,8 @@ export function getExpandedTemplate() {
     summaryHtml = `<div class="selector-content multi-line"><div class="item-main-line flex-line-container"><div class="flex-truncate-group-rigid"><span class="flex-priority">Partner:&nbsp;</span><span class="data-highlight text-plan" data-animation-target="true">${partner.user1Name}</span><span class="flex-priority text-on-surface-medium">&nbsp;&amp;</span></div><span class="truncate-text data-highlight text-primary" data-animation-target="true">&nbsp;${partner.user2Name}</span></div></div>`;
   } else {
     // Normal mode: Single-line format with full plan name and duration
-    const currentPlan = workoutPlans.find((p) => p.name === session.currentWorkoutPlanName) || workoutPlans[0];
-    summaryHtml = `<div class="selector-content"><span class="truncate-text">${currentPlan.name.replace(':', '')}: <span class="data-highlight text-plan" data-animation-target="true">${currentPlan.duration}</span></span></div>`;
+    const currentWorkout = workoutPlans.find((p) => p.name === session.currentWorkoutName) || workoutPlans[0];
+    summaryHtml = `<div class="selector-content"><span class="truncate-text">${currentWorkout.name.replace(':', '')}: <span class="data-highlight text-plan" data-animation-target="true">${currentWorkout.duration}</span></span></div>`;
   }
 
   // Build options list
@@ -172,10 +172,10 @@ export function getExpandedTemplate() {
           <div class="config-header-expanded-content">
             <div style="margin-top: -1px;">
               <div class="card-header-line">
-                <h2 class="card-header">Current Plan</h2>
+                <h2 class="card-header">Current Workout</h2>
               </div>
               ${createSelectorHTML(
-                "current-plan-selector",
+                "current-workout-selector",
                 summaryHtml,
                 options.join(""),
                 isAnySetLogged, // 🔒 CEMENT: Disable when any set is logged (all modes)

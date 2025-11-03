@@ -34,12 +34,12 @@ const LOG_ANIMATION_TOTAL = LOG_ANIMATION_DURATION + ANIMATION_BUFFER; // 1900ms
 
 function getSessionHeaderInfo() {
   const { session, weeklyPlan, allExercises } = appState;
-  const currentPlan = programConfig[session.currentWorkoutPlanName];
+  const currentPlan = programConfig[session.currentWorkoutName];
 
   if (!currentPlan) {
     console.error(
       "Configuration for plan not found:",
-      session.currentWorkoutPlanName
+      session.currentWorkoutName
     );
     return null;
   }
@@ -51,7 +51,7 @@ function getSessionHeaderInfo() {
   if (!firstLog) return null;
 
   let headerInfo = {
-    planName: session.currentWorkoutPlanName, // CEMENTED FIX (Issue 2): Persist the plan name.
+    planName: session.currentWorkoutName, // CEMENTED FIX (Issue 2): Persist the plan name.
     sessionTypeName: session.currentTimeOptionName,
     sessionColorClass: session.currentSessionColorClass,
   };

@@ -60,6 +60,13 @@ export function loadState() {
       return null;
     }
     const loadedData = JSON.parse(serializedState);
+
+    // Migration: Rename currentWorkoutPlanName → currentWorkoutName
+    if (loadedData.session?.currentWorkoutPlanName !== undefined) {
+      loadedData.session.currentWorkoutName = loadedData.session.currentWorkoutPlanName;
+      delete loadedData.session.currentWorkoutPlanName;
+    }
+
     const today = new Date();
     const todayStr = today.toISOString().slice(0, 10);
     const savedDate = new Date(loadedData.saveTimestamp);

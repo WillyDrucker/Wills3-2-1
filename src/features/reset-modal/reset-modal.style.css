@@ -50,7 +50,7 @@
   width: 100%;
   max-width: 400px; /* Matches login/reset password modals */
   padding: 8px var(--card-padding-sides) var(--card-padding-sides) var(--card-padding-sides);
-  border: 2px solid var(--primary-blue); /* Blue border like Current Plan selector */
+  border: 2px solid var(--primary-blue); /* Blue border like Current Workout selector */
 }
 
 /* Override default card padding-top for 2.5rem title font */

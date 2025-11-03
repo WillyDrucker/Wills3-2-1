@@ -16,7 +16,7 @@ import { createSelectorHTML } from "ui";
    Used by: config-card.template.js, config-card.modal.index.js
    ========================================================================== */
 
-export function getPlanSelectorHTML(isAnySetLogged, selectorId = "workout-setup-selector-details", includeResetOption = true) {
+export function getWorkoutSelectorHTML(isAnySetLogged, selectorId = "workout-setup-selector-details", includeResetOption = true) {
   const { superset, partner, session } = appState;
   let summaryHtml;
   if (superset.isActive) {
@@ -26,10 +26,10 @@ export function getPlanSelectorHTML(isAnySetLogged, selectorId = "workout-setup-
   } else if (partner.isActive) {
     summaryHtml = `<div class="selector-content"><div class="item-main-line flex-line-container"><div class="flex-truncate-group-rigid"><span class="flex-priority">Partner:&nbsp;</span><span class="data-highlight text-plan" data-animation-target="true">${partner.user1Name}</span><span class="flex-priority text-on-surface-medium">&nbsp;&amp;</span></div><span class="truncate-text data-highlight text-primary" data-animation-target="true">&nbsp;${partner.user2Name}</span></div></div>`;
   } else {
-    const currentPlan =
-      workoutPlans.find((p) => p.name === session.currentWorkoutPlanName) ||
+    const currentWorkout =
+      workoutPlans.find((p) => p.name === session.currentWorkoutName) ||
       workoutPlans[0];
-    summaryHtml = `<div class="selector-content"><div class="item-main-line flex-line-container"><span class="flex-priority">${currentPlan.name}&nbsp;</span><span class="truncate-text data-highlight text-plan">${currentPlan.duration}</span></div></div>`;
+    summaryHtml = `<div class="selector-content"><div class="item-main-line flex-line-container"><span class="flex-priority">${currentWorkout.name}&nbsp;</span><span class="truncate-text data-highlight text-plan">${currentWorkout.duration}</span></div></div>`;
   }
   const options = [];
   const isModeChangeDisabled = isAnySetLogged;

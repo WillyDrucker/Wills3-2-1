@@ -11,7 +11,7 @@
    ========================================================================== */
 
 import { appState } from "state";
-import { getPlanSelectorHTML } from "./config-card.template.plan.js";
+import { getWorkoutSelectorHTML } from "./config-card.template.plan.js";
 import { getDaySelectorHTML } from "./config-card.template.day.js";
 import { getTimeSelectorHTML } from "./config-card.template.time.js";
 
@@ -25,7 +25,7 @@ export function getConfigCardTemplate() {
       <div class="card-content-container">
         <div class="config-group">
           <h2 class="card-header">Current Setup</h2>
-          ${getPlanSelectorHTML(isAnySetLogged, "workout-setup-selector-details", true)}
+          ${getWorkoutSelectorHTML(isAnySetLogged, "workout-setup-selector-details", true)}
         </div>
 
         <div class="config-group">

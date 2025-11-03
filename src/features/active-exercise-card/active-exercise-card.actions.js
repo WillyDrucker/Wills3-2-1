@@ -44,7 +44,7 @@ export function handleExerciseSwap(newExerciseOrder) {
   const logIndex = appState.session.currentLogIndex;
   const currentLogEntry = appState.session.workoutLog[logIndex];
   const targetMuscleGroup = currentLogEntry.exercise.muscle_group;
-  const currentPlan = programConfig[appState.session.currentWorkoutPlanName];
+  const currentPlan = programConfig[appState.session.currentWorkoutName];
   const dayForSwap =
     appState.superset.isActive || appState.partner.isActive
       ? currentLogEntry.exercise.day

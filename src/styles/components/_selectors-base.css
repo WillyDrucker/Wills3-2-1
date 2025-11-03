@@ -15,7 +15,7 @@
    Global: _variables.css (spacing, colors, typography, control-height)
    Global: _animations-general.css (button-red-pulse)
 
-   Used by: config-card, config-header, active-card, workout-log, my-data, dual-mode
+   Used by: config-card, config-header, active-card, workout-log, my-data, my-plan, dual-mode
    ========================================================================== */
 
 /* === BASE SELECTOR === */
@@ -78,6 +78,7 @@
   border-radius: var(--border-radius);
   text-align: center;
   border: 2px solid var(--on-surface-disabled);
+  background-color: var(--background-dark); /* Black background for options */
   height: var(--control-height);
   display: flex;
   align-items: center;

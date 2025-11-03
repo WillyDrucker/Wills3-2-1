@@ -1,8 +1,8 @@
 /* ==========================================================================
    CONFIG - Application configuration constants
 
-   Central configuration for workout programs, time options, and business rules.
-   All program-specific data and exercise database URLs defined here.
+   Central configuration for workout plans, time options, and business rules.
+   All plan-specific data and exercise database URLs defined here.
 
    Configuration sections:
    1. Exercise database URL
@@ -19,6 +19,7 @@
    ========================================================================== */
 
 export const EXERCISE_DATABASE_URL = "/data/exercises.json";
+export const PLANS_DATABASE_URL = "/data/plans.json";
 
 // Supabase configuration
 export const SUPABASE_URL = "https://exowzsiimszqdgswnffu.supabase.co";

@@ -15,7 +15,7 @@ import * as timerLedgerService from "./timerLedgerService.js";
 
 /* === EXERCISE RETRIEVAL === */
 export function getActiveWorkout(dayName) {
-  const currentPlan = programConfig[appState.session.currentWorkoutPlanName];
+  const currentPlan = programConfig[appState.session.currentWorkoutName];
   if (!currentPlan) return [];
   const currentDayInfo = appState.weeklyPlan[dayName];
   if (!currentDayInfo || currentDayInfo.type === "Rest") return [];

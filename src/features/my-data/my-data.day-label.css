@@ -6,7 +6,7 @@
 
    Architecture: Two-line label system
    - Line 1 (Day/Date): "Thursday   Oct 23" - shown once per day (first workout only)
-     * 1.25rem, 600 weight - matches "Current Plan" label
+     * 1.25rem, 600 weight - matches "Current Workout" label
      * 16px from divider, 7px to Line 2
    - Line 2 (Body Part/Completion): "Chest          Completed: 9:45 AM" - shown for each workout
      * 1rem, 600 weight - matches exercise name styling

@@ -6,7 +6,7 @@
 
    Architecture: Three cards with home-group sections
    - Training: Workout, Stretching (disabled), Conditioning (disabled)
-   - Navigation: My Plan (disabled)
+   - Navigation: My Plan
    - Workout History: My Data
 
    Dependencies: None (pure template)
@@ -31,9 +31,9 @@ export function getHomePageTemplate() {
     <div class="card home-page-card">
       <div class="card-content-container">
         <div class="home-group">
-          <h2 class="card-header">Navigation</h2>
+          <h2 class="card-header">Training Programs</h2>
           <div class="action-button-group">
-            <button class="action-button button-primary" data-action="myPlans" disabled>My Plan</button>
+            <button class="action-button button-primary" data-action="goToMyPlan">My Plan</button>
           </div>
         </div>
       </div>

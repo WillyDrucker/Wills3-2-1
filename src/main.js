@@ -35,6 +35,7 @@ import { renderProfilePage } from "features/profile-page/profile-page.index.js";
 import { renderAppHeader } from "features/app-header/app-header.index.js";
 import { renderHomePage } from "features/home-page/home-page.index.js";
 import { renderMyDataPage } from "features/my-data/my-data.index.js";
+import { renderMyPlanPage } from "features/my-plan/my-plan.index.js";
 import { renderSideNav } from "features/side-nav/side-nav.index.js";
 import { renderResetConfirmationModal } from "features/reset-confirmation-modal/reset-confirmation-modal.index.js";
 import { renderNewWorkoutModal } from "features/new-workout-modal/new-workout-modal.index.js";
@@ -116,6 +117,8 @@ function renderAll() {
     renderHomePage();
   } else if (appState.ui.currentPage === "myData") {
     renderMyDataPage();
+  } else if (appState.ui.currentPage === "myPlan") {
+    renderMyPlanPage();
   } else if (appState.ui.currentPage === "profile") {
     renderProfilePage();
   } else {

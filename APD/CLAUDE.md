@@ -74,6 +74,7 @@ src/
 **Issue Closure**: Wait for user confirmation before closing.
 **Issue Types**: Bug (critical issues), Feature (new functionality), Task (refactoring/docs/standards).
 
+<!--
 ## Notification System
 
 **Beep Notifications**: Claude plays notification beep to signal completion of planning or implementation phases for multi-project workflow management.
@@ -87,3 +88,4 @@ src/
 - End of implementation (last solution checklist item completed)
 
 **Status**: PERMANENT FEATURE - Always use beep notifications for workflow completion signals
+-->

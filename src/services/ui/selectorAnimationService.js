@@ -109,7 +109,7 @@ export function animateSelector(selectorId, options = {}) {
 
 /**
  * Animates multiple selectors simultaneously
- * Useful for animating both Current Plan and Current Focus together
+ * Useful for animating both Current Workout and Current Focus together
  *
  * @param {string[]} selectorIds - Array of selector IDs to animate
  * @param {Object} options - Animation options (same as animateSelector)

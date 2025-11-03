@@ -149,7 +149,6 @@ export async function initialize(dependencies) {
       if (!error && workouts) {
         appState.user.history.workouts = workouts;
         persistenceService.saveState();
-        console.log('[AppInit] Loaded', workouts.length, 'workouts from database');
       } else if (error) {
         console.error('[AppInit] Failed to load workouts from database:', error);
       }

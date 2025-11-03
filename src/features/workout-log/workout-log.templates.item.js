@@ -28,7 +28,7 @@ export function getLogItemHTML(
   isWorkoutComplete
 ) {
   const { exercise, setNumber, status, timestamp, weight, reps } = log;
-  const currentPlan = programConfig[appState.session.currentWorkoutPlanName];
+  const currentPlan = programConfig[appState.session.currentWorkoutName];
 
   const uniqueExerciseKey = exercise.exercise_name + (log.supersetSide || "");
   const setsForThisExercise = setsInWorkout[uniqueExerciseKey] || 0;

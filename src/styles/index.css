@@ -61,6 +61,7 @@
 @import url("../features/profile-page/profile-page.style.css");
 @import url("../features/home-page/home-page.style.css");
 @import url("../features/my-data/my-data.style.css");
+@import url("../features/my-plan/my-plan.style.css");
 
 /* Cards */
 @import url("../features/config-card/config-card.header.style.css");

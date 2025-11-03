@@ -13,6 +13,7 @@
    - home: Main workout page
    - workout: Alias for home (legacy support)
    - myData: Workout history and data visualization
+   - myPlan: Training plan selection and duration tracking
    - profile: User profile and settings
 
    Dependencies: navigationService, persistenceService
@@ -57,6 +58,13 @@ export function getNavigationHandlers(coreActions) {
     goToMyData: () => {
       // Don't clear selectors when navigating TO My Data page
       navigationService.goToPage("myData");
+      coreActions.renderAll();
+      persistenceService.saveState();
+    },
+
+    goToMyPlan: () => {
+      clearMyDataSelectors();
+      navigationService.goToPage("myPlan");
       coreActions.renderAll();
       persistenceService.saveState();
     },

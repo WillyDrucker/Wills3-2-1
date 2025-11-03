@@ -1,8 +1,8 @@
 /* ==========================================================================
    WORKOUT LOG - Card Template
 
-   Generates workout log card HTML with header, log items, and fullscreen
-   toggle. Orchestrates log item building and calculates workout metrics.
+   Generates workout log card HTML with header and log items. Orchestrates
+   log item building and calculates workout metrics.
 
    Dependencies: appState, workoutMetricsService, getLogItemHTML
    Used by: workout-log.index.js (renderWorkoutLog)
@@ -14,7 +14,6 @@ import { getLogItemHTML } from "./workout-log.templates.item.js";
 
 export function getWorkoutLogTemplate() {
   const { workoutLog, currentLogIndex, isWorkoutComplete } = appState.session;
-  const { isFullscreen } = appState.ui;
 
   if (workoutLog.length === 0) {
     return `<div class="card" id="workout-log-card"><div class="card-content-container"><h2 class="card-header" data-action="scrollToTop">Today's Workout</h2><div id="workout-content" class="workout-items"><p style="color: var(--on-surface-medium); text-align: center; padding: 20px 0;">Your workout log will appear here.</p></div></div></div>`;
@@ -37,8 +36,6 @@ export function getWorkoutLogTemplate() {
     )
     .join("");
 
-  const buttonText = isFullscreen ? "Exit Full Screen" : "Enter Full Screen";
-
   const headerHtml = `<h2 class="card-header" id="workout-log-header" data-action="scrollToTop">Today's Workout</h2>`;
 
   const hasGlowAnimation = workoutLog.some((log, idx) => idx === currentLogIndex && !isWorkoutComplete);
@@ -49,9 +46,6 @@ export function getWorkoutLogTemplate() {
       <div class="card-content-container">
         ${headerHtml}
         <div id="workout-content" class="workout-items">${logItemsHtml}</div>
-        <div class="card-footer-action">
-          <button class="action-button button-primary" data-action="toggleFullScreen">${buttonText}</button>
-        </div>
       </div>
     </div>
   `;

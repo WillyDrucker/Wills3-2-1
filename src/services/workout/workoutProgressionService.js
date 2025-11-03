@@ -21,7 +21,7 @@ import { updateActiveCardMessage, updateWorkoutCompletionState } from "./workout
 
 /* === EXERCISE RESET FOR MUSCLE GROUP === */
 export function resetExerciseForMuscleGroup(muscleGroup, day, supersetSide = null) {
-  const currentPlan = programConfig[appState.session.currentWorkoutPlanName];
+  const currentPlan = programConfig[appState.session.currentWorkoutName];
   const orderKey = currentPlan.orderKey;
 
   const defaultExercise = appState.allExercises.find(
@@ -190,7 +190,7 @@ export function recalculateCurrentStateAfterLogChange(options = {}) {
       appState.session.currentExerciseColorClass = logEntry.userColorClass;
     } else {
       const currentPlan =
-        programConfig[appState.session.currentWorkoutPlanName];
+        programConfig[appState.session.currentWorkoutName];
       appState.session.currentExerciseColorClass =
         colorCodeMap[logEntry.exercise[currentPlan.colorKey]] || "text-plan";
     }
@@ -241,7 +241,7 @@ export function advanceToNextExercise() {
   }
 
   updateActiveCardMessage();
-  const currentPlan = programConfig[appState.session.currentWorkoutPlanName];
+  const currentPlan = programConfig[appState.session.currentWorkoutName];
   appState.session.currentExerciseColorClass =
     colorCodeMap[newLog.exercise[currentPlan.colorKey]] || "text-plan";
 }
