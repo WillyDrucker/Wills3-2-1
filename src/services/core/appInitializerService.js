@@ -9,11 +9,12 @@
    1. Initialize timer, modal, fullscreen, clock, and action services
    2. Fetch exercise data from API
    3. Build weekly plan
-   4. Load saved state from localStorage
+   4. Load saved state from localStorage (including myPlanPage)
    5. Handle midnight reset if needed (via persistenceService flag)
    6. Resume active timers if state was restored
-   7. Initialize wake lock and event listeners
-   8. Trigger glow animations
+   7. Add glow animations class (before rendering)
+   8. Initialize wake lock and event listeners
+   9. Initialize automatic week advancement
 
    Dependencies: appState, workoutService, persistenceService, exerciseClient,
                  timerService, actionService, modalService, clockService,
@@ -37,6 +38,7 @@ import * as clockService from "services/ui/clockService.js";
 import { renderActiveCardHeader } from "features/active-exercise-card/active-exercise-card.index.js";
 import { renderConfigHeaderLine } from "features/config-card/config-card.header.index.js";
 import { loadWorkoutsFromDatabase } from "services/data/workoutSyncService.js";
+import { initializeDailyWeekCheck } from "services/core/weekAdvancementService.js";
 
 function initializeTimerService(dependencies) {
   timerService.initialize({
@@ -124,8 +126,13 @@ export async function initialize(dependencies) {
   if (loadedState && loadedState.needsReset) {
     if (loadedState.user) appState.user = loadedState.user;
     if (loadedState.auth) appState.auth = loadedState.auth;
-    if (loadedState.ui && loadedState.ui.currentPage) {
-      appState.ui.currentPage = loadedState.ui.currentPage;
+    if (loadedState.ui) {
+      // Preserve UI state including currentPage, myPlanPage, and other UI settings
+      if (loadedState.ui.currentPage) appState.ui.currentPage = loadedState.ui.currentPage;
+      if (loadedState.ui.myPlanPage) appState.ui.myPlanPage = loadedState.ui.myPlanPage;
+      if (loadedState.ui.isConfigHeaderExpanded !== undefined) {
+        appState.ui.isConfigHeaderExpanded = loadedState.ui.isConfigHeaderExpanded;
+      }
     }
     boundReset();
   } else if (loadedState) {
@@ -135,8 +142,13 @@ export async function initialize(dependencies) {
     if (loadedState.rest) appState.rest = loadedState.rest;
     if (loadedState.user) appState.user = loadedState.user;
     if (loadedState.auth) appState.auth = loadedState.auth;
-    if (loadedState.ui && loadedState.ui.currentPage) {
-      appState.ui.currentPage = loadedState.ui.currentPage;
+    if (loadedState.ui) {
+      // Restore full UI state including currentPage, myPlanPage, and other UI settings
+      if (loadedState.ui.currentPage) appState.ui.currentPage = loadedState.ui.currentPage;
+      if (loadedState.ui.myPlanPage) appState.ui.myPlanPage = loadedState.ui.myPlanPage;
+      if (loadedState.ui.isConfigHeaderExpanded !== undefined) {
+        appState.ui.isConfigHeaderExpanded = loadedState.ui.isConfigHeaderExpanded;
+      }
     }
 
     // Force initial page: authenticated users → home, guest users → workout
@@ -163,6 +175,10 @@ export async function initialize(dependencies) {
     }
 
     resumeTimersFromState();
+
+    // Add glow animations class BEFORE rendering to ensure animations work on page load
+    document.body.classList.add("start-glow-animations");
+
     renderAll();
 
     // Force layout completion to prevent deferred work blocking first interaction
@@ -170,14 +186,17 @@ export async function initialize(dependencies) {
   } else {
     appState.session.currentDayName = appState.todayDayName;
     appState.session.currentTimerColorClass = "text-plan";
+
+    // Add glow animations class BEFORE rendering to ensure animations work on page load
+    document.body.classList.add("start-glow-animations");
+
     updateActiveWorkoutAndLog();
   }
 
-  requestAnimationFrame(() => {
-    document.body.classList.add("start-glow-animations");
-  });
-
   initializeActiveCardEventListeners();
   initializeWakeLock();
+
+  // Initialize automatic week advancement (checks for Sunday transitions)
+  initializeDailyWeekCheck();
 }
 

@@ -1,6 +1,7 @@
 import { appState } from "state";
 import { workoutPlans } from "config";
 import { createSelectorHTML } from "ui";
+import { getWeeksRemaining } from "../../shared/utils/planWeekUtils.js";
 
 /* ==========================================================================
    CONFIG CARD - Plan Selector Template (Shared)
@@ -26,10 +27,32 @@ export function getWorkoutSelectorHTML(isAnySetLogged, selectorId = "workout-set
   } else if (partner.isActive) {
     summaryHtml = `<div class="selector-content"><div class="item-main-line flex-line-container"><div class="flex-truncate-group-rigid"><span class="flex-priority">Partner:&nbsp;</span><span class="data-highlight text-plan" data-animation-target="true">${partner.user1Name}</span><span class="flex-priority text-on-surface-medium">&nbsp;&amp;</span></div><span class="truncate-text data-highlight text-primary" data-animation-target="true">&nbsp;${partner.user2Name}</span></div></div>`;
   } else {
-    const currentWorkout =
-      workoutPlans.find((p) => p.name === session.currentWorkoutName) ||
-      workoutPlans[0];
-    summaryHtml = `<div class="selector-content"><div class="item-main-line flex-line-container"><span class="flex-priority">${currentWorkout.name}&nbsp;</span><span class="truncate-text data-highlight text-plan">${currentWorkout.duration}</span></div></div>`;
+    // Use dynamic plan data from appState.plan.plans
+    const { activePlanId, currentWeekNumber } = appState.ui.myPlanPage;
+    const { plans } = appState.plan;
+
+    // Find active plan or default to first plan
+    const activePlan = plans && plans.length > 0
+      ? (plans.find((p) => p.id === activePlanId) || plans[0])
+      : null;
+
+    if (activePlan) {
+      // Calculate remaining weeks for active plan
+      const weeksRemaining = currentWeekNumber && activePlanId
+        ? getWeeksRemaining(activePlanId, currentWeekNumber, plans)
+        : activePlan.totalWeeks;
+
+      const weeksText = weeksRemaining === 1 ? "Week" : "Weeks";
+      const durationDisplay = `${weeksRemaining} ${weeksText}`;
+
+      summaryHtml = `<div class="selector-content"><div class="item-main-line flex-line-container"><span class="flex-priority">${activePlan.name}:&nbsp;</span><span class="truncate-text data-highlight text-plan">${durationDisplay}</span></div></div>`;
+    } else {
+      // Fallback to old config.js data if plans not loaded
+      const currentWorkout =
+        workoutPlans.find((p) => p.name === session.currentWorkoutName) ||
+        workoutPlans[0];
+      summaryHtml = `<div class="selector-content"><div class="item-main-line flex-line-container"><span class="flex-priority">${currentWorkout.name}&nbsp;</span><span class="truncate-text data-highlight text-plan">${currentWorkout.duration}</span></div></div>`;
+    }
   }
   const options = [];
   const isModeChangeDisabled = isAnySetLogged;
@@ -37,9 +60,32 @@ export function getWorkoutSelectorHTML(isAnySetLogged, selectorId = "workout-set
   // If in dual mode, allow return to normal mode
   if (superset.isActive || partner.isActive) {
     const itemClass = isModeChangeDisabled ? "is-muted" : "";
-    options.push(
-      `<li class="${itemClass}" data-action="setNormalMode"><div class="selector-content"><div class="item-main-line flex-line-container"><span class="flex-priority">${workoutPlans[0].name}&nbsp;</span><span class="truncate-text data-highlight text-plan">${workoutPlans[0].duration}</span></div></div></li>`
-    );
+
+    // Use dynamic plan data
+    const { activePlanId, currentWeekNumber } = appState.ui.myPlanPage;
+    const { plans } = appState.plan;
+
+    const activePlan = plans && plans.length > 0
+      ? (plans.find((p) => p.id === activePlanId) || plans[0])
+      : null;
+
+    if (activePlan) {
+      const weeksRemaining = currentWeekNumber && activePlanId
+        ? getWeeksRemaining(activePlanId, currentWeekNumber, plans)
+        : activePlan.totalWeeks;
+
+      const weeksText = weeksRemaining === 1 ? "Week" : "Weeks";
+      const durationDisplay = `${weeksRemaining} ${weeksText}`;
+
+      options.push(
+        `<li class="${itemClass}" data-action="setNormalMode"><div class="selector-content"><div class="item-main-line flex-line-container"><span class="flex-priority">${activePlan.name}:&nbsp;</span><span class="truncate-text data-highlight text-plan">${durationDisplay}</span></div></div></li>`
+      );
+    } else {
+      // Fallback
+      options.push(
+        `<li class="${itemClass}" data-action="setNormalMode"><div class="selector-content"><div class="item-main-line flex-line-container"><span class="flex-priority">${workoutPlans[0].name}&nbsp;</span><span class="truncate-text data-highlight text-plan">${workoutPlans[0].duration}</span></div></div></li>`
+      );
+    }
   }
 
   // Mode options (Superset and Partner)

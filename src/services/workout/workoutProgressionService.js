@@ -18,6 +18,7 @@ import { programConfig, colorCodeMap } from "config";
 import * as youtubeService from "services/integrations/youtubeService.js";
 import { scrollToElement } from "utils";
 import { updateActiveCardMessage, updateWorkoutCompletionState } from "./workoutStateService.js";
+import { getRepTarget } from "./repTargetService.js";
 
 /* === EXERCISE RESET FOR MUSCLE GROUP === */
 export function resetExerciseForMuscleGroup(muscleGroup, day, supersetSide = null) {
@@ -224,7 +225,7 @@ export function advanceToNextExercise() {
       currentLog.reps = lastLogged.reps;
     } else {
       currentLog.weight = 0;
-      currentLog.reps = 10;
+      currentLog.reps = getRepTarget();
     }
   };
 

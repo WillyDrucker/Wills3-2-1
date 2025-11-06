@@ -39,6 +39,7 @@ function getPersistableState(fullState) {
     ui: {
       currentPage: fullState.ui.currentPage,
       isConfigHeaderExpanded: fullState.ui.isConfigHeaderExpanded,
+      myPlanPage: fullState.ui.myPlanPage,
     },
   };
 }

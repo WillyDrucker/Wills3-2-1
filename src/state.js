@@ -164,8 +164,11 @@ export function getInitialAppState() {
         scrollPosition: 0,
       },
       myPlanPage: {
-        selectedPlanId: null,
+        selectedPlanId: "Will's 3-2-1",
+        activePlanId: "Will's 3-2-1",
         startDate: null,
+        currentWeekNumber: null,
+        planHistory: [],
       },
     },
 

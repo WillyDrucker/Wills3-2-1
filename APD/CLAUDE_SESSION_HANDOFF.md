@@ -15,7 +15,14 @@ This file contains only critical architectural patterns and current session stat
 
 ## Current Session State
 
-**Status**: Claude-v5.6.5 - COMPLETE
+**Status**: Claude-v5.6.6 - COMPLETE
+- ✅ **Config Card Display Updates**: Changed from countdown weeks to "Week: X of Y" format
+- ✅ **Rep Display Format**: Changed from comma sequence to week-order range (e.g., "6-2" instead of "6,4,2")
+- ✅ **Workout Quick Button**: Shows "Week X" below abbreviation instead of remaining weeks
+- ✅ **Initialization Fix**: Added `renderConfigHeaderLine()` to `renderMyPlanPage()` for proper week display
+- ✅ **Standards Compliance**: Applied token-based CSS to my-plan.style.css (8 hardcoded values → tokens)
+
+**Previous Session**: Claude-v5.6.5 - COMPLETE
 - ✅ **Comprehensive Rename**: "My Program" → "My Plan" across entire codebase
 - ✅ **9-Phase Execution**: User-facing text, file renames, imports, state, variables, CSS, data attributes, JSON, navigation/config
 - ✅ **File Renames**: my-program → my-plan (folder + 3 files), programs.json → plans.json, programsClient.js → plansClient.js

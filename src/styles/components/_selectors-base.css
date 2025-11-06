@@ -118,6 +118,10 @@
   border-color: var(--text-red-skip);
 }
 
+.options-list li.has-colored-border.border-green {
+  border-color: var(--text-green-plan);
+}
+
 /* === ERROR STATE === */
 summary.is-flashing-error {
   animation: button-red-pulse 0.56s linear 3;

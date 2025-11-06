@@ -20,9 +20,9 @@ export function getHomePageTemplate() {
         <div class="home-group">
           <h2 class="card-header">Training</h2>
           <div class="action-button-group">
-            <button class="action-button button-primary" data-action="goToWorkout">Begin Today's Workout</button>
-            <button class="action-button button-primary" data-action="goToStretching" disabled>Begin Today's Stretching</button>
-            <button class="action-button button-primary" data-action="goToLegs" disabled>Begin Today's Conditioning</button>
+            <button class="action-button button-log" data-action="goToWorkout">Begin Today's Workout</button>
+            <button class="action-button button-log" data-action="goToStretching" disabled>Begin Today's Stretching</button>
+            <button class="action-button button-log" data-action="goToLegs" disabled>Begin Today's Conditioning</button>
           </div>
         </div>
       </div>

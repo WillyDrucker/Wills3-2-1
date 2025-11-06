@@ -135,10 +135,11 @@ export function attachSignUpHandler(signUpBtn, signInBtn, emailInput, passwordIn
             unmuteButton(signInBtn);
           });
         } else {
-          // New account created, but sign-in failed (shouldn't happen, but handle gracefully)
+          // New account created, but sign-in failed (email not confirmed yet)
           clearChecking(signUpBtn);
           unmuteButton(signInBtn); // Unmute Log In button
           showSuccess(signUpBtn, "Check\nEmail!");
+          // Don't dispatch auth-success - user needs to confirm email first
         }
       } else {
         // Password verification SUCCEEDED
@@ -162,13 +163,12 @@ export function attachSignUpHandler(signUpBtn, signInBtn, emailInput, passwordIn
             }, AUTH_TRANSITION_DURATION);
           }, AUTH_TRANSITION_DURATION);
         } else {
-          // New account created successfully
+          // New account created successfully - show message but DON'T trigger app
+          // User must confirm email and log in manually
           clearChecking(signUpBtn);
           unmuteButton(signInBtn); // Unmute Log In button
           showSuccess(signUpBtn, "Check\nEmail!");
-          setTimeout(() => {
-            window.dispatchEvent(new CustomEvent("auth-success"));
-          }, AUTH_SUCCESS_DURATION);
+          // Don't dispatch auth-success - user needs to confirm email first
         }
       }
     }

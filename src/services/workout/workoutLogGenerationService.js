@@ -23,6 +23,7 @@ import {
 } from "config";
 import * as youtubeService from "services/integrations/youtubeService.js";
 import { getActiveWorkout } from "./workoutService.js";
+import { getRepTarget } from "./repTargetService.js";
 
 function _renumberSetsInLog(log) {
   const setCounter = {};
@@ -63,7 +64,7 @@ export function generateWorkoutLog(
         setNumber: i,
         status: "pending",
         weight: 0,
-        reps: 10,
+        reps: getRepTarget(),
         timestamp: "",
         restCompleted: false,
         restWasSkipped: false,

@@ -8,7 +8,7 @@ This file contains the historical record of version changes for Will's 3-2-1. De
 
 ---
 
-**Current Version**: Claude-v5.6.5
+**Current Version**: Claude-v5.6.6
 **Project**: Will's 3-2-1 Workout Tracking Application
 **Tech Stack**: Vanilla JavaScript, ES Modules, CSS Tokens
 **Philosophy**: SUPER STUPID SIMPLE (SSS), REMOVE DON'T ADD
@@ -32,6 +32,81 @@ This file contains the historical record of version changes for Will's 3-2-1. De
 ---
 
 ## VERSION CHANGELOG
+
+### **Claude-v5.6.6 - Config Card Week Display & Rep Format Updates** (2025-02-04) - COMPLETE
+
+**Mission**: Update config card to show week progression in "Week: X of Y" format and change rep display from comma-separated sequence to week-order range.
+
+**Config Card Display Changes**:
+- **"Current Workout" Selector**: Changed from countdown format to show:
+  - Line 1: Full plan name with total weeks (e.g., "Will's 3-2-1: 15 Weeks")
+  - Line 2: Current week with "Week: X of Y" format (e.g., "Week: 4 of 15")
+  - Numbers in green, "of" in gray for visual hierarchy
+  - Uses `multi-line balanced-text` class matching Superset/Partner Mode items
+- **Workout Quick Button**: Changed from remaining weeks countdown to current week:
+  - Before: "3-2-1" (gray) / "14 Wks" (green)
+  - After: "3-2-1" (gray) / "Week 1" (green)
+  - Dynamically updates as weeks advance via chevron navigation or automatic advancement
+- **Implementation**: Updated both collapsed and expanded config card templates
+- **Removed Import**: Deleted unused `getWeeksRemaining` import from both templates
+
+**Rep Display Format Change**:
+- **Week Range Boxes**: Changed from comma-separated sequence to week-order hyphenated range
+  - Before: "Reps: 6,4,2" (showing all reps in sequence)
+  - After: "Reps: 6-2" (first week to last week)
+  - Implementation: Uses `firstRep` and `lastRep` from `repValues` array
+  - Single rep weeks show just the number (e.g., "Reps: 8" not "Reps: 8-8")
+- **Both Display Contexts**: Updated template generation and dynamic phase chart updates
+  - `my-plan.template.js` lines 157-163: Initial render logic
+  - `my-plan.index.js` lines 676-682: Dynamic update on plan switch
+- **Calculation Logic**: Changed from `repValues.join(",")` to `${firstRep}-${lastRep}`
+
+**Initialization Bug Fix**:
+- **Problem**: Week numbers didn't appear in config card until manual week navigation
+- **Root Cause**: Config card rendered before plan data initialized in My Plan page
+- **Solution**: Added `renderConfigHeaderLine()` call at end of `renderMyPlanPage()`
+- **Location**: `my-plan.index.js` line 100
+- **Effect**: Config card now shows correct week information immediately on page load
+
+**Token-Based CSS Compliance**:
+Applied CLAUDE_DEV_STANDARDS token system to `my-plan.style.css`:
+- Line 44: `16px` → `var(--space-m)` (selector container margin)
+- Line 143: `16px` → `var(--space-m)` (week navigator margin)
+- Line 168: `16px` → `var(--space-m)` (action button margin)
+- Line 251: `16px` → `var(--space-m)` (info card padding)
+- Line 258: `7px` → `var(--space-s)` (info title margin)
+- Line 114: `8px` → `var(--border-radius)` (week box border radius)
+- Line 108: `4px` → `var(--selector-gap)` (week container tight grouping)
+- Line 119: `4px` → `var(--selector-gap)` (between week boxes)
+
+**Local Exception Values Preserved** (Documented):
+- Font ascender/descender compensation values (4px, 3px)
+- Component-specific padding adjustments (10px 16px, 15px)
+- Absolute positioning for workout log pattern (6px, 9px, 26px)
+
+**Files Modified** (4 total):
+1. `src/features/my-plan/my-plan.template.js` - Rep display format change (lines 157-163)
+2. `src/features/my-plan/my-plan.index.js` - Rep display + initialization fix (lines 100, 676-682)
+3. `src/features/config-card/config-card.header.template.expanded.js` - Current Workout selector + Quick Button (lines 1-6, 142-157, 88-102)
+4. `src/features/config-card/config-card.header.template.collapsed.js` - Quick Button update (lines 1-4, 94-111)
+5. `src/features/my-plan/my-plan.style.css` - Token-based CSS compliance (8 values tokenized)
+
+**Key Technical Details**:
+- **Display Format Evolution**: Comma sequence → Week-order range (user requested simpler format)
+- **Dynamic Updates**: All week displays update in real-time via existing week chevron handlers
+- **Week Calculation**: Uses manual `currentWeekNumber` tracking, not calendar-based calculation
+- **Balanced Text Layout**: Matches existing Superset/Partner Mode selector styling
+- **State Flow**: Plan data → appState → renderConfigHeaderLine() → DOM update
+
+**Standards Compliance**:
+- All modified files already had proper headers (imports before or after header per feature pattern)
+- Rep range logic uses descriptive variable names (`firstRep`, `lastRep`, `repRangeDisplay`)
+- CSS tokenization follows global-first approach with documented local exceptions
+- No version numbers in any file headers (git tracks versions)
+
+**Status**: COMPLETE - Config card displays week progression clearly, rep format simplified, initialization bug fixed, CSS fully tokenized.
+
+---
 
 ### **Claude-v5.6.5 - Comprehensive Rename: "My Program" → "My Plan"** (2025-02-03) - COMPLETE
 

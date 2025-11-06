@@ -101,6 +101,7 @@
   --warning-orange: #ffb74d;
   --skip-red: #b30000;
   --log-green: #00ff00;
+  --muted-green: #008000; /* Muted green for disabled state (50% brightness of --log-green) */
   --youtube-red: #ff0000;
   --text-on-action-color: #000000;
   

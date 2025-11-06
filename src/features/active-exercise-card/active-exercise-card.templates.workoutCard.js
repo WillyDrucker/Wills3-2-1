@@ -5,6 +5,7 @@ import { getAnchorAreaHTML } from "./active-exercise-card.templates.fuelGauge.js
 import { getActionAreaHTML } from "./active-exercise-card.templates.actionArea.js";
 import { getExerciseSelectorHTML } from "./active-exercise-card.templates.exerciseSelector.js";
 import * as workoutMetricsService from "services/workout/workoutMetricsService.js";
+import { getRepTarget } from "../../services/workout/repTargetService.js";
 
 /* ==========================================================================
    ACTIVE EXERCISE CARD - Workout Card Template
@@ -50,9 +51,10 @@ export function getWorkoutCardHTML(logEntry) {
 
   const isDumbbell = isDumbbellExercise(exercise);
   const weightLabel = isDumbbell ? "Weight (Per Hand)" : "Weight (lbs)";
+  const repTarget = getRepTarget();
   const repsLabel = isDumbbell
     ? "Reps (Per Hand)"
-    : 'Reps (Target: <span class="text-plan">10</span>)';
+    : `Reps (Target: <span class="text-plan">${repTarget}</span>)`;
 
   const isDualMode = appState.superset.isActive || appState.partner.isActive;
 

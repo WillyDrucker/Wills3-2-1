@@ -76,7 +76,7 @@ function getMuscleGroupIcon() {
 
 // Helper: Get abbreviated plan text for Plan Quick Button
 function getAbbreviatedPlanText() {
-  const { superset, partner, session } = appState;
+  const { superset, partner } = appState;
 
   if (superset.isActive) {
     const day1Info = appState.weeklyPlan[superset.day1];
@@ -85,11 +85,28 @@ function getAbbreviatedPlanText() {
   } else if (partner.isActive) {
     return `<div class="plan-quick-button-stack"><span class="data-highlight text-plan">${partner.user1Name}</span><span class="data-highlight text-primary">${partner.user2Name}</span></div>`;
   } else {
-    const currentWorkout = workoutPlans.find((p) => p.name === session.currentWorkoutName) || workoutPlans[0];
-    const durationParts = currentWorkout.duration.split(' ');
-    const durationNumber = durationParts[0];
-    const durationUnit = durationParts[1] ? durationParts[1].replace('Weeks', 'Wks').replace('weeks', 'Wks') : '';
-    return `<div class="plan-quick-button-stack"><span class="plan-quick-button-muted">3-2-1</span><span class="data-highlight text-plan">${durationNumber} ${durationUnit}</span></div>`;
+    const { activePlanId, currentWeekNumber } = appState.ui.myPlanPage;
+    const { plans } = appState.plan;
+
+    const activePlan = plans && plans.length > 0
+      ? (plans.find((p) => p.id === activePlanId) || plans[0])
+      : null;
+
+    if (activePlan) {
+      const abbreviation = activePlan.abbreviation || activePlan.name;
+
+      const weekNumber = currentWeekNumber || 1;
+      const weekDisplay = `Week ${weekNumber}`;
+
+      return `<div class="plan-quick-button-stack"><span class="plan-quick-button-muted">${abbreviation}</span><span class="data-highlight text-plan">${weekDisplay}</span></div>`;
+    } else {
+      // Fallback to old config.js if plans not loaded
+      const currentWorkout = workoutPlans.find((p) => p.name === appState.session.currentWorkoutName) || workoutPlans[0];
+      const durationParts = currentWorkout.duration.split(' ');
+      const durationNumber = durationParts[0];
+      const durationUnit = durationParts[1] ? durationParts[1].replace('Weeks', 'Wks').replace('weeks', 'Wks') : '';
+      return `<div class="plan-quick-button-stack"><span class="plan-quick-button-muted">3-2-1</span><span class="data-highlight text-plan">${durationNumber} ${durationUnit}</span></div>`;
+    }
   }
 }
 
@@ -118,9 +135,27 @@ export function getExpandedTemplate() {
   } else if (partner.isActive) {
     summaryHtml = `<div class="selector-content multi-line"><div class="item-main-line flex-line-container"><div class="flex-truncate-group-rigid"><span class="flex-priority">Partner:&nbsp;</span><span class="data-highlight text-plan" data-animation-target="true">${partner.user1Name}</span><span class="flex-priority text-on-surface-medium">&nbsp;&amp;</span></div><span class="truncate-text data-highlight text-primary" data-animation-target="true">&nbsp;${partner.user2Name}</span></div></div>`;
   } else {
-    // Normal mode: Single-line format with full plan name and duration
-    const currentWorkout = workoutPlans.find((p) => p.name === session.currentWorkoutName) || workoutPlans[0];
-    summaryHtml = `<div class="selector-content"><span class="truncate-text">${currentWorkout.name.replace(':', '')}: <span class="data-highlight text-plan" data-animation-target="true">${currentWorkout.duration}</span></span></div>`;
+    // Normal mode: Multi-line format with full plan name (total weeks) and current week number
+    const { activePlanId, currentWeekNumber } = appState.ui.myPlanPage;
+    const { plans } = appState.plan;
+
+    const activePlan = plans && plans.length > 0
+      ? (plans.find((p) => p.id === activePlanId) || plans[0])
+      : null;
+
+    if (activePlan) {
+      const totalWeeks = activePlan.totalWeeks;
+      const weeksText = totalWeeks === 1 ? "Week" : "Weeks";
+      const durationDisplay = `${totalWeeks} ${weeksText}`;
+
+      const weekNumber = currentWeekNumber || 1;
+
+      summaryHtml = `<div class="selector-content multi-line balanced-text"><span class="truncate-text">${activePlan.name}: <span class="data-highlight text-plan" data-animation-target="true">${durationDisplay}</span></span><span class="truncate-text">Week: <span class="data-highlight text-plan" data-animation-target="true">${weekNumber}</span> <span class="text-on-surface-medium">of</span> <span class="data-highlight text-plan" data-animation-target="true">${totalWeeks}</span></span></div>`;
+    } else {
+      // Fallback to old config.js if plans not loaded
+      const currentWorkout = workoutPlans.find((p) => p.name === session.currentWorkoutName) || workoutPlans[0];
+      summaryHtml = `<div class="selector-content"><span class="truncate-text">${currentWorkout.name.replace(':', '')}: <span class="data-highlight text-plan" data-animation-target="true">${currentWorkout.duration}</span></span></div>`;
+    }
   }
 
   // Build options list

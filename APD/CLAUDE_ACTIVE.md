@@ -14,31 +14,27 @@ This file can be purged and cleaned as needed. It's an extension of SESSION_HAND
 
 ## Current Session Notes
 
-### Claude-v5.6.3 - Production Ready (2025-01-30)
+### Claude-v5.6.6 - Config Card Week Display & Rep Format Updates (2025-02-04)
 
-**Status**: COMPLETE - Codebase production-ready for deployment
+**Status**: COMPLETE - All work finished and documented
 
 **Session Achievements**:
-1. ✅ Issue 48: Authentication redirect fix (dynamic emailRedirectTo)
-2. ✅ Production deployment preparation (_redirects, relative paths, deployment guide)
-3. ✅ Debug code cleanup (20+ console.log statements removed)
-4. ✅ v5.6.2 work restoration (31 files merged)
-5. ✅ My Data grid alignment system restored
-6. ✅ Delete Log modal refinements (spacing + state clearing)
+1. ✅ Changed config card from countdown weeks to "Week: X of Y" format
+2. ✅ Updated rep display from comma sequence to week-order range (e.g., "6-2")
+3. ✅ Updated Workout Quick Button to show "Week X" instead of remaining weeks
+4. ✅ Fixed initialization bug where weeks didn't display until manual navigation
+5. ✅ Applied token-based CSS to my-plan.style.css (8 hardcoded values → tokens)
 
-**Key Patterns Established**:
-- Cascade Deletion State Clearing Pattern (Pattern #13 in SESSION_HANDOFF)
-- CSS selector specificity for tight spacing overrides
-- Multi-environment authentication with dynamic redirects
+**Key Changes**:
+- Config card "Current Workout" selector shows full plan details with current/total weeks
+- Rep display simplified from "6,4,2" to "6-2" (first week to last week)
+- Added `renderConfigHeaderLine()` call in `renderMyPlanPage()` for proper initialization
+- Removed unused `getWeeksRemaining` imports from config card templates
 
 **Documentation Updated**:
-- CLAUDE_SESSION_HANDOFF.md - Updated current session state, added Pattern #13
-- CLAUDE_PROJECT_NOTES.md - Complete Claude-v5.6.3 entry with all work documented
-
-**Next Steps**:
-- Deploy to wills321.com and beta.wills321.com
-- Test production authentication flows
-- Monitor user feedback
+- CLAUDE_SESSION_HANDOFF.md - Updated current session state to Claude-v5.6.6
+- CLAUDE_PROJECT_NOTES.md - Added complete Claude-v5.6.6 entry with all technical details
+- CLAUDE_ACTIVE.md - Cleared old notes, added current session summary
 
 ---
 

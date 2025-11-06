@@ -23,50 +23,54 @@ import { updateWorkoutTimeRemaining } from "services/workout/workoutService.js";
 
 /**
  * Check if can cycle to next session
- * @returns {boolean} True if next session is available
+ * @returns {boolean} True if next session is available and not at end
  */
 export function canCycleNext() {
   const currentIndex = timeOptions.findIndex((t) => t.name === appState.session.currentTimeOptionName);
-  const nextIndex = (currentIndex + 1) % timeOptions.length;
-  const nextSession = timeOptions[nextIndex];
+
+  // Can't cycle right if at the last option (linear, not circular)
+  if (currentIndex >= timeOptions.length - 1) return false;
+
+  const nextSession = timeOptions[currentIndex + 1];
   return canCycleToSession(nextSession.name);
 }
 
 /**
  * Check if can cycle to previous session
- * @returns {boolean} True if previous session is available
+ * @returns {boolean} True if previous session is available and not at start
  */
 export function canCyclePrevious() {
   const currentIndex = timeOptions.findIndex((t) => t.name === appState.session.currentTimeOptionName);
-  const prevIndex = (currentIndex - 1 + timeOptions.length) % timeOptions.length;
-  const prevSession = timeOptions[prevIndex];
+
+  // Can't cycle left if at the first option (linear, not circular)
+  if (currentIndex <= 0) return false;
+
+  const prevSession = timeOptions[currentIndex - 1];
   return canCycleToSession(prevSession.name);
 }
 
 /**
- * Cycle to next session type
+ * Cycle to next session type (linear, not circular)
  * Called by action handler which triggers pulse animation
  */
 export function cycleNextSession() {
   if (!canCycleNext()) return;
 
   const currentIndex = timeOptions.findIndex((t) => t.name === appState.session.currentTimeOptionName);
-  const nextIndex = (currentIndex + 1) % timeOptions.length;
-  const nextSession = timeOptions[nextIndex];
+  const nextSession = timeOptions[currentIndex + 1];
   handleTimeChange(nextSession.name);
   updateWorkoutTimeRemaining();
 }
 
 /**
- * Cycle to previous session type
+ * Cycle to previous session type (linear, not circular)
  * Called by action handler which triggers pulse animation
  */
 export function cyclePreviousSession() {
   if (!canCyclePrevious()) return;
 
   const currentIndex = timeOptions.findIndex((t) => t.name === appState.session.currentTimeOptionName);
-  const prevIndex = (currentIndex - 1 + timeOptions.length) % timeOptions.length;
-  const prevSession = timeOptions[prevIndex];
+  const prevSession = timeOptions[currentIndex - 1];
   handleTimeChange(prevSession.name);
   updateWorkoutTimeRemaining();
 }

@@ -41,7 +41,7 @@
 
 /* === SELECTOR CONTAINER === */
 .plan-selector-container {
-  margin-bottom: 1rem !important; /* 1rem gap to duration section */
+  margin-bottom: var(--space-m) !important; /* 16px visual gap to Active Plan title */
 }
 
 /* === SELECTOR CONTENT === */
@@ -49,6 +49,41 @@
 .plan-selector-option {
   font-size: var(--font-size-h2); /* 1.25rem */
   font-weight: 600;
+}
+
+/* === ACTIVE PLAN TITLE === */
+.active-plan-title {
+  margin-bottom: 4px !important; /* 7px visual gap to Active Plan selector */
+}
+
+/* === ACTIVE PLAN SELECTOR === */
+.active-plan-selector-container {
+  margin-bottom: 15px !important; /* 16px visual gap to Total Duration text */
+}
+
+/* Active Plan selector - static/disabled with muted blue border */
+#active-plan-selector {
+  pointer-events: none; /* Prevent any interaction */
+  cursor: default;
+}
+
+.active-plan-summary {
+  background-color: var(--background-dark);
+  border: 2px solid var(--primary-blue-dark) !important; /* Muted blue border only */
+  box-shadow: none !important; /* Remove internal bright blue border */
+  border-radius: var(--border-radius);
+  height: var(--control-height); /* 50px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  cursor: default;
+  opacity: 0.7; /* Slightly muted to indicate disabled state */
+}
+
+/* Remove the dropdown arrow indicator */
+.active-plan-summary::after {
+  display: none;
 }
 
 /* === DURATION SECTION === */
@@ -59,27 +94,150 @@
 .plan-duration-line {
   font-size: 1rem; /* All text below selector at 1rem */
   font-weight: 600;
-  margin-bottom: 7px !important; /* 7px gap between lines */
+  margin-bottom: 3px !important; /* 7px visual gap between duration lines */
 }
 
 .plan-duration-line:last-child {
   margin-bottom: 0 !important; /* No margin after last line */
 }
 
-/* === PHASE CHART SECTION === */
-/* Week-by-week phase and equipment display */
-.phase-chart-container {
-  margin-top: 7px !important; /* 7px gap from duration section above */
+/* === WEEK RANGE BOXES === */
+/* 50px black boxes displaying week ranges with rep counts, phases, and equipment */
+/* Matches Today's Workout log styling (9px/8px/9px spacing system) */
+.week-range-container {
+  margin-top: var(--selector-gap) !important; /* 4px gap from Remaining Duration line (tight grouping) */
 }
 
-.phase-week-line {
+.week-range-box {
+  background-color: var(--background-dark); /* Black background */
+  border: 2px solid transparent;
+  border-radius: var(--border-radius); /* 8px */
+  height: 50px;
+  padding: 0 9px; /* 9px horizontal padding */
+  position: relative;
+  box-sizing: border-box;
+  margin-bottom: var(--selector-gap); /* 4px between boxes */
+}
+
+.week-range-box:last-child {
+  margin-bottom: 0 !important; /* No margin after last box */
+}
+
+/* Solid green border for completed week ranges */
+.week-range-box.is-completed {
+  border-color: var(--text-green-plan);
+}
+
+/* Pulsing green glow animation for current week range */
+body.start-glow-animations .week-range-box.is-current-week {
+  animation: glow-border-green 4s ease-in-out infinite;
+}
+
+/* === WEEK NAVIGATION === */
+/* Week selector matching My Data calendar style, 16px below Active Plan button */
+.plan-week-navigator {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: var(--space-m) !important; /* 16px below Active Plan button */
+  margin-bottom: 0 !important;
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  height: 32px;
+}
+
+.plan-week-navigator .week-range-text {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--text-green-plan);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+/* === ACTIVE PLAN BUTTON === */
+/* 50px green button matching Log Set styling, 16px below last weekly guide box */
+.plan-action-button {
+  width: 100%;
+  height: var(--control-height); /* 50px, matches Log Set */
+  margin-top: var(--space-m) !important; /* 16px below last weekly guide box */
+  font-size: var(--font-size-h2); /* 1.25rem, matches Log Set */
+  font-weight: 600;
+  border-radius: var(--border-radius); /* 8px, matches Log Set */
+  border: none; /* Remove any border */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8); /* Match Log Set shadow */
+  line-height: 1; /* Match Log Set */
+}
+
+/* Disabled state for Active Plan button - muted green */
+.plan-action-button[disabled] {
+  background-color: var(--muted-green) !important; /* Muted green (50% brightness of --log-green) */
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* Line 1: Week label and rep range (top: 6px creates 9px visual spacing) */
+.week-range-line-1 {
+  position: absolute;
+  top: 6px;
+  left: 9px;
+  right: 9px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 7px !important; /* 7px gap between phase lines */
+  line-height: 1;
 }
 
-.phase-week-line:last-child {
-  margin-bottom: 0 !important; /* No margin after last line */
+/* Week label (gray, left side) */
+.week-range-label {
+  color: var(--on-surface-medium);
+}
+
+/* Rep range wrapper (right side) */
+.week-range-reps {
+  display: flex;
+  align-items: center;
+}
+
+/* "Rep Range:" label (gray) */
+.week-range-reps-label {
+  color: var(--on-surface-medium);
+}
+
+/* Rep count value (green) */
+.week-range-reps-value {
+  color: var(--text-green-plan);
+}
+
+/* Line 2: Phase name and equipment (top: 26px creates 8px gap between lines, 9px to bottom) */
+.week-range-line-2 {
+  position: absolute;
+  top: 26px;
+  left: 9px;
+  right: 9px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* Phase name (green, left side) */
+.week-range-phase {
+  color: var(--text-green-plan);
+}
+
+/* Equipment type (green, right side) */
+.week-range-equipment {
+  color: var(--text-green-plan);
 }
 
 /* === PLAN INFORMATION CARD === */
@@ -90,14 +248,14 @@
 }
 
 .plan-info-card .card-content-container {
-  padding-top: 16px !important; /* 16px from top of card */
+  padding-top: var(--space-m) !important; /* 16px from top of card */
 }
 
 .plan-info-title {
   font-size: var(--font-size-h2); /* 1.25rem */
   font-weight: 600;
   color: var(--on-surface-light);
-  margin-bottom: 7px !important; /* 7px gap to content */
+  margin-bottom: var(--space-s) !important; /* 7px gap to content */
 }
 
 .plan-info-content {

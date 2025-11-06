@@ -19,6 +19,7 @@ import { programConfig, colorCodeMap } from "config";
 import { isDumbbellExercise, pluralize } from "utils";
 import { createNumberInputHTML } from "ui";
 import { findPreviousExerciseLog } from "services/data/historyService.js";
+import { getRepTarget } from "../../services/workout/repTargetService.js";
 
 export function getLogItemHTML(
   log,
@@ -196,9 +197,10 @@ export function getLogItemHTML(
   /* Completed/skipped: Details with edit panel */
   const isDumbbell = isDumbbellExercise(exercise);
   const weightLabel = isDumbbell ? "Weight (Per Hand)" : "Weight (lbs)";
+  const repTarget = getRepTarget();
   const repsLabel = isDumbbell
     ? "Reps (Per Hand)"
-    : 'Reps (Target: <span class="text-plan">10</span>)';
+    : `Reps (Target: <span class="text-plan">${repTarget}</span>)`;
 
   return `<details class="${containerClass}" data-log-index="${index}">
               <summary>${finalLogDisplayHtml}</summary>

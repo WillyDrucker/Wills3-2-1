@@ -22,10 +22,34 @@ import { getMyPlanPageTemplate } from "./my-plan.template.js";
 import { fetchPlans } from "api/plansClient.js";
 import * as persistenceService from "services/core/persistenceService.js";
 import * as selectorService from "services/ui/selectorService.js";
+import { renderActiveExerciseCard } from "../active-exercise-card/active-exercise-card.index.js";
+import { renderConfigHeaderLine } from "../config-card/config-card.header.render.js";
+import { getRepTarget } from "../../services/workout/repTargetService.js";
+import {
+  getCurrentWeekNumber,
+  getRemainingWeeks,
+  getCurrentWeekRange,
+  getWeeksRemaining,
+} from "../../shared/utils/planWeekUtils.js";
+
+/**
+ * Update rep targets for pending sets in workout log
+ * Only updates pending sets, preserves completed sets
+ */
+function updatePendingSetRepTargets() {
+  const newRepTarget = getRepTarget();
+
+  appState.session.workoutLog.forEach((logEntry) => {
+    if (logEntry.status === "pending") {
+      logEntry.reps = newRepTarget;
+    }
+  });
+}
 
 /**
  * Render My Plan page
  * Loads plan data if not already loaded, then renders template
+ * Ensures "Will's 3-2-1" is always the default active plan
  */
 export async function renderMyPlanPage() {
   // Load plans from JSON if not already loaded
@@ -33,13 +57,29 @@ export async function renderMyPlanPage() {
     const plans = await fetchPlans();
     if (plans) {
       appState.plan.plans = plans;
-
-      // Set default plan if none selected
-      if (!appState.ui.myPlanPage.selectedPlanId) {
-        const defaultPlan = plans.find((p) => p.isDefault) || plans[0];
-        appState.ui.myPlanPage.selectedPlanId = defaultPlan.id;
-      }
     }
+  }
+
+  // Ensure "Will's 3-2-1" is always the default active plan if no active plan exists
+  if (!appState.ui.myPlanPage.activePlanId) {
+    appState.ui.myPlanPage.activePlanId = "Will's 3-2-1";
+    persistenceService.saveState();
+  }
+
+  // Initialize week tracking if active plan exists but week number doesn't (happens after nuke)
+  if (appState.ui.myPlanPage.activePlanId && !appState.ui.myPlanPage.currentWeekNumber) {
+    appState.ui.myPlanPage.currentWeekNumber = 1;
+    appState.ui.myPlanPage.startDate = new Date().toISOString();
+    persistenceService.saveState();
+  }
+
+  // ALWAYS default to showing the active plan when page loads
+  appState.ui.myPlanPage.selectedPlanId = appState.ui.myPlanPage.activePlanId;
+
+  // Initialize planHistory array if it doesn't exist
+  if (!appState.ui.myPlanPage.planHistory) {
+    appState.ui.myPlanPage.planHistory = [];
+    persistenceService.saveState();
   }
 
   // Render template
@@ -47,11 +87,22 @@ export async function renderMyPlanPage() {
 
   // Wire up event listeners
   wireEventListeners();
+
+  // Add animation classes after DOM is fully rendered (triggers CSS animations)
+  // Double requestAnimationFrame ensures DOM is painted before adding classes
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      updateCurrentWeekHighlight();
+    });
+  });
+
+  // Update config card with newly initialized plan data
+  renderConfigHeaderLine();
 }
 
 /**
- * Wire up event listeners for plan selection
- * Handles plan selector option clicks
+ * Wire up event listeners for plan selection, confirmation, and week navigation
+ * Handles plan selector option clicks, confirm button, and week nav buttons
  */
 function wireEventListeners() {
   const selector = document.getElementById("current-plan-selector");
@@ -62,6 +113,24 @@ function wireEventListeners() {
   options.forEach((option) => {
     option.addEventListener("click", handlePlanSelection);
   });
+
+  // Active Plan / Change Plan button
+  const planActionButton = document.getElementById("plan-action-button");
+  if (planActionButton) {
+    planActionButton.addEventListener("click", handleChangePlan);
+  }
+
+  // Week navigation buttons
+  const weekPrevButton = document.querySelector(".plan-week-navigator .week-nav-prev");
+  const weekNextButton = document.querySelector(".plan-week-navigator .week-nav-next");
+
+  if (weekPrevButton) {
+    weekPrevButton.addEventListener("click", handleWeekPrevious);
+  }
+
+  if (weekNextButton) {
+    weekNextButton.addEventListener("click", handleWeekNext);
+  }
 }
 
 /**
@@ -79,6 +148,9 @@ function handlePlanSelection(event) {
   // Update selected plan
   appState.ui.myPlanPage.selectedPlanId = planId;
 
+  // Don't reset confirmation data - it persists per plan
+  // Button will automatically show correct state based on confirmedPlanId
+
   // Update only the changed elements instead of full re-render
   updatePlanDisplay();
 
@@ -90,11 +162,268 @@ function handlePlanSelection(event) {
 }
 
 /**
+ * Handle Change Plan button click
+ * Archives current active plan to history, sets selected plan as new active plan
+ * Initializes week tracking to Week 1 with today's date
+ */
+function handleChangePlan() {
+  const { selectedPlanId, activePlanId, startDate, currentWeekNumber } = appState.ui.myPlanPage;
+
+  if (!selectedPlanId) return;
+
+  // Archive current active plan to history if it exists and is different from selected
+  if (activePlanId && activePlanId !== selectedPlanId && startDate) {
+    const historyEntry = {
+      planId: activePlanId,
+      startDate: startDate,
+      endDate: new Date().toISOString(),
+      completedWeeks: currentWeekNumber ? [currentWeekNumber] : [],
+      reason: "switched",
+    };
+    appState.ui.myPlanPage.planHistory.push(historyEntry);
+  }
+
+  // Set selected plan as new active plan
+  appState.ui.myPlanPage.activePlanId = selectedPlanId;
+
+  // Set start date to today
+  appState.ui.myPlanPage.startDate = new Date().toISOString();
+
+  // Initialize week tracking to Week 1
+  appState.ui.myPlanPage.currentWeekNumber = 1;
+
+  // Update button state
+  const button = document.getElementById("plan-action-button");
+  if (button) {
+    button.textContent = "Active Plan";
+    button.disabled = true;
+  }
+
+  // Update week display
+  const weekRangeText = document.querySelector(".plan-week-navigator .week-range-text");
+  if (weekRangeText) {
+    weekRangeText.textContent = "Week 1";
+  }
+
+  // Update green borders and animation after changing to new plan
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      updateCurrentWeekHighlight();
+    });
+  });
+
+  // Update Active Plan selector with new active plan (real-time)
+  updateActivePlanSelector();
+
+  // Update Remaining Duration display (real-time)
+  updateRemainingDuration();
+
+  // Update rep targets for pending sets (plan change resets to Week 1 reps)
+  updatePendingSetRepTargets();
+
+  // Re-render config header to update Current Workout selector and Quick Workout Button
+  renderConfigHeaderLine();
+
+  // Re-render home page if currently viewing it
+  if (appState.ui.currentPage === "home") {
+    renderActiveExerciseCard();
+  }
+
+  // Save state
+  persistenceService.saveState();
+}
+
+/**
+ * Handle week previous button click
+ * Auto-activates plan if not already active, then decrements week number
+ */
+function handleWeekPrevious() {
+  const { currentWeekNumber, selectedPlanId, activePlanId } = appState.ui.myPlanPage;
+
+  // If this plan isn't active yet, initialize it at Week 1 first
+  if (activePlanId !== selectedPlanId) {
+    appState.ui.myPlanPage.startDate = new Date().toISOString();
+    appState.ui.myPlanPage.currentWeekNumber = 1;
+    appState.ui.myPlanPage.activePlanId = selectedPlanId;
+    persistenceService.saveState();
+    updatePlanDisplay();
+    return; // Don't decrement on first click, just initialize
+  }
+
+  const week = appState.ui.myPlanPage.currentWeekNumber || 1;
+  if (week <= 1) return;
+
+  // Decrement week number
+  appState.ui.myPlanPage.currentWeekNumber = week - 1;
+
+  // Update week display and navigation buttons (but don't regenerate phase chart)
+  const weekRangeText = document.querySelector(".plan-week-navigator .week-range-text");
+  if (weekRangeText) {
+    weekRangeText.textContent = `Week ${appState.ui.myPlanPage.currentWeekNumber}`;
+  }
+
+  const { plans } = appState.plan;
+  const selectedPlan = plans.find((p) => p.id === appState.ui.myPlanPage.selectedPlanId);
+  const maxWeek = selectedPlan?.totalWeeks || 15;
+
+  const prevButton = document.querySelector(".plan-week-navigator .week-nav-prev");
+  const nextButton = document.querySelector(".plan-week-navigator .week-nav-next");
+
+  if (prevButton) {
+    prevButton.disabled = appState.ui.myPlanPage.currentWeekNumber <= 1;
+  }
+  if (nextButton) {
+    nextButton.disabled = appState.ui.myPlanPage.currentWeekNumber >= maxWeek;
+  }
+
+  // Update green borders without regenerating HTML
+  updateCurrentWeekHighlight();
+
+  // Update Active Plan selector with new remaining weeks (real-time)
+  updateActivePlanSelector();
+
+  // Update Remaining Duration display (real-time)
+  updateRemainingDuration();
+
+  // Update rep targets for pending sets (week change affects all future sets)
+  updatePendingSetRepTargets();
+
+  // Re-render config header to update remaining weeks in selector and quick button
+  renderConfigHeaderLine();
+
+  // Re-render home page if currently viewing it
+  if (appState.ui.currentPage === "home") {
+    renderActiveExerciseCard();
+  }
+
+  // Save state
+  persistenceService.saveState();
+}
+
+/**
+ * Handle week next button click
+ * Auto-activates plan if not already active, then increments week number
+ */
+function handleWeekNext() {
+  const { selectedPlanId, currentWeekNumber, activePlanId } = appState.ui.myPlanPage;
+  const { plans } = appState.plan;
+
+  // If this plan isn't active yet, initialize it at Week 1 first
+  if (activePlanId !== selectedPlanId) {
+    appState.ui.myPlanPage.startDate = new Date().toISOString();
+    appState.ui.myPlanPage.currentWeekNumber = 1;
+    appState.ui.myPlanPage.activePlanId = selectedPlanId;
+    persistenceService.saveState();
+    updatePlanDisplay();
+    return; // Show Week 1 first, next click will advance
+  }
+
+  const selectedPlan = plans.find((p) => p.id === selectedPlanId);
+  const maxWeek = selectedPlan?.totalWeeks || 15;
+
+  const week = appState.ui.myPlanPage.currentWeekNumber || 1;
+  if (week >= maxWeek) return;
+
+  // Increment week number
+  appState.ui.myPlanPage.currentWeekNumber = week + 1;
+
+  // Update week display and navigation buttons (but don't regenerate phase chart)
+  const weekRangeText = document.querySelector(".plan-week-navigator .week-range-text");
+  if (weekRangeText) {
+    weekRangeText.textContent = `Week ${appState.ui.myPlanPage.currentWeekNumber}`;
+  }
+
+  const prevButton = document.querySelector(".plan-week-navigator .week-nav-prev");
+  const nextButton = document.querySelector(".plan-week-navigator .week-nav-next");
+
+  if (prevButton) {
+    prevButton.disabled = appState.ui.myPlanPage.currentWeekNumber <= 1;
+  }
+  if (nextButton) {
+    nextButton.disabled = appState.ui.myPlanPage.currentWeekNumber >= maxWeek;
+  }
+
+  // Update green borders without regenerating HTML
+  updateCurrentWeekHighlight();
+
+  // Update Active Plan selector with new remaining weeks (real-time)
+  updateActivePlanSelector();
+
+  // Update Remaining Duration display (real-time)
+  updateRemainingDuration();
+
+  // Update rep targets for pending sets (week change affects all future sets)
+  updatePendingSetRepTargets();
+
+  // Re-render config header to update remaining weeks in selector and quick button
+  renderConfigHeaderLine();
+
+  // Re-render home page if currently viewing it
+  if (appState.ui.currentPage === "home") {
+    renderActiveExerciseCard();
+  }
+
+  // Save state
+  persistenceService.saveState();
+}
+
+/**
+ * Update Active Plan selector in real-time
+ * Updates the displayed remaining weeks without full re-render
+ */
+function updateActivePlanSelector() {
+  const { activePlanId, currentWeekNumber } = appState.ui.myPlanPage;
+  const { plans } = appState.plan;
+
+  const activePlanSummary = document.querySelector("#active-plan-selector summary .item-main-line");
+  if (activePlanSummary && activePlanId && plans) {
+    const activePlan = plans.find((p) => p.id === activePlanId);
+    if (activePlan) {
+      // Always calculate remaining weeks (counts down as weeks advance)
+      const activeWeeksToShow = currentWeekNumber
+        ? getWeeksRemaining(activePlanId, currentWeekNumber, plans) || activePlan.totalWeeks
+        : activePlan.totalWeeks;
+
+      const activeWeeksText = activeWeeksToShow === 1 ? "Week" : "Weeks";
+      activePlanSummary.innerHTML = `<span class="text-on-surface-medium">${activePlan.name}:&nbsp;</span><span class="data-highlight text-plan">${activeWeeksToShow} ${activeWeeksText}</span>`;
+    }
+  }
+}
+
+/**
+ * Update Remaining Duration display in real-time
+ * Updates only the remaining weeks line without full re-render
+ * Uses manual week tracking (currentWeekNumber) not calendar calculation
+ */
+function updateRemainingDuration() {
+  const { activePlanId, currentWeekNumber, selectedPlanId } = appState.ui.myPlanPage;
+  const { plans } = appState.plan;
+
+  // Only update if we're viewing the active plan
+  if (!plans || activePlanId !== selectedPlanId) return;
+
+  const selectedPlan = plans.find((p) => p.id === selectedPlanId);
+  if (!selectedPlan) return;
+
+  // Use getWeeksRemaining (manual week tracking) not getRemainingWeeks (calendar-based)
+  const remainingWeeks = currentWeekNumber
+    ? getWeeksRemaining(activePlanId, currentWeekNumber, plans) || selectedPlan.totalWeeks
+    : selectedPlan.totalWeeks;
+  const remainingWeeksText = remainingWeeks === 1 ? "Week" : "Weeks";
+
+  // Update only the second duration line (Remaining Duration)
+  const durationLines = document.querySelectorAll(".plan-duration-line");
+  if (durationLines.length >= 2) {
+    durationLines[1].innerHTML = `<span class="text-on-surface-medium">Remaining Duration:&nbsp;</span><span class="data-highlight text-plan">${remainingWeeks} ${remainingWeeksText}</span>`;
+  }
+}
+
+/**
  * Update plan display without full re-render
  * Updates selector, duration, and plan information inline
  */
 function updatePlanDisplay() {
-  const { selectedPlanId } = appState.ui.myPlanPage;
+  const { selectedPlanId, activePlanId, currentWeekNumber } = appState.ui.myPlanPage;
   const { plans } = appState.plan;
 
   if (!plans || plans.length === 0) return;
@@ -102,25 +431,53 @@ function updatePlanDisplay() {
   const selectedPlan = plans.find((p) => p.id === selectedPlanId);
   if (!selectedPlan) return;
 
-  // Update selector summary text
+  const isActivePlan = activePlanId === selectedPlanId;
+
+  // Update Current Plan selector summary text (always shows total weeks)
   const summary = document.querySelector("#current-plan-selector summary .item-main-line");
   if (summary) {
-    const weeksText = selectedPlan.totalWeeks === 1 ? "Week" : "Weeks";
-    summary.innerHTML = `<span class="text-on-surface-medium">${selectedPlan.name}:&nbsp;</span><span class="data-highlight text-plan">${selectedPlan.totalWeeks} ${weeksText}</span>`;
+    // Always show total weeks (not remaining)
+    const weeksToShow = selectedPlan.totalWeeks;
+    const weeksText = weeksToShow === 1 ? "Week" : "Weeks";
+    summary.innerHTML = `<span class="text-on-surface-medium">${selectedPlan.name}:&nbsp;</span><span class="data-highlight text-plan">${weeksToShow} ${weeksText}</span>`;
+  }
+
+  // Update Active Plan selector (always shows remaining weeks for active plan)
+  const activePlanSummary = document.querySelector("#active-plan-selector summary .item-main-line");
+  if (activePlanSummary && activePlanId) {
+    const activePlan = plans.find((p) => p.id === activePlanId);
+    if (activePlan) {
+      // Always calculate remaining weeks (counts down as weeks advance)
+      const activeWeeksToShow = currentWeekNumber
+        ? getWeeksRemaining(activePlanId, currentWeekNumber, plans) || activePlan.totalWeeks
+        : activePlan.totalWeeks;
+
+      const activeWeeksText = activeWeeksToShow === 1 ? "Week" : "Weeks";
+      activePlanSummary.innerHTML = `<span class="text-on-surface-medium">${activePlan.name}:&nbsp;</span><span class="data-highlight text-plan">${activeWeeksToShow} ${activeWeeksText}</span>`;
+    }
   }
 
   // Update selector dropdown options list
   const optionsList = document.querySelector("#current-plan-selector .options-list");
   if (optionsList) {
-    // Regenerate options HTML (all plans except currently selected)
+    // Regenerate options HTML (all plans except currently selected - always show total weeks)
     const optionsHtml = plans
       .filter((p) => p.id !== selectedPlanId)
       .map((plan) => {
-        const planWeeksText = plan.totalWeeks === 1 ? "Week" : "Weeks";
-        return `<li data-plan-id="${plan.id}" class="plan-selector-option">
+        // Always show total weeks (not remaining)
+        const planWeeksToShow = plan.totalWeeks;
+        const planWeeksText = planWeeksToShow === 1 ? "Week" : "Weeks";
+
+        // Add green border to active plan when viewing a different plan (visual indicator)
+        const isViewingDifferentPlan = selectedPlanId !== activePlanId;
+        const borderClass = (isViewingDifferentPlan && plan.id === activePlanId)
+          ? "has-colored-border border-green"
+          : "";
+
+        return `<li data-plan-id="${plan.id}" class="plan-selector-option ${borderClass}">
           <div class="selector-content">
             <div class="item-main-line truncate-text">
-              <span class="text-on-surface-medium">${plan.name}:&nbsp;</span><span class="data-highlight text-plan">${plan.totalWeeks} ${planWeeksText}</span>
+              <span class="text-on-surface-medium">${plan.name}:&nbsp;</span><span class="data-highlight text-plan">${planWeeksToShow} ${planWeeksText}</span>
             </div>
           </div>
         </li>`;
@@ -136,9 +493,35 @@ function updatePlanDisplay() {
     });
   }
 
+  // Update week navigation if this plan is active
+  const { startDate } = appState.ui.myPlanPage;
+
+  if (isActivePlan && currentWeekNumber) {
+    const weekText = `Week ${currentWeekNumber}`;
+    const weekRangeText = document.querySelector(".plan-week-navigator .week-range-text");
+    if (weekRangeText) {
+      weekRangeText.textContent = weekText;
+    }
+
+    // Update button disabled states
+    const prevButton = document.querySelector(".plan-week-navigator .week-nav-prev");
+    const nextButton = document.querySelector(".plan-week-navigator .week-nav-next");
+    const maxWeek = selectedPlan.totalWeeks || 15;
+
+    if (prevButton) {
+      prevButton.disabled = currentWeekNumber <= 1;
+    }
+
+    if (nextButton) {
+      nextButton.disabled = currentWeekNumber >= maxWeek;
+    }
+  }
+
   // Update duration section
   const totalWeeks = selectedPlan.totalWeeks || 15;
-  const remainingWeeks = selectedPlan.totalWeeks || 15;
+  const remainingWeeks = startDate && isActivePlan
+    ? getRemainingWeeks(startDate, totalWeeks)
+    : totalWeeks;
   const totalWeeksText = totalWeeks === 1 ? "Week" : "Weeks";
   const remainingWeeksText = remainingWeeks === 1 ? "Week" : "Weeks";
 
@@ -151,28 +534,103 @@ function updatePlanDisplay() {
   // Update phase chart
   updatePhaseChart(selectedPlan);
 
+  // Add animation classes after DOM update
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      updateCurrentWeekHighlight();
+    });
+  });
+
   // Update plan information
   const programInfoContent = document.querySelector(".plan-info-content");
   if (programInfoContent) {
     programInfoContent.textContent = selectedPlan.planInformation || "Information...";
   }
+
+  // Update button state (Active Plan vs Change Plan)
+  const button = document.getElementById("plan-action-button");
+  if (button) {
+    const buttonText = isActivePlan ? "Active Plan" : "Change Plan";
+    button.textContent = buttonText;
+    button.disabled = isActivePlan;
+  }
 }
 
 /**
- * Update phase chart display
- * Regenerates phase lines based on selected plan
+ * Update green borders and animation for current and completed week ranges
+ * - Completed weeks (before current): Solid green border
+ * - Current week: Pulsing green glow animation
+ */
+function updateCurrentWeekHighlight() {
+  const { selectedPlanId, currentWeekNumber, activePlanId } = appState.ui.myPlanPage;
+  const { plans } = appState.plan;
+
+  if (!plans || plans.length === 0) return;
+
+  const selectedPlan = plans.find((p) => p.id === selectedPlanId);
+  if (!selectedPlan) return;
+
+  const phases = selectedPlan.phases || {};
+  const isActivePlan = activePlanId === selectedPlanId;
+
+  // Determine which week range contains the current week
+  const currentWeekRangeKey = isActivePlan && currentWeekNumber
+    ? getCurrentWeekRange(phases, currentWeekNumber)
+    : null;
+
+  // Get all week range boxes
+  const weekBoxes = document.querySelectorAll(".week-range-box");
+  const weekRanges = Object.keys(phases).sort((a, b) => {
+    const matchA = a.match(/week(\d+)-(\d+)/);
+    const matchB = b.match(/week(\d+)-(\d+)/);
+    if (!matchA || !matchB) return 0;
+    const startA = parseInt(matchA[1], 10);
+    const startB = parseInt(matchB[1], 10);
+    if (startA !== startB) return startA - startB;
+    return parseInt(matchB[2], 10) - parseInt(matchA[2], 10);
+  });
+
+  // Find the index of the current week range
+  let currentWeekRangeIndex = -1;
+  if (currentWeekRangeKey) {
+    currentWeekRangeIndex = weekRanges.indexOf(currentWeekRangeKey);
+  }
+
+  // Apply classes:
+  // - is-completed: Solid green border for completed weeks (before current)
+  // - is-current-week: Pulsing green glow for current week
+  weekBoxes.forEach((box, index) => {
+    // Remove both classes first
+    box.classList.remove("is-completed", "is-current-week");
+
+    if (currentWeekRangeIndex >= 0) {
+      if (index < currentWeekRangeIndex) {
+        // Completed weeks: solid green border
+        box.classList.add("is-completed");
+      } else if (index === currentWeekRangeIndex) {
+        // Current week: pulsing green glow
+        box.classList.add("is-current-week");
+      }
+    }
+  });
+}
+
+/**
+ * Update weekly guide boxes display
+ * Regenerates 50px boxes for each week range based on selected plan
  * @param {object} selectedPlan - The currently selected plan object
  */
 function updatePhaseChart(selectedPlan) {
-  const phaseChartContainer = document.querySelector(".phase-chart-container");
-  if (!phaseChartContainer) return;
+  const weekRangeContainer = document.querySelector(".week-range-container");
+  if (!weekRangeContainer) return;
 
   const phases = selectedPlan.phases || {};
   const equipmentWeeks = selectedPlan.equipmentWeeks || {};
+  const weeklyReps = selectedPlan.weeklyReps || {};
   const weekRanges = Object.keys(phases);
 
   if (weekRanges.length === 0) {
-    phaseChartContainer.innerHTML = "";
+    weekRangeContainer.innerHTML = "";
     return;
   }
 
@@ -197,22 +655,51 @@ function updatePhaseChart(selectedPlan) {
     return endB - endA;
   });
 
-  // Generate phase lines HTML
-  const phaseLinesHtml = sortedRanges.map((weekRange) => {
+  // Generate weekly guide boxes HTML (status classes added after render)
+  const weekRangeBoxesHtml = sortedRanges.map((weekRange, index) => {
     const phaseName = phases[weekRange];
     const equipment = equipmentWeeks[weekRange] || "";
 
     const match = weekRange.match(/week(\d+)-(\d+)/);
     if (!match) return "";
 
-    const start = match[1];
-    const end = match[2];
-    const displayRange = `Week ${start}-${end}:`;
+    const start = parseInt(match[1], 10);
+    const end = parseInt(match[2], 10);
 
-    return `<div class="phase-week-line">
-      <span class="text-on-surface-medium">${displayRange}&nbsp;</span><span class="text-plan">${phaseName}</span><span class="text-on-surface-medium">&nbsp;-&nbsp;</span><span class="text-plan">${equipment}</span>
+    // Calculate actual rep range from all weeks in the range
+    const repValues = [];
+    for (let week = start; week <= end; week++) {
+      const weekKey = `week${week}`;
+      const reps = weeklyReps[weekKey];
+      if (reps !== undefined && reps !== null) {
+        repValues.push(reps);
+      }
+    }
+
+    // Display rep range in week order (e.g., "6-2" for first week to last week)
+    let repRangeDisplay = "";
+    if (repValues.length > 0) {
+      const firstRep = repValues[0];
+      const lastRep = repValues[repValues.length - 1];
+      repRangeDisplay = firstRep === lastRep ? `${firstRep}` : `${firstRep}-${lastRep}`;
+    }
+
+    const displayRange = `Week ${start}-${end}`;
+
+    // Build the 50px box with two lines (status classes added after render)
+    // Line 1: Week label (left) | Rep Range (right)
+    // Line 2: Phase name (left) | Equipment (right)
+    return `<div class="week-range-box">
+      <div class="week-range-line-1">
+        <span class="week-range-label">${displayRange}</span>
+        <span class="week-range-reps"><span class="week-range-reps-label">Reps:&nbsp;</span><span class="week-range-reps-value">${repRangeDisplay}</span></span>
+      </div>
+      <div class="week-range-line-2">
+        <span class="week-range-phase">${phaseName}</span>
+        <span class="week-range-equipment">${equipment}</span>
+      </div>
     </div>`;
   }).join("");
 
-  phaseChartContainer.innerHTML = phaseLinesHtml;
+  weekRangeContainer.innerHTML = weekRangeBoxesHtml;
 }

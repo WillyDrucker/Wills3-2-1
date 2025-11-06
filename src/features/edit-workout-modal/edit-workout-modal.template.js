@@ -21,6 +21,7 @@ import { appState } from "state";
 import { colorCodeMap, programConfig, muscleGroupSortOrder } from "config";
 import { isDumbbellExercise, pluralize } from "utils";
 import { createNumberInputHTML } from "ui";
+import { getRepTarget } from "../../services/workout/repTargetService.js";
 
 /* Helper function to format timestamp as 12-hour time with AM/PM */
 function formatCompletionTime(timestamp) {
@@ -281,9 +282,10 @@ function getHistoricalLogItemHTML(log, workout, currentPlan, uniqueIndex) {
   // Edit panel (all historical logs are editable)
   const isDumbbell = isDumbbellExercise(exercise);
   const weightLabel = isDumbbell ? "Weight (Per Hand)" : "Weight (lbs)";
+  const repTarget = getRepTarget();
   const repsLabel = isDumbbell
     ? "Reps (Per Hand)"
-    : 'Reps (Target: <span class="text-plan">10</span>)';
+    : `Reps (Target: <span class="text-plan">${repTarget}</span>)`;
 
   // Create unique ID using workout ID and unique index (prevents duplicate IDs across exercises)
   const logId = `${workout.id}-${uniqueIndex}`;

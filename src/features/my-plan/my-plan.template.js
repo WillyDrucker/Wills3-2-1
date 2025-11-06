@@ -10,14 +10,15 @@
 
 import { appState } from "state";
 import { createSelectorHTML } from "utils";
+import { getRemainingWeeks, getWeeksRemaining } from "../../shared/utils/planWeekUtils.js";
 
 /**
  * Generate Current Plan selector HTML
- * Shows selected plan with "[Plan Name]: 15 Weeks" format
+ * Shows selected plan with total weeks: "[Plan Name]: 15 Weeks" (always shows full duration)
  * Plan name in gray, weeks in green
  */
 function getCurrentPlanSelectorHTML() {
-  const { selectedPlanId } = appState.ui.myPlanPage;
+  const { selectedPlanId, activePlanId, currentWeekNumber } = appState.ui.myPlanPage;
   const { plans } = appState.plan;
 
   if (!plans || plans.length === 0) {
@@ -26,24 +27,36 @@ function getCurrentPlanSelectorHTML() {
 
   // Find selected plan
   const selectedPlan = plans.find((p) => p.id === selectedPlanId) || plans[0];
-  const weeksText = selectedPlan.totalWeeks === 1 ? "Week" : "Weeks";
 
-  // Summary HTML (displays selected plan)
+  // Always show total weeks (not remaining)
+  const weeksToShow = selectedPlan.totalWeeks;
+  const weeksText = weeksToShow === 1 ? "Week" : "Weeks";
+
+  // Summary HTML (displays selected plan with remaining weeks)
   const summaryHtml = `<div class="selector-content plan-selector-content">
     <div class="item-main-line truncate-text">
-      <span class="text-on-surface-medium">${selectedPlan.name}:&nbsp;</span><span class="data-highlight text-plan">${selectedPlan.totalWeeks} ${weeksText}</span>
+      <span class="text-on-surface-medium">${selectedPlan.name}:&nbsp;</span><span class="data-highlight text-plan">${weeksToShow} ${weeksText}</span>
     </div>
   </div>`;
 
-  // Options HTML (all other plans)
+  // Options HTML (all other plans - always show total weeks)
   const optionsHtml = plans
     .filter((p) => p.id !== selectedPlanId)
     .map((plan) => {
-      const planWeeksText = plan.totalWeeks === 1 ? "Week" : "Weeks";
-      return `<li data-plan-id="${plan.id}" class="plan-selector-option">
+      // Always show total weeks (not remaining)
+      const planWeeksToShow = plan.totalWeeks;
+      const planWeeksText = planWeeksToShow === 1 ? "Week" : "Weeks";
+
+      // Add green border to active plan when viewing a different plan (visual indicator)
+      const isViewingDifferentPlan = selectedPlanId !== activePlanId;
+      const borderClass = (isViewingDifferentPlan && plan.id === activePlanId)
+        ? "has-colored-border border-green"
+        : "";
+
+      return `<li data-plan-id="${plan.id}" class="plan-selector-option ${borderClass}">
         <div class="selector-content">
           <div class="item-main-line truncate-text">
-            <span class="text-on-surface-medium">${plan.name}:&nbsp;</span><span class="data-highlight text-plan">${plan.totalWeeks} ${planWeeksText}</span>
+            <span class="text-on-surface-medium">${plan.name}:&nbsp;</span><span class="data-highlight text-plan">${planWeeksToShow} ${planWeeksText}</span>
           </div>
         </div>
       </li>`;
@@ -64,7 +77,7 @@ function getCurrentPlanSelectorHTML() {
  * Left-aligned with gray labels and green values
  */
 function getDurationInfoHTML() {
-  const { selectedPlanId } = appState.ui.myPlanPage;
+  const { selectedPlanId, activePlanId, startDate } = appState.ui.myPlanPage;
   const { plans } = appState.plan;
 
   if (!plans || plans.length === 0) {
@@ -73,7 +86,12 @@ function getDurationInfoHTML() {
 
   const selectedPlan = plans.find((p) => p.id === selectedPlanId) || plans[0];
   const totalWeeks = selectedPlan.totalWeeks || 15;
-  const remainingWeeks = selectedPlan.totalWeeks || 15; // TODO: Calculate based on start date
+
+  // Calculate remaining weeks only for active plan with start date
+  const isActivePlan = activePlanId === selectedPlanId;
+  const remainingWeeks = isActivePlan && startDate
+    ? getRemainingWeeks(startDate, totalWeeks)
+    : totalWeeks;
 
   const totalWeeksText = totalWeeks === 1 ? "Week" : "Weeks";
   const remainingWeeksText = remainingWeeks === 1 ? "Week" : "Weeks";
@@ -85,6 +103,85 @@ function getDurationInfoHTML() {
     <div class="plan-duration-line">
       <span class="text-on-surface-medium">Remaining Duration:&nbsp;</span><span class="data-highlight text-plan">${remainingWeeks} ${remainingWeeksText}</span>
     </div>
+  </div>`;
+}
+
+/**
+ * Generate week range boxes HTML
+ * Shows 50px black boxes for each week range with rep counts, phases, and equipment
+ * Replaces the old text-based phase chart with structured boxes
+ * Note: Animation classes are added after render to trigger CSS animations
+ */
+function getWeekRangeBoxesHTML() {
+  const { selectedPlanId } = appState.ui.myPlanPage;
+  const { plans } = appState.plan;
+
+  if (!plans || plans.length === 0) {
+    return "";
+  }
+
+  const selectedPlan = plans.find((p) => p.id === selectedPlanId) || plans[0];
+  const phases = selectedPlan.phases || {};
+  const equipmentWeeks = selectedPlan.equipmentWeeks || {};
+  const weeklyReps = selectedPlan.weeklyReps || {};
+
+  // Get all week range keys that have phase data
+  const weekRanges = Object.keys(phases);
+
+  if (weekRanges.length === 0) {
+    return "";
+  }
+
+  // Sort week ranges (4-week groups before 3-week groups)
+  const sortedRanges = sortWeekRanges(weekRanges);
+
+  // Generate HTML for each week range box (without status classes - added after render)
+  const weekRangeBoxesHtml = sortedRanges.map((weekRange, index) => {
+    const phaseName = phases[weekRange];
+    const equipment = equipmentWeeks[weekRange] || "";
+
+    // Parse "week1-3" into start and end numbers
+    const parsed = parseWeekRange(weekRange);
+    if (!parsed) return "";
+
+    // Calculate actual rep range from all weeks in the range
+    const repValues = [];
+    for (let week = parsed.start; week <= parsed.end; week++) {
+      const weekKey = `week${week}`;
+      const reps = weeklyReps[weekKey];
+      if (reps !== undefined && reps !== null) {
+        repValues.push(reps);
+      }
+    }
+
+    // Display rep range in week order (e.g., "6-2" for first week to last week)
+    let repRangeDisplay = "";
+    if (repValues.length > 0) {
+      const firstRep = repValues[0];
+      const lastRep = repValues[repValues.length - 1];
+      repRangeDisplay = firstRep === lastRep ? `${firstRep}` : `${firstRep}-${lastRep}`;
+    }
+
+    // Build display range (e.g., "Week 1-3")
+    const displayRange = `Week ${parsed.start}-${parsed.end}`;
+
+    // Build the 50px box with two lines (status classes added after render)
+    // Line 1: Week label (left) | Rep Range (right)
+    // Line 2: Phase name (left) | Equipment (right)
+    return `<div class="week-range-box">
+      <div class="week-range-line-1">
+        <span class="week-range-label">${displayRange}</span>
+        <span class="week-range-reps"><span class="week-range-reps-label">Reps:&nbsp;</span><span class="week-range-reps-value">${repRangeDisplay}</span></span>
+      </div>
+      <div class="week-range-line-2">
+        <span class="week-range-phase">${phaseName}</span>
+        <span class="week-range-equipment">${equipment}</span>
+      </div>
+    </div>`;
+  }).join("");
+
+  return `<div class="week-range-container">
+    ${weekRangeBoxesHtml}
   </div>`;
 }
 
@@ -124,54 +221,10 @@ function sortWeekRanges(keys) {
   });
 }
 
-/**
- * Generate phase chart HTML
- * Shows week-by-week phases and equipment for current plan
- * Displays in Current Plan card below duration info
+/* REMOVED: Old text-based phase chart replaced by getWeekRangeBoxesHTML()
+ * The phase chart has been replaced with 50px structured boxes that match
+ * the Today's Workout log styling. See getWeekRangeBoxesHTML() above.
  */
-function getPhaseChartHTML() {
-  const { selectedPlanId } = appState.ui.myPlanPage;
-  const { plans } = appState.plan;
-
-  if (!plans || plans.length === 0) {
-    return "";
-  }
-
-  const selectedPlan = plans.find((p) => p.id === selectedPlanId) || plans[0];
-  const phases = selectedPlan.phases || {};
-  const equipmentWeeks = selectedPlan.equipmentWeeks || {};
-
-  // Get all week range keys that have phase data
-  const weekRanges = Object.keys(phases);
-
-  if (weekRanges.length === 0) {
-    return "";
-  }
-
-  // Sort week ranges (4-week groups before 3-week groups)
-  const sortedRanges = sortWeekRanges(weekRanges);
-
-  // Generate HTML for each phase line
-  const phaseLinesHtml = sortedRanges.map((weekRange) => {
-    const phaseName = phases[weekRange];
-    const equipment = equipmentWeeks[weekRange] || "";
-
-    // Parse "week1-3" into "Week 1-3:"
-    const parsed = parseWeekRange(weekRange);
-    if (!parsed) return "";
-
-    const displayRange = `Week ${parsed.start}-${parsed.end}:`;
-
-    // Build line with proper color styling
-    return `<div class="phase-week-line">
-      <span class="text-on-surface-medium">${displayRange}&nbsp;</span><span class="text-plan">${phaseName}</span><span class="text-on-surface-medium">&nbsp;-&nbsp;</span><span class="text-plan">${equipment}</span>
-    </div>`;
-  }).join("");
-
-  return `<div class="phase-chart-container">
-    ${phaseLinesHtml}
-  </div>`;
-}
 
 /**
  * Generate plan information HTML
@@ -190,13 +243,111 @@ function getPlanInformationHTML() {
 }
 
 /**
+ * Generate Active Plan selector HTML
+ * Static visual indicator showing the currently active plan with remaining weeks
+ * Counts down as weeks advance, never opens
+ */
+function getActivePlanSelectorHTML() {
+  const { activePlanId, currentWeekNumber } = appState.ui.myPlanPage;
+  const { plans } = appState.plan;
+
+  if (!plans || plans.length === 0 || !activePlanId) {
+    return "";
+  }
+
+  const activePlan = plans.find((p) => p.id === activePlanId);
+  if (!activePlan) return "";
+
+  // Always calculate remaining weeks (counts down as weeks advance)
+  const weeksToShow = currentWeekNumber
+    ? getWeeksRemaining(activePlanId, currentWeekNumber, plans) || activePlan.totalWeeks
+    : activePlan.totalWeeks;
+
+  const weeksText = weeksToShow === 1 ? "Week" : "Weeks";
+
+  // Static selector HTML (no options list, always disabled)
+  return `<div class="selector-container active-plan-selector-container">
+    <details class="app-selector" id="active-plan-selector" disabled>
+      <summary class="active-plan-summary">
+        <div class="selector-content plan-selector-content">
+          <div class="item-main-line truncate-text">
+            <span class="text-on-surface-medium">${activePlan.name}:&nbsp;</span><span class="data-highlight text-plan">${weeksToShow} ${weeksText}</span>
+          </div>
+        </div>
+      </summary>
+    </details>
+  </div>`;
+}
+
+/**
+ * Generate week navigation selector HTML
+ * Always shows "Week #" with left/right navigation arrows for manual testing
+ * Shows current week if plan active, otherwise defaults to Week 1
+ * Positioned 16px below Current Plan selector
+ */
+function getWeekNavigationHTML() {
+  const { selectedPlanId, currentWeekNumber, activePlanId } = appState.ui.myPlanPage;
+  const { plans } = appState.plan;
+
+  const selectedPlan = plans.find((p) => p.id === selectedPlanId) || plans[0];
+  if (!selectedPlan) return "";
+
+  const maxWeek = selectedPlan.totalWeeks || 15;
+
+  // Show current week if this plan is active, otherwise default to Week 1
+  const isActivePlan = activePlanId === selectedPlanId;
+  const displayWeek = isActivePlan && currentWeekNumber ? currentWeekNumber : 1;
+
+  // Disable previous button at Week 1
+  const prevDisabled = displayWeek <= 1 ? "disabled" : "";
+
+  // Disable next button at max week
+  const nextDisabled = displayWeek >= maxWeek ? "disabled" : "";
+
+  const weekText = `Week ${displayWeek}`;
+
+  return `<div class="week-navigator plan-week-navigator">
+    <button class="week-nav-button week-nav-prev week-chevron week-chevron-left" ${prevDisabled}>
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <path d="M20 24L12 16L20 8" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <span class="week-range-text text-plan">${weekText}</span>
+    <button class="week-nav-button week-nav-next week-chevron week-chevron-right" ${nextDisabled}>
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <path d="M12 8L20 16L12 24" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>`;
+}
+
+/**
+ * Generate Active Plan button HTML
+ * Shows "Active Plan" (disabled) ONLY when viewing the active plan
+ * Shows "Change Plan" (enabled) for all other plans
+ */
+function getActivePlanButtonHTML() {
+  const { selectedPlanId, activePlanId } = appState.ui.myPlanPage;
+
+  // Show "Active Plan" (disabled) ONLY when viewing the active plan
+  const isActivePlan = activePlanId === selectedPlanId;
+  const buttonText = isActivePlan ? "Active Plan" : "Change Plan";
+  const disabledAttr = isActivePlan ? "disabled" : "";
+
+  return `<button class="button-log plan-action-button" id="plan-action-button" data-action="changePlan" ${disabledAttr}>${buttonText}</button>`;
+}
+
+/**
  * Generate complete My Plan page template
- * Two cards: Current Plan (selector + duration + phase chart) and Plan Information
+ * Two cards: Current Plan (selector + duration + week range boxes) and Plan Information
  */
 export function getMyPlanPageTemplate() {
   const selectorHtml = getCurrentPlanSelectorHTML();
+  const activePlanSelectorHtml = getActivePlanSelectorHTML();
+  const weekNavigationHtml = getWeekNavigationHTML();
   const durationHtml = getDurationInfoHTML();
-  const phaseChartHtml = getPhaseChartHTML();
+  const weekRangeBoxesHtml = getWeekRangeBoxesHTML();
+  const activePlanButtonHtml = getActivePlanButtonHTML();
   const planInfoHtml = getPlanInformationHTML();
 
   return `
@@ -206,8 +357,12 @@ export function getMyPlanPageTemplate() {
         <div class="selector-container plan-selector-container">
           ${selectorHtml}
         </div>
+        <div class="card-title plan-card-title active-plan-title">Active Plan</div>
+        ${activePlanSelectorHtml}
         ${durationHtml}
-        ${phaseChartHtml}
+        ${weekRangeBoxesHtml}
+        ${activePlanButtonHtml}
+        ${weekNavigationHtml}
       </div>
     </div>
 
