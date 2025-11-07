@@ -28,8 +28,12 @@ import { timeOptions } from "config";
 import { getConfigHeaderTemplate } from "./config-card.header.template.js";
 import { canCycleNext, canCyclePrevious } from "./config-card.header.session.js";
 
+/* === STATE TRACKING === */
+
 // Click listener tracking
 let clickListenerAttached = false;
+
+/* === MAIN RENDER FUNCTION === */
 
 /**
  * Render config header with optional Quick Button animations
@@ -81,6 +85,8 @@ export function renderConfigHeader(animationFlags = null, attachClickListener, i
   }
 }
 
+/* === HEADER LINE UPDATES === */
+
 /**
  * Update config header line (clock + session time)
  * Called every minute by timer - uses textContent to avoid animation restart
@@ -95,6 +101,8 @@ export function renderConfigHeaderLine() {
   // Update workout time remaining display (called every 60 seconds by timer)
   renderSessionDisplay();
 }
+
+/* === SESSION DISPLAY UPDATES === */
 
 /**
  * Update session display (time remaining + cycle buttons)
@@ -166,6 +174,8 @@ export function renderSessionDisplay(retries = 10) {
   }
 }
 
+/* === FOCUS DISPLAY UPDATES === */
+
 /**
  * Update focus icon display (muscle group icon for dual modes)
  * Uses innerHTML for icon updates (safe - only updates icon container, not active card)
@@ -216,4 +226,51 @@ export function renderFocusDisplay() {
 
   // Update icon - innerHTML is safe here as we're only updating the icon container, not active card
   focusButton.innerHTML = iconHTML;
+}
+
+/* === PLAN DISPLAY UPDATES === */
+
+/**
+ * Update plan display (Quick Button week and Current Workout selector)
+ * Uses textContent updates to avoid restarting animations
+ * Called when plan or week changes (e.g., after My Plan page initialization)
+ */
+export function renderPlanDisplay() {
+  const { activePlanId, currentWeekNumber } = appState.ui.myPlanPage;
+  const { plans } = appState.plan;
+
+  // Find active plan
+  const activePlan = plans && plans.length > 0
+    ? (plans.find((p) => p.id === activePlanId) || plans[0])
+    : null;
+
+  if (!activePlan) return; // Plans not loaded yet
+
+  const weekNumber = currentWeekNumber || 1;
+
+  // Update Plan Quick Button in icon bar (always visible)
+  const planQuickButtonSpans = document.querySelectorAll(".icon-bar-item.icon-plan-wide .plan-quick-button-stack > span");
+  if (planQuickButtonSpans.length === 2) {
+    // Update abbreviation (gray) and week display (green)
+    planQuickButtonSpans[0].textContent = activePlan.abbreviation || activePlan.name;
+    planQuickButtonSpans[1].textContent = `Week ${weekNumber}`;
+  }
+
+  // Update Current Workout selector in expanded content (if expanded)
+  const currentWorkoutSelector = document.querySelector("#current-workout-selector .selector-content.multi-line.balanced-text");
+  if (currentWorkoutSelector) {
+    // Selector has two spans: "Plan Name: X Weeks" and "Week: Y of Z"
+    const selectorSpans = currentWorkoutSelector.querySelectorAll("span.truncate-text");
+    if (selectorSpans.length === 2) {
+      // Line 1: "Will's 3-2-1: 15 Weeks" (only update if plan changed)
+      const totalWeeks = activePlan.totalWeeks;
+      const weeksText = totalWeeks === 1 ? "Week" : "Weeks";
+      const line1HTML = `${activePlan.name}: <span class="data-highlight text-plan" data-animation-target="true">${totalWeeks} ${weeksText}</span>`;
+      selectorSpans[0].innerHTML = line1HTML;
+
+      // Line 2: "Week: 1 of 15"
+      const line2HTML = `Week: <span class="data-highlight text-plan" data-animation-target="true">${weekNumber}</span> <span class="text-on-surface-medium">of</span> <span class="data-highlight text-plan" data-animation-target="true">${totalWeeks}</span>`;
+      selectorSpans[1].innerHTML = line2HTML;
+    }
+  }
 }

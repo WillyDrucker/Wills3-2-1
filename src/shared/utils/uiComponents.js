@@ -42,6 +42,9 @@ export const ui = {
   newWorkoutModalContainer: document.getElementById(
     "new-workout-modal-container"
   ),
+  beginNewPlanModalContainer: document.getElementById(
+    "begin-new-plan-modal-container"
+  ),
   resetOptionsModalContainer: document.getElementById(
     "reset-options-modal-container"
   ),

@@ -15,7 +15,15 @@ This file contains only critical architectural patterns and current session stat
 
 ## Current Session State
 
-**Status**: Claude-v5.6.6 - COMPLETE
+**Status**: Claude-v5.6.7 - COMPLETE
+- ✅ **Begin New Plan Modal**: Created new confirmation modal warning about plan progress save to My Data
+- ✅ **Active Plan Selector Format**: Changed from "Will's 3-2-1: 15 Weeks" to "Week 1 of 15: Will's 3-2-1"
+- ✅ **Reset Button Fix**: Preserved plan state (loaded plans, active plan, current week) during session reset
+- ✅ **Config Card Plan Display**: Updated Workout Quick Button and Current Workout selector to "Week #" format
+- ✅ **App Initialization Plans Loading**: Added eager loading of plans during app initialization
+- ✅ **Standards Compliance**: Applied CLAUDE_STANDARDS_DEV.md to all 9 modified files
+
+**Previous Session**: Claude-v5.6.6 - COMPLETE
 - ✅ **Config Card Display Updates**: Changed from countdown weeks to "Week: X of Y" format
 - ✅ **Rep Display Format**: Changed from comma sequence to week-order range (e.g., "6-2" instead of "6,4,2")
 - ✅ **Workout Quick Button**: Shows "Week X" below abbreviation instead of remaining weeks
@@ -366,6 +374,89 @@ export function findPreviousExerciseLog(exerciseName, setNumber, supersetSide) {
 - Any feature requiring "previous exercise" lookups
 
 **Critical Fix**: Must include `userName` property when loading workouts from database or query fails silently (userName check matches undefined).
+
+### 15. State Preservation Pattern (Selective Reset)
+When resetting state while preserving specific user selections, save critical state before clearing and restore immediately after:
+
+```javascript
+export function resetSessionAndLogs() {
+  // Save state that should survive reset
+  const planToPreserve = appState.plan;
+  const myPlanPageToPreserve = appState.ui.myPlanPage;
+
+  // Clear session and workout logs (partial reset)
+  clearSessionState();
+  clearWorkoutLogs();
+
+  // Restore preserved state
+  appState.plan = planToPreserve;
+  appState.ui.myPlanPage = myPlanPageToPreserve;
+
+  persistenceService.saveState();
+}
+```
+
+**Key Points**:
+- **Selective preservation**: Only save state that logically survives the reset operation
+- **Immediate restoration**: Restore preserved state right after clearing
+- **Persistence required**: Call `saveState()` after restoration to persist changes
+- **Clear boundaries**: Document what survives and what resets in function comments
+
+**Use Cases**:
+- Reset button preserving plan selection and week navigation
+- Clear workout data without losing user preferences
+- Partial state resets that maintain context
+- Any operation where some state should survive a broader reset
+
+**Example - Reset Button Preserving Plans**:
+When user clicks Reset button, they want to clear workout session and logs, but NOT lose their active plan selection or current week position. This pattern preserves `appState.plan` (loaded plans) and `appState.ui.myPlanPage` (active plan, current week) while resetting everything else.
+
+### 16. Eager Loading Pattern (Race Condition Prevention)
+Load critical data during app initialization before first render to prevent race conditions and eliminate fallback code:
+
+```javascript
+export async function initializeApp() {
+  // 1. Check authentication
+  await checkAndRestoreSession();
+
+  // 2. Build weekly plan from localStorage
+  buildWeeklyPlan();
+
+  // 3. EAGER LOAD: Load plans before rendering
+  await loadPlansIntoState();
+
+  // 4. Render UI (plans already available)
+  renderAll();
+}
+```
+
+**Key Points**:
+- **Load before render**: Critical data must be in appState before first renderAll()
+- **Sequential timing**: Use await to ensure data ready before dependent operations
+- **Eliminates fallbacks**: No need for "loading..." states or fallback values
+- **Race condition fix**: Prevents render happening before data available
+
+**Use Cases**:
+- Plans data needed by config card on first render
+- User preferences required for initial UI state
+- Any data that multiple components depend on immediately
+- Preventing "flash of default content" on page load
+
+**Example - Plans Loading**:
+Config card needs plan data to display "Week # of #: Plan Name" format. Without eager loading, first render uses fallback values from old config.js. With eager loading, plans are in appState before config card renders, eliminating need for fallback code.
+
+**Implementation**:
+```javascript
+async function loadPlansIntoState() {
+  try {
+    const plans = await fetchPlans();
+    appState.plan.plans = plans;
+  } catch (error) {
+    console.error("Failed to load plans:", error);
+    // Handle error appropriately
+  }
+}
+```
 
 ---
 

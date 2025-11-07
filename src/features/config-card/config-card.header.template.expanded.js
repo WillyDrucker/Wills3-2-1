@@ -14,7 +14,12 @@ import { getDaySelectorHTML } from "./config-card.template.day.js";
    Used by: config-card.header.template.js (expanded state delegation)
    ========================================================================== */
 
-// Helper: Check if next session cycling is allowed
+/* === HELPER FUNCTIONS === */
+
+/**
+ * Check if next session cycling is allowed
+ * @returns {boolean} True if can cycle to next session
+ */
 function canCycleNext() {
   const currentIndex = timeOptions.findIndex((t) => t.name === appState.session.currentTimeOptionName);
   if (currentIndex >= timeOptions.length - 1) return false;
@@ -22,7 +27,10 @@ function canCycleNext() {
   return canCycleToSession(nextOption.name);
 }
 
-// Helper: Check if previous session cycling is allowed
+/**
+ * Check if previous session cycling is allowed
+ * @returns {boolean} True if can cycle to previous session
+ */
 function canCyclePrevious() {
   const currentIndex = timeOptions.findIndex((t) => t.name === appState.session.currentTimeOptionName);
   if (currentIndex <= 0) return false;
@@ -30,7 +38,10 @@ function canCyclePrevious() {
   return canCycleToSession(prevOption.name);
 }
 
-// Helper: Get muscle group icon based on current exercise bodypart
+/**
+ * Get muscle group icon based on current exercise bodypart
+ * @returns {string} HTML for muscle group icon (image or emoji)
+ */
 function getMuscleGroupIcon() {
   const { superset, partner, session } = appState;
   let muscleGroup = "";
@@ -74,7 +85,10 @@ function getMuscleGroupIcon() {
   return `📋`;
 }
 
-// Helper: Get abbreviated plan text for Plan Quick Button
+/**
+ * Get abbreviated plan text for Plan Quick Button
+ * @returns {string} HTML for plan quick button content (stacked layout)
+ */
 function getAbbreviatedPlanText() {
   const { superset, partner } = appState;
 
@@ -100,17 +114,18 @@ function getAbbreviatedPlanText() {
 
       return `<div class="plan-quick-button-stack"><span class="plan-quick-button-muted">${abbreviation}</span><span class="data-highlight text-plan">${weekDisplay}</span></div>`;
     } else {
-      // Fallback to old config.js if plans not loaded
-      const currentWorkout = workoutPlans.find((p) => p.name === appState.session.currentWorkoutName) || workoutPlans[0];
-      const durationParts = currentWorkout.duration.split(' ');
-      const durationNumber = durationParts[0];
-      const durationUnit = durationParts[1] ? durationParts[1].replace('Weeks', 'Wks').replace('weeks', 'Wks') : '';
-      return `<div class="plan-quick-button-stack"><span class="plan-quick-button-muted">3-2-1</span><span class="data-highlight text-plan">${durationNumber} ${durationUnit}</span></div>`;
+      // Fallback if plans not loaded yet - use Week 1 format
+      const abbreviation = "3-2-1";
+      const weekDisplay = "Week 1";
+      return `<div class="plan-quick-button-stack"><span class="plan-quick-button-muted">${abbreviation}</span><span class="data-highlight text-plan">${weekDisplay}</span></div>`;
     }
   }
 }
 
-// Helper: Get session time text for Session Quick Button
+/**
+ * Get session time text for Session Quick Button
+ * @returns {string} HTML for session quick button content (stacked layout)
+ */
 function getSessionTimeText() {
   const { session } = appState;
   const timeMinutes = appState.session.workoutTimeRemaining;
@@ -118,7 +133,14 @@ function getSessionTimeText() {
   return `<div class="session-quick-button-stack"><span class="${session.currentSessionColorClass}">${timeMinutes} ${timeText}</span><span class="${session.currentSessionColorClass}">Remain</span></div>`;
 }
 
-// Expanded state template - full controls
+/* === TEMPLATE GENERATION === */
+
+/**
+ * Generate expanded config header template (full dropdown)
+ * Shows full configuration controls with Plan/Focus/Session selectors
+ * Includes muting logic and CEMENT locking patterns for session cycling
+ * @returns {string} HTML for expanded config header
+ */
 export function getExpandedTemplate() {
   const isAnySetLogged = appState.session.workoutLog.some(
     (log) => log.status !== "pending"
@@ -152,9 +174,11 @@ export function getExpandedTemplate() {
 
       summaryHtml = `<div class="selector-content multi-line balanced-text"><span class="truncate-text">${activePlan.name}: <span class="data-highlight text-plan" data-animation-target="true">${durationDisplay}</span></span><span class="truncate-text">Week: <span class="data-highlight text-plan" data-animation-target="true">${weekNumber}</span> <span class="text-on-surface-medium">of</span> <span class="data-highlight text-plan" data-animation-target="true">${totalWeeks}</span></span></div>`;
     } else {
-      // Fallback to old config.js if plans not loaded
-      const currentWorkout = workoutPlans.find((p) => p.name === session.currentWorkoutName) || workoutPlans[0];
-      summaryHtml = `<div class="selector-content"><span class="truncate-text">${currentWorkout.name.replace(':', '')}: <span class="data-highlight text-plan" data-animation-target="true">${currentWorkout.duration}</span></span></div>`;
+      // Fallback if plans not loaded yet - use default format with Week 1 of 15
+      const planName = "Will's 3-2-1";
+      const totalWeeks = 15;
+      const weekNumber = 1;
+      summaryHtml = `<div class="selector-content multi-line balanced-text"><span class="truncate-text">${planName}: <span class="data-highlight text-plan" data-animation-target="true">${totalWeeks} Weeks</span></span><span class="truncate-text">Week: <span class="data-highlight text-plan" data-animation-target="true">${weekNumber}</span> <span class="text-on-surface-medium">of</span> <span class="data-highlight text-plan" data-animation-target="true">${totalWeeks}</span></span></div>`;
     }
   }
 
@@ -177,11 +201,13 @@ export function getExpandedTemplate() {
   const timeMinutes = appState.session.workoutTimeRemaining;
   const timeText = timeMinutes === 1 ? "Min" : "Mins";
 
-  // 🔒 CEMENT: Chevron disabled states based on validation
+  // Chevron disabled states based on validation
+  // Prevents cycling beyond valid session options
   const isLeftDisabled = !canCyclePrevious();
   const isRightDisabled = !canCycleNext();
 
-  // 🔒 CEMENT: Check if session cycling completely locked (Maintenance lock after 3rd set)
+  // Check if session cycling completely locked (Maintenance lock after 3rd set)
+  // When locked, session cycling is disabled but button remains clickable to open dropdown
   const isSessionCyclingDisabled = isSessionCyclingLocked();
 
   return `
@@ -213,7 +239,7 @@ export function getExpandedTemplate() {
                 "current-workout-selector",
                 summaryHtml,
                 options.join(""),
-                isAnySetLogged, // 🔒 CEMENT: Disable when any set is logged (all modes)
+                isAnySetLogged, // Disable when any set is logged (prevents mid-workout plan changes)
                 false
               )}
             </div>

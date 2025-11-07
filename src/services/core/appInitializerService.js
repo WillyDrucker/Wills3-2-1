@@ -9,12 +9,13 @@
    1. Initialize timer, modal, fullscreen, clock, and action services
    2. Fetch exercise data from API
    3. Build weekly plan
-   4. Load saved state from localStorage (including myPlanPage)
-   5. Handle midnight reset if needed (via persistenceService flag)
-   6. Resume active timers if state was restored
-   7. Add glow animations class (before rendering)
-   8. Initialize wake lock and event listeners
-   9. Initialize automatic week advancement
+   4. Load training plans from JSON (for config card and My Plan page)
+   5. Load saved state from localStorage (including myPlanPage)
+   6. Handle midnight reset if needed (via persistenceService flag)
+   7. Resume active timers if state was restored
+   8. Add glow animations class (before rendering)
+   9. Initialize wake lock and event listeners
+   10. Initialize automatic week advancement
 
    Dependencies: appState, workoutService, persistenceService, exerciseClient,
                  timerService, actionService, modalService, clockService,
@@ -27,6 +28,7 @@ import { getTodayDayName } from "utils";
 import * as workoutService from "services/workout/workoutService.js";
 import * as persistenceService from "services/core/persistenceService.js";
 import { fetchExercises } from "api/exerciseClient.js";
+import { fetchPlans } from "api/plansClient.js";
 import * as timerService from "services/timer/timerService.js";
 import { resumeTimersFromState } from "services/timer/timerResumptionService.js";
 import { initializeWakeLock } from "lib/wakeLock.js";
@@ -40,6 +42,12 @@ import { renderConfigHeaderLine } from "features/config-card/config-card.header.
 import { loadWorkoutsFromDatabase } from "services/data/workoutSyncService.js";
 import { initializeDailyWeekCheck } from "services/core/weekAdvancementService.js";
 
+/* === SERVICE INITIALIZATION === */
+
+/**
+ * Initialize timer service with render dependencies
+ * @param {object} dependencies - Object containing render functions
+ */
 function initializeTimerService(dependencies) {
   timerService.initialize({
     renderAll: dependencies.renderAll,
@@ -48,6 +56,12 @@ function initializeTimerService(dependencies) {
   });
 }
 
+/* === SESSION RESET === */
+
+/**
+ * Reset session and logs while preserving essential state
+ * Called on midnight reset or manual reset
+ */
 function resetSessionAndLogs() {
   if (appState.rest.normal.timerId) clearInterval(appState.rest.normal.timerId);
   if (appState.rest.superset.left.timerId)
@@ -55,6 +69,7 @@ function resetSessionAndLogs() {
   if (appState.rest.superset.right.timerId)
     clearInterval(appState.rest.superset.right.timerId);
 
+  // Preserve state that should survive reset
   const currentPage = appState.ui.currentPage;
   const today = appState.todayDayName;
   const allExercises = appState.allExercises;
@@ -62,6 +77,8 @@ function resetSessionAndLogs() {
   const isApiReady = appState.ui.videoPlayer.isApiReady;
   const userHistory = appState.user.history;
   const authState = appState.auth;
+  const planData = appState.plan; // Loaded plans array (never reset)
+  const myPlanPage = appState.ui.myPlanPage; // Active plan ID, current week, plan history
 
   const initialAppState = getInitialAppState();
 
@@ -74,11 +91,20 @@ function resetSessionAndLogs() {
   appState.ui.videoPlayer.isApiReady = isApiReady;
   appState.user.history = userHistory;
   appState.auth = authState;
+  appState.plan = planData; // Restore plan data
+  appState.ui.myPlanPage = myPlanPage; // Restore My Plan page state
   appState.session.currentDayName = today;
 
   this.updateActiveWorkoutAndLog();
 }
 
+/* === MAIN INITIALIZATION === */
+
+/**
+ * Main application initialization function
+ * Orchestrates startup sequence: services, data loading, state restoration
+ * @param {object} dependencies - Object containing render and update functions
+ */
 export async function initialize(dependencies) {
   const {
     renderAll,
@@ -120,6 +146,15 @@ export async function initialize(dependencies) {
   }
   appState.todayDayName = getTodayDayName();
   workoutService.buildWeeklyPlan();
+
+  // Load training plans for config card and My Plan page
+  const plans = await fetchPlans();
+  if (plans) {
+    appState.plan.plans = plans;
+  } else {
+    appState.plan.plans = [];
+    console.warn('[AppInit] Failed to load plans, using empty array');
+  }
 
   const loadedState = persistenceService.loadState();
 

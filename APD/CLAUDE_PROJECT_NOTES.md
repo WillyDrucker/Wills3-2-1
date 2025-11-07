@@ -8,7 +8,7 @@ This file contains the historical record of version changes for Will's 3-2-1. De
 
 ---
 
-**Current Version**: Claude-v5.6.6
+**Current Version**: Claude-v5.6.7
 **Project**: Will's 3-2-1 Workout Tracking Application
 **Tech Stack**: Vanilla JavaScript, ES Modules, CSS Tokens
 **Philosophy**: SUPER STUPID SIMPLE (SSS), REMOVE DON'T ADD
@@ -32,6 +32,95 @@ This file contains the historical record of version changes for Will's 3-2-1. De
 ---
 
 ## VERSION CHANGELOG
+
+### **Claude-v5.6.7 - Begin New Plan Modal & Plan Display Refinements** (2025-02-05) - COMPLETE
+
+**Mission**: Create confirmation modal for beginning new plans, update plan display formats, fix reset button state preservation, add eager plan loading to app initialization.
+
+**Begin New Plan Modal - New Feature**:
+- **Created new modal component**: 3 files (template.js, index.js, style.css) in src/features/begin-new-plan-modal/
+- **Warning message**: "Starting this plan will save your current plan progress to My Data"
+- **Success confirmation**: Green animated "Done!" message (no glow, uses grow-flash without text-shadow)
+- **Plan preview**: Shows "Week 1 of Plan Name: X Weeks" format
+- **Integration**: Integrated into My Plan page "Begin New Plan" button via actionHandlers.modals.js
+- **Modal containers**: Added to index.html, render pipeline to main.js
+- **Modal service**: Added to actionHandlers.modals.js (openBeginNewPlanModal, confirmBeginNewPlan handlers)
+- **Style additions**: Imported begin-new-plan-modal.style.css in src/styles/index.css
+
+**Active Plan Selector Format Change**:
+- **Changed from**: "Will's 3-2-1: 15 Weeks" (plan name first, total weeks)
+- **Changed to**: "Week 1 of 15: Will's 3-2-1" (current/total weeks first, plan name second)
+- **Visual styling**: Week numbers in green, "of" text in white (removed opacity: 0.7 muting)
+- **Display pattern**: Matches config card "Week # of #" format for consistency
+- **Files modified**: my-plan.template.js, my-plan.style.css
+
+**Reset Button State Preservation**:
+- **Problem**: Reset button was resetting active plan to default plan
+- **Root cause**: resetSessionAndLogs() cleared ALL appState except user data
+- **Solution**: Added plan data preservation to resetSessionAndLogs() in persistenceService.js
+- **Preserved state**: appState.plan (loaded plans), appState.ui.myPlanPage (active plan ID, current week number)
+- **Effect**: Users can reset session without losing their active plan selection
+
+**Config Card Plan Display Updates**:
+- **Workout Quick Button**: Updated to show "Week 1" format (not "15 Wks")
+- **Current Workout selector**: Updated to show "Week # of #" line below plan name
+- **Fallback code fixed**: Updated collapsed and expanded templates to handle missing plan data
+- **Consistent format**: All plan displays now use "Week #" format across app
+- **Files modified**: config-card.header.template.collapsed.js, config-card.header.template.expanded.js, config-card.header.render.js
+
+**App Initialization - Plans Loading**:
+- **Problem**: First-load bug where config card showed wrong data (fallback to old config.js)
+- **Root cause**: Plans weren't loaded when config card first rendered
+- **Solution**: Added eager loading of plans during app initialization in appInitializerService.js
+- **Timing**: Plans load after buildWeeklyPlan() but before renderAll()
+- **Effect**: Config card shows correct plan data on first render, eliminates fallback to config.js
+
+**Coding Standards Applied**:
+- **Standards document**: Applied CLAUDE_STANDARDS_DEV.md to all 9 modified files
+- **Section headers**: Added === FORMAT === style headers to all files
+- **JSDoc enhancement**: Enhanced JSDoc comments with @param/@returns documentation
+- **CEMENT conversion**: Converted CEMENT comments to detailed explanations (no emojis)
+- **Consistent style**: All files follow consistent documentation and formatting patterns
+
+**Files Created** (3 total):
+1. `src/features/begin-new-plan-modal/begin-new-plan-modal.template.js` - Modal HTML generation
+2. `src/features/begin-new-plan-modal/begin-new-plan-modal.index.js` - Modal render function
+3. `src/features/begin-new-plan-modal/begin-new-plan-modal.style.css` - Modal styling
+
+**Files Modified** (9 total):
+1. `src/features/my-plan/my-plan.template.js` - Active plan selector format change
+2. `src/features/my-plan/my-plan.index.js` - handleBeginNewPlan integration
+3. `src/features/my-plan/my-plan.style.css` - Removed opacity muting from active plan selector
+4. `src/services/core/appInitializerService.js` - Eager plan loading during initialization
+5. `src/features/config-card/config-card.header.render.js` - Updated renderConfigHeaderLine() for week display
+6. `src/features/config-card/config-card.header.template.collapsed.js` - Quick Button week format
+7. `src/features/config-card/config-card.header.template.expanded.js` - Selector week format
+8. `src/services/core/persistenceService.js` - resetSessionAndLogs() plan preservation
+9. `src/services/actions/actionHandlers.modals.js` - Begin New Plan modal handlers
+
+**Also Integrated Into** (5 files):
+- `index.html` - Modal container divs
+- `src/main.js` - renderBeginNewPlanModal() in render pipeline
+- `src/styles/index.css` - Modal style import
+- `src/shared/utils/uiComponents.js` - Modal container reference
+
+**Key Technical Details**:
+- **Modal animation**: Custom grow-flash animation without text-shadow glow (green success message)
+- **Active Plan format**: "Week # of #: plan_name" with green numbers, white text
+- **Reset preservation**: Plans and myPlanPage survive session reset via selective state preservation
+- **Plan loading**: Eager initialization ensures data available for first render (eliminates race conditions)
+- **Consistent display**: All plan displays now use "Week #" format (Quick Button, selector, My Plan page)
+- **Standards compliance**: All files follow CLAUDE_DEV_STANDARDS.md patterns (headers, JSDoc, no CEMENT emojis)
+
+**User Feedback Iterations**:
+1. **Modal message**: Refined wording to emphasize plan progress save to My Data
+2. **Success message**: Changed from "Let's Go!" to "Done!" for better clarity
+3. **Plan format**: Reversed order to show week numbers first (easier to scan current progress)
+4. **Opacity removal**: Made active plan text fully white (better contrast and readability)
+
+**Status**: COMPLETE - Begin New Plan modal operational, all plan displays updated to consistent format, reset button preserves plan state, standards applied to all files.
+
+---
 
 ### **Claude-v5.6.6 - Config Card Week Display & Rep Format Updates** (2025-02-04) - COMPLETE
 

@@ -1,0 +1,81 @@
+/* ==========================================================================
+   BEGIN NEW PLAN MODAL - Styling
+
+   Styles for Begin New Plan confirmation modal.
+   Follows confirmation modal base patterns with green Yes button.
+
+   Color Strategy:
+   - Green Yes button (success/confirmation color)
+   - Green flash animation for progress saved message (no glow)
+
+   Animation:
+   Custom grow-flash animation without text-shadow glow at end state.
+   Text grows to 1.15x over 900ms, snaps back with green color at 1000ms.
+
+   Dependencies:
+   Global: _variables.css, _confirmation-modals.css
+   Used by: Begin New Plan modal
+   ========================================================================== */
+
+/* === MODAL CONTAINER === */
+/* Inherits from .superset-modal-container in _confirmation-modals.css */
+
+/* === MODAL CONTENT === */
+/* Inherits from .confirmation-modal-card in _confirmation-modals.css */
+
+/* === MODAL TITLE === */
+/* Inherits from .confirmation-modal-title in _confirmation-modals.css */
+
+/* === MODAL DESCRIPTION === */
+/* Inherits from .confirmation-modal-description in _confirmation-modals.css */
+
+/* 7px visual spacing between success message and reset description */
+/* Base has 9px bottom margin (16px visual), reduce gap to 7px visual */
+.begin-new-plan-card .modal-spacing-top {
+  margin-top: -8px; /* Reduces gap from 10px visual to 7px visual */
+}
+
+/* === MODAL QUESTION === */
+/* Inherits from .confirmation-modal-question in _confirmation-modals.css */
+
+/* === MODAL ACTIONS === */
+/* Inherits from .confirmation-modal-actions in _confirmation-modals.css */
+
+/* === CANCEL BUTTON === */
+/* Inherits from .button-cancel in _buttons.css */
+
+/* === GREEN YES BUTTON - Begin New Plan specific === */
+.begin-new-plan-card .button-begin-new-plan-yes {
+  background-color: var(--log-green);
+}
+
+/* === ANIMATION COLOR === */
+/* Set green flash color for Begin New Plan modal's success message */
+.begin-new-plan-card {
+  --animation-flash-color: var(--text-green-plan); /* Green success color */
+}
+
+/* === CUSTOM ANIMATION - No Glow === */
+/* Override default modal-text-grow-flash to remove text-shadow glow */
+@keyframes begin-plan-grow-flash {
+  0% {
+    color: var(--text-primary); /* Start white */
+    transform: scale(1);
+    text-shadow: none;
+  }
+  90% {
+    color: var(--text-primary); /* Stay white during grow (900ms) */
+    transform: scale(1.15); /* Grow to 1.15x */
+    text-shadow: none;
+  }
+  100% {
+    color: var(--animation-flash-color, var(--text-primary)); /* Snap to green */
+    transform: scale(1);
+    text-shadow: none; /* No glow */
+  }
+}
+
+/* Apply custom animation to Begin New Plan modal */
+.begin-new-plan-card .modal-text-animated {
+  animation: begin-plan-grow-flash 1000ms ease-out forwards;
+}

@@ -28,6 +28,7 @@ import {
   renderConfigHeaderLine,
   renderSessionDisplay,
   renderFocusDisplay,
+  renderPlanDisplay,
 } from "./config-card.header.render.js";
 import { cancelConfigChanges as cancelConfigChangesImpl } from "./config-card.header.cancel.js";
 import {
@@ -86,6 +87,7 @@ export {
   renderConfigHeaderLine,
   renderSessionDisplay,
   renderFocusDisplay,
+  renderPlanDisplay,
   canCycleNext,
   canCyclePrevious,
   cycleNextSession,

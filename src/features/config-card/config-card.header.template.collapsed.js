@@ -12,7 +12,12 @@ import { canCycleToSession, isSessionCyclingLocked } from "utils";
    Used by: config-card.header.render.js (collapsed state rendering)
    ========================================================================== */
 
-// Helper: Check if next session cycling is allowed
+/* === HELPER FUNCTIONS === */
+
+/**
+ * Check if next session cycling is allowed
+ * @returns {boolean} True if can cycle to next session
+ */
 function canCycleNext() {
   const currentIndex = timeOptions.findIndex((t) => t.name === appState.session.currentTimeOptionName);
   if (currentIndex >= timeOptions.length - 1) return false;
@@ -20,7 +25,10 @@ function canCycleNext() {
   return canCycleToSession(nextOption.name);
 }
 
-// Helper: Check if previous session cycling is allowed
+/**
+ * Check if previous session cycling is allowed
+ * @returns {boolean} True if can cycle to previous session
+ */
 function canCyclePrevious() {
   const currentIndex = timeOptions.findIndex((t) => t.name === appState.session.currentTimeOptionName);
   if (currentIndex <= 0) return false;
@@ -28,7 +36,10 @@ function canCyclePrevious() {
   return canCycleToSession(prevOption.name);
 }
 
-// Helper: Get muscle group icon based on current exercise bodypart
+/**
+ * Get muscle group icon based on current exercise bodypart
+ * @returns {string} HTML for muscle group icon (image or emoji)
+ */
 function getMuscleGroupIcon() {
   const { superset, partner, session } = appState;
   let muscleGroup = "";
@@ -77,7 +88,10 @@ function getMuscleGroupIcon() {
   return `📋`;
 }
 
-// Helper: Get abbreviated plan text for Quick Workout Button
+/**
+ * Get abbreviated plan text for Plan Quick Button
+ * @returns {string} HTML for plan quick button content (stacked layout)
+ */
 function getAbbreviatedPlanText() {
   const { superset, partner } = appState;
 
@@ -109,17 +123,18 @@ function getAbbreviatedPlanText() {
 
       return `<div class="plan-quick-button-stack"><span class="plan-quick-button-muted">${abbreviation}</span><span class="data-highlight text-plan">${weekDisplay}</span></div>`;
     } else {
-      // Fallback to old config.js data if plans not loaded
-      const currentWorkout = workoutPlans.find((p) => p.name === appState.session.currentWorkoutName) || workoutPlans[0];
-      const durationParts = currentWorkout.duration.split(' ');
-      const durationNumber = durationParts[0];
-      const durationUnit = durationParts[1] ? durationParts[1].replace('Weeks', 'Wks').replace('weeks', 'Wks') : '';
-      return `<div class="plan-quick-button-stack"><span class="plan-quick-button-muted">3-2-1</span><span class="data-highlight text-plan">${durationNumber} ${durationUnit}</span></div>`;
+      // Fallback if plans not loaded yet - use Week 1 format
+      const abbreviation = "3-2-1";
+      const weekDisplay = "Week 1";
+      return `<div class="plan-quick-button-stack"><span class="plan-quick-button-muted">${abbreviation}</span><span class="data-highlight text-plan">${weekDisplay}</span></div>`;
     }
   }
 }
 
-// Helper: Get session time text for Session Quick Button
+/**
+ * Get session time text for Session Quick Button
+ * @returns {string} HTML for session quick button content (stacked layout)
+ */
 function getSessionTimeText() {
   const { session } = appState;
   const timeMinutes = appState.session.workoutTimeRemaining;
@@ -128,15 +143,24 @@ function getSessionTimeText() {
   return `<div class="session-quick-button-stack"><span class="${session.currentSessionColorClass}">${timeMinutes} ${timeText}</span><span class="${session.currentSessionColorClass}">Remain</span></div>`;
 }
 
-// Collapsed state template - minimal icon bar
+/* === TEMPLATE GENERATION === */
+
+/**
+ * Generate collapsed config header template (minimal icon bar)
+ * Shows three quick buttons with muting logic:
+ * - Plan/Focus buttons: Muted when any set is logged (visual only, still clickable)
+ * - Session button: Muted when session cycling is locked (visual only, still clickable)
+ * All buttons remain clickable to expand config dropdown even when muted
+ * @returns {string} HTML for collapsed config header
+ */
 export function getCollapsedTemplate() {
-  // 🔒 CEMENT: Check if any set is logged to visually mute plan/focus buttons
+  // Check if any set is logged to visually mute plan/focus buttons
   // Buttons remain clickable to open config dropdown even when muted
   const isAnySetLogged = appState.session.workoutLog.some(
     (log) => log.status !== "pending"
   );
 
-  // 🔒 CEMENT: Check if session cycling completely locked (Maintenance lock after 3rd set)
+  // Check if session cycling completely locked (Maintenance lock after 3rd set)
   // Button remains clickable to open config dropdown even when muted
   const isSessionCyclingDisabled = isSessionCyclingLocked();
 

@@ -23,7 +23,7 @@ import { fetchPlans } from "api/plansClient.js";
 import * as persistenceService from "services/core/persistenceService.js";
 import * as selectorService from "services/ui/selectorService.js";
 import { renderActiveExerciseCard } from "../active-exercise-card/active-exercise-card.index.js";
-import { renderConfigHeaderLine } from "../config-card/config-card.header.render.js";
+import { renderPlanDisplay } from "../config-card/config-card.header.index.js";
 import { getRepTarget } from "../../services/workout/repTargetService.js";
 import {
   getCurrentWeekNumber,
@@ -31,6 +31,8 @@ import {
   getCurrentWeekRange,
   getWeeksRemaining,
 } from "../../shared/utils/planWeekUtils.js";
+
+/* === REP TARGET UPDATES === */
 
 /**
  * Update rep targets for pending sets in workout log
@@ -45,6 +47,8 @@ function updatePendingSetRepTargets() {
     }
   });
 }
+
+/* === PAGE RENDERING === */
 
 /**
  * Render My Plan page
@@ -96,9 +100,11 @@ export async function renderMyPlanPage() {
     });
   });
 
-  // Update config card with newly initialized plan data
-  renderConfigHeaderLine();
+  // Update config card plan display with newly initialized plan data
+  renderPlanDisplay();
 }
+
+/* === EVENT LISTENERS === */
 
 /**
  * Wire up event listeners for plan selection, confirmation, and week navigation
@@ -133,6 +139,8 @@ function wireEventListeners() {
   }
 }
 
+/* === EVENT HANDLERS === */
+
 /**
  * Handle plan selection from dropdown
  * Updates selected plan, closes selector, saves state
@@ -165,8 +173,9 @@ function handlePlanSelection(event) {
  * Handle Change Plan button click
  * Archives current active plan to history, sets selected plan as new active plan
  * Initializes week tracking to Week 1 with today's date
+ * Exported for use by Begin New Plan modal confirmation
  */
-function handleChangePlan() {
+export function handleChangePlan() {
   const { selectedPlanId, activePlanId, startDate, currentWeekNumber } = appState.ui.myPlanPage;
 
   if (!selectedPlanId) return;
@@ -221,8 +230,8 @@ function handleChangePlan() {
   // Update rep targets for pending sets (plan change resets to Week 1 reps)
   updatePendingSetRepTargets();
 
-  // Re-render config header to update Current Workout selector and Quick Workout Button
-  renderConfigHeaderLine();
+  // Update config card plan display to reflect new active plan
+  renderPlanDisplay();
 
   // Re-render home page if currently viewing it
   if (appState.ui.currentPage === "home") {
@@ -288,8 +297,8 @@ function handleWeekPrevious() {
   // Update rep targets for pending sets (week change affects all future sets)
   updatePendingSetRepTargets();
 
-  // Re-render config header to update remaining weeks in selector and quick button
-  renderConfigHeaderLine();
+  // Update config card plan display to reflect new week
+  renderPlanDisplay();
 
   // Re-render home page if currently viewing it
   if (appState.ui.currentPage === "home") {
@@ -355,8 +364,8 @@ function handleWeekNext() {
   // Update rep targets for pending sets (week change affects all future sets)
   updatePendingSetRepTargets();
 
-  // Re-render config header to update remaining weeks in selector and quick button
-  renderConfigHeaderLine();
+  // Update config card plan display to reflect new week
+  renderPlanDisplay();
 
   // Re-render home page if currently viewing it
   if (appState.ui.currentPage === "home") {
@@ -367,9 +376,12 @@ function handleWeekNext() {
   persistenceService.saveState();
 }
 
+/* === DISPLAY UPDATES === */
+
 /**
  * Update Active Plan selector in real-time
- * Updates the displayed remaining weeks without full re-render
+ * Updates display to "Week # of #: plan_name" format without full re-render
+ * Color: Week numbers in green, "of" and plan name in white
  */
 function updateActivePlanSelector() {
   const { activePlanId, currentWeekNumber } = appState.ui.myPlanPage;
@@ -379,13 +391,10 @@ function updateActivePlanSelector() {
   if (activePlanSummary && activePlanId && plans) {
     const activePlan = plans.find((p) => p.id === activePlanId);
     if (activePlan) {
-      // Always calculate remaining weeks (counts down as weeks advance)
-      const activeWeeksToShow = currentWeekNumber
-        ? getWeeksRemaining(activePlanId, currentWeekNumber, plans) || activePlan.totalWeeks
-        : activePlan.totalWeeks;
+      const currentWeek = currentWeekNumber || 1;
+      const totalWeeks = activePlan.totalWeeks;
 
-      const activeWeeksText = activeWeeksToShow === 1 ? "Week" : "Weeks";
-      activePlanSummary.innerHTML = `<span class="text-on-surface-medium">${activePlan.name}:&nbsp;</span><span class="data-highlight text-plan">${activeWeeksToShow} ${activeWeeksText}</span>`;
+      activePlanSummary.innerHTML = `<span class="text-plan">Week ${currentWeek}</span> of <span class="text-plan">${totalWeeks}</span>: ${activePlan.name}`;
     }
   }
 }
@@ -442,18 +451,15 @@ function updatePlanDisplay() {
     summary.innerHTML = `<span class="text-on-surface-medium">${selectedPlan.name}:&nbsp;</span><span class="data-highlight text-plan">${weeksToShow} ${weeksText}</span>`;
   }
 
-  // Update Active Plan selector (always shows remaining weeks for active plan)
+  // Update Active Plan selector (shows "Week # of #: plan_name" format)
   const activePlanSummary = document.querySelector("#active-plan-selector summary .item-main-line");
   if (activePlanSummary && activePlanId) {
     const activePlan = plans.find((p) => p.id === activePlanId);
     if (activePlan) {
-      // Always calculate remaining weeks (counts down as weeks advance)
-      const activeWeeksToShow = currentWeekNumber
-        ? getWeeksRemaining(activePlanId, currentWeekNumber, plans) || activePlan.totalWeeks
-        : activePlan.totalWeeks;
+      const currentWeek = currentWeekNumber || 1;
+      const totalWeeks = activePlan.totalWeeks;
 
-      const activeWeeksText = activeWeeksToShow === 1 ? "Week" : "Weeks";
-      activePlanSummary.innerHTML = `<span class="text-on-surface-medium">${activePlan.name}:&nbsp;</span><span class="data-highlight text-plan">${activeWeeksToShow} ${activeWeeksText}</span>`;
+      activePlanSummary.innerHTML = `<span class="text-plan">Week ${currentWeek}</span> of <span class="text-plan">${totalWeeks}</span>: ${activePlan.name}`;
     }
   }
 
@@ -547,14 +553,16 @@ function updatePlanDisplay() {
     programInfoContent.textContent = selectedPlan.planInformation || "Information...";
   }
 
-  // Update button state (Active Plan vs Change Plan)
+  // Update button state (Active Plan vs Begin New Plan)
   const button = document.getElementById("plan-action-button");
   if (button) {
-    const buttonText = isActivePlan ? "Active Plan" : "Change Plan";
+    const buttonText = isActivePlan ? "Active Plan" : "Begin New Plan";
     button.textContent = buttonText;
     button.disabled = isActivePlan;
   }
 }
+
+/* === WEEK HIGHLIGHTING === */
 
 /**
  * Update green borders and animation for current and completed week ranges
@@ -614,6 +622,8 @@ function updateCurrentWeekHighlight() {
     }
   });
 }
+
+/* === PHASE CHART UPDATES === */
 
 /**
  * Update weekly guide boxes display

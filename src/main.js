@@ -39,6 +39,7 @@ import { renderMyPlanPage } from "features/my-plan/my-plan.index.js";
 import { renderSideNav } from "features/side-nav/side-nav.index.js";
 import { renderResetConfirmationModal } from "features/reset-confirmation-modal/reset-confirmation-modal.index.js";
 import { renderNewWorkoutModal } from "features/new-workout-modal/new-workout-modal.index.js";
+import { renderBeginNewPlanModal } from "features/begin-new-plan-modal/begin-new-plan-modal.index.js";
 import { renderEditWorkoutModal } from "features/edit-workout-modal/edit-workout-modal.index.js";
 import { renderDeleteLogModal } from "features/delete-log-modal/delete-log-modal.index.js";
 import { renderDeleteWorkoutModal } from "features/delete-workout-modal/delete-workout-modal.index.js";
@@ -134,6 +135,7 @@ function renderAll() {
   renderSideNav();
   renderResetConfirmationModal();
   renderNewWorkoutModal();
+  renderBeginNewPlanModal();
   renderEditWorkoutModal();
   renderDeleteLogModal();
   renderDeleteWorkoutModal();
@@ -161,6 +163,7 @@ function renderModalsOnly() {
   // Used by modalService when skipPageRender = true to avoid reloading the page
   renderResetConfirmationModal();
   renderNewWorkoutModal();
+  renderBeginNewPlanModal();
   renderEditWorkoutModal();
   renderDeleteLogModal();
   renderDeleteWorkoutModal();

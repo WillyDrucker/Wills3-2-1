@@ -40,6 +40,7 @@ import {
 } from "features/partner-modal/partner-modal.index.js";
 import { handleConfirmReset } from "features/reset-confirmation-modal/reset-confirmation-modal.index.js";
 import { handleConfirmNewWorkout } from "features/new-workout-modal/new-workout-modal.index.js";
+import { handleChangePlan } from "features/my-plan/my-plan.index.js";
 import { markCurrentWorkoutCommitted, updateHistoricalLog, deleteHistoricalLog, deleteEntireWorkout, restoreEntireWorkout } from "services/data/historyService.js";
 import {
   handleResetWorkoutDefaults,
@@ -302,6 +303,19 @@ export function getModalHandlers(coreActions) {
       handleConfirmNewWorkout();
       // Reset session/logs but keep database entries (workout preserved in My Data)
       coreActions.resetSessionAndLogs();
+    },
+
+    // === BEGIN NEW PLAN MODAL ===
+    // Triggered from My Plan page "Begin New Plan" button
+    // Confirms plan change with warning about progress loss
+    openBeginNewPlanModal: () => modalService.open("beginNewPlan"),
+
+    closeBeginNewPlanModal: () => modalService.close(),
+
+    confirmBeginNewPlan: () => {
+      // Change active plan (archives old plan, resets to Week 1)
+      handleChangePlan();
+      modalService.close();
     },
 
     // === HISTORY WORKOUT SELECTOR INTERACTION ===
