@@ -42,6 +42,10 @@
   box-shadow: inset 0 0 0 2px var(--muted-border-color); /* Dark blue muted border */
   cursor: default; /* Non-interactive */
   pointer-events: none; /* Disabled */
+  height: 25px; /* Fixed height for empty/placeholder selectors */
+  padding: 0 9px; /* Horizontal padding only, vertical centering via flex */
+  display: flex;
+  align-items: center; /* Vertically center placeholder text */
 }
 
 /* Interactive selectors (committed workouts) */

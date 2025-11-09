@@ -35,6 +35,7 @@ export {
   getWeekRange,
   getDaysInWeek,
   isDateInFuture,
+  getPlanWeeksReached,
 } from "./utils/calendarUtils.js";
 
 // DOM utilities

@@ -56,6 +56,9 @@ export function getNavigationHandlers(coreActions) {
     },
 
     goToMyData: () => {
+      // Reset to "Workout Results" tab when navigating to My Data page
+      appState.ui.myDataPage.selectedTab = "Workout Results";
+
       // Don't clear selectors when navigating TO My Data page
       navigationService.goToPage("myData");
       coreActions.renderAll();

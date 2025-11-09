@@ -45,6 +45,9 @@ export const ui = {
   beginNewPlanModalContainer: document.getElementById(
     "begin-new-plan-modal-container"
   ),
+  resumePlanModalContainer: document.getElementById(
+    "resume-plan-modal-container"
+  ),
   resetOptionsModalContainer: document.getElementById(
     "reset-options-modal-container"
   ),

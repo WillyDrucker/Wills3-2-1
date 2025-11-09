@@ -31,6 +31,11 @@ import {
   getCurrentWeekRange,
   getWeeksRemaining,
 } from "../../shared/utils/planWeekUtils.js";
+import {
+  savePlanProgressToDatabase,
+  updatePlanProgressStatus,
+  loadWorkoutsFromDatabase,
+} from "../../services/data/workoutSyncService.js";
 
 /* === REP TARGET UPDATES === */
 
@@ -73,12 +78,28 @@ export async function renderMyPlanPage() {
   // Initialize week tracking if active plan exists but week number doesn't (happens after nuke)
   if (appState.ui.myPlanPage.activePlanId && !appState.ui.myPlanPage.currentWeekNumber) {
     appState.ui.myPlanPage.currentWeekNumber = 1;
-    appState.ui.myPlanPage.startDate = new Date().toISOString();
+    const startDate = new Date().toISOString();
+    appState.ui.myPlanPage.startDate = startDate;
+
+    // Save initial plan progress to database
+    const activePlan = appState.plan.plans.find(p => p.id === appState.ui.myPlanPage.activePlanId);
+    if (activePlan && appState.auth?.isAuthenticated) {
+      await savePlanProgressToDatabase({
+        plan_id: appState.ui.myPlanPage.activePlanId,
+        plan_duration_weeks: activePlan.totalWeeks,
+        start_date: startDate,
+        end_date: null,
+        status: "active",
+      });
+    }
+
     persistenceService.saveState();
   }
 
-  // ALWAYS default to showing the active plan when page loads
-  appState.ui.myPlanPage.selectedPlanId = appState.ui.myPlanPage.activePlanId;
+  // Default to showing the active plan when page loads (only if no selection exists yet)
+  if (!appState.ui.myPlanPage.selectedPlanId) {
+    appState.ui.myPlanPage.selectedPlanId = appState.ui.myPlanPage.activePlanId;
+  }
 
   // Initialize planHistory array if it doesn't exist
   if (!appState.ui.myPlanPage.planHistory) {
@@ -120,11 +141,9 @@ function wireEventListeners() {
     option.addEventListener("click", handlePlanSelection);
   });
 
-  // Active Plan / Change Plan button
-  const planActionButton = document.getElementById("plan-action-button");
-  if (planActionButton) {
-    planActionButton.addEventListener("click", handleChangePlan);
-  }
+  // Active Plan / Begin New Plan button
+  // Uses data-action="openBeginNewPlanModal" to trigger modal via action handler system
+  // No direct event listener needed - handled by global action dispatcher
 
   // Week navigation buttons
   const weekPrevButton = document.querySelector(".plan-week-navigator .week-nav-prev");
@@ -175,31 +194,100 @@ function handlePlanSelection(event) {
  * Initializes week tracking to Week 1 with today's date
  * Exported for use by Begin New Plan modal confirmation
  */
-export function handleChangePlan() {
+export async function handleChangePlan() {
   const { selectedPlanId, activePlanId, startDate, currentWeekNumber } = appState.ui.myPlanPage;
 
   if (!selectedPlanId) return;
 
-  // Archive current active plan to history if it exists and is different from selected
+  const newStartDate = new Date().toISOString();
+  const endDate = new Date().toISOString();
+
+  // Update previous plan status in database if it has displayable body parts, or delete if blank
   if (activePlanId && activePlanId !== selectedPlanId && startDate) {
-    const historyEntry = {
-      planId: activePlanId,
-      startDate: startDate,
-      endDate: new Date().toISOString(),
-      completedWeeks: currentWeekNumber ? [currentWeekNumber] : [],
-      reason: "switched",
-    };
-    appState.ui.myPlanPage.planHistory.push(historyEntry);
+    // Check if previous plan has any body parts that would display (completed sets within plan date range)
+    const { workouts } = await loadWorkoutsFromDatabase();
+    const previousPlanStartDate = new Date(startDate);
+
+    // Normalize plan names for comparison (remove trailing colons)
+    const normalizedActivePlanId = activePlanId.replace(/:$/, '');
+
+    // Check if any workout has completed sets that would show as body parts in the plan span selector
+    const hasDisplayableBodyParts = workouts.some(workout => {
+      const normalizedWorkoutPlan = (workout.planName || '').replace(/:$/, '');
+
+      // Must match plan name (don't filter by date - historical workouts should count)
+      if (normalizedWorkoutPlan !== normalizedActivePlanId) return false;
+
+      // Must have at least one completed set (not just logged, but completed)
+      if (!workout.logs || workout.logs.length === 0) return false;
+      return workout.logs.some(log => log.status === 'completed');
+    });
+
+    if (hasDisplayableBodyParts) {
+      // Update status to "switched" in database
+      await updatePlanProgressStatus(activePlanId, startDate, "switched", endDate);
+
+      // Archive to local history
+      const historyEntry = {
+        planId: activePlanId,
+        startDate: startDate,
+        endDate: endDate,
+        completedWeeks: currentWeekNumber ? [currentWeekNumber] : [],
+        reason: "switched",
+      };
+      appState.ui.myPlanPage.planHistory.push(historyEntry);
+    } else {
+      // No logged workouts - delete the plan_progress entry to clean up
+      const { deletePlanProgress } = await import("services/data/workoutSyncService.save.js");
+
+      // Find the plan_progress entry to delete
+      const { planProgress } = appState.user.history;
+      const planProgressEntry = planProgress.find(pp => {
+        // Normalize plan IDs for comparison
+        const normalizedPpPlanId = pp.plan_id.replace(/:$/, '');
+        const normalizedActivePlanId = activePlanId.replace(/:$/, '');
+
+        // Compare dates as timestamps (handles format differences like Z vs +00:00)
+        const ppDate = new Date(pp.start_date).getTime();
+        const stateDate = new Date(startDate).getTime();
+
+        return normalizedPpPlanId === normalizedActivePlanId &&
+               ppDate === stateDate &&
+               pp.status === 'active';
+      });
+
+      if (planProgressEntry) {
+        await deletePlanProgress(planProgressEntry.id);
+
+        // Reload plan progress to update state
+        const { loadPlanProgressFromDatabase } = await import("services/data/workoutSyncService.load.js");
+        const { planProgress: updatedPlanProgress } = await loadPlanProgressFromDatabase();
+        appState.user.history.planProgress = updatedPlanProgress;
+      }
+    }
   }
 
   // Set selected plan as new active plan
   appState.ui.myPlanPage.activePlanId = selectedPlanId;
 
   // Set start date to today
-  appState.ui.myPlanPage.startDate = new Date().toISOString();
+  appState.ui.myPlanPage.startDate = newStartDate;
 
   // Initialize week tracking to Week 1
   appState.ui.myPlanPage.currentWeekNumber = 1;
+
+  // Get plan duration for database entry
+  const selectedPlan = appState.plan.plans.find(p => p.id === selectedPlanId);
+  const planDurationWeeks = selectedPlan ? selectedPlan.totalWeeks : 15;
+
+  // Save new active plan to database
+  await savePlanProgressToDatabase({
+    plan_id: selectedPlanId,
+    plan_duration_weeks: planDurationWeeks,
+    start_date: newStartDate,
+    end_date: null,
+    status: "active",
+  });
 
   // Update button state
   const button = document.getElementById("plan-action-button");

@@ -31,6 +31,7 @@
 @import url("./my-data.performance.css");
 @import url("./my-data.history-spacing.css");
 @import url("./my-data.selectors.css");
+@import url("./my-data.plan-span.css");
 
 /* === CARD FOUNDATION === */
 .my-data-card {
@@ -38,9 +39,9 @@
   border: var(--card-border-width) solid transparent;
 }
 
-/* History card needs specific bottom padding for 16px visual spacing to placeholder text */
+/* History card needs specific bottom padding for 16px visual spacing to last selector */
 .my-data-card.history-card .card-content-container {
-  padding-bottom: 11px; /* Compensates for italic font metrics = 16px visual to bottom */
+  padding-bottom: 16px; /* 16px from last selector to bottom of card */
 }
 
 /* === CLEAR DAILY DATA CARD === */

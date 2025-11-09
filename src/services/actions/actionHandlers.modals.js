@@ -307,14 +307,160 @@ export function getModalHandlers(coreActions) {
 
     // === BEGIN NEW PLAN MODAL ===
     // Triggered from My Plan page "Begin New Plan" button
-    // Confirms plan change with warning about progress loss
-    openBeginNewPlanModal: () => modalService.open("beginNewPlan"),
+    // Checks if selected plan has recent workouts - shows Resume modal if yes, Begin New Plan modal if no
+    openBeginNewPlanModal: async () => {
+      const { selectedPlanId } = appState.ui.myPlanPage;
+      const { plans } = appState.plan;
+      const { planProgress } = appState.user.history;
+
+      // Find the selected plan
+      const selectedPlan = plans.find(p => p.id === selectedPlanId);
+      if (!selectedPlan) {
+        console.error("Selected plan not found");
+        return;
+      }
+
+      // Check if there's an existing plan_progress entry for this plan
+      const existingPlanProgress = planProgress.find(pp =>
+        pp.plan_id === selectedPlanId && pp.status === 'switched'
+      );
+
+      if (existingPlanProgress) {
+        // Check if plan has logged workouts in the last 2 weeks
+        const { loadWorkoutsFromDatabase } = await import("services/data/workoutSyncService.load.js");
+        const { workouts } = await loadWorkoutsFromDatabase();
+
+        const twoWeeksAgo = new Date();
+        twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+
+        const recentWorkouts = workouts.filter(workout => {
+          const workoutDate = new Date(workout.timestamp);
+          const normalizedWorkoutPlan = (workout.planName || '').replace(/:$/, '');
+          const normalizedSelectedPlan = selectedPlanId.replace(/:$/, '');
+          return normalizedWorkoutPlan === normalizedSelectedPlan && workoutDate >= twoWeeksAgo;
+        });
+
+        if (recentWorkouts.length > 0) {
+          // Calculate current week number based on original start_date
+          const planStartDate = new Date(existingPlanProgress.start_date);
+
+          // Get Sunday of the week containing the plan start date
+          const day = planStartDate.getDay(); // 0 = Sunday, 6 = Saturday
+          const week1Sunday = new Date(planStartDate);
+          week1Sunday.setDate(planStartDate.getDate() - day); // Go back to Sunday
+
+          const today = new Date();
+          const daysDiff = Math.floor((today - week1Sunday) / (1000 * 60 * 60 * 24));
+          const currentWeekNumber = Math.floor(daysDiff / 7) + 1;
+
+          // Set context for Resume Plan modal
+          appState.ui.resumePlanModalContext = {
+            planName: selectedPlan.name,
+            planDurationWeeks: selectedPlan.totalWeeks,
+            currentWeekNumber: Math.min(currentWeekNumber, selectedPlan.totalWeeks),
+            existingPlanProgress: existingPlanProgress
+          };
+
+          // Show Resume Plan modal instead
+          modalService.open("resumePlan");
+          return;
+        }
+      }
+
+      // No recent workouts or no existing plan progress - show Begin New Plan modal
+      modalService.open("beginNewPlan");
+    },
 
     closeBeginNewPlanModal: () => modalService.close(),
 
-    confirmBeginNewPlan: () => {
+    confirmBeginNewPlan: async () => {
       // Change active plan (archives old plan, resets to Week 1)
-      handleChangePlan();
+      await handleChangePlan();
+      modalService.close();
+    },
+
+    // === RESUME PLAN MODAL ===
+    // Triggered when user selects a plan with logged workouts in last 2 weeks
+    // Informational modal that resumes the plan at the calculated week number
+    openResumePlanModal: () => modalService.open("resumePlan"),
+
+    closeResumePlanModal: () => {
+      // Clear modal context
+      appState.ui.resumePlanModalContext = null;
+      modalService.close();
+    },
+
+    resumePlanYes: async () => {
+      // User chose to resume - update existing plan_progress entry
+      const context = appState.ui.resumePlanModalContext;
+      if (!context || !context.existingPlanProgress) {
+        console.error("Resume Plan: Missing context or existing plan progress");
+        modalService.close();
+        return;
+      }
+
+      const { plan_id, start_date } = context.existingPlanProgress;
+      const currentActivePlanId = appState.ui.myPlanPage.activePlanId;
+      const currentStartDate = appState.ui.myPlanPage.startDate;
+
+      // Check if current active plan should be deleted (no workouts)
+      if (currentActivePlanId && currentActivePlanId !== plan_id && currentStartDate) {
+        const { loadWorkoutsFromDatabase } = await import("services/data/workoutSyncService.load.js");
+        const { workouts } = await loadWorkoutsFromDatabase();
+
+        const normalizedCurrentPlanId = currentActivePlanId.replace(/:$/, '');
+
+        const hasDisplayableBodyParts = workouts.some(workout => {
+          const normalizedWorkoutPlan = (workout.planName || '').replace(/:$/, '');
+          if (normalizedWorkoutPlan !== normalizedCurrentPlanId) return false;
+          if (!workout.logs || workout.logs.length === 0) return false;
+          return workout.logs.some(log => log.status === 'completed');
+        });
+
+        if (!hasDisplayableBodyParts) {
+          // Delete the blank plan_progress entry
+          const { deletePlanProgress } = await import("services/data/workoutSyncService.save.js");
+          const { planProgress } = appState.user.history;
+
+          const planProgressEntry = planProgress.find(pp => {
+            const normalizedPpPlanId = pp.plan_id.replace(/:$/, '');
+            const normalizedActivePlanId = currentActivePlanId.replace(/:$/, '');
+            const ppDate = new Date(pp.start_date).getTime();
+            const stateDate = new Date(currentStartDate).getTime();
+            return normalizedPpPlanId === normalizedActivePlanId &&
+                   ppDate === stateDate &&
+                   pp.status === 'active';
+          });
+
+          if (planProgressEntry) {
+            await deletePlanProgress(planProgressEntry.id);
+          }
+        } else {
+          // Mark current plan as 'switched'
+          const { updatePlanProgressStatus } = await import("services/data/workoutSyncService.save.js");
+          const endDate = new Date().toISOString();
+          await updatePlanProgressStatus(currentActivePlanId, currentStartDate, "switched", endDate);
+        }
+      }
+
+      // Update existing plan_progress: set status='active', end_date=null
+      const { updatePlanProgressStatus } = await import("services/data/workoutSyncService.save.js");
+
+      // Reactivate the plan (removes end_date, sets status='active')
+      await updatePlanProgressStatus(plan_id, start_date, "active", null);
+
+      // Set this plan as active in state
+      appState.ui.myPlanPage.activePlanId = plan_id;
+      appState.ui.myPlanPage.startDate = start_date;
+      appState.ui.myPlanPage.currentWeekNumber = context.currentWeekNumber;
+
+      // Reload plan progress from database
+      const { loadPlanProgressFromDatabase } = await import("services/data/workoutSyncService.load.js");
+      const { planProgress } = await loadPlanProgressFromDatabase();
+      appState.user.history.planProgress = planProgress;
+
+      // Clear context and close
+      appState.ui.resumePlanModalContext = null;
       modalService.close();
     },
 
@@ -355,6 +501,63 @@ export function getModalHandlers(coreActions) {
       appState.ui.selectedHistoryWorkoutId = null;
       // Fast re-render without database reload
       refreshMyDataPageDisplay();
+    },
+
+    // === PLAN SPAN SELECTOR INTERACTION ===
+    // Select a plan span - similar to workout selector interaction
+    selectPlanSpan: (event) => {
+      event.preventDefault();
+
+      const selector = event.target.closest(".plan-span-selector");
+      if (selector) {
+        const planProgressId = selector.dataset.planProgressId;
+
+        // TWO-STEP BEHAVIOR: If there's already an active selection
+        // First click closes it, user must click again to open new selector
+        if (appState.ui.myDataPage.selectedPlanProgressId !== null) {
+          // If clicking the already-active selector or different selector, close current
+          appState.ui.myDataPage.selectedPlanProgressId = null;
+        } else {
+          // No active selection, open this selector
+          appState.ui.myDataPage.selectedPlanProgressId = planProgressId;
+        }
+
+        // Fast re-render without database reload
+        refreshMyDataPageDisplay();
+      }
+    },
+
+    // Cancel plan span selection - closes popped selector
+    cancelPlanSpanSelection: () => {
+      appState.ui.myDataPage.selectedPlanProgressId = null;
+      // Fast re-render without database reload
+      refreshMyDataPageDisplay();
+    },
+
+    // Clear plan progress - deletes plan_progress entry from database
+    clearPlanProgress: async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const button = event.target.closest(".plan-span-clear-button");
+      if (button) {
+        const planProgressId = button.dataset.planProgressId;
+
+        // Delete from database
+        const { deletePlanProgress } = await import("services/data/workoutSyncService.save.js");
+        await deletePlanProgress(planProgressId);
+
+        // Reload plan progress from database
+        const { loadPlanProgressFromDatabase } = await import("services/data/workoutSyncService.load.js");
+        const { planProgress } = await loadPlanProgressFromDatabase();
+        appState.user.history.planProgress = planProgress;
+
+        // Clear selection
+        appState.ui.myDataPage.selectedPlanProgressId = null;
+
+        // Re-render
+        refreshMyDataPageDisplay();
+      }
     },
 
     // === EDIT WORKOUT MODAL ===

@@ -22,11 +22,14 @@
 
 export {
   saveWorkoutToDatabase,
+  savePlanProgressToDatabase,
+  updatePlanProgressStatus,
 } from "./workoutSyncService.save.js";
 
 export {
   loadWorkoutsFromDatabase,
   getLastBodyPartLifts,
+  loadPlanProgressFromDatabase,
 } from "./workoutSyncService.load.js";
 
 export {

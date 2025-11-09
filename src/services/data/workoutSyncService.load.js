@@ -76,6 +76,49 @@ export async function loadWorkoutsFromDatabase() {
 }
 
 /**
+ * Load plan progress from Supabase for current user
+ * Used for Plan Results page to show historical and active plans
+ * @returns {Promise<{planProgress: Array, error?: string}>}
+ */
+export async function loadPlanProgressFromDatabase() {
+  try {
+    const userId = appState.auth?.user?.id;
+    if (!userId) {
+      return { planProgress: [], error: "User not authenticated" };
+    }
+
+    const { data: planProgress, error } = await supabase
+      .from("plan_progress")
+      .select("*")
+      .eq("user_id", userId)
+      .order("start_date", { ascending: false });
+
+    if (error) {
+      console.error("Error loading plan progress:", error);
+      return { planProgress: [], error: error.message };
+    }
+
+    // Transform database format to app format (snake_case → camelCase)
+    const transformedProgress = planProgress.map((plan) => ({
+      id: plan.id,
+      user_id: plan.user_id,
+      plan_id: plan.plan_id,
+      plan_duration_weeks: plan.plan_duration_weeks,
+      start_date: plan.start_date,
+      end_date: plan.end_date,
+      status: plan.status,
+      created_at: plan.created_at,
+      updated_at: plan.updated_at,
+    }));
+
+    return { planProgress: transformedProgress };
+  } catch (error) {
+    console.error("Unexpected error loading plan progress:", error);
+    return { planProgress: [], error: error.message };
+  }
+}
+
+/**
  * Get last lifts for a specific body part
  * @param {string} bodyPart - Body part to query (e.g., "Arms", "Chest")
  * @param {number} limit - Number of workouts to return (default: 5)

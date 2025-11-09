@@ -39,7 +39,7 @@ import { renderSideNav } from "features/side-nav/side-nav.index.js";
 import * as clockService from "services/ui/clockService.js";
 import { renderActiveCardHeader } from "features/active-exercise-card/active-exercise-card.index.js";
 import { renderConfigHeaderLine } from "features/config-card/config-card.header.index.js";
-import { loadWorkoutsFromDatabase } from "services/data/workoutSyncService.js";
+import { loadWorkoutsFromDatabase, savePlanProgressToDatabase, loadPlanProgressFromDatabase } from "services/data/workoutSyncService.js";
 import { initializeDailyWeekCheck } from "services/core/weekAdvancementService.js";
 
 /* === SERVICE INITIALIZATION === */
@@ -199,6 +199,54 @@ export async function initialize(dependencies) {
       } else if (error) {
         console.error('[AppInit] Failed to load workouts from database:', error);
       }
+
+      // Initialize plan progress for authenticated users
+      // Ensures default plan ("Will's 3-2-1") has a database entry on first login
+      if (!appState.ui.myPlanPage.activePlanId) {
+        appState.ui.myPlanPage.activePlanId = "Will's 3-2-1";
+      }
+
+      if (!appState.ui.myPlanPage.currentWeekNumber) {
+        appState.ui.myPlanPage.currentWeekNumber = 1;
+      }
+
+      if (!appState.ui.myPlanPage.startDate) {
+        appState.ui.myPlanPage.startDate = new Date().toISOString();
+      }
+
+      // Check if plan_progress entry exists for active plan
+      const { planProgress } = await loadPlanProgressFromDatabase();
+      const activePlanId = appState.ui.myPlanPage.activePlanId;
+      const startDate = appState.ui.myPlanPage.startDate;
+
+      const existingEntry = planProgress.find(
+        p => p.plan_id === activePlanId && p.start_date === startDate
+      );
+
+      if (!existingEntry) {
+        // Create initial plan_progress entry for active plan
+        const activePlan = appState.plan.plans.find(p => p.id === activePlanId);
+        const planDurationWeeks = activePlan ? activePlan.totalWeeks : 15;
+
+        await savePlanProgressToDatabase({
+          plan_id: activePlanId,
+          plan_duration_weeks: planDurationWeeks,
+          start_date: startDate,
+          end_date: null,
+          status: "active",
+        });
+
+        console.log('[AppInit] Created initial plan_progress entry for:', activePlanId);
+
+        // Reload plan progress to include the newly created entry
+        const { planProgress: updatedPlanProgress } = await loadPlanProgressFromDatabase();
+        appState.user.history.planProgress = updatedPlanProgress;
+      } else {
+        // Use already loaded plan progress
+        appState.user.history.planProgress = planProgress;
+      }
+
+      persistenceService.saveState();
     } else if (appState.auth?.isGuest) {
       appState.ui.currentPage = "workout";
     }

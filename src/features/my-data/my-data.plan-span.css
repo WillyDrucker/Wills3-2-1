@@ -1,0 +1,234 @@
+/* ==========================================================================
+   MY DATA - Plan Span Selectors
+
+   Styling for plan span selectors on My Plan Results page.
+   Shows high-level plan progress with green border, weeks, and body parts.
+
+   Architecture:
+   - Green border: 2px inset box-shadow (vs blue for workout selectors)
+   - Black background: var(--background-dark)
+   - Always expanded (no collapse/expand functionality)
+   - 9px internal padding (matches workout session selector)
+   - Week labels: 50px left indent
+   - Body part labels: 100px left indent
+   - Font sizes/weights: Match workout session selector
+
+   Dependencies: _variables.css (colors, spacing, typography, border-radius)
+   Used by: my-data.templates.planSpanSelector.js
+   ========================================================================== */
+
+/* === PLAN SPAN SELECTOR === */
+/* Green border variant of workout-session-selector */
+.plan-span-selector {
+  background-color: var(--background-dark);
+  box-shadow: inset 0 0 0 2px var(--log-green); /* Green border instead of blue */
+  border-radius: var(--border-radius);
+  padding: 9px; /* Internal spacing - matches workout selector */
+  margin: 0; /* Spacing controlled by plan-span-container margin */
+  transition: none; /* SSS: No transitions */
+  cursor: pointer; /* Clickable to select */
+}
+
+/* Active state for selected plan span - popped out/highlighted */
+.plan-span-selector.is-active {
+  box-shadow: inset 0 0 0 2px var(--log-green), 0 0 20px rgba(0, 180, 0, 0.3); /* Green glow */
+  cursor: default;
+  position: relative; /* Required for absolute positioning of buttons */
+  z-index: 10; /* Raise above other selectors */
+  border-bottom-left-radius: 0; /* Square bottom corners to connect with button container */
+  border-bottom-right-radius: 0;
+}
+
+/* Muted state for non-selected plans when one is active */
+.plan-span-selector.is-muted {
+  box-shadow: inset 0 0 0 2px var(--muted-border-color); /* Muted green border */
+  cursor: default; /* Non-interactive */
+  pointer-events: none; /* Disabled */
+  opacity: 0.5; /* Dim the entire selector */
+}
+
+/* === PLAN RESULTS SELECTORS CONTAINER === */
+/* Container for all plan span selectors - controls spacing from month header */
+.plan-results-selectors {
+  margin-top: 4px; /* 4px + ~3px from font metrics = 7px visual spacing from November */
+}
+
+/* === PLAN SPAN CONTAINER === */
+/* Wrapper for each plan span selector - handles spacing between multiple plans */
+.plan-span-container {
+  margin: 0;
+}
+
+/* 16px spacing between multiple plan span selectors */
+.plan-span-container.plan-span-margin-top {
+  margin-top: 16px !important;
+}
+
+/* === PLAN SPAN TEXT ELEMENTS === */
+/* Plan name header at top (e.g., "Will's 3-2-1: 15 Weeks" + "Nov 7") */
+.plan-name-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: var(--font-size-body-m); /* 1rem - Match workout selector text */
+  font-weight: 600; /* Match workout selector exercise name weight */
+  line-height: 1; /* Tight line-height for precise spacing */
+  margin: 0;
+  margin-top: -1px; /* Compensate for font metrics to achieve exact 9px from top */
+  margin-bottom: 3px; /* 3px + 4px from line-height = 7px visual spacing to Week 1 */
+}
+
+.plan-name-text {
+  flex-shrink: 0; /* Don't shrink plan name */
+}
+
+.plan-activation-date {
+  flex-shrink: 0; /* Don't shrink activation date */
+  margin-left: 8px; /* Small gap from plan name */
+}
+
+/* Week label (e.g., "Week 1" + "Nov 3-9") - 50px from left edge */
+.plan-week-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: var(--font-size-body-m); /* 1rem */
+  font-weight: 500; /* Medium weight for week labels */
+  line-height: 1; /* Tight line-height for precise spacing */
+  margin: 0;
+  margin-left: 41px; /* 41px + 9px selector padding = 50px total from left edge */
+  margin-right: 0; /* Right edge aligns with selector padding */
+  margin-bottom: 3px; /* 7px visual spacing (compensates for font metrics) */
+}
+
+.plan-week-text {
+  color: var(--on-surface-medium); /* Informational gray */
+  flex-shrink: 0; /* Don't shrink week text */
+}
+
+.plan-week-date {
+  flex-shrink: 0; /* Don't shrink date range */
+  margin-left: 8px; /* Small gap from week text */
+}
+
+/* Last week label - 9px from bottom of selector */
+.plan-week-label:last-child {
+  margin-bottom: -3px; /* Compensate for font metrics to achieve exact 9px from bottom */
+}
+
+/* Body part label (e.g., "Chest", "Arms") - 100px from left edge */
+.plan-body-part-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: var(--font-size-body-m); /* 1rem */
+  font-weight: 500; /* Match week label weight */
+  line-height: 1; /* Tight line-height for precise spacing */
+  margin: 0;
+  margin-left: 91px; /* 91px + 9px selector padding = 100px total from left edge */
+  margin-right: 0; /* Right edge aligns with selector padding */
+  margin-bottom: 3px; /* 7px visual spacing (compensates for font metrics) */
+}
+
+.plan-body-part-text {
+  color: var(--text-green-plan); /* Green like dates */
+  flex-shrink: 0; /* Don't shrink body part name */
+}
+
+.plan-body-part-date {
+  flex-shrink: 0; /* Don't shrink date */
+  margin-left: 8px; /* Small gap from body part name */
+}
+
+/* Last body part in a week section - no bottom margin if it's the last element */
+.plan-body-part-label:last-child {
+  margin-bottom: 0; /* Last element has no margin-bottom, 9px from selector padding */
+}
+
+/* === PLAN SPAN CONTENT WRAPPER === */
+/* Wraps plan name and week entries to allow absolute button positioning */
+.plan-span-content {
+  /* No special styling needed - just structural wrapper */
+}
+
+/* Force last child of content wrapper to have no bottom margin */
+.plan-span-content > *:last-child {
+  margin-bottom: 0 !important; /* Ensures 9px spacing to bottom border from selector padding */
+}
+
+/* === PLAN SPAN BUTTONS === */
+/* Button container - absolutely positioned, no top property (natural flow position) */
+.plan-span-buttons {
+  position: absolute;
+  /* No 'top' property - stays at natural position but out of document flow */
+  left: 0;
+  right: 0;
+  width: 100%; /* Match selector width */
+  padding: 13px 16px 16px 16px; /* Top: 13px (16px visual from last text), Sides/Bottom: 16px */
+  display: flex;
+  gap: var(--space-m); /* 16px between buttons */
+  z-index: 200; /* Above all content */
+  background-color: var(--background-dark); /* Extend black background */
+  box-shadow: inset 2px 0 0 var(--log-green), inset -2px 0 0 var(--log-green), inset 0 -2px 0 var(--log-green); /* Green border on left, right, bottom */
+  border-bottom-left-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+}
+
+/* === CANCEL BUTTON === */
+/* Matches workout selector cancel button */
+.plan-span-cancel-button {
+  flex: 1; /* Equal width with Clear button */
+  height: 50px;
+  background-color: var(--surface-medium-dark); /* Standard cancel color */
+  color: var(--on-surface-light);
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-h2); /* 1.25rem */
+  font-weight: 600;
+  cursor: pointer;
+  transition: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plan-span-cancel-button:active {
+  transform: scale(0.98);
+}
+
+/* === CLEAR BUTTON === */
+/* RED background like delete functionality */
+.plan-span-clear-button {
+  flex: 1; /* Equal width with Cancel button */
+  height: 50px;
+  background-color: var(--skip-red);
+  color: var(--text-on-action-color);
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-h2); /* 1.25rem */
+  font-weight: 600;
+  cursor: pointer;
+  transition: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plan-span-clear-button:active {
+  transform: scale(0.98);
+}
+
+/* === PLAN RESULTS PLACEHOLDER === */
+/* Empty state message when no plan data exists */
+.plan-results-placeholder {
+  font-size: var(--font-size-body-m); /* 1rem */
+  font-weight: 400;
+  color: var(--on-surface-medium);
+  text-align: center;
+  margin: 16px 0;
+  padding: 32px 16px;
+}

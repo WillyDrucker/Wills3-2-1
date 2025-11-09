@@ -55,18 +55,26 @@
   margin-bottom: 4px !important; /* Override nuclear reset - 4px = 7px visual to selector */
 }
 
-/* Week navigator */
-.history-card .week-navigator {
+/* Week navigator (and year navigator) */
+.history-card .week-navigator,
+.history-card .year-navigator {
   /* Spacing handled in my-data.header.css - must override nuclear reset */
   margin-top: var(--space-m) !important; /* 16px from selector */
   margin-bottom: 15px !important; /* 15px = 16px visual to calendar content */
+}
+
+/* === PLAN RESULTS MONTH HEADER === */
+/* Month header for Plan Results view - 16px from divider */
+.history-card .plan-results-month-header {
+  margin-top: 16px !important; /* 16px from divider */
+  margin-bottom: 0 !important; /* No content below yet (placeholder) */
 }
 
 /* === LINE 1: DAY/DATE HEADER === */
 /* Shown once per day (first workout only) - 16px from divider, 7px to Line 2 */
 .history-card .history-day-date-header {
   margin-top: 16px !important; /* 16px from divider */
-  margin-bottom: 3px !important; /* 3px = 7px visual to body part line */
+  margin-bottom: 3px !important; /* 3px = 7px visual to body part line (with content) */
 }
 
 /* === LINE 2: BODY PART / COMPLETION LINE === */
@@ -74,6 +82,16 @@
 .history-card .history-body-part-line {
   margin-top: 0 !important; /* Day/date header provides spacing */
   margin-bottom: 4px !important; /* 4px = 7px visual to selector */
+}
+
+/* Empty body part lines (for muted selectors) - completely remove from layout */
+.history-card .history-body-part-line.empty-day {
+  display: none !important; /* Remove from layout entirely */
+}
+
+/* Muted selector after empty day - pull up to achieve 7px from header */
+.history-card .history-day-date-header + .empty-day + .workout-session-selector.is-muted {
+  margin-top: 4px !important; /* 3px header margin + 4px = 7px total */
 }
 
 /* Subsequent body part lines (after workout selector) - 16px spacing for multiple same-day workouts */

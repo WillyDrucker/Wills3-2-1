@@ -137,3 +137,147 @@ async function performSave(workout) {
     return { success: false, error: error.message };
   }
 }
+
+/**
+ * Create or update plan progress entry in Supabase
+ * Used when user activates or switches plans
+ * @param {Object} planData - Plan progress data
+ * @param {string} planData.plan_id - Plan name (e.g., "Will's 3-2-1")
+ * @param {number} planData.plan_duration_weeks - Total weeks (15, 12, 11, etc.)
+ * @param {string} planData.status - Status ("active", "completed", "switched")
+ * @param {string|Date} planData.start_date - When plan was started
+ * @param {string|Date|null} planData.end_date - When plan ended (null if active)
+ * @returns {Promise<{success: boolean, id?: string, error?: string}>}
+ */
+export async function savePlanProgressToDatabase(planData) {
+  try {
+    const userId = appState.auth?.user?.id;
+    if (!userId) {
+      return { success: false, error: "User not authenticated" };
+    }
+
+    const progressData = {
+      user_id: userId,
+      plan_id: planData.plan_id,
+      plan_duration_weeks: planData.plan_duration_weeks,
+      start_date: new Date(planData.start_date).toISOString(),
+      end_date: planData.end_date ? new Date(planData.end_date).toISOString() : null,
+      status: planData.status,
+      updated_at: new Date().toISOString(),
+    };
+
+    // Check if this plan already exists for this user
+    const { data: existingPlan } = await supabase
+      .from("plan_progress")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("plan_id", planData.plan_id)
+      .eq("start_date", progressData.start_date)
+      .maybeSingle();
+
+    if (existingPlan) {
+      // UPDATE existing plan progress
+      const { data, error } = await supabase
+        .from("plan_progress")
+        .update(progressData)
+        .eq("id", existingPlan.id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error updating plan progress:", error);
+        return { success: false, error: error.message };
+      }
+
+      return { success: true, id: data.id };
+    } else {
+      // INSERT new plan progress
+      const { data, error } = await supabase
+        .from("plan_progress")
+        .insert([progressData])
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error inserting plan progress:", error);
+        return { success: false, error: error.message };
+      }
+
+      return { success: true, id: data.id };
+    }
+  } catch (error) {
+    console.error("Unexpected error saving plan progress:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Update existing plan progress status (e.g., mark as "switched" when changing plans)
+ * @param {string} planId - Plan name to update
+ * @param {string} startDate - Start date of the plan to update
+ * @param {string} status - New status ("active", "completed", "switched")
+ * @param {string|Date|null} endDate - When plan ended (null if still active)
+ * @returns {Promise<{success: boolean, error?: string}>}
+ */
+export async function updatePlanProgressStatus(planId, startDate, status, endDate = null) {
+  try {
+    const userId = appState.auth?.user?.id;
+    if (!userId) {
+      return { success: false, error: "User not authenticated" };
+    }
+
+    const updateData = {
+      status,
+      end_date: endDate ? new Date(endDate).toISOString() : null,
+      updated_at: new Date().toISOString(),
+    };
+
+    const { error } = await supabase
+      .from("plan_progress")
+      .update(updateData)
+      .eq("user_id", userId)
+      .eq("plan_id", planId)
+      .eq("start_date", new Date(startDate).toISOString());
+
+    if (error) {
+      console.error("Error updating plan progress status:", error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Unexpected error updating plan progress status:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Delete a plan progress entry from Supabase
+ * Used when user clears a plan from Plan Results
+ * @param {string} planProgressId - UUID of plan_progress entry to delete
+ * @returns {Promise<{success: boolean, error?: string}>}
+ */
+export async function deletePlanProgress(planProgressId) {
+  try {
+    const userId = appState.auth?.user?.id;
+    if (!userId) {
+      return { success: false, error: "User not authenticated" };
+    }
+
+    const { error } = await supabase
+      .from("plan_progress")
+      .delete()
+      .eq("id", planProgressId)
+      .eq("user_id", userId); // Security: ensure user can only delete their own entries
+
+    if (error) {
+      console.error("Error deleting plan progress:", error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Unexpected error deleting plan progress:", error);
+    return { success: false, error: error.message };
+  }
+}

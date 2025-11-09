@@ -2,16 +2,18 @@
    HOME PAGE - HTML Template
 
    Generates home page HTML with three card sections: Training, Navigation,
-   and Workout History. Each section contains action buttons for navigation.
+   and Results. Each section contains action buttons for navigation.
 
    Architecture: Three cards with home-group sections
    - Training: Workout, Stretching (disabled), Conditioning (disabled)
    - Navigation: My Plan
-   - Workout History: My Data
+   - Results: My Data, Performance (disabled)
 
    Dependencies: None (pure template)
    Used by: home-page.index.js (renderHomePage)
    ========================================================================== */
+
+/* === TEMPLATE GENERATION === */
 
 export function getHomePageTemplate() {
   return `
@@ -33,7 +35,7 @@ export function getHomePageTemplate() {
         <div class="home-group">
           <h2 class="card-header">Training Programs</h2>
           <div class="action-button-group">
-            <button class="action-button button-primary" data-action="goToMyPlan">My Plan</button>
+            <button class="action-button button-cyan" data-action="goToMyPlan">My Plan</button>
           </div>
         </div>
       </div>
@@ -42,9 +44,10 @@ export function getHomePageTemplate() {
     <div class="card home-page-card">
       <div class="card-content-container">
         <div class="home-group">
-          <h2 class="card-header">Workout History</h2>
+          <h2 class="card-header">Results</h2>
           <div class="action-button-group">
             <button class="action-button button-primary" data-action="goToMyData">My Data</button>
+            <button class="action-button button-primary" disabled>Performance</button>
           </div>
         </div>
       </div>

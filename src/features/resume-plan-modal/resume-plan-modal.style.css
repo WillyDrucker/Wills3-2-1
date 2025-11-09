@@ -1,0 +1,50 @@
+/* ==========================================================================
+   RESUME PLAN MODAL - Styling
+
+   Styles for Resume Plan informational modal (2-button layout).
+   Follows confirmation modal base patterns with green Resume button.
+
+   Color Strategy:
+   - Green Resume button (success/confirmation - resumes at current week)
+   - Standard Cancel button (neutral gray)
+
+   Layout:
+   Uses .confirmation-modal-actions for 2-button flex layout
+   (defined in _confirmation-modals.css)
+
+   Dependencies: _variables.css, _confirmation-modals.css, _buttons.css
+   Used by: resume-plan-modal.template.js
+   ========================================================================== */
+
+/* === MODAL CONTAINER === */
+/* Inherits from .superset-modal-container in _confirmation-modals.css */
+
+/* === MODAL CONTENT === */
+/* Inherits from .confirmation-modal-card in _confirmation-modals.css */
+
+/* === MODAL TITLE === */
+/* Inherits from .confirmation-modal-title in _confirmation-modals.css */
+
+/* === MODAL DESCRIPTION === */
+/* Inherits from .confirmation-modal-description in _confirmation-modals.css */
+
+/* === MODAL QUESTION === */
+/* Inherits from .confirmation-modal-question in _confirmation-modals.css */
+
+/* === MODAL ACTIONS === */
+/* Inherits from .confirmation-modal-actions in _confirmation-modals.css */
+
+/* === CANCEL BUTTON === */
+/* Inherits from .button-cancel in _buttons.css */
+
+/* === REDUCED SPACING === */
+/* Used for plan info line to be 7px from "Plan will resume:" */
+.resume-plan-card .modal-spacing-reduced {
+  margin-top: 7px;
+}
+
+/* === GREEN RESUME BUTTON - Resume plan (confirmation) === */
+.resume-plan-card .button-resume-yes {
+  background-color: var(--log-green); /* Green for success/confirmation */
+  color: var(--text-on-action-color); /* White text */
+}

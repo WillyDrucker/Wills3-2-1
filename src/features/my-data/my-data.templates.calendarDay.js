@@ -191,7 +191,7 @@ export function buildDaySectionHTML(day, index, daysOfWeek, hasWideResults) {
       ? "Remaining Workout Day"
       : "No Workouts Logged";
 
-    const bodyPartLineHtml = `<div class="history-body-part-line">
+    const bodyPartLineHtml = `<div class="history-body-part-line empty-day">
       <span class="history-body-part-text"></span>
       <span class="history-completion-text"></span>
     </div>`;
@@ -206,10 +206,10 @@ export function buildDaySectionHTML(day, index, daysOfWeek, hasWideResults) {
   }
 
   /* Sandwich divider between days */
-  const separator =
-    index < daysOfWeek.length - 1
-      ? '<div class="modal-divider history-divider"></div>'
-      : "";
+  /* No divider after Saturday (last day) - selector will be 16px from bottom via card padding */
+  const separator = index < daysOfWeek.length - 1
+    ? '<div class="modal-divider history-divider"></div>'
+    : "";
 
   return `<div class="day-section history-day-section">${dayContentHtml}</div>${separator}`;
 }

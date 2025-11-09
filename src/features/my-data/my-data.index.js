@@ -26,7 +26,7 @@ import { appState } from "state";
 import { ui } from "ui";
 import { getMyDataPageTemplate } from "./my-data.template.js";
 import * as persistenceService from "services/core/persistenceService.js";
-import { loadWorkoutsFromDatabase, clearTodaysWorkouts } from "services/data/workoutSyncService.js";
+import { loadWorkoutsFromDatabase, clearTodaysWorkouts, loadPlanProgressFromDatabase } from "services/data/workoutSyncService.js";
 
 /* === RESULTS ALIGNMENT UTILITY === */
 /**
@@ -103,6 +103,22 @@ export function handleNextWeek() {
   renderMyDataPage();
 }
 
+export function handlePreviousYear() {
+  // Can't go before 2025 (yearOffset 0)
+  if (appState.ui.myDataPage.yearOffset <= 0) return;
+  appState.ui.myDataPage.yearOffset--;
+  renderMyDataPage();
+}
+
+export function handleNextYear() {
+  const currentYear = 2025 + appState.ui.myDataPage.yearOffset;
+  const currentDate = new Date();
+  // Only allow going to next year if current date has reached that year
+  if (currentDate.getFullYear() <= currentYear) return;
+  appState.ui.myDataPage.yearOffset++;
+  renderMyDataPage();
+}
+
 export async function handleClearDailyData() {
   const result = await clearTodaysWorkouts();
 
@@ -122,13 +138,20 @@ export function refreshMyDataPageDisplay() {
   // Re-render template without reloading from database (fast, for selector interactions)
   ui.mainContent.innerHTML = getMyDataPageTemplate();
 
-  /* 🔒 CEMENT: Direct week navigation wiring (no reliance on external delegates) */
+  // Wire up navigation buttons (week or year based on selected tab)
   const container = ui.mainContent;
-  const prevButton = container.querySelector('.week-nav-prev');
-  const nextButton = container.querySelector('.week-nav-next');
 
-  if (prevButton) prevButton.addEventListener('click', handlePreviousWeek);
-  if (nextButton) nextButton.addEventListener('click', handleNextWeek);
+  // Week navigation for Workout Results
+  const weekPrevButton = container.querySelector('.week-nav-prev:not(.year-nav-prev)');
+  const weekNextButton = container.querySelector('.week-nav-next:not(.year-nav-next)');
+  if (weekPrevButton) weekPrevButton.addEventListener('click', handlePreviousWeek);
+  if (weekNextButton) weekNextButton.addEventListener('click', handleNextWeek);
+
+  // Year navigation for Plan Results
+  const yearPrevButton = container.querySelector('.year-nav-prev');
+  const yearNextButton = container.querySelector('.year-nav-next');
+  if (yearPrevButton) yearPrevButton.addEventListener('click', handlePreviousYear);
+  if (yearNextButton) yearNextButton.addEventListener('click', handleNextYear);
 
   // Admin-only: Wire up Clear Daily Data button
   const clearButton = container.querySelector('.clear-daily-data-button');
@@ -155,10 +178,13 @@ export function refreshMyDataPageDisplay() {
 }
 
 export async function renderMyDataPage() {
-  // Load workout history from database (slow, for initial load and data refresh)
+  // Load workout history and plan progress from database (slow, for initial load and data refresh)
   if (appState.auth?.isAuthenticated) {
     const { workouts } = await loadWorkoutsFromDatabase();
     appState.user.history.workouts = workouts;
+
+    const { planProgress } = await loadPlanProgressFromDatabase();
+    appState.user.history.planProgress = planProgress;
   }
 
   ui.configSection.innerHTML = "";
@@ -176,18 +202,31 @@ function setupOutsideClickListener() {
 }
 
 function handleOutsideClick(event) {
-  // Only handle if there's an active selection
-  if (!appState.ui.selectedHistoryWorkoutId) return;
-
   // Don't handle clicks when a modal is open (prevents interference with modal interactions)
   if (appState.ui.activeModal) return;
 
-  // Check if click is outside all workout selectors
-  const clickedSelector = event.target.closest('.workout-session-selector');
+  // Handle workout session selector click-outside
+  if (appState.ui.selectedHistoryWorkoutId) {
+    // Check if click is outside all workout selectors
+    const clickedWorkoutSelector = event.target.closest('.workout-session-selector');
 
-  // If clicked outside all selectors, close the active one
-  if (!clickedSelector) {
-    appState.ui.selectedHistoryWorkoutId = null;
-    refreshMyDataPageDisplay();
+    // If clicked outside all selectors, close the active one
+    if (!clickedWorkoutSelector) {
+      appState.ui.selectedHistoryWorkoutId = null;
+      refreshMyDataPageDisplay();
+      return; // Handled, don't check other selectors
+    }
+  }
+
+  // Handle plan span selector click-outside
+  if (appState.ui.myDataPage.selectedPlanProgressId) {
+    // Check if click is outside all plan span selectors
+    const clickedPlanSelector = event.target.closest('.plan-span-selector');
+
+    // If clicked outside all selectors, close the active one
+    if (!clickedPlanSelector) {
+      appState.ui.myDataPage.selectedPlanProgressId = null;
+      refreshMyDataPageDisplay();
+    }
   }
 }

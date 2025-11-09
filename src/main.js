@@ -40,6 +40,7 @@ import { renderSideNav } from "features/side-nav/side-nav.index.js";
 import { renderResetConfirmationModal } from "features/reset-confirmation-modal/reset-confirmation-modal.index.js";
 import { renderNewWorkoutModal } from "features/new-workout-modal/new-workout-modal.index.js";
 import { renderBeginNewPlanModal } from "features/begin-new-plan-modal/begin-new-plan-modal.index.js";
+import { renderResumePlanModal } from "features/resume-plan-modal/resume-plan-modal.index.js";
 import { renderEditWorkoutModal } from "features/edit-workout-modal/edit-workout-modal.index.js";
 import { renderDeleteLogModal } from "features/delete-log-modal/delete-log-modal.index.js";
 import { renderDeleteWorkoutModal } from "features/delete-workout-modal/delete-workout-modal.index.js";
@@ -136,6 +137,7 @@ function renderAll() {
   renderResetConfirmationModal();
   renderNewWorkoutModal();
   renderBeginNewPlanModal();
+  renderResumePlanModal();
   renderEditWorkoutModal();
   renderDeleteLogModal();
   renderDeleteWorkoutModal();
@@ -164,6 +166,7 @@ function renderModalsOnly() {
   renderResetConfirmationModal();
   renderNewWorkoutModal();
   renderBeginNewPlanModal();
+  renderResumePlanModal();
   renderEditWorkoutModal();
   renderDeleteLogModal();
   renderDeleteWorkoutModal();

@@ -46,7 +46,9 @@ export function getBeginNewPlanModalTemplate() {
 
         <p class="confirmation-modal-description modal-text-animated">Progress has been saved to My Data!</p>
 
-        <p class="confirmation-modal-description modal-spacing-top">Current Plan will reset to <span class="text-plan">Week 1</span> of <span class="text-info">${planName}:</span> <span class="text-plan">${totalWeeks} ${weeksText}</span>.</p>
+        <p class="confirmation-modal-description modal-spacing-top">Current Plan will reset to:</p>
+
+        <p class="confirmation-modal-description"><span class="text-plan">Week 1</span> of <span class="text-info">${planName}:</span> <span class="text-plan">${totalWeeks} ${weeksText}</span>.</p>
 
         <p class="confirmation-modal-question">Begin New Plan?</p>
 

@@ -126,6 +126,7 @@ export function getInitialAppState() {
       selectedWorkoutId: null,
       selectedHistoryWorkoutId: null,
       deleteLogContext: null,
+      resumePlanModalContext: null, // { planName, planDurationWeeks, currentWeekNumber, existingPlanProgress }
       editWorkout: {
         originalWorkout: null, // Deep clone of workout before editing
         hasChanges: false, // Track if user made any changes
@@ -159,9 +160,11 @@ export function getInitialAppState() {
         isOpen: false,
       },
       myDataPage: {
-        selectedTab: "Workouts",
+        selectedTab: "Workout Results",
         weekOffset: 0,
+        yearOffset: 0, // For Plan Results view (0 = 2025)
         scrollPosition: 0,
+        selectedPlanProgressId: null, // For Plan Results selector interaction (plan_progress.id)
       },
       myPlanPage: {
         selectedPlanId: "Will's 3-2-1",
@@ -186,6 +189,7 @@ export function getInitialAppState() {
     user: {
       history: {
         workouts: [],
+        planProgress: [], // Plan lifecycle tracking from plan_progress table
       },
     },
   };

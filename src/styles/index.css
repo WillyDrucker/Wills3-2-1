@@ -51,6 +51,7 @@
 @import url("../features/reset-confirmation-modal/reset-confirmation-modal.style.css");
 @import url("../features/new-workout-modal/new-workout-modal.style.css");
 @import url("../features/begin-new-plan-modal/begin-new-plan-modal.style.css");
+@import url("../features/resume-plan-modal/resume-plan-modal.style.css");
 @import url("../features/reset-modal/reset-modal.style.css");
 @import url("../features/edit-workout-modal/edit-workout-modal.style.css");
 @import url("../features/delete-log-modal/delete-log-modal.style.css");
